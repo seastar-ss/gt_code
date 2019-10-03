@@ -74,9 +74,12 @@ public class CodeGener extends AbstractMojo {
         } catch (DependencyResolutionRequiredException e) {
             e.printStackTrace();
         }
-
-        basedir = project.getBasedir();
-        final File outputFile = new File(clzTmpPos);
+        MavenProject p=project;
+        while(p.getParent()!=null){
+            p=p.getParent();
+        }
+        basedir = p.getBasedir();
+        final File outputFile = new File( clzTmpPos);
         if (!outputFile.exists() && !outputFile.mkdirs()) {
             throw new IllegalStateException("can't create class-tmp folder");
         }

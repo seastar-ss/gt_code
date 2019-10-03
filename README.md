@@ -1,2 +1,1 @@
-# gt_code
-a dao generator framework
+# new_gt
