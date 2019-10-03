@@ -1,0 +1,97 @@
+{
+  "paramName": "params",
+  "arrayType": [
+    "stringMap"
+  ],
+  "arrayDemension": 1,
+  "keyClz": [
+    {
+      "isSimple": false,
+      "isSimpleClz": false,
+      "dataType": "classType",
+      "clzName": "java.lang.String",
+      "enumConstant": [],
+      "subEntries": {}
+    }
+  ],
+  "clz": {
+    "isSimple": false,
+    "isSimpleClz": false,
+    "dataType": "classType",
+    "clzName": "com.shawn.ss.build_test.common.controller.TestController.TestClassParam",
+    "enumConstant": [],
+    "subEntries": {
+      "key": {
+        "paramName": "key",
+        "arrayType": [],
+        "arrayDemension": 0,
+        "keyClz": [],
+        "clz": {
+          "isSimple": true,
+          "isSimpleClz": true,
+          "dataType": "commonDataType",
+          "clzName": "java.lang.String",
+          "enumConstant": [],
+          "subEntries": {}
+        }
+      },
+      "value": {
+        "paramName": "value",
+        "arrayType": [],
+        "arrayDemension": 0,
+        "keyClz": [],
+        "clz": {
+          "isSimple": true,
+          "isSimpleClz": true,
+          "dataType": "commonDataType",
+          "clzName": "java.lang.Integer",
+          "enumConstant": [],
+          "subEntries": {}
+        }
+      },
+      "type": {
+        "paramName": "type",
+        "arrayType": [],
+        "arrayDemension": 0,
+        "keyClz": [],
+        "clz": {
+          "isSimple": false,
+          "isSimpleClz": true,
+          "dataType": "classType",
+          "clzName": "com.shawn.ss.build_test.common.controller.TestController.TestClassType",
+          "enumConstant": [],
+          "subEntries": {
+            "key": {
+              "paramName": "key",
+              "arrayType": [],
+              "arrayDemension": 0,
+              "keyClz": [],
+              "clz": {
+                "isSimple": true,
+                "isSimpleClz": true,
+                "dataType": "commonDataType",
+                "clzName": "java.lang.String",
+                "enumConstant": [],
+                "subEntries": {}
+              }
+            },
+            "value": {
+              "paramName": "value",
+              "arrayType": [],
+              "arrayDemension": 0,
+              "keyClz": [],
+              "clz": {
+                "isSimple": true,
+                "isSimpleClz": true,
+                "dataType": "commonDataType",
+                "clzName": "java.lang.Integer",
+                "enumConstant": [],
+                "subEntries": {}
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

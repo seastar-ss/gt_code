@@ -1,0 +1,55 @@
+db:
+  config:
+    timeout: 1000
+    idleTimeout: 3600000
+    maxLifetime: 4000000
+    dataSouceClassName: com.mysql.jdbc.jdbc2.optional.MysqlDataSource
+    maximumPoolSize: 20
+    connectionTestQuery: select 1;
+  dbs:
+    portalMaster:
+      url: jdbc:mysql://172.16.117.226:3306/ent_portal?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&zeroDateTimeBehavior=convertToNull
+      user: ent_all
+      password: ent
+      isSlave: false
+    portalSlave:
+      url: jdbc:mysql://172.16.117.226:3306/ent_portal?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&zeroDateTimeBehavior=convertToNull
+      user: ent_all
+      password: ent
+      isSlave: true
+    statistic:
+      url: jdbc:mysql://172.16.117.226:3306/ucenter_statistic?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&zeroDateTimeBehavior=convertToNull
+      user: ent_all
+      password: ent
+      isSlave: false
+gen:
+  buildMethod:
+    - get
+    - getByCond
+    - getByCondAndIndex
+    - getByCondAndIndexAndWhere
+    - getByCondAndWhere
+    - getById
+    - getByIdAndCondAndWhere
+    - getByIdAndWhere
+    - getByIndex
+    - getByIndexAndWhere
+    - getByWhere
+    - getCountByCond
+    - getCountByCondAndIndex
+    - getCountByCondAndIndexAndWhere
+    - getItemByCond
+    - getItemByCondAndIndex
+    - getItemByCondAndIndexAndWhere
+    - getItemByIndex
+    - getItemByWhere
+    - getOneByCond
+    - getOneByCondAndWhere
+    - getOneById
+    - getOneByWhere
+  portalMaster:
+    including:
+      -
+    excluding:
+      -
+    defs:

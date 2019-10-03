@@ -1,0 +1,52 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+//apply plugin: 'application'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url "http://112.74.19.176:8081/repository/maven-central/" }
+    maven { url "http://repo.maven.apache.org/maven2" }
+}
+
+def version_maven="2.2.1";
+dependencies {
+    // The production code uses the SLF4J logging API at compile time
+    compile 'org.slf4j:slf4j-api:1.7.25'
+    compile 'ch.qos.logback:logback-classic:1.2.3'
+
+    compile "org.apache.maven:maven-project:${version_maven}"
+
+    compile "org.apache.maven:maven-core:${version_maven}"
+
+    compile "org.apache.maven:maven-model:${version_maven}"
+    compile "org.apache.maven:maven-artifact:${version_maven}"
+//    compile "org.apache.maven:maven-plugin-annotations:${version_maven}"
+    compile "org.apache.maven:maven-plugin-api:${version_maven}"
+    testCompile 'junit:junit:4.12'
+}
+
+sourceSets {
+    main {
+
+    }
+//    test {
+//        java{
+//            srcDir "src/test_code_gen"
+//        }
+//        resources {
+////            srcDir  "src/main/java"
+//            srcDir "src/test/resources"
+//
+//            //includes = ["**/*.fxml"]
+//        }
+//    }
+}
+
+//task(copyTask);
+//mainClassName="tester.TestMain"
+
+

@@ -1,0 +1,15 @@
+
+task info(){
+    println projectDir.getAbsolutePath();
+    println rootProject.projectDir.getAbsolutePath();
+
+}
+
+task webpack(type: Exec) {
+    inputs.file("htmlbase/package-lock.json");//.withPathSensitivity(PathSensitivity.RELATIVE)
+    inputs.dir("htmlbase");//.withPathSensitivity(PathSensitivity.RELATIVE)
+    outputs.dir("$buildDir/js")
+    outputs.cacheIf { true }
+
+    commandLine "node $projectDir/htmlbase/webpack-runner.js"
+}

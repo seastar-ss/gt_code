@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <property name="log.base" value="./logs/builder"/>
+    <property name="log.dateFormat" value="MMdd-HH:mm:ss.SS"/>
+    <!--<substitutionProperty name="log.style" value="%date{MMdd-HH:mm:ss.SS} %-30(%thread [%-5level %logger{30}]) %msg%n"/>-->
+    <!--<substitutionProperty name="log.prefix.mine" value="p"/>-->
+    <!--<substitutionProperty name="log.prefix.common" value=""/>-->
+
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="com.shawn.ss.lib.tools.logging.logger.CusomerLoggerLayout">
+                <prefix></prefix>
+                <printThreadName>true</printThreadName>
+                <tolerance>3</tolerance>
+                <dateFormat>${log.dateFormat}</dateFormat>
+            </layout>
+        </encoder>
+    </appender>
+
+
+    <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.base}/stdout.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${log.base}/stdout.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <!-- or whenever the file size reaches 100MB -->
+                <maxFileSize>70MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="com.shawn.ss.lib.tools.logging.logger.CusomerLoggerLayout">
+                <!--<prefix>${log.prefix.mine}</prefix>-->
+                <printThreadName>true</printThreadName>
+                <tolerance>3</tolerance>
+                <dateFormat>${log.dateFormat}</dateFormat>
+            </layout>
+        </encoder>
+    </appender>
+
+    <appender name="errors" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.base}/errors.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${log.base}/errors.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <!-- or whenever the file size reaches 100MB -->
+                <maxFileSize>70MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="com.shawn.ss.lib.tools.logging.logger.CusomerLoggerLayout">
+                <!--<prefix>${log.prefix.mine}</prefix>-->
+                <printThreadName>true</printThreadName>
+                <tolerance>1</tolerance>
+                <dateFormat>${log.dateFormat}</dateFormat>
+            </layout>
+        </encoder>
+    </appender>
+
+
+
+
+
+    <!-- name指定的是包名，表示这个logger只记录com.wzw.controller下的所有日志 -->
+    <logger name="com.shawn.ss" additivity="true">  <!-- additivity 是否继承root -->
+        <level value="DEBUG"/>  <!-- 现在级别 -->
+        <!--<appender-ref ref="async-file"/>-->
+    </logger>
+
+
+
+    <root>
+        <level value="DEBUG"/>
+        <appender-ref ref="stdout"/>
+        <!--<appender-ref ref="async-file"/>-->
+    </root>
+</configuration>

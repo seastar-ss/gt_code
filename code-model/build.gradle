@@ -1,0 +1,26 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+
+group = 'com.helger'
+version = '3.0.2-SNAPSHOT'
+
+description = """jcodemodel"""
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+tasks.withType(JavaCompile) {
+	options.encoding = 'UTF-8'
+}
+
+
+
+repositories {
+        
+     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+     maven { url "http://repo.maven.apache.org/maven2" }
+}
+dependencies {
+    compile group: 'com.google.code.findbugs', name: 'annotations', version:'3.0.1u2'
+    testCompile group: 'junit', name: 'junit', version:'4.12'
+    testCompile group: 'com.github.javaparser', name: 'javaparser-core', version:'3.5.7'
+}

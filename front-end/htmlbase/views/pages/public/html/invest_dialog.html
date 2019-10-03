@@ -1,0 +1,22 @@
+<div id="investOrder" class="modal fade " tabindex="-1" role="dialog"
+     aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">投资确认</h4>
+            </div>
+            <div class="modal-body largeGap">
+                <div>投资金额&nbsp;&nbsp;&nbsp;&nbsp;<input id="inInvestAmount" type="number" placeholder="您可用金额10,000,000.00"><span class="profitText">&nbsp;&nbsp;*&nbsp;&nbsp;</span><span>&nbsp;&nbsp;请输入投资金额</span></div>
+                <div>投资周期&nbsp;:&nbsp;&nbsp;&nbsp;{{ModalLabel.proRunDate.substring(0,10)}}至{{ModalLabel.proStopDate.substring(0,10)}}</div>
+                <div>期望收益率&nbsp;:&nbsp;&nbsp;&nbsp;{{ModalLabel.expReturn}}</div>
+            </div>
+            <div class="modal-footer">
+                <button id="sureInvest" type="button" class="btn btn-sm btn-success" @click="makeSureInvest">
+                    确认投资
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,116 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+
+group = 'net.ss.shawn.javacc'
+version = '0.8.1-SNAPSHOT'
+
+description = """JSqlParser javacc extention"""
+
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "gradle.plugin.ca.coglinc2:javacc-gradle-plugin:3.0.0"
+    }
+}
+
+apply plugin: "ca.coglinc2.javacc"
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+jjdoc {
+    inputDirectory = file(project.buildDir.absolutePath + '/generated/jjtree')
+    outputDirectory = file(project.buildDir.absolutePath + '/generated/jjdoc')
+    arguments = [text: 'false']
+}
+
+configurations.all {
+}
+
+repositories {
+
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+    maven { url "http://repo.maven.apache.org/maven2" }
+}
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testCompile group: 'org.mockito', name: 'mockito-core', version: '2.16.0'
+    testCompile 'commons-io:commons-io:2.4'
+    testCompile 'org.hamcrest:hamcrest-library:1.3'
+//    <dependency>
+//    <groupId>org.hamcrest</groupId>
+//            <artifactId>hamcrest-library</artifactId>
+//    <version>1.3</version>
+//            <scope>test</scope>
+//    </dependency>
+//        <dependency>
+//            <groupId>org.mockito</groupId>
+//    <artifactId>mockito-core</artifactId>
+//            <version>2.16.0</version>
+//    <scope>test</scope>
+//        </dependency>
+}
+
+task runJavaCC {
+    doLast {
+        exec {
+            workingDir "$rootDir/javacc_proj/src/main"
+            //commandLine 'bash','-c', 'ls';
+            //commandLine 'bash','-c', " rm -rf $rootDir/sqlGen/src/gen/*";
+            //commandLine 'bash','-c', "javacc/javacc-6.0/bin/lib/javacc.jar","sqlGen/src/main/javacc/JSqlParserCC.jj";
+//            commandLine "cmd", "/C",
+//                    " java -Dfile.encoding=UTF-8 -cp $rootDir/javacc/javacc-6.0/bin/lib/javacc.jar jjtree " +
+//                            "-OUTPUT_DIRECTORY=$rootDir/javacc_proj/src/main/gen/java/net/sf/jsqlparser/parser  " +
+//                            "$rootDir/javacc_proj/src/main/jjtree/JSqlParserCC.jjt && " +
+//                            "mv $rootDir/javacc_proj/src/main/gen/java/net/sf/jsqlparser/parser/JSqlParserCC.jj " +
+//                            "$rootDir/javacc_proj/src/main/javacc/ && " +
+//                            "java -Dfile.encoding=UTF-8 -cp $rootDir/javacc/javacc-6.0/bin/lib/javacc.jar javacc  " +
+//                            "-OUTPUT_DIRECTORY=$rootDir/javacc_proj/src/main/gen/java/net/sf/jsqlparser/parser  " +
+//                            "$rootDir/javacc_proj/src/main/javacc/JSqlParserCC.jj";
+
+            commandLine "cmd", "/C",
+                    " java -Dfile.encoding=UTF-8 -cp $rootDir/javacc/javacc-7.0.3.jar jjtree " +
+                            "-OUTPUT_DIRECTORY=$rootDir/javacc_proj/src/main/gen/java/net/sf/jsqlparser/parser  " +
+                            "$rootDir/javacc_proj/src/main/jjtree/JSqlParserCC.jjt && " +
+                            "mv $rootDir/javacc_proj/src/main/gen/java/net/sf/jsqlparser/parser/JSqlParserCC.jj " +
+                            "$rootDir/javacc_proj/src/main/javacc/ && " +
+                            "java -Dfile.encoding=UTF-8 -cp $rootDir/javacc/javacc-7.0.3.jar javacc  " +
+                            "-OUTPUT_DIRECTORY=$rootDir/javacc_proj/src/main/gen/java/net/sf/jsqlparser/parser  " +
+                            "$rootDir/javacc_proj/src/main/javacc/JSqlParserCC.jj && " +
+                    "java -Dfile.encoding=UTF-8 -cp $rootDir/javacc/javacc-7.0.3.jar jjdoc  " +
+                    "-OUTPUT_FILE=$rootDir/javacc_proj/src/main/gen/doc/doc.html -text=true " +
+                    "$rootDir/javacc_proj/src/main/javacc/JSqlParserCC.jj"
+            ;
+
+            //commandLine "cmd","/C"," echo doing;";
+
+        }
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir "src/main/gen/java"
+        }
+
+    }
+    test {
+        java {
+            srcDir "src/main/gen/java"
+            srcDir "src/main/java"
+        }
+        resources {
+//            srcDir  "src/main/java"
+            srcDir "src/test/resources"
+
+        }
+    }
+}

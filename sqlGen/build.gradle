@@ -1,0 +1,37 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+
+group = 'net.sf.jsqlparser'
+version = '0.8.1-SNAPSHOT'
+
+description = """JSqlParser"""
+
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
+tasks.withType(JavaCompile) {
+	options.encoding = 'UTF-8'
+}
+
+configurations.all {
+}
+
+repositories {
+        
+     maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+     maven { url "http://repo.maven.apache.org/maven2" }
+}
+dependencies {
+    testCompile group: 'junit', name: 'junit', version:'3.8.2'
+    testCompile group: 'org.mockito', name: 'mockito-all', version:'1.9.5'
+}
+
+task runJavaCC {
+    doLast {
+        exec {
+            workingDir "$rootDir/sqlGen/src/main"
+            commandLine 'bash','-c', 'ls';
+            //commandLine 'bash','-c', "javacc/javacc-6.0/bin/lib/javacc.jar","sqlGen/src/main/javacc/JSqlParserCC.jj";
+            commandLine "cmd","/C"," java -Dfile.encoding=UTF-8 -cp $rootDir/javacc/javacc-6.0/bin/lib/javacc.jar javacc  -OUTPUT_DIRECTORY=$rootDir/sqlGen/src/main/java/net/sf/jsqlparser/parser  $rootDir/sqlGen/src/main/javacc/JSqlParserCC.jj";
+        }
+    }
+}

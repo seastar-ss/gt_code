@@ -1,0 +1,82 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+//String[] targetJarsPosition = ['D:\\personal\\documents\\project\\workings\\42.96.139.10\\common_libs\\CodeGenerator\\libs',
+//                               'D:\\personal\\documents\\project\\workings\\42.96.139.10\\common_libs\\GenTestModule\\libs',
+//                               'D:\\personal\\documents\\project\\workings\\42.96.139.10\\common_libs\\JoinerModule\\libs',
+//                               'D:\\personal\\documents\\project\\workings\\42.96.139.10\\common_libs\\cms_func\\trunk\\server\\cms\\maven_install',
+//                               'D:\\personal\\documents\\project\\workings\\42.96.139.10\\ChinaArab\\trunk\\server\\chinaarab\\maven_install',
+////                                'D:\\personal\\documents\\project\\workings\\42.96.139.10\\common_libs\\SqlGen\\libs',
+//                               'D:\\personal\\documents\\project\\workings\\sampleCode\\libs\\',
+////                               'D:\\personal\\documents\\project\\workings\\42.96.139.10\\fzsq\\server\\fangzhuangyiliao\\maven_install',
+////                                "D:\\personal\\documents\\project\\workings\\42.96.139.10\\ovuola\\trunk\\server\\maven_install"
+//]
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url "http://112.74.19.176:8081/repository/maven-central/" }
+    maven { url "http://repo.maven.apache.org/maven2" }
+}
+dependencies {
+    testCompile 'junit:junit:4.12'
+
+    compile group: 'commons-codec', name: 'commons-codec', version: '1.10'
+    compile group: 'commons-net', name: 'commons-net', version: '3.5'
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+//    compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.25'
+//    compile group: 'log4j', name: 'log4j', version: '1.2.17'
+//    compile group: 'com.sun.codemodel', name: 'codemodel', version: '2.6'
+    //compile project(":base")
+	compile fileTree("$rootDir/libs/")
+    compile group: 'org.springframework', name: 'spring-beans', version: '4.3.4.RELEASE'
+    compile 'org.springframework:spring-jdbc:4.3.4.RELEASE'
+
+}
+
+//task(copyTask);
+//mainClassName="tester.TestMain"
+
+//def fromDef = copySpec {
+//    from('build/libs/') {
+//        include '**/*.jar'
+//    }
+//}
+
+//task copyTask(dependsOn: jar) << {
+//    targetJarsPosition.each { dest ->
+//        copy {
+//            with fromDef
+//            into dest
+//        }
+//    }
+//    copy {
+//        from 'build/libs/'
+//        into 'D:\\personal\\documents\\project\\workings\\42.96.139.10\\common_libs\\CodeGenerator\\libs'
+//        include '**/*.jar'
+//    }
+//    copy {
+//        from 'build/libs/'
+//        into 'D:\\personal\\documents\\project\\workings\\42.96.139.10\\common_libs\\GenTestModule\\libs'
+//        include '**/*.jar'
+//    }
+//    copy {
+//        from 'build/libs/'
+//        into 'D:\\personal\\documents\\project\\workings\\42.96.139.10\\common_libs\\JoinerModule\\libs'
+//        include '**/*.jar'
+//    }
+//    copy {
+//        from 'build/libs/'
+//        into 'D:\\personal\\documents\\project\\workings\\42.96.139.10\\common_libs\\cms_func\\trunk\\server\\cms\\maven_install'
+//        include '**/*.jar'
+//    }
+//    copy {
+//        from 'build/libs/'
+//        into 'D:\\personal\\documents\\project\\workings\\42.96.139.10\\ChinaArab\\trunk\\server\\chinaarab\\maven_install'
+//        include '**/*.jar'
+//    }
+//}
+

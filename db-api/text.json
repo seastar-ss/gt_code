@@ -1,0 +1,25 @@
+{
+  "paramName": "args",
+  "arrayType": [
+    "list"
+  ],
+  "arrayDemension": 1,
+  "keyClz": [
+    {
+      "isSimple": false,
+      "isSimpleClz": false,
+      "dataType": "classType",
+      "clzName": "java.lang.Integer",
+      "enumConstant": [],
+      "subEntries": {}
+    }
+  ],
+  "clz": {
+    "isSimple": true,
+    "isSimpleClz": true,
+    "dataType": "commonDataType",
+    "clzName": "java.lang.String",
+    "enumConstant": [],
+    "subEntries": {}
+  }
+}

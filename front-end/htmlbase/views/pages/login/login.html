@@ -1,0 +1,39 @@
+<script type="text/javascript" src="../../static/js/writeObject.js"></script>
+<!--<script type="text/javascript" src="../../static/js/jquery.cookie.js"></script>-->
+
+<div class="bgPic">
+    <div class="titleLogo"><img src="../asset/topName.png"></div>
+    <div class="logoPic">
+        <img src="../asset/name.png">
+
+        <div>资配易智能投资系统</div>
+    </div>
+    <div class="loginWindow">
+        <div class="loginTitle">账户登录</div>
+        <div class="loginContent">
+            <div class="inputLine">
+                <span class="inputLogo"><img src="../asset/loginLogo.png" class="picStyle"></span>
+                <input placeholder="用户名" id="userName" type="text">
+                <!--<td align="left">&nbsp;<script type="text/javascript">writeEditObject("poweredit",{"entertype":"edit","width":165,"height":22,"accepts":"[0-9a-zA-Z]+","placeholderText":"请输入用户ID"});</script>&nbsp;</td>-->
+            </div>
+            <div class="inputLine">
+                <span class="inputLogo"><img src="../asset/pwdLogo.png" class="picStyle"></span>
+                <!--<input placeholder="密码" id="userPwd" type="password">-->
+                <div align="left">&nbsp;
+                    <script type="text/javascript">writePassObject("powerpass", {
+                        "width": 296,
+                        "height": 35,
+                        "accepts": "[0-9a-zA-Z]+",
+                        "placeholderText": "请输入密码"
+                    });</script>
+                    &nbsp;</div>
+                <!--<td align="left">&nbsp;<script type="text/javascript">writeUtilObject("powerutil",{"width":1,"height":1});</script>&nbsp;</td>-->
+            </div>
+            <!--<div align="center"><span id="EEE"></span></div>-->
+            <div class="remindPwd"><input id="rmbUser" type="checkbox" value=""/>记住用户名<span class="pull-right redFont"
+                                                                                            id="showText">请输入密码</span>
+            </div>
+            <div class="loginBtn" id="login">登录</div>
+        </div>
+    </div>
+</div>

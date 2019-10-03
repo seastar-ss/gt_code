@@ -1,0 +1,75 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+//apply plugin: 'application'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url "http://112.74.19.176:8081/repository/maven-central/" }
+    maven { url "http://repo.maven.apache.org/maven2" }
+}
+dependencies {
+    // The production code uses the SLF4J logging API at compile time
+    compile 'org.slf4j:slf4j-api:1.7.21'
+//    compile 'com.helger:jcodemodel:3.0.0'
+    compile group: 'commons-codec', name: 'commons-codec', version: '1.10'
+    compile group: 'com.google.code.gson', name: 'gson', version:'2.2.4'
+    compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.18'
+    compile group: 'org.springframework', name: 'spring-webmvc', version:'4.3.3.RELEASE'
+    compile group: 'org.springframework', name: 'spring-jdbc', version:'4.3.3.RELEASE'
+//    compile group: 'ch.qos.logback', name: 'ch.qos.logback', version: '1.0.13'
+    compile group: 'log4j', name: 'log4j', version: '1.2.17'
+    compile fileTree("$rootDir/libs/")
+//    compile 'com.cs.seastar.libs:base:5.1'
+//    compile 'com.cs.seastar.libs:data_store-api:5.1'
+    compile project(":code-model")
+    compile project(":gen-base")
+    testCompile 'junit:junit:4.12'
+}
+
+sourceSets {
+    main {
+
+    }
+    test {
+        java{
+            srcDir "src/test_code_gen"
+        }
+        resources {
+//            srcDir  "src/main/java"
+            srcDir "src/test/resources"
+
+        }
+    }
+}
+
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'Code gen processor by Shawn ss',
+                'Implementation-Version': version
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+
+}
+
+task copyCompileLib(dependsOn: ["fatJar"])  {
+    doLast {
+        println(" copy compile jar")
+//        delete dest + "/*.jar"
+
+        copy {
+            from("build/libs") {
+                include "*.jar"
+            }
+            into "$rootDir/compilor"
+
+        }
+    }
+}
+
+

@@ -1,0 +1,159 @@
+import javax.tools.JavaCompiler
+
+apply plugin: 'java'
+apply plugin: 'maven'
+//apply plugin: 'application'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url "http://112.74.19.176:8081/repository/maven-central/" }
+    maven { url "http://repo.maven.apache.org/maven2" }
+}
+dependencies {
+    // The production code uses the SLF4J logging API at compile time
+    compile 'org.slf4j:slf4j-api:1.7.21'
+//    compile 'com.helger:jcodemodel:3.0.0'
+    compile group: 'commons-codec', name: 'commons-codec', version: '1.10'
+    compile group: 'com.google.code.gson', name: 'gson', version:'2.2.4'
+    compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.18'
+    compile group: 'org.springframework', name: 'spring-webmvc', version:'4.3.3.RELEASE'
+    compile group: 'org.springframework', name: 'spring-jdbc', version:'4.3.3.RELEASE'
+//    compile group: 'ch.qos.logback', name: 'ch.qos.logback', version: '1.0.13'
+//    compile group: 'log4j', name: 'log4j', version: '1.2.17'
+    compile fileTree("$rootDir/libs/")
+//    compile 'com.cs.seastar.libs:base:5.1'
+//    compile 'com.cs.seastar.libs:data_store-api:5.1'
+//    compile project(":code-model")
+    compile project(":gen-base")
+    testCompile 'junit:junit:4.12'
+}
+
+sourceSets {
+    main {
+        java{
+            srcDir "src/main/gen_code/java"
+        }
+
+    }
+    test {
+        java{
+            srcDir "src/main/gen_code/java"
+        }
+        resources {
+//            srcDir  "src/main/java"
+            srcDir "src/test/resources"
+
+        }
+    }
+}
+
+//def classpath=
+
+//JavaCompile pre=getTasks().create('preCompile',org.gradle.api.tasks.compile.JavaCompile.class);
+//buildConf(pre);
+//void buildConf(pre) {
+//    pre.options.encoding = 'UTF-8'
+//    def rootPos=rootProject.rootDir.getAbsolutePath();
+//    def subProjectDir='/compilor-test';
+//    println("compilor test pos:"+rootPos);
+//    pre.options.compilerArgs += "-Aconf.file=" + rootPos + "/project/"
+//    pre.options.compilerArgs += "-Aoutput.doc.base=" + rootPos+subProjectDir + "/src/main/webapp/docs/"
+//    pre.options.compilerArgs += "-Asrc.base.fold=" + rootPos+subProjectDir + "/src/main/java"
+//    println("compilor pos:"+rootPos + "/compilor/compilor-base-all-1.0.jar")
+//    pre.options.compilerArgs += ["-processorpath", rootPos + "/compilor/compilor-base-all-1.0.jar"]
+//    pre.options.compilerArgs += ["-processor", "com.shawn.ss.gen.GenProcessor"]
+////    with JavaCompile
+//}
+task preCompileImpl(type:JavaCompile){
+
+        def rootPos=rootProject.rootDir.getAbsolutePath();
+        def subProjectDir='';
+        options.fork=false;
+        options.encoding = 'UTF-8'
+        options.compilerArgs += "-Aconf.file=" + rootPos + "/project/"
+        options.compilerArgs += "-Aoutput.doc.base=" + rootPos+subProjectDir + "/src/main/webapp/docs/"
+        options.compilerArgs += "-Asrc.base.fold=" + rootPos+subProjectDir + "/src/main/gen_code/java"
+//	options.compilerArgs += "-Asrc.ddt.fold=" + rootPos+subProjectDir + "/src/main/gen_code/java"
+        options.compilerArgs += "-Agen.file.pos=com.shawn.ss.build_test"
+        options.compilerArgs += ["-processorpath", rootPos + "/compilor/compilor-base-all-1.0.jar"]
+        options.compilerArgs += ["-processor", "com.shawn.ss.gen.GenProcessor"]
+//    println(options);
+        classpath=sourceSets.main.compileClasspath
+        destinationDir=new File(rootPos+subProjectDir +'/gen_class')
+
+//    source(sourceSet.java)
+        source sourceSets.main.java;
+
+
+//    def rootPos=rootProject.rootDir.getAbsolutePath();
+//    def subProjectDir='/compilor-test';
+//    options.fork=false;
+//    options.encoding = 'UTF-8'
+//    options.compilerArgs += "-Aconf.file=" + rootPos + "/project/"
+//    options.compilerArgs += "-Aoutput.doc.base=" + rootPos+subProjectDir + "/src/main/webapp/docs/"
+//    options.compilerArgs += "-Asrc.base.fold=" + rootPos+subProjectDir + "/src/main/gen_code/java"
+//    options.compilerArgs += "-Asrc.ttsd.fold=" + rootPos+subProjectDir + "/src/main/gen_code/java"
+//    options.compilerArgs += "-Agen.file.pos=com.shawn.ss.build_test"
+//    options.compilerArgs += ["-processorpath", rootPos + "/compilor/compilor-base-all-1.0.jar"]
+//    options.compilerArgs += ["-processor", "com.shawn.ss.gen.GenProcessor"]
+////    println(options);
+//    classpath=sourceSets.main.compileClasspath
+//    destinationDir=new File(rootPos+subProjectDir +'/gen_class')
+//
+////    source(sourceSet.java)
+//    source sourceSets.main.java;
+
+}
+
+task sourceSetProperties  {
+    doLast {
+        sourceSets {
+            main {
+                println "java.srcDirs = ${java.srcDirs}"
+                println "resources.srcDirs = ${resources.srcDirs}"
+                println "java.files = ${java.files.name}"
+                println "allJava.files = ${allJava.files.name}"
+                println "resources.files = ${resources.files.name}"
+                println "allSource.files = ${allSource.files.name}"
+                println "output.classesDir = ${output.classesDir}"
+                println "output.resourcesDir = ${output.resourcesDir}"
+                println "output.files = ${output.files}"
+            }
+        }
+    }
+}
+//JavaCompile.setDependsOn([pre])
+JavaCompile cp,precp;
+tasks.withType(org.gradle.api.tasks.compile.JavaCompile).each {
+    item->
+        if(item.name.endsWith("compileJava")){
+            cp=item;
+        }
+        if(item.name.endsWith("preCompileImpl")){
+            precp=item
+        }
+}
+if(cp!=null && precp!=null)
+    cp.dependsOn precp;
+
+task printInfo(){
+     doLast {
+        println(getProject().rootDir.getAbsolutePath());
+//         def on = pre.getDependsOn();
+//        println(on);
+//         println(pre.hasTaskActions());
+//         println(pre.getActions());
+         println(tasks.withType(JavaCompile));
+         println(tasks.withType(Jar));
+         println(tasks.withType(Copy));
+        println(sourceSets)
+    }
+}
+
+//task(copyTask)
+
+

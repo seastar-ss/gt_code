@@ -1,0 +1,33 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.cs.seastar.libs</groupId>
+        <artifactId>base-support</artifactId>
+        <version>5.7.7</version>
+    </parent>
+    <artifactId>gen-api</artifactId>
+    <name>gen-api</name>
+    <packaging>jar</packaging>
+    <properties>
+        <spring.version>4.3.3.RELEASE</spring.version>
+        <!--<spring.version>3.2.6.RELEASE</spring.version>-->
+
+    </properties>
+    <!--<dependencies>-->
+        <!--<dependency>-->
+            <!--<groupId>org.quartz-scheduler</groupId>-->
+            <!--<artifactId>quartz</artifactId>-->
+        <!--</dependency>-->
+    <!--</dependencies>-->
+    <!--compile group: 'commons-codec', name: 'commons-codec', version: '1.10'-->
+    <!--compile group: 'commons-net', name: 'commons-net', version: '3.5'-->
+    <!--compile group: 'org.springframework', name: 'spring-webmvc', version: '4.3.3.RELEASE'-->
+    <!--compile group: 'org.springframework', name: 'spring-web', version: '4.3.3.RELEASE'-->
+    <!--compile group: 'org.springframework', name: 'spring-context', version: '4.3.3.RELEASE'-->
+    <!--compile group: 'org.springframework', name: 'spring-context-support', version: '4.3.3.RELEASE'-->
+    <dependencies>
+
+    </dependencies>
+</project>

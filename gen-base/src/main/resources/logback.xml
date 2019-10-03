@@ -1,0 +1,140 @@
+<configuration>
+  <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+      <pattern>%date [%thread][IP:%X{ip}|USER:%X{user}][%-5level %logger{80}] %msg%n</pattern>
+    </encoder>
+  </appender>
+  
+  <substitutionProperty name="log.base" value="${catalina.base}/logs" />
+  
+  <appender name="rollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>${log.base}/stdout.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <FileNamePattern>${log.base}/stdout.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
+      <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+        <!-- or whenever the file size reaches 100MB -->
+        <maxFileSize>100MB</maxFileSize>
+      </timeBasedFileNamingAndTriggeringPolicy>
+    </rollingPolicy>
+    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+      <pattern>%date [%thread][IP:%X{ip}|USER:%X{user}][%-5level %logger{80}] %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <appender name="ActionAccessLoggerFileOut" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>${log.base}/action-access.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <FileNamePattern>${log.base}/action-access.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
+      <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+        <!-- or whenever the file size reaches 100MB -->
+        <maxFileSize>100MB</maxFileSize>
+      </timeBasedFileNamingAndTriggeringPolicy>
+    </rollingPolicy>
+    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+      <pattern>%date [%thread][IP:%X{ip}|USER:%X{user}][%-5level %logger{80}] %msg%n</pattern>
+    </encoder>
+  </appender>
+  
+   <appender name="ExceptionLoggerFileOut" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>${log.base}/exception.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <FileNamePattern>${log.base}/exception.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
+      <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+        <!-- or whenever the file size reaches 100MB -->
+        <maxFileSize>100MB</maxFileSize>
+      </timeBasedFileNamingAndTriggeringPolicy>
+    </rollingPolicy>
+    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+      <pattern>%date [%thread][IP:%X{ip}|USER:%X{user}][%-5level %logger{80}] %msg%n</pattern>
+    </encoder>
+  </appender>
+  
+  <appender name="PerformanceStatisticsReportLoggerFileOut" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>${log.base}/performance-statistics.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <FileNamePattern>${log.base}/performance-statistics.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
+      <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+        <!-- or whenever the file size reaches 100MB -->
+        <maxFileSize>100MB</maxFileSize>
+      </timeBasedFileNamingAndTriggeringPolicy>
+    </rollingPolicy>
+    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+      <pattern>%date [%thread][IP:%X{ip}|USER:%X{user}][%-5level %logger{80}] %msg%n</pattern>
+    </encoder>
+  </appender>
+  <appender name="MobileUserInfoManagerActionFileOut" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>${log.base}/MobileUserInfoManagerAction.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <FileNamePattern>${log.base}/MobileUserInfoManagerAction.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
+      <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+        <!-- or whenever the file size reaches 100MB -->
+        <maxFileSize>100MB</maxFileSize>
+      </timeBasedFileNamingAndTriggeringPolicy>
+    </rollingPolicy>
+    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+      <pattern>%date [%thread][IP:%X{ip}|USER:%X{user}][%-5level %logger{80}] %msg%n</pattern>
+    </encoder>
+  </appender>
+  <appender name="LottoCourseActivityActionFileOut" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>${log.base}/LottoCourseActivityAction.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <FileNamePattern>${log.base}/LottoCourseActivityAction.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
+      <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+        <!-- or whenever the file size reaches 100MB -->
+        <maxFileSize>100MB</maxFileSize>
+      </timeBasedFileNamingAndTriggeringPolicy>
+    </rollingPolicy>
+    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+      <pattern>%date [%thread][IP:%X{ip}|USER:%X{user}][%-5level %logger{80}] %msg%n</pattern>
+    </encoder>
+  </appender>
+  <appender name="DegradeStrategyFileOut" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>${log.base}/degrade/degradeStrategy.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <FileNamePattern>${log.base}/degrade/degradeStrategy.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
+      <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+        <maxFileSize>100MB</maxFileSize>
+      </timeBasedFileNamingAndTriggeringPolicy>
+    </rollingPolicy>
+    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+      <pattern>%date [%thread][IP:%X{ip}|USER:%X{user}][%-5level %logger{80}] %msg%n</pattern>
+    </encoder>
+  </appender>
+  <!-- logger -->
+  <logger name="ActionAccessLogger" level="info" additivity="false">
+    <appender-ref ref="ActionAccessLoggerFileOut" />
+  </logger>
+  <logger name="PerformanceStatisticsReportLogger" level="info" additivity="false">
+    <appender-ref ref="PerformanceStatisticsReportLoggerFileOut" />
+  </logger>
+  <logger name="com.shangde.common.sys.log.SysLogInterceptor" level="DEBUG" additivity="true" >
+  	<appender-ref ref="ExceptionLoggerFileOut" />
+  </logger>
+  <logger name="com.shangde" level="DEBUG" />
+  <logger name="ch.qos.logback" level="INFO" />
+  <logger name="org.springframework" level="INFO" />
+  <logger name="org.springframework.security" level="DEBUG" />
+  <logger name="org.mybatis" level="DEBUG" />
+  <logger name="org.apache.struts2" level="DEBUG" />
+  <logger name="org.apache.struts2.json" level="DEBUG" />
+  <logger name="org.apache.commons" level="INFO" />
+  <logger name="MobileUserInfoManagerAction" level="DEBUG" additivity="true" >
+    <appender-ref ref="MobileUserInfoManagerActionFileOut" />
+  </logger>
+  <logger name="LottoCourseActivityAction" level="DEBUG" additivity="true" >
+    <appender-ref ref="LottoCourseActivityActionFileOut" />
+  </logger>
+  <logger name="DegradeStrategy" level="DEBUG" additivity="true" >
+    <appender-ref ref="DegradeStrategyFileOut" />
+  </logger>
+
+  <logger name="SysInfos" level="DEBUG" additivity="true" >
+    <appender-ref ref="PerformanceStatisticsReportLoggerFileOut" />
+  </logger>
+
+  <root>
+    <level value="DEBUG" />
+    <appender-ref ref="stdout" />
+    <appender-ref ref="rollingFile" />
+  </root>
+</configuration>
