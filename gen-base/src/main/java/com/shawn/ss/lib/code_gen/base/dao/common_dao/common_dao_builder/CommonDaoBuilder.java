@@ -209,7 +209,8 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
         }
         JMethod method = definedClass.method(JMod.PROTECTED, jClass, multiSelect ? CodeConstants.METHOD_DAO_GET_RESULT_LIST : CodeConstants.METHOD_DAO_GET_RESULT);
         JVar assemblerVar = method.param(cm.ref(DaoAssembler.class), CodeConstants.PARAM_DAO_ASSEMBLER);
-        JVar sqlBuilderVar = method.param(CodeConstants.buildNarrowedClass(cm, SQL.class, SQLSelect.class), "sqlBuilder");
+//      FIXME:  JVar sqlBuilderVar = method.param(CodeConstants.buildNarrowedClass(cm, SQL.class, SQLSelect.class), "sqlBuilder");
+        JVar sqlBuilderVar = method.param( SQLSelect.class, "sqlBuilder");
         JVar paramVar = method.param(CodeConstants.buildNarrowedClass(cm, Map.class, String.class, Object.class), "param");
         JBlock body = method.body();
         JVar status = body.decl(cm.INT, "status", JExpr.lit(0));
@@ -274,7 +275,8 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
         );
         method.generify("TT");
         JVar assemblerVar = method.param(cm.ref(DaoAssembler.class), CodeConstants.PARAM_DAO_ASSEMBLER);
-        JVar sqlBuilderVar = method.param(CodeConstants.buildNarrowedClass(cm, SQL.class, SQLSelect.class), "sqlBuilder");
+//      FIXME:  JVar sqlBuilderVar = method.param(CodeConstants.buildNarrowedClass(cm, SQL.class, SQLSelect.class), "sqlBuilder");
+        JVar sqlBuilderVar = method.param(SQLSelect.class, "sqlBuilder");
         JVar paramVar = method.param(CodeConstants.buildNarrowedClass(cm, Map.class, String.class, Object.class), "param");
         JVar tClassVar = method.param(CodeConstants.buildNarrowedClass(cm, Class.class, genericType), "tClass");
         JBlock body = method.body();
@@ -546,15 +548,15 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
 //        }
         if (delete) {
             if (multiple) {
-                body.invoke("assert").arg(idsVar.ne(JExpr._null()).cand(idsVar.invoke("size").gt(JExpr.lit(0))));
+                body.invoke(CodeConstants.LIB_ASSERT_METHOD).arg(idsVar.ne(JExpr._null()).cand(idsVar.invoke("size").gt(JExpr.lit(0))));
             } else {
-                body.invoke("assert").arg(idVar.ne(JExpr._null()));
+                body.invoke(CodeConstants.LIB_ASSERT_METHOD).arg(idVar.ne(JExpr._null()));
             }
         } else {
             if (multiple) {
-                body.invoke("assert").arg(idsVar.ne(JExpr._null()).cand(idsVar.invoke("size").gt(JExpr.lit(0))));
+                body.invoke(CodeConstants.LIB_ASSERT_METHOD).arg(idsVar.ne(JExpr._null()).cand(idsVar.invoke("size").gt(JExpr.lit(0))));
             } else {
-                body.invoke("assert").arg(instance.invoke(CodeConstants.getMethodNameOfModelGet(priKey)).ne(JExpr._null()));
+                body.invoke(CodeConstants.LIB_ASSERT_METHOD).arg(instance.invoke(CodeConstants.getMethodNameOfModelGet(priKey)).ne(JExpr._null()));
             }
         }
         if (delete) {
@@ -699,7 +701,7 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
             );
             JConditional anIf = body._if(fields.invoke("contains").arg(staticRef));
             JBlock anIfBlock = anIf._then();
-            anIfBlock.invoke("assert").arg(jVar.ne(JExpr._null()));
+            anIfBlock.invoke(CodeConstants.LIB_ASSERT_METHOD).arg(jVar.ne(JExpr._null()));
             anIfBlock.invoke(sqlBuilderVar, CodeConstants.LIB_SQL_SET_WHERE).arg(staticRef).arg(cm.ref(ColumnDataType.class).staticRef(type.name()));
             if (!delete) {
 //                JConditional anIf = fiBlock._if(fields.invoke("contains").arg(staticRef));
@@ -1068,7 +1070,13 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
                     .assign(fieldsVar, fieldMapStaticRefer.invoke("keySet"));
         }
 
-        JVar sqlBuilder = body.decl(cm.ref(SQLSelect.class).narrow(SQLSelect.class), "sqlBuilder", cm.ref(SQL.class).staticInvoke(CodeConstants.LIB_SQL_BUILD_SELECT).arg(modelClazzRef.staticRef(CodeConstants.FIELD_TABLE_NAME)));
+        //FIXME: JVar sqlBuilder = body.decl(cm.ref(SQLSelect.class).narrow(SQLSelect.class), "sqlBuilder", cm.ref(SQL.class).staticInvoke(CodeConstants.LIB_SQL_BUILD_SELECT).arg(modelClazzRef.staticRef(CodeConstants.FIELD_TABLE_NAME)));
+        JVar sqlBuilder = body.decl(
+                cm.ref(SQLSelect.class),
+                "sqlBuilder",
+                cm.ref(SQLBuilder.class).staticInvoke(CodeConstants.LIB_SQL_BUILD_SELECT)//.arg(modelClazzRef.staticRef(CodeConstants.FIELD_TABLE_NAME))
+        );
+        body.invoke(sqlBuilder,CodeConstants.LIB_SQL_BUILD_SET_TABLE).arg(modelClazzRef.staticRef(CodeConstants.FIELD_TABLE_NAME));
         if (multiSelect) {
             CodeConstants.setDefaultLimit(cm, body, startVar, countVar);
         } else {
@@ -1107,13 +1115,14 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
 
         List<ColumnInfoInterface> columns = info.getColumns();
         if (isCount) {
-            body.invoke(sqlBuilder, CodeConstants.LIB_SQL_ADD_FUNC_ITEM).arg(JExpr.lit("count")).arg(JExpr.lit("count"));
+            body.invoke(sqlBuilder, CodeConstants.LIB_SQL_ADD_RAW_ITEM).arg(JExpr.lit("count(*)")).arg(JExpr.lit("count"));
         }
         if (isSingle) {
-            body.invoke("assert").arg(tClassVar.ne(JExpr._null()));
+            body.invoke(CodeConstants.LIB_ASSERT_METHOD).arg(tClassVar.ne(JExpr._null()));
         }
+
         if (hasRawItem) {
-            body.invoke("assert")
+            body.invoke(CodeConstants.LIB_ASSERT_METHOD)
                     .arg(
                             (rawItemVar.ne(JExpr._null()))
                                     .cand(rawItemVar.invoke("length").gt(JExpr.lit(0)))

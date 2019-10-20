@@ -188,7 +188,7 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
             }
             if (!CollectionHelper.isCollectionEmpty(extCondition)) {
                 for (String var : extCondition) {
-                    sqlBuilder.rawWhere(var);
+                    sqlBuilder.rawWhereItem(LogicalRelationshipType.and,var);
                 }
             }
         }

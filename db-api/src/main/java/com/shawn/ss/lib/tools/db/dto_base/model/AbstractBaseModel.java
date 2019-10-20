@@ -5,7 +5,7 @@
  */
 package com.shawn.ss.lib.tools.db.dto_base.model;
 
-import com.shawn.ss.lib.tools.db.api.interfaces.mappers._ObjMapper;
+
 import org.springframework.util.StringUtils;
 
 import java.io.Serializable;

@@ -12,10 +12,11 @@ import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.ColumnInfoInterface;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.TableInfoInterface;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.model.EnumTypeDef;
-import com.shawn.ss.lib.tools.db.api.interfaces.mappers._ObjMapper;
+//import com.shawn.ss.lib.tools.db.api.interfaces.mappers._ObjMapper;
 import com.shawn.ss.lib.tools.db.api.interfaces.mappers.db.DbResultSetMapper;
 import com.shawn.ss.lib.tools.db.api.interfaces.mappers.db.RedisMapMapper;
 import com.shawn.ss.lib.tools.db.dto_base.model.AbstractBaseModel;
+import com.shawn.ss.lib.tools.db.dto_base.model._ObjMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

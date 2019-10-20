@@ -1,6 +1,6 @@
 package com.shawn.ss.lib.tools.db.api.interfaces.mappers.db;
 
-import com.shawn.ss.lib.tools.db.api.interfaces.mappers._ObjMapper;
+
 import com.shawn.ss.lib.tools.db.dto_base.model.AbstractBaseModel;
 
 import java.util.Map;

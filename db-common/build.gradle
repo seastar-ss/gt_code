@@ -25,6 +25,7 @@ dependencies {
 //    compile project(":base")
     compile fileTree("$rootDir/libs/")
     compile project(":data_store-api")
+    compile project(":gen-api")
     compile project(":javacc_proj")
     testCompile 'junit:junit:4.12'
     compile group: 'commons-codec', name: 'commons-codec', version: '1.10'

@@ -146,9 +146,11 @@ public class CodeConstants {
     public static final String LIB_SQL_BUILD_INSERT = "buildInsertSql";
     public static final String LIB_SQL_BUILD_UPDATE = "buildUpdateSql";
     public static final String LIB_SQL_BUILD_DELETE = "buildDeleteSql";
+    public static final String LIB_SQL_BUILD_SET_TABLE = "table";
+
     public static final String LIB_SQL_ADD_ITEM = "items";
-    public static final String LIB_SQL_ADD_FUNC_ITEM = "funcItems";
-    public static final String LIB_SQL_ADD_RAW_ITEM = "rawItem";
+    public static final String LIB_SQL_ADD_FUNC_ITEM = "rawSelectItem";
+    public static final String LIB_SQL_ADD_RAW_ITEM = "rawSelectItem";
     public static final String LIB_SQL_SET_LIMIT = "setLimit";
     public static final String LIB_SQL_SET_WHERE = "where";
     public static final String LIB_SQL_SET_RAW_WHERE = "rawWhere";
@@ -196,6 +198,8 @@ public class CodeConstants {
     public static final String PARAM_DAO_INSTANCE = "instance";
     public static final String PARAM_DAO_RAW_ITEM = "rawItem";
     public static final String PARAM_DAO_T_CLASS = "tClass";
+    public static final String LIB_ASSERT_METHOD = "assert";
+
     //    public CommonDaoBuilder(ModelBuilder parentBuilder,ModelBuilderContext builderContext) {
 //        super(parentBuilder, builderContext);
 //    }

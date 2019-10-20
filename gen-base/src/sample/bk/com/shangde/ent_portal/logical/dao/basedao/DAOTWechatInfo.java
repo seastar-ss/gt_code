@@ -76,7 +76,7 @@ public class DAOTWechatInfo
         return super.getSingleResults(dbInstance, assembler, sqlBuilder, param, tClass);
     }
 
-    protected List<ModelTWechatInfo> getResults(DaoAssembler assembler, SQLSelect sqlBuilder, Map<String, Object> param) {
+    protected List<ModelTWechatInfo> getResults(DaoAssembler assembler, SQL<SQLSelect> sqlBuilder, Map<String, Object> param) {
         int status = 0;
         if (assembler!= null) {
             status = assembler.assembleSql(sqlBuilder, param, ModelTWechatInfo.class);
