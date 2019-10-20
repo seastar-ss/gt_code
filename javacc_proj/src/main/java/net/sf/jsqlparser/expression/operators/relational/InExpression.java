@@ -36,6 +36,7 @@ public class InExpression extends ASTNodeAccessImpl implements Expression, Suppo
         if (oldOracleJoinSyntax < 0 || oldOracleJoinSyntax > 1) {
             throw new IllegalArgumentException("unexpected join type for oracle found with IN (type=" + oldOracleJoinSyntax + ")");
         }
+//        return this;
     }
 
     @Override
@@ -51,33 +52,38 @@ public class InExpression extends ASTNodeAccessImpl implements Expression, Suppo
         return leftExpression;
     }
 
-    public final void setRightItemsList(ItemsList list) {
+    public final InExpression setRightItemsList(ItemsList list) {
         rightItemsList = list;
+        return this;
     }
 
-    public final void setLeftExpression(Expression expression) {
+    public final InExpression setLeftExpression(Expression expression) {
         leftExpression = expression;
+        return this;
     }
 
     public boolean isNot() {
         return not;
     }
 
-    public void setNot(boolean b) {
+    public InExpression setNot(boolean b) {
         not = b;
+        return this;
     }
 
     public ItemsList getLeftItemsList() {
         return leftItemsList;
     }
 
-    public void setLeftItemsList(ItemsList leftItemsList) {
+    public InExpression setLeftItemsList(ItemsList leftItemsList) {
         this.leftItemsList = leftItemsList;
+        return this;
     }
 
     @Override
     public void accept(ExpressionVisitor expressionVisitor) {
         expressionVisitor.visit(this);
+//        return this;
     }
 
     private String getLeftExpressionString() {

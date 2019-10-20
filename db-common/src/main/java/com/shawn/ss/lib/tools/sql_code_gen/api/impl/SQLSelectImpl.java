@@ -14,11 +14,14 @@ import net.sf.jsqlparser.statement.select.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class SQLSelectImpl extends SQLImpl<SQLSelect> implements SQLSelect {
     Select select;
     SelectBody mainBody;
     PlainSelect operatableBody;
+
+    AtomicInteger seq;
 
     public SQLSelectImpl() {
         super(SqlType.select);
@@ -27,6 +30,7 @@ public class SQLSelectImpl extends SQLImpl<SQLSelect> implements SQLSelect {
         select.setSelectBody(body);
         mainBody = body;
         operatableBody = body;
+        seq = new AtomicInteger(0);
     }
 
     public SQLSelectImpl(Select statement) {
@@ -44,6 +48,7 @@ public class SQLSelectImpl extends SQLImpl<SQLSelect> implements SQLSelect {
             }
         }
 
+        seq = new AtomicInteger(0);
     }
 
     @Override
@@ -59,6 +64,11 @@ public class SQLSelectImpl extends SQLImpl<SQLSelect> implements SQLSelect {
         }
 //        operatableBody.get
         return this;
+    }
+
+    @Override
+    public SQLSelect rawSelectItem(String item) {
+        return rawSelectItem(item,"__item__"+seq.getAndIncrement());
     }
 
     @Override

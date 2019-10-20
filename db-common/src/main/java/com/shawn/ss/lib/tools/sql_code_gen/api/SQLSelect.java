@@ -8,6 +8,7 @@ import java.util.Map;
 
 public interface SQLSelect extends SQL<SQLSelect> {
     SQLSelect rawSelectItem(String item, String alias);
+    SQLSelect rawSelectItem(String item);
 
     SQLSelect rawHaving(String item);
 

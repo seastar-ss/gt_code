@@ -22,8 +22,9 @@ public class LikeExpression extends BinaryExpression {
         return not;
     }
 
-    public void setNot(boolean b) {
+    public LikeExpression setNot(boolean b) {
         not = b;
+        return this;
     }
 
     @Override
@@ -50,15 +51,17 @@ public class LikeExpression extends BinaryExpression {
         return escape;
     }
 
-    public void setEscape(String escape) {
+    public LikeExpression setEscape(String escape) {
         this.escape = escape;
+        return this;
     }
 
     public boolean isCaseInsensitive() {
         return caseInsensitive;
     }
 
-    public void setCaseInsensitive(boolean caseInsensitive) {
+    public LikeExpression setCaseInsensitive(boolean caseInsensitive) {
         this.caseInsensitive = caseInsensitive;
+        return this;
     }
 }

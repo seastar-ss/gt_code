@@ -27,20 +27,23 @@ public class IsNullExpression extends ASTNodeAccessImpl implements Expression {
         return not;
     }
 
-    public void setLeftExpression(Expression expression) {
+    public IsNullExpression setLeftExpression(Expression expression) {
         leftExpression = expression;
+        return this;
     }
 
-    public void setNot(boolean b) {
+    public IsNullExpression setNot(boolean b) {
         not = b;
+        return  this;
     }
 
     public boolean isUseIsNull() {
         return useIsNull;
     }
 
-    public void setUseIsNull(boolean useIsNull) {
+    public IsNullExpression setUseIsNull(boolean useIsNull) {
         this.useIsNull = useIsNull;
+        return this;
     }
 
     @Override

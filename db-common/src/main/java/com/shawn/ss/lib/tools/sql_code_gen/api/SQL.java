@@ -1,5 +1,7 @@
 package com.shawn.ss.lib.tools.sql_code_gen.api;
 
+import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.model.ColumnDataType;
+import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.model.LogicalOpType;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.model.LogicalRelationshipType;
 //import com.shawn.ss.lib.tools.sql_code_gen.api.expressions.Expr;
 import com.shawn.ss.lib.tools.sql_code_gen.api.expressions.Expr;
@@ -22,11 +24,17 @@ public interface SQL<T extends SQL> {
     T rawWhereItem(LogicalRelationshipType type, String expression);
 
     T itemWhere(String item);
-    T itemWhere(LogicalRelationshipType type,String item);
-    T itemWhere(String item,String paramName);
-    T itemWhere(LogicalRelationshipType type,String item,String paramName);
-    T itemWhere(LogicalRelationshipType type,String table,String item,String paramName);
-    T itemWhere(LogicalRelationshipType type,String db,String table,String item,String paramName);
+    T itemWhere(String item, ColumnDataType dataType);
+    T itemWhere(LogicalRelationshipType type,String item, ColumnDataType dataType);
+    T itemWhere(String item,String paramName, ColumnDataType dataType);
+    T itemWhere(LogicalOpType opType,String item,String paramName, ColumnDataType dataType);
+    T itemWhere(LogicalOpType opType,String table,String item,String paramName, ColumnDataType dataType);
+    T itemWhere(LogicalOpType opType,String db,String table,String item,String paramName, ColumnDataType dataType);
+    T itemWhere(LogicalRelationshipType type,String item,String paramName, ColumnDataType dataType);
+    T itemWhere(LogicalRelationshipType type,String table,String item,String paramName, ColumnDataType dataType);
+    T itemWhere(LogicalRelationshipType type,String db,String table,String item,String paramName, ColumnDataType dataType);
+    T itemWhere(LogicalRelationshipType type, LogicalOpType opType,  String table, String item, String paramName, ColumnDataType dataType);
+    T itemWhere(LogicalRelationshipType type, LogicalOpType opType, String db, String table, String item, String paramName, ColumnDataType dataType);
 
     T itemCol(String item);
     T itemCol(String item,String alias);
@@ -43,6 +51,7 @@ public interface SQL<T extends SQL> {
     T order(boolean asc,String table,String item);
     T rawOrder(boolean asc,String expression);
 
+    T limit();
     T limit(boolean hasStart);
     T limit(Integer count);
     T limit(Integer start,Integer count);

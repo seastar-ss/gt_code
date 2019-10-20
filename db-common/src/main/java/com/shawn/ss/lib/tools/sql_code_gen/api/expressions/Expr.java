@@ -9,7 +9,12 @@ public class Expr {
         this.expression = expression;
     }
 
-    public boolean isEmpty(){
-        return expression==null;
+    public boolean isEmpty() {
+        return expression == null;
+    }
+
+    @Override
+    public String toString() {
+        return expression == null ? "" : expression.toString();
     }
 }
