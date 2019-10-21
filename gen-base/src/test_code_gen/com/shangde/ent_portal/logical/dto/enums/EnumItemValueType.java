@@ -17,7 +17,7 @@ public enum EnumItemValueType {
     /**
      * 多行文本
      */
-    textarea((byte)1, "\u591a\u884c\u6587\u672c"),
+    text((byte)1, "\u591a\u884c\u6587\u672c"),
 
     /**
      * 选择值

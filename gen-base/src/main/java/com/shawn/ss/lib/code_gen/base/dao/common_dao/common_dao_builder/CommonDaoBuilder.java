@@ -533,9 +533,10 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
         JVar sqlBuilderVar = body.decl(
                 delete ? cm.ref(SQLDelete.class) : cm.ref(SQLUpdate.class),
                 "sqlBuilder",
-                cm.ref(SQL.class).staticInvoke(delete ? CodeConstants.LIB_SQL_BUILD_DELETE : CodeConstants.LIB_SQL_BUILD_UPDATE)
-                        .arg(modelClazzRef.staticRef(CodeConstants.FIELD_TABLE_NAME))
+                cm.ref(SQLBuilder.class).staticInvoke(delete ? CodeConstants.LIB_SQL_BUILD_DELETE : CodeConstants.LIB_SQL_BUILD_UPDATE)
+
         );
+        body.invoke(sqlBuilderVar,CodeConstants.LIB_SQL_BUILD_SET_TABLE).arg(modelClazzRef.staticRef(CodeConstants.FIELD_TABLE_NAME));
         List<ColumnInfoInterface> columns = info.getColumns();
 
 
@@ -676,9 +677,9 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
         sqlBuilderVar = body.decl(
                 delete ? cm.ref(SQLDelete.class) : cm.ref(SQLUpdate.class),
                 "sqlBuilder",
-                cm.ref(SQL.class).staticInvoke(delete ? CodeConstants.LIB_SQL_BUILD_DELETE : CodeConstants.LIB_SQL_BUILD_UPDATE)
-                        .arg(modelClazzRef.staticRef(CodeConstants.FIELD_TABLE_NAME))
+                cm.ref(SQLBuilder.class).staticInvoke(delete ? CodeConstants.LIB_SQL_BUILD_DELETE : CodeConstants.LIB_SQL_BUILD_UPDATE)
         );
+        body.invoke(sqlBuilderVar,CodeConstants.LIB_SQL_BUILD_SET_TABLE).arg(modelClazzRef.staticRef(CodeConstants.FIELD_TABLE_NAME));
         List<ColumnInfoInterface> columns = info.getColumns();
         boolean useId = false;
         String priKey = info.getPriKey();
@@ -772,7 +773,8 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
         body._if(fieldsVar.eq(JExpr._null()))._then()
                 .assign(fieldsVar, fieldMapStaticRefer.invoke("keySet"));
 //        JVar sql = body.decl(cm.ref(String.class), "sql");
-        JVar sqlBuilderVar = body.decl(cm.ref(SQLInsert.class), "sqlBuilder", cm.ref(SQL.class).staticInvoke(CodeConstants.LIB_SQL_BUILD_INSERT).arg(modelClazzRef.staticRef(CodeConstants.FIELD_TABLE_NAME)));
+        JVar sqlBuilderVar = body.decl(cm.ref(SQLInsert.class), "sqlBuilder", cm.ref(SQLBuilder.class).staticInvoke(CodeConstants.LIB_SQL_BUILD_INSERT));
+        body.invoke(sqlBuilderVar,CodeConstants.LIB_SQL_BUILD_SET_TABLE).arg(modelClazzRef.staticRef(CodeConstants.FIELD_TABLE_NAME));
         List<ColumnInfoInterface> columns = info.getColumns();
         for (ColumnInfoInterface col : columns) {
             String colName = col.getFieldName();
@@ -840,7 +842,9 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
         }
 //        body._if(assemblerVar.eq(JExpr._null()))._then().assign(assemblerVar, JExpr._new(cm.ref(BaseDaoAssembler.class)));
 //        JVar sql = body.decl(cm.ref(String.class), "sql");
-        JVar sqlBuilderVar = body.decl(cm.ref(SQLInsert.class), "sqlBuilder", cm.ref(SQL.class).staticInvoke(CodeConstants.LIB_SQL_BUILD_INSERT).arg(modelClazzRef.staticRef(CodeConstants.FIELD_TABLE_NAME)));
+        JVar sqlBuilderVar = body.decl(cm.ref(SQLInsert.class), "sqlBuilder", cm.ref(SQLBuilder.class).staticInvoke(CodeConstants.LIB_SQL_BUILD_INSERT));
+
+        body.invoke(sqlBuilderVar,CodeConstants.LIB_SQL_BUILD_SET_TABLE).arg(modelClazzRef.staticRef(CodeConstants.FIELD_TABLE_NAME));
         List<ColumnInfoInterface> columns = info.getColumns();
         for (ColumnInfoInterface col : columns) {
             String colName = col.getFieldName();
@@ -909,7 +913,7 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
     private JMethod buildCondSelectCluase() {
         JMethod method = definedClass.method(JMod.PROTECTED, cm.VOID, CodeConstants.METHOD_DAO_BUILD_CONDITION_CLUASE);
 //        JVar fieldsVar = method.param(CodeConstants.buildNarrowedClass(cm, Set.class, String.class), PARAM_DAO_SELECTED_FIELDS);
-        JVar sqlBuilder = method.param(cm.ref(SQLSelect.class).narrow(SQLSelect.class), "sqlBuilder");//body.decl(cm.ref(SQLSelect.class).narrow(SQLSelect.class), "sqlBuilder", cm.ref(SQL.class).staticInvoke(CodeConstants.LIB_SQL_BUILD_SELECT).arg(modelClazzRef.staticRef(CodeConstants.FIELD_TABLE_NAME)));
+        JVar sqlBuilder = method.param(SQLSelect.class, "sqlBuilder");//body.decl(cm.ref(SQLSelect.class).narrow(SQLSelect.class), "sqlBuilder", cm.ref(SQL.class).staticInvoke(CodeConstants.LIB_SQL_BUILD_SELECT).arg(modelClazzRef.staticRef(CodeConstants.FIELD_TABLE_NAME)));
         JVar instanceVar = method.param(modelClazzRef, CodeConstants.PARAM_DAO_INSTANCE);
         JVar paramVar = method.param(CodeConstants.buildNarrowedClass(cm, Map.class, String.class, Object.class), "param");
         JBlock body = method.body();
@@ -934,7 +938,7 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
 
     private JMethod buildSelectFieldCluase() {
         JMethod method = definedClass.method(JMod.PROTECTED, cm.VOID, CodeConstants.METHOD_DAO_BUILD_SELECT_FIELD_CLUASE);
-        JVar sqlBuilder = method.param(cm.ref(SQLSelect.class).narrow(SQLSelect.class), "sqlBuilder");
+        JVar sqlBuilder = method.param(cm.ref(SQLSelect.class), "sqlBuilder");
         JVar fieldsVar = method.param(CodeConstants.buildNarrowedClass(cm, Set.class, String.class), CodeConstants.PARAM_DAO_SELECTED_FIELDS);
         //body.decl(cm.ref(SQLSelect.class).narrow(SQLSelect.class), "sqlBuilder", cm.ref(SQL.class).staticInvoke(CodeConstants.LIB_SQL_BUILD_SELECT).arg(modelClazzRef.staticRef(CodeConstants.FIELD_TABLE_NAME)));
 

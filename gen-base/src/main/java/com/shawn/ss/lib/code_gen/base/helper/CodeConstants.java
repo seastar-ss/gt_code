@@ -148,11 +148,11 @@ public class CodeConstants {
     public static final String LIB_SQL_BUILD_DELETE = "buildDeleteSql";
     public static final String LIB_SQL_BUILD_SET_TABLE = "table";
 
-    public static final String LIB_SQL_ADD_ITEM = "items";
+    public static final String LIB_SQL_ADD_ITEM = "itemCol";
     public static final String LIB_SQL_ADD_FUNC_ITEM = "rawSelectItem";
     public static final String LIB_SQL_ADD_RAW_ITEM = "rawSelectItem";
-    public static final String LIB_SQL_SET_LIMIT = "setLimit";
-    public static final String LIB_SQL_SET_WHERE = "where";
+    public static final String LIB_SQL_SET_LIMIT = "limit";
+    public static final String LIB_SQL_SET_WHERE = "itemWhere";
     public static final String LIB_SQL_SET_RAW_WHERE = "rawWhere";
     public static final String LIB_SQL_GET_SQL = "getSql";
     public static final String LIB_DB_QUERY = "query";

@@ -19,7 +19,11 @@ import com.shawn.ss.lib.tools.db.impl.dao.DaoInterface;
 import com.shawn.ss.lib.tools.service_assemble.AbstractMultipleDaoAssembler;
 import com.shawn.ss.lib.tools.service_assemble.BaseMultipleDaoAssembler;
 import com.shawn.ss.lib.tools.service_assemble.DaoAssembler;
-import com.shawn.ss.lib.tools.sql_code_gen.api.*;
+import com.shawn.ss.lib.tools.sql_code_gen.api.SQLBuilder;
+import com.shawn.ss.lib.tools.sql_code_gen.api.SQLDelete;
+import com.shawn.ss.lib.tools.sql_code_gen.api.SQLInsert;
+import com.shawn.ss.lib.tools.sql_code_gen.api.SQLSelect;
+import com.shawn.ss.lib.tools.sql_code_gen.api.SQLUpdate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -58,7 +62,7 @@ public class DAOTWechatInfo
         }
     }
 
-    protected<TT> TT getSingleResult(DaoAssembler assembler, SQL<SQLSelect> sqlBuilder, Map<String, Object> param, Class<TT> tClass) {
+    protected<TT> TT getSingleResult(DaoAssembler assembler, SQLSelect sqlBuilder, Map<String, Object> param, Class<TT> tClass) {
         SimpleDbInterface dbInstance = data_store;
         String dbToUse = super.selectDb(assembler, sqlBuilder, param);
         if ((dbToUse!= null)&&dbMap.containsKey(dbToUse)) {
@@ -67,7 +71,7 @@ public class DAOTWechatInfo
         return super.getSingleResult(dbInstance, assembler, sqlBuilder, param, tClass);
     }
 
-    protected<TT> List<TT> getSingleResults(DaoAssembler assembler, SQL<SQLSelect> sqlBuilder, Map<String, Object> param, Class<TT> tClass) {
+    protected<TT> List<TT> getSingleResults(DaoAssembler assembler, SQLSelect sqlBuilder, Map<String, Object> param, Class<TT> tClass) {
         SimpleDbInterface dbInstance = data_store;
         String dbToUse = super.selectDb(assembler, sqlBuilder, param);
         if ((dbToUse!= null)&&dbMap.containsKey(dbToUse)) {
@@ -105,7 +109,7 @@ public class DAOTWechatInfo
         }
     }
 
-    protected ModelTWechatInfo getResult(DaoAssembler assembler, SQL<SQLSelect> sqlBuilder, Map<String, Object> param) {
+    protected ModelTWechatInfo getResult(DaoAssembler assembler, SQLSelect sqlBuilder, Map<String, Object> param) {
         int status = 0;
         if (assembler!= null) {
             status = assembler.assembleSql(sqlBuilder, param, ModelTWechatInfo.class);
@@ -242,7 +246,8 @@ public class DAOTWechatInfo
         if (selectFields == null) {
             selectFields = ModelTWechatInfo.FIELD_CLASS.keySet();
         }
-        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();;
+        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();
+        sqlBuilder.table(ModelTWechatInfo.DTO_TABLE_NAME);
         if (start == null) {
             start = AbstractBaseModel.DEFAULT_START;
         }
@@ -273,7 +278,8 @@ public class DAOTWechatInfo
         if (selectFields == null) {
             selectFields = ModelTWechatInfo.FIELD_CLASS.keySet();
         }
-        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();;
+        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();
+        sqlBuilder.table(ModelTWechatInfo.DTO_TABLE_NAME);
         if (start == null) {
             start = AbstractBaseModel.DEFAULT_START;
         }
@@ -307,7 +313,8 @@ public class DAOTWechatInfo
         if (selectFields == null) {
             selectFields = ModelTWechatInfo.FIELD_CLASS.keySet();
         }
-        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();;
+        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();
+        sqlBuilder.table(ModelTWechatInfo.DTO_TABLE_NAME);
         if (start == null) {
             start = AbstractBaseModel.DEFAULT_START;
         }
@@ -340,6 +347,7 @@ public class DAOTWechatInfo
             selectFields = ModelTWechatInfo.FIELD_CLASS.keySet();
         }
         SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();
+        sqlBuilder.table(ModelTWechatInfo.DTO_TABLE_NAME);
         if (start == null) {
             start = AbstractBaseModel.DEFAULT_START;
         }
@@ -371,7 +379,8 @@ public class DAOTWechatInfo
         if (selectFields == null) {
             selectFields = ModelTWechatInfo.FIELD_CLASS.keySet();
         }
-        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();;
+        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();
+        sqlBuilder.table(ModelTWechatInfo.DTO_TABLE_NAME);
         if (start == null) {
             start = AbstractBaseModel.DEFAULT_START;
         }
@@ -403,7 +412,8 @@ public class DAOTWechatInfo
         if (selectFields == null) {
             selectFields = ModelTWechatInfo.FIELD_CLASS.keySet();
         }
-        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();;
+        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();
+        sqlBuilder.table(ModelTWechatInfo.DTO_TABLE_NAME);
         if (start == null) {
             start = AbstractBaseModel.DEFAULT_START;
         }
@@ -436,7 +446,8 @@ public class DAOTWechatInfo
         if (selectFields == null) {
             selectFields = ModelTWechatInfo.FIELD_CLASS.keySet();
         }
-        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();;
+        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();
+        sqlBuilder.table(ModelTWechatInfo.DTO_TABLE_NAME);
         if (start == null) {
             start = AbstractBaseModel.DEFAULT_START;
         }
@@ -471,7 +482,8 @@ public class DAOTWechatInfo
         if (selectFields == null) {
             selectFields = ModelTWechatInfo.FIELD_CLASS.keySet();
         }
-        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();;
+        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();
+        sqlBuilder.table(ModelTWechatInfo.DTO_TABLE_NAME);
         if (start == null) {
             start = AbstractBaseModel.DEFAULT_START;
         }
@@ -507,7 +519,8 @@ public class DAOTWechatInfo
         if (selectFields == null) {
             selectFields = ModelTWechatInfo.FIELD_CLASS.keySet();
         }
-        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();;
+        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();
+        sqlBuilder.table(ModelTWechatInfo.DTO_TABLE_NAME);
         if (start == null) {
             start = AbstractBaseModel.DEFAULT_START;
         }
@@ -540,7 +553,8 @@ public class DAOTWechatInfo
         if (selectFields == null) {
             selectFields = ModelTWechatInfo.FIELD_CLASS.keySet();
         }
-        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();;
+        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();
+        sqlBuilder.table(ModelTWechatInfo.DTO_TABLE_NAME);
         if (start == null) {
             start = AbstractBaseModel.DEFAULT_START;
         }
@@ -573,7 +587,8 @@ public class DAOTWechatInfo
         if (selectFields == null) {
             selectFields = ModelTWechatInfo.FIELD_CLASS.keySet();
         }
-        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();;
+        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();
+        sqlBuilder.table(ModelTWechatInfo.DTO_TABLE_NAME);
         if (start == null) {
             start = AbstractBaseModel.DEFAULT_START;
         }
@@ -607,7 +622,8 @@ public class DAOTWechatInfo
         if (selectFields == null) {
             selectFields = ModelTWechatInfo.FIELD_CLASS.keySet();
         }
-        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();;
+        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();
+        sqlBuilder.table(ModelTWechatInfo.DTO_TABLE_NAME);
         Integer start = 0;
         Integer count = 1;
         Map<String, Object> param = CollectionHelper.newMap();
@@ -633,7 +649,8 @@ public class DAOTWechatInfo
         if (selectFields == null) {
             selectFields = ModelTWechatInfo.FIELD_CLASS.keySet();
         }
-        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();;
+        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();
+        sqlBuilder.table(ModelTWechatInfo.DTO_TABLE_NAME);
         Integer start = 0;
         Integer count = 1;
         Map<String, Object> param = CollectionHelper.newMap();
@@ -657,7 +674,8 @@ public class DAOTWechatInfo
         if (selectFields == null) {
             selectFields = ModelTWechatInfo.FIELD_CLASS.keySet();
         }
-        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();;
+        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();
+        sqlBuilder.table(ModelTWechatInfo.DTO_TABLE_NAME);
         Integer start = 0;
         Integer count = 1;
         Map<String, Object> param = CollectionHelper.newMap();
@@ -681,7 +699,8 @@ public class DAOTWechatInfo
         if (selectFields == null) {
             selectFields = ModelTWechatInfo.FIELD_CLASS.keySet();
         }
-        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();;
+        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();
+        sqlBuilder.table(ModelTWechatInfo.DTO_TABLE_NAME);
         Integer start = 0;
         Integer count = 1;
         Map<String, Object> param = CollectionHelper.newMap();
@@ -706,7 +725,8 @@ public class DAOTWechatInfo
         if (selectFields == null) {
             selectFields = ModelTWechatInfo.FIELD_CLASS.keySet();
         }
-        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();;
+        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();
+        sqlBuilder.table(ModelTWechatInfo.DTO_TABLE_NAME);
         Integer start = 0;
         Integer count = 1;
         Map<String, Object> param = CollectionHelper.newMap();
@@ -731,7 +751,8 @@ public class DAOTWechatInfo
     }
 
     public Long getCountByCond(DaoAssembler assembler, ModelTWechatInfo instance) {
-        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();;
+        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();
+        sqlBuilder.table(ModelTWechatInfo.DTO_TABLE_NAME);
         Integer start = 0;
         Integer count = 1;
         Map<String, Object> param = CollectionHelper.newMap();
@@ -748,13 +769,13 @@ public class DAOTWechatInfo
     }
 
     public Long getCountByCondAndIndex(DaoAssembler assembler, ModelTWechatInfo instance, String inField, List indexes) {
-        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();;
+        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();
+        sqlBuilder.table(ModelTWechatInfo.DTO_TABLE_NAME);
         Integer start = 0;
         Integer count = 1;
         Map<String, Object> param = CollectionHelper.newMap();
         param.put(DaoInterface.KEY_WORD_LIMIT_START, start);
         param.put(DaoInterface.KEY_WORD_LIMIT_COUNT, count);
-//        sqlBuilder.rawSelectItem("count(*)", "count");
         sqlBuilder.rawSelectItem("count(*)", "count");
         buildConditionCluase(sqlBuilder, instance, param);
         buildInClause(sqlBuilder, inField, param, indexes);
@@ -767,7 +788,8 @@ public class DAOTWechatInfo
     }
 
     public Long getCountByCondAndIndexAndWhere(DaoAssembler assembler, ModelTWechatInfo instance, String inField, List indexes, Map<String, Object> extParam, Set<String> extCondition) {
-        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();;
+        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();
+        sqlBuilder.table(ModelTWechatInfo.DTO_TABLE_NAME);
         Integer start = 0;
         Integer count = 1;
         Map<String, Object> param = CollectionHelper.newMap();
@@ -785,27 +807,29 @@ public class DAOTWechatInfo
         return getCountByCondAndIndexAndWhere(null, instance, inField, indexes, extParam, extCondition);
     }
 
-    public<TT> TT getItemByIndex(DaoAssembler assembler, String inField, List indexes, Class<TT> tClass, String rawSelectItem) {
-        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();;
+    public<TT> TT getItemByIndex(DaoAssembler assembler, String inField, List indexes, Class<TT> tClass, String rawItem) {
+        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();
+        sqlBuilder.table(ModelTWechatInfo.DTO_TABLE_NAME);
         Integer start = 0;
         Integer count = 1;
         Map<String, Object> param = CollectionHelper.newMap();
         param.put(DaoInterface.KEY_WORD_LIMIT_START, start);
         param.put(DaoInterface.KEY_WORD_LIMIT_COUNT, count);
         assert((tClass!= null));
-        assert(((rawSelectItem!= null)&&(rawSelectItem.length()> 0)));
-        sqlBuilder.rawSelectItem(rawSelectItem);
+        assert(((rawItem!= null)&&(rawItem.length()> 0)));
+        sqlBuilder.rawSelectItem(rawItem);
         buildInClause(sqlBuilder, inField, param, indexes);
         sqlBuilder.limit();
         return ((TT) getSingleResult(assembler, sqlBuilder, param, tClass));
     }
 
-    public<TT extends Object> TT getItemByIndex(String inField, List indexes, Class<TT> tClass, String rawSelectItem) {
-        return getItemByIndex(null, inField, indexes, tClass, rawSelectItem);
+    public<TT extends Object> TT getItemByIndex(String inField, List indexes, Class<TT> tClass, String rawItem) {
+        return getItemByIndex(null, inField, indexes, tClass, rawItem);
     }
 
-    public<TT> TT getItemByWhere(DaoAssembler assembler, Class<TT> tClass, String rawSelectItem, Map<String, Object> extParam, Set<String> extCondition) {
-        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();;
+    public<TT> TT getItemByWhere(DaoAssembler assembler, Class<TT> tClass, String rawItem, Map<String, Object> extParam, Set<String> extCondition) {
+        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();
+        sqlBuilder.table(ModelTWechatInfo.DTO_TABLE_NAME);
         Integer start = 0;
         Integer count = 1;
         Map<String, Object> param = CollectionHelper.newMap();
@@ -813,57 +837,60 @@ public class DAOTWechatInfo
         param.put(DaoInterface.KEY_WORD_LIMIT_COUNT, count);
         super.buildRawWhere(sqlBuilder, param, extParam, extCondition);
         assert((tClass!= null));
-        assert(((rawSelectItem!= null)&&(rawSelectItem.length()> 0)));
-        sqlBuilder.rawSelectItem(rawSelectItem);
+        assert(((rawItem!= null)&&(rawItem.length()> 0)));
+        sqlBuilder.rawSelectItem(rawItem);
         sqlBuilder.limit();
         return ((TT) getSingleResult(assembler, sqlBuilder, param, tClass));
     }
 
-    public<TT extends Object> TT getItemByWhere(Class<TT> tClass, String rawSelectItem, Map<String, Object> extParam, Set<String> extCondition) {
-        return getItemByWhere(null, tClass, rawSelectItem, extParam, extCondition);
+    public<TT extends Object> TT getItemByWhere(Class<TT> tClass, String rawItem, Map<String, Object> extParam, Set<String> extCondition) {
+        return getItemByWhere(null, tClass, rawItem, extParam, extCondition);
     }
 
-    public<TT> TT getItemByCond(DaoAssembler assembler, ModelTWechatInfo instance, Class<TT> tClass, String rawSelectItem) {
-        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();;
+    public<TT> TT getItemByCond(DaoAssembler assembler, ModelTWechatInfo instance, Class<TT> tClass, String rawItem) {
+        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();
+        sqlBuilder.table(ModelTWechatInfo.DTO_TABLE_NAME);
         Integer start = 0;
         Integer count = 1;
         Map<String, Object> param = CollectionHelper.newMap();
         param.put(DaoInterface.KEY_WORD_LIMIT_START, start);
         param.put(DaoInterface.KEY_WORD_LIMIT_COUNT, count);
         assert((tClass!= null));
-        assert(((rawSelectItem!= null)&&(rawSelectItem.length()> 0)));
-        sqlBuilder.rawSelectItem(rawSelectItem);
+        assert(((rawItem!= null)&&(rawItem.length()> 0)));
+        sqlBuilder.rawSelectItem(rawItem);
         buildConditionCluase(sqlBuilder, instance, param);
         sqlBuilder.limit();
         return ((TT) getSingleResult(assembler, sqlBuilder, param, tClass));
     }
 
-    public<TT extends Object> TT getItemByCond(ModelTWechatInfo instance, Class<TT> tClass, String rawSelectItem) {
-        return getItemByCond(null, instance, tClass, rawSelectItem);
+    public<TT extends Object> TT getItemByCond(ModelTWechatInfo instance, Class<TT> tClass, String rawItem) {
+        return getItemByCond(null, instance, tClass, rawItem);
     }
 
-    public<TT> TT getItemByCondAndIndex(DaoAssembler assembler, ModelTWechatInfo instance, String inField, List indexes, Class<TT> tClass, String rawSelectItem) {
-        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();;
+    public<TT> TT getItemByCondAndIndex(DaoAssembler assembler, ModelTWechatInfo instance, String inField, List indexes, Class<TT> tClass, String rawItem) {
+        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();
+        sqlBuilder.table(ModelTWechatInfo.DTO_TABLE_NAME);
         Integer start = 0;
         Integer count = 1;
         Map<String, Object> param = CollectionHelper.newMap();
         param.put(DaoInterface.KEY_WORD_LIMIT_START, start);
         param.put(DaoInterface.KEY_WORD_LIMIT_COUNT, count);
         assert((tClass!= null));
-        assert(((rawSelectItem!= null)&&(rawSelectItem.length()> 0)));
-        sqlBuilder.rawSelectItem(rawSelectItem);
+        assert(((rawItem!= null)&&(rawItem.length()> 0)));
+        sqlBuilder.rawSelectItem(rawItem);
         buildConditionCluase(sqlBuilder, instance, param);
         buildInClause(sqlBuilder, inField, param, indexes);
         sqlBuilder.limit();
         return ((TT) getSingleResult(assembler, sqlBuilder, param, tClass));
     }
 
-    public<TT extends Object> TT getItemByCondAndIndex(ModelTWechatInfo instance, String inField, List indexes, Class<TT> tClass, String rawSelectItem) {
-        return getItemByCondAndIndex(null, instance, inField, indexes, tClass, rawSelectItem);
+    public<TT extends Object> TT getItemByCondAndIndex(ModelTWechatInfo instance, String inField, List indexes, Class<TT> tClass, String rawItem) {
+        return getItemByCondAndIndex(null, instance, inField, indexes, tClass, rawItem);
     }
 
-    public<TT> TT getItemByCondAndIndexAndWhere(DaoAssembler assembler, ModelTWechatInfo instance, String inField, List indexes, Class<TT> tClass, String rawSelectItem, Map<String, Object> extParam, Set<String> extCondition) {
-        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();;
+    public<TT> TT getItemByCondAndIndexAndWhere(DaoAssembler assembler, ModelTWechatInfo instance, String inField, List indexes, Class<TT> tClass, String rawItem, Map<String, Object> extParam, Set<String> extCondition) {
+        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();
+        sqlBuilder.table(ModelTWechatInfo.DTO_TABLE_NAME);
         Integer start = 0;
         Integer count = 1;
         Map<String, Object> param = CollectionHelper.newMap();
@@ -871,20 +898,21 @@ public class DAOTWechatInfo
         param.put(DaoInterface.KEY_WORD_LIMIT_COUNT, count);
         super.buildRawWhere(sqlBuilder, param, extParam, extCondition);
         assert((tClass!= null));
-        assert(((rawSelectItem!= null)&&(rawSelectItem.length()> 0)));
-        sqlBuilder.rawSelectItem(rawSelectItem);
+        assert(((rawItem!= null)&&(rawItem.length()> 0)));
+        sqlBuilder.rawSelectItem(rawItem);
         buildConditionCluase(sqlBuilder, instance, param);
         buildInClause(sqlBuilder, inField, param, indexes);
         sqlBuilder.limit();
         return ((TT) getSingleResult(assembler, sqlBuilder, param, tClass));
     }
 
-    public<TT extends Object> TT getItemByCondAndIndexAndWhere(ModelTWechatInfo instance, String inField, List indexes, Class<TT> tClass, String rawSelectItem, Map<String, Object> extParam, Set<String> extCondition) {
-        return getItemByCondAndIndexAndWhere(null, instance, inField, indexes, tClass, rawSelectItem, extParam, extCondition);
+    public<TT extends Object> TT getItemByCondAndIndexAndWhere(ModelTWechatInfo instance, String inField, List indexes, Class<TT> tClass, String rawItem, Map<String, Object> extParam, Set<String> extCondition) {
+        return getItemByCondAndIndexAndWhere(null, instance, inField, indexes, tClass, rawItem, extParam, extCondition);
     }
 
-    public<TT> List<TT> getItemListByIndex(DaoAssembler assembler, Integer start, Integer count, String inField, List indexes, Class<TT> tClass, String rawSelectItem) {
-        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();;
+    public<TT> List<TT> getItemListByIndex(DaoAssembler assembler, Integer start, Integer count, String inField, List indexes, Class<TT> tClass, String rawItem) {
+        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();
+        sqlBuilder.table(ModelTWechatInfo.DTO_TABLE_NAME);
         if (start == null) {
             start = AbstractBaseModel.DEFAULT_START;
         }
@@ -895,23 +923,24 @@ public class DAOTWechatInfo
         param.put(DaoInterface.KEY_WORD_LIMIT_START, start);
         param.put(DaoInterface.KEY_WORD_LIMIT_COUNT, count);
         assert((tClass!= null));
-        assert(((rawSelectItem!= null)&&(rawSelectItem.length()> 0)));
-        sqlBuilder.rawSelectItem(rawSelectItem);
+        assert(((rawItem!= null)&&(rawItem.length()> 0)));
+        sqlBuilder.rawSelectItem(rawItem);
         buildInClause(sqlBuilder, inField, param, indexes);
         sqlBuilder.limit();
         return ((List<TT> ) getSingleResults(assembler, sqlBuilder, param, tClass));
     }
 
-    public<TT extends Object> List<TT> getItemListByIndex(Integer start, Integer count, String inField, List indexes, Class<TT> tClass, String rawSelectItem) {
-        return getItemListByIndex(null, start, count, inField, indexes, tClass, rawSelectItem);
+    public<TT extends Object> List<TT> getItemListByIndex(Integer start, Integer count, String inField, List indexes, Class<TT> tClass, String rawItem) {
+        return getItemListByIndex(null, start, count, inField, indexes, tClass, rawItem);
     }
 
-    public<TT extends Object> List<TT> getItemListByIndex(String inField, List indexes, Class<TT> tClass, String rawSelectItem) {
-        return getItemListByIndex(null, null, inField, indexes, tClass, rawSelectItem);
+    public<TT extends Object> List<TT> getItemListByIndex(String inField, List indexes, Class<TT> tClass, String rawItem) {
+        return getItemListByIndex(null, null, inField, indexes, tClass, rawItem);
     }
 
-    public<TT> List<TT> getItemListByCond(DaoAssembler assembler, Integer start, Integer count, ModelTWechatInfo instance, Class<TT> tClass, String rawSelectItem) {
-        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();;
+    public<TT> List<TT> getItemListByCond(DaoAssembler assembler, Integer start, Integer count, ModelTWechatInfo instance, Class<TT> tClass, String rawItem) {
+        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();
+        sqlBuilder.table(ModelTWechatInfo.DTO_TABLE_NAME);
         if (start == null) {
             start = AbstractBaseModel.DEFAULT_START;
         }
@@ -922,23 +951,24 @@ public class DAOTWechatInfo
         param.put(DaoInterface.KEY_WORD_LIMIT_START, start);
         param.put(DaoInterface.KEY_WORD_LIMIT_COUNT, count);
         assert((tClass!= null));
-        assert(((rawSelectItem!= null)&&(rawSelectItem.length()> 0)));
-        sqlBuilder.rawSelectItem(rawSelectItem);
+        assert(((rawItem!= null)&&(rawItem.length()> 0)));
+        sqlBuilder.rawSelectItem(rawItem);
         buildConditionCluase(sqlBuilder, instance, param);
         sqlBuilder.limit();
         return ((List<TT> ) getSingleResults(assembler, sqlBuilder, param, tClass));
     }
 
-    public<TT extends Object> List<TT> getItemListByCond(Integer start, Integer count, ModelTWechatInfo instance, Class<TT> tClass, String rawSelectItem) {
-        return getItemListByCond(null, start, count, instance, tClass, rawSelectItem);
+    public<TT extends Object> List<TT> getItemListByCond(Integer start, Integer count, ModelTWechatInfo instance, Class<TT> tClass, String rawItem) {
+        return getItemListByCond(null, start, count, instance, tClass, rawItem);
     }
 
-    public<TT extends Object> List<TT> getItemListByCond(ModelTWechatInfo instance, Class<TT> tClass, String rawSelectItem) {
-        return getItemListByCond(null, null, instance, tClass, rawSelectItem);
+    public<TT extends Object> List<TT> getItemListByCond(ModelTWechatInfo instance, Class<TT> tClass, String rawItem) {
+        return getItemListByCond(null, null, instance, tClass, rawItem);
     }
 
-    public<TT> List<TT> getItemListById(DaoAssembler assembler, Integer start, Integer count, Integer id, Class<TT> tClass, String rawSelectItem) {
-        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();;
+    public<TT> List<TT> getItemListById(DaoAssembler assembler, Integer start, Integer count, Integer id, Class<TT> tClass, String rawItem) {
+        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();
+        sqlBuilder.table(ModelTWechatInfo.DTO_TABLE_NAME);
         if (start == null) {
             start = AbstractBaseModel.DEFAULT_START;
         }
@@ -949,8 +979,8 @@ public class DAOTWechatInfo
         param.put(DaoInterface.KEY_WORD_LIMIT_START, start);
         param.put(DaoInterface.KEY_WORD_LIMIT_COUNT, count);
         assert((tClass!= null));
-        assert(((rawSelectItem!= null)&&(rawSelectItem.length()> 0)));
-        sqlBuilder.rawSelectItem(rawSelectItem);
+        assert(((rawItem!= null)&&(rawItem.length()> 0)));
+        sqlBuilder.rawSelectItem(rawItem);
         if (id!= null) {
             sqlBuilder.itemWhere(LogicalRelationshipType.and, LogicalOpType.in, null, ModelTWechatInfo.FI_ID, ModelTWechatInfo.FI_ID, ColumnDataType.intData);
         }
@@ -958,16 +988,17 @@ public class DAOTWechatInfo
         return ((List<TT> ) getSingleResults(assembler, sqlBuilder, param, tClass));
     }
 
-    public<TT extends Object> List<TT> getItemListById(Integer start, Integer count, Integer id, Class<TT> tClass, String rawSelectItem) {
-        return getItemListById(null, start, count, id, tClass, rawSelectItem);
+    public<TT extends Object> List<TT> getItemListById(Integer start, Integer count, Integer id, Class<TT> tClass, String rawItem) {
+        return getItemListById(null, start, count, id, tClass, rawItem);
     }
 
-    public<TT extends Object> List<TT> getItemListById(Integer id, Class<TT> tClass, String rawSelectItem) {
-        return getItemListById(null, null, id, tClass, rawSelectItem);
+    public<TT extends Object> List<TT> getItemListById(Integer id, Class<TT> tClass, String rawItem) {
+        return getItemListById(null, null, id, tClass, rawItem);
     }
 
-    public<TT> List<TT> getItemListByWhere(DaoAssembler assembler, Integer start, Integer count, Class<TT> tClass, String rawSelectItem, Map<String, Object> extParam, Set<String> extCondition) {
-        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();;
+    public<TT> List<TT> getItemListByWhere(DaoAssembler assembler, Integer start, Integer count, Class<TT> tClass, String rawItem, Map<String, Object> extParam, Set<String> extCondition) {
+        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();
+        sqlBuilder.table(ModelTWechatInfo.DTO_TABLE_NAME);
         if (start == null) {
             start = AbstractBaseModel.DEFAULT_START;
         }
@@ -979,22 +1010,23 @@ public class DAOTWechatInfo
         param.put(DaoInterface.KEY_WORD_LIMIT_COUNT, count);
         super.buildRawWhere(sqlBuilder, param, extParam, extCondition);
         assert((tClass!= null));
-        assert(((rawSelectItem!= null)&&(rawSelectItem.length()> 0)));
-        sqlBuilder.rawSelectItem(rawSelectItem);
+        assert(((rawItem!= null)&&(rawItem.length()> 0)));
+        sqlBuilder.rawSelectItem(rawItem);
         sqlBuilder.limit();
         return ((List<TT> ) getSingleResults(assembler, sqlBuilder, param, tClass));
     }
 
-    public<TT extends Object> List<TT> getItemListByWhere(Integer start, Integer count, Class<TT> tClass, String rawSelectItem, Map<String, Object> extParam, Set<String> extCondition) {
-        return getItemListByWhere(null, start, count, tClass, rawSelectItem, extParam, extCondition);
+    public<TT extends Object> List<TT> getItemListByWhere(Integer start, Integer count, Class<TT> tClass, String rawItem, Map<String, Object> extParam, Set<String> extCondition) {
+        return getItemListByWhere(null, start, count, tClass, rawItem, extParam, extCondition);
     }
 
-    public<TT extends Object> List<TT> getItemListByWhere(Class<TT> tClass, String rawSelectItem, Map<String, Object> extParam, Set<String> extCondition) {
-        return getItemListByWhere(null, null, tClass, rawSelectItem, extParam, extCondition);
+    public<TT extends Object> List<TT> getItemListByWhere(Class<TT> tClass, String rawItem, Map<String, Object> extParam, Set<String> extCondition) {
+        return getItemListByWhere(null, null, tClass, rawItem, extParam, extCondition);
     }
 
-    public<TT> List<TT> getItemListByIndexAndWhere(DaoAssembler assembler, Integer start, Integer count, String inField, List indexes, Class<TT> tClass, String rawSelectItem, Map<String, Object> extParam, Set<String> extCondition) {
-        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();;
+    public<TT> List<TT> getItemListByIndexAndWhere(DaoAssembler assembler, Integer start, Integer count, String inField, List indexes, Class<TT> tClass, String rawItem, Map<String, Object> extParam, Set<String> extCondition) {
+        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();
+        sqlBuilder.table(ModelTWechatInfo.DTO_TABLE_NAME);
         if (start == null) {
             start = AbstractBaseModel.DEFAULT_START;
         }
@@ -1006,23 +1038,24 @@ public class DAOTWechatInfo
         param.put(DaoInterface.KEY_WORD_LIMIT_COUNT, count);
         super.buildRawWhere(sqlBuilder, param, extParam, extCondition);
         assert((tClass!= null));
-        assert(((rawSelectItem!= null)&&(rawSelectItem.length()> 0)));
-        sqlBuilder.rawSelectItem(rawSelectItem);
+        assert(((rawItem!= null)&&(rawItem.length()> 0)));
+        sqlBuilder.rawSelectItem(rawItem);
         buildInClause(sqlBuilder, inField, param, indexes);
         sqlBuilder.limit();
         return ((List<TT> ) getSingleResults(assembler, sqlBuilder, param, tClass));
     }
 
-    public<TT extends Object> List<TT> getItemListByIndexAndWhere(Integer start, Integer count, String inField, List indexes, Class<TT> tClass, String rawSelectItem, Map<String, Object> extParam, Set<String> extCondition) {
-        return getItemListByIndexAndWhere(null, start, count, inField, indexes, tClass, rawSelectItem, extParam, extCondition);
+    public<TT extends Object> List<TT> getItemListByIndexAndWhere(Integer start, Integer count, String inField, List indexes, Class<TT> tClass, String rawItem, Map<String, Object> extParam, Set<String> extCondition) {
+        return getItemListByIndexAndWhere(null, start, count, inField, indexes, tClass, rawItem, extParam, extCondition);
     }
 
-    public<TT extends Object> List<TT> getItemListByIndexAndWhere(String inField, List indexes, Class<TT> tClass, String rawSelectItem, Map<String, Object> extParam, Set<String> extCondition) {
-        return getItemListByIndexAndWhere(null, null, inField, indexes, tClass, rawSelectItem, extParam, extCondition);
+    public<TT extends Object> List<TT> getItemListByIndexAndWhere(String inField, List indexes, Class<TT> tClass, String rawItem, Map<String, Object> extParam, Set<String> extCondition) {
+        return getItemListByIndexAndWhere(null, null, inField, indexes, tClass, rawItem, extParam, extCondition);
     }
 
-    public<TT> List<TT> getItemListByCondAndWhere(DaoAssembler assembler, Integer start, Integer count, ModelTWechatInfo instance, Class<TT> tClass, String rawSelectItem, Map<String, Object> extParam, Set<String> extCondition) {
-        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();;
+    public<TT> List<TT> getItemListByCondAndWhere(DaoAssembler assembler, Integer start, Integer count, ModelTWechatInfo instance, Class<TT> tClass, String rawItem, Map<String, Object> extParam, Set<String> extCondition) {
+        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();
+        sqlBuilder.table(ModelTWechatInfo.DTO_TABLE_NAME);
         if (start == null) {
             start = AbstractBaseModel.DEFAULT_START;
         }
@@ -1034,23 +1067,24 @@ public class DAOTWechatInfo
         param.put(DaoInterface.KEY_WORD_LIMIT_COUNT, count);
         super.buildRawWhere(sqlBuilder, param, extParam, extCondition);
         assert((tClass!= null));
-        assert(((rawSelectItem!= null)&&(rawSelectItem.length()> 0)));
-        sqlBuilder.rawSelectItem(rawSelectItem);
+        assert(((rawItem!= null)&&(rawItem.length()> 0)));
+        sqlBuilder.rawSelectItem(rawItem);
         buildConditionCluase(sqlBuilder, instance, param);
         sqlBuilder.limit();
         return ((List<TT> ) getSingleResults(assembler, sqlBuilder, param, tClass));
     }
 
-    public<TT extends Object> List<TT> getItemListByCondAndWhere(Integer start, Integer count, ModelTWechatInfo instance, Class<TT> tClass, String rawSelectItem, Map<String, Object> extParam, Set<String> extCondition) {
-        return getItemListByCondAndWhere(null, start, count, instance, tClass, rawSelectItem, extParam, extCondition);
+    public<TT extends Object> List<TT> getItemListByCondAndWhere(Integer start, Integer count, ModelTWechatInfo instance, Class<TT> tClass, String rawItem, Map<String, Object> extParam, Set<String> extCondition) {
+        return getItemListByCondAndWhere(null, start, count, instance, tClass, rawItem, extParam, extCondition);
     }
 
-    public<TT extends Object> List<TT> getItemListByCondAndWhere(ModelTWechatInfo instance, Class<TT> tClass, String rawSelectItem, Map<String, Object> extParam, Set<String> extCondition) {
-        return getItemListByCondAndWhere(null, null, instance, tClass, rawSelectItem, extParam, extCondition);
+    public<TT extends Object> List<TT> getItemListByCondAndWhere(ModelTWechatInfo instance, Class<TT> tClass, String rawItem, Map<String, Object> extParam, Set<String> extCondition) {
+        return getItemListByCondAndWhere(null, null, instance, tClass, rawItem, extParam, extCondition);
     }
 
-    public<TT> List<TT> getItemListByCondAndIndex(DaoAssembler assembler, Integer start, Integer count, ModelTWechatInfo instance, String inField, List indexes, Class<TT> tClass, String rawSelectItem) {
-        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();;
+    public<TT> List<TT> getItemListByCondAndIndex(DaoAssembler assembler, Integer start, Integer count, ModelTWechatInfo instance, String inField, List indexes, Class<TT> tClass, String rawItem) {
+        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();
+        sqlBuilder.table(ModelTWechatInfo.DTO_TABLE_NAME);
         if (start == null) {
             start = AbstractBaseModel.DEFAULT_START;
         }
@@ -1061,24 +1095,25 @@ public class DAOTWechatInfo
         param.put(DaoInterface.KEY_WORD_LIMIT_START, start);
         param.put(DaoInterface.KEY_WORD_LIMIT_COUNT, count);
         assert((tClass!= null));
-        assert(((rawSelectItem!= null)&&(rawSelectItem.length()> 0)));
-        sqlBuilder.rawSelectItem(rawSelectItem);
+        assert(((rawItem!= null)&&(rawItem.length()> 0)));
+        sqlBuilder.rawSelectItem(rawItem);
         buildConditionCluase(sqlBuilder, instance, param);
         buildInClause(sqlBuilder, inField, param, indexes);
         sqlBuilder.limit();
         return ((List<TT> ) getSingleResults(assembler, sqlBuilder, param, tClass));
     }
 
-    public<TT extends Object> List<TT> getItemListByCondAndIndex(Integer start, Integer count, ModelTWechatInfo instance, String inField, List indexes, Class<TT> tClass, String rawSelectItem) {
-        return getItemListByCondAndIndex(null, start, count, instance, inField, indexes, tClass, rawSelectItem);
+    public<TT extends Object> List<TT> getItemListByCondAndIndex(Integer start, Integer count, ModelTWechatInfo instance, String inField, List indexes, Class<TT> tClass, String rawItem) {
+        return getItemListByCondAndIndex(null, start, count, instance, inField, indexes, tClass, rawItem);
     }
 
-    public<TT extends Object> List<TT> getItemListByCondAndIndex(ModelTWechatInfo instance, String inField, List indexes, Class<TT> tClass, String rawSelectItem) {
-        return getItemListByCondAndIndex(null, null, instance, inField, indexes, tClass, rawSelectItem);
+    public<TT extends Object> List<TT> getItemListByCondAndIndex(ModelTWechatInfo instance, String inField, List indexes, Class<TT> tClass, String rawItem) {
+        return getItemListByCondAndIndex(null, null, instance, inField, indexes, tClass, rawItem);
     }
 
-    public<TT> List<TT> getItemListByIdAndCondAndWhere(DaoAssembler assembler, Integer start, Integer count, ModelTWechatInfo instance, List<Integer> id, Class<TT> tClass, String rawSelectItem, Map<String, Object> extParam, Set<String> extCondition) {
-        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();;
+    public<TT> List<TT> getItemListByIdAndCondAndWhere(DaoAssembler assembler, Integer start, Integer count, ModelTWechatInfo instance, List<Integer> id, Class<TT> tClass, String rawItem, Map<String, Object> extParam, Set<String> extCondition) {
+        SQLSelect sqlBuilder = SQLBuilder.buildSelectSql();
+        sqlBuilder.table(ModelTWechatInfo.DTO_TABLE_NAME);
         if (start == null) {
             start = AbstractBaseModel.DEFAULT_START;
         }
@@ -1090,8 +1125,8 @@ public class DAOTWechatInfo
         param.put(DaoInterface.KEY_WORD_LIMIT_COUNT, count);
         super.buildRawWhere(sqlBuilder, param, extParam, extCondition);
         assert((tClass!= null));
-        assert(((rawSelectItem!= null)&&(rawSelectItem.length()> 0)));
-        sqlBuilder.rawSelectItem(rawSelectItem);
+        assert(((rawItem!= null)&&(rawItem.length()> 0)));
+        sqlBuilder.rawSelectItem(rawItem);
         buildConditionCluase(sqlBuilder, instance, param);
         if (id!= null) {
             sqlBuilder.itemWhere(LogicalRelationshipType.and, LogicalOpType.in, null, ModelTWechatInfo.FI_ID, ModelTWechatInfo.FI_ID, ColumnDataType.intData);
@@ -1100,16 +1135,17 @@ public class DAOTWechatInfo
         return ((List<TT> ) getSingleResults(assembler, sqlBuilder, param, tClass));
     }
 
-    public<TT extends Object> List<TT> getItemListByIdAndCondAndWhere(Integer start, Integer count, ModelTWechatInfo instance, List<Integer> id, Class<TT> tClass, String rawSelectItem, Map<String, Object> extParam, Set<String> extCondition) {
-        return getItemListByIdAndCondAndWhere(null, start, count, instance, id, tClass, rawSelectItem, extParam, extCondition);
+    public<TT extends Object> List<TT> getItemListByIdAndCondAndWhere(Integer start, Integer count, ModelTWechatInfo instance, List<Integer> id, Class<TT> tClass, String rawItem, Map<String, Object> extParam, Set<String> extCondition) {
+        return getItemListByIdAndCondAndWhere(null, start, count, instance, id, tClass, rawItem, extParam, extCondition);
     }
 
-    public<TT extends Object> List<TT> getItemListByIdAndCondAndWhere(ModelTWechatInfo instance, List<Integer> id, Class<TT> tClass, String rawSelectItem, Map<String, Object> extParam, Set<String> extCondition) {
-        return getItemListByIdAndCondAndWhere(null, null, instance, id, tClass, rawSelectItem, extParam, extCondition);
+    public<TT extends Object> List<TT> getItemListByIdAndCondAndWhere(ModelTWechatInfo instance, List<Integer> id, Class<TT> tClass, String rawItem, Map<String, Object> extParam, Set<String> extCondition) {
+        return getItemListByIdAndCondAndWhere(null, null, instance, id, tClass, rawItem, extParam, extCondition);
     }
 
     public ModelTWechatInfo insert(ModelTWechatInfo instance, DaoAssembler assembler) {
         SQLInsert sqlBuilder = SQLBuilder.buildInsertSql();
+        sqlBuilder.table(ModelTWechatInfo.DTO_TABLE_NAME);
         Integer dId = instance.getId();
         if (dId!= null) {
             sqlBuilder.itemCol(ModelTWechatInfo.FI_ID);
@@ -1182,6 +1218,7 @@ public class DAOTWechatInfo
             fields = ModelTWechatInfo.FIELD_CLASS.keySet();
         }
         SQLInsert sqlBuilder = SQLBuilder.buildInsertSql();
+        sqlBuilder.table(ModelTWechatInfo.DTO_TABLE_NAME);
         if (fields.contains(ModelTWechatInfo.FI_ID)) {
             sqlBuilder.itemCol(ModelTWechatInfo.FI_ID);
         }
@@ -1238,6 +1275,7 @@ public class DAOTWechatInfo
 
     public Integer update(ModelTWechatInfo instance, Set<String> conditionField, DaoAssembler assembler) {
         SQLUpdate sqlBuilder = SQLBuilder.buildUpdateSql();
+        sqlBuilder.table(ModelTWechatInfo.DTO_TABLE_NAME);
         Integer dId = instance.getId();
         if (conditionField.contains(ModelTWechatInfo.FI_ID)) {
             assert((dId!= null));
@@ -1352,6 +1390,7 @@ public class DAOTWechatInfo
 
     public Integer updateById(ModelTWechatInfo instance, DaoAssembler assembler) {
         SQLUpdate sqlBuilder = SQLBuilder.buildUpdateSql();
+        sqlBuilder.table(ModelTWechatInfo.DTO_TABLE_NAME);
         assert((instance.getId()!= null));
         Integer dId = instance.getId();
         if (dId!= null) {
@@ -1412,6 +1451,7 @@ public class DAOTWechatInfo
 
     public Integer updateByIds(ModelTWechatInfo instance, Set<Integer> ids, DaoAssembler assembler) {
         SQLUpdate sqlBuilder = SQLBuilder.buildUpdateSql();
+        sqlBuilder.table(ModelTWechatInfo.DTO_TABLE_NAME);
         assert(((ids!= null)&&(ids.size()> 0)));
         sqlBuilder.itemWhere(LogicalOpType.in, ModelTWechatInfo.FI_ID, "ids", ColumnDataType.intData);
         instance.setId(null);
@@ -1471,6 +1511,7 @@ public class DAOTWechatInfo
 
     public Integer delete(ModelTWechatInfo instance, Set<String> conditionField, DaoAssembler assembler) {
         SQLDelete sqlBuilder = SQLBuilder.buildDeleteSql();
+        sqlBuilder.table(ModelTWechatInfo.DTO_TABLE_NAME);
         Integer dId = instance.getId();
         if (conditionField.contains(ModelTWechatInfo.FI_ID)) {
             assert((dId!= null));
@@ -1541,6 +1582,7 @@ public class DAOTWechatInfo
 
     public Integer deleteById(Integer id, DaoAssembler assembler) {
         SQLDelete sqlBuilder = SQLBuilder.buildDeleteSql();
+        sqlBuilder.table(ModelTWechatInfo.DTO_TABLE_NAME);
         assert((id!= null));
         Map<String, Object> param = Collections.singletonMap("id", id);
         SimpleDbInterface dbInstance = data_store;
@@ -1557,6 +1599,7 @@ public class DAOTWechatInfo
 
     public Integer deleteByIds(Set<Integer> ids, DaoAssembler assembler) {
         SQLDelete sqlBuilder = SQLBuilder.buildDeleteSql();
+        sqlBuilder.table(ModelTWechatInfo.DTO_TABLE_NAME);
         assert(((ids!= null)&&(ids.size()> 0)));
         Map<String, Object> param = Collections.singletonMap("ids", ids);
         SimpleDbInterface dbInstance = data_store;
