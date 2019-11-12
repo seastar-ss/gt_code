@@ -146,7 +146,9 @@ public class ComposedModelBuilder implements CodeBuilderInterface {
             String tbName = CodeConstants.getClazzNameFromTableName(table)+(def.isSingle()?"":"s");
             relatedTb.add(tbName);
         }
-        for(String s:relatedTb) ret.append(s);
+        for(String s:relatedTb) {
+            ret.append(s);
+        }
         return ret.toString();
     }
 

@@ -10,6 +10,7 @@ import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.FieldInfoInterf
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.TableInfoInterface;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.model.*;
 import com.shawn.ss.lib.tools.db.api.utils.ResultSetHelper;
+import com.shawn.ss.lib.tools.db.impl.utils.HelperFactory;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
@@ -379,7 +380,7 @@ public class DbAnalyzer {
 
         @Override
         public Boolean extractData(ResultSet rs) throws SQLException, DataAccessException {
-            int count = ResultSetHelper.getColumnDef(rs, tableInfo, defName);
+            int count = HelperFactory.getResultSetHeper().getColumnDef(rs, tableInfo, defName);
             return count > 0;
         }
     }

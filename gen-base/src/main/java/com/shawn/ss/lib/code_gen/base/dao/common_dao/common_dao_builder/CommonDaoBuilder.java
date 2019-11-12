@@ -1186,13 +1186,29 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
         JFieldRef priStaticRef = null;
         if (useId && priKey != null) {
             priStaticRef = CodeConstants.getBaseModelColumnStaticRef(modelClazzRef, priKey);
+//            if (!multiSelect) {
+//                body._if(idVar.ne(JExpr._null()))._then().invoke(sqlBuilder, CodeConstants.LIB_SQL_SET_WHERE)
+//                        .arg(priStaticRef)
+//                        .arg(cm.ref(ColumnDataType.class).staticRef(priKeyType.name()));
+//            } else {
+//                //(LogicalRelationshipType type, LogicalOpType logicalOpType, String tableAlis, String item, String paramName, FieldDataTypeInterface dataType)
+//                body._if(idVar.ne(JExpr._null()))._then().invoke(sqlBuilder, CodeConstants.LIB_SQL_SET_WHERE)
+//                        .arg(cm.ref(LogicalRelationshipType.class).staticRef("and"))
+//                        .arg(cm.ref(LogicalOpType.class).staticRef("in"))
+//                        .arg(JExpr._null())
+//                        .arg(priStaticRef)
+//                        .arg(priStaticRef)
+//                        .arg(cm.ref(ColumnDataType.class).staticRef(priKeyType.name()))
+//                ;
+//            }
+            final JBlock idThenBlock = body._if(idVar.ne(JExpr._null()))._then();
             if (!multiSelect) {
-                body._if(idVar.ne(JExpr._null()))._then().invoke(sqlBuilder, CodeConstants.LIB_SQL_SET_WHERE)
+                idThenBlock.invoke(sqlBuilder, CodeConstants.LIB_SQL_SET_WHERE)
                         .arg(priStaticRef)
                         .arg(cm.ref(ColumnDataType.class).staticRef(priKeyType.name()));
             } else {
                 //(LogicalRelationshipType type, LogicalOpType logicalOpType, String tableAlis, String item, String paramName, FieldDataTypeInterface dataType)
-                body._if(idVar.ne(JExpr._null()))._then().invoke(sqlBuilder, CodeConstants.LIB_SQL_SET_WHERE)
+                idThenBlock.invoke(sqlBuilder, CodeConstants.LIB_SQL_SET_WHERE)
                         .arg(cm.ref(LogicalRelationshipType.class).staticRef("and"))
                         .arg(cm.ref(LogicalOpType.class).staticRef("in"))
                         .arg(JExpr._null())
@@ -1200,7 +1216,9 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
                         .arg(priStaticRef)
                         .arg(cm.ref(ColumnDataType.class).staticRef(priKeyType.name()))
                 ;
+
             }
+            idThenBlock.invoke(paramVar,"put").arg(priStaticRef).arg(idVar);
         }
         body.invoke(sqlBuilder, CodeConstants.LIB_SQL_SET_LIMIT);
 

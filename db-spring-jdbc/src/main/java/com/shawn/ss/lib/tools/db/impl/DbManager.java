@@ -5,14 +5,11 @@ import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.SimpleDbInterface;
 import com.shawn.ss.lib.tools.sql_code_gen.api.SQL;
 import com.shawn.ss.lib.tools.sql_code_gen.api.SQLBuilder;
-import com.shawn.ss.lib.tools.sql_code_gen.api.SQLUpdate;
 import com.shawn.ss.lib.tools.sql_code_gen.api.expressions.Expr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
-import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.PreparedStatementCallback;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.SingleColumnRowMapper;
@@ -21,14 +18,13 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.ParsedSql;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.jdbc.support.KeyHolder;
 
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.SQLTimeoutException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -43,6 +39,7 @@ public class DbManager extends NamedParameterJdbcTemplate implements SimpleDbInt
     final static String KEY_WORD_DELETE = "delete";
     final static String KEY_WORD_WHERE = " where ";
 
+
     public DbManager(DataSource dataSource) {
         super(dataSource);
     }
@@ -53,8 +50,8 @@ public class DbManager extends NamedParameterJdbcTemplate implements SimpleDbInt
         MapSqlParameterSource arg = new MapSqlParameterSource(param);
 
         int update = this.update(sql, arg, keyHolder);
-        if(update==0){
-            throw new IllegalStateException("insert failed for "+sql+" with param:"+param.toString());
+        if (update == 0) {
+            throw new IllegalStateException("insert failed for " + sql + " with param:" + param.toString());
         }
         Number key = keyHolder.getKey();
         if (key != null) {
@@ -83,7 +80,7 @@ public class DbManager extends NamedParameterJdbcTemplate implements SimpleDbInt
             throw new IllegalArgumentException("wrong param ,sql is not stander insert sql");
         }
         int valuesPos = tmpSql.indexOf(KEY_WORD_VALUES);
-        String insertSql = sql.substring(0, valuesPos+KEY_WORD_VALUES.length());
+        String insertSql = sql.substring(0, valuesPos + KEY_WORD_VALUES.length());
         final Map<String, Object> firstEntry = params.get(0);
         if (firstEntry == null) {
             throw new IllegalArgumentException("wrong param ,params should not contains null element");
@@ -97,7 +94,7 @@ public class DbManager extends NamedParameterJdbcTemplate implements SimpleDbInt
         String rawSql = buildRawParam(insertSql, rawParam, params, firstEntry);
         int ret = 0;
 //        buildRawSql(sql,size);
-        logger.info("raw sql executed:{}\n with param: {} " , rawSql,rawParam);
+        logger.info("raw sql executed:{}\n with param: {} ", rawSql, rawParam);
         ret = this.update(rawSql, rawParam);
         return ret;
     }
@@ -113,25 +110,25 @@ public class DbManager extends NamedParameterJdbcTemplate implements SimpleDbInt
 //            }
 //        }
         final Set<String> keySet = firstEntry.keySet();
-        int entrySize=keySet.size();
-        int i = 0,j=0;
+        int entrySize = keySet.size();
+        int i = 0, j = 0;
         StringBuilder builder = new StringBuilder(sql);
-        boolean first=true;
+        boolean first = true;
         for (Map<String, Object> values : params) {
             final Set<String> vKeySet = values.keySet();
-            if(keySet.equals(vKeySet)) {
-                if(first){
-                    first=false;
-                }else{
+            if (keySet.equals(vKeySet)) {
+                if (first) {
+                    first = false;
+                } else {
                     builder.append(" , ");
                 }
-                j=0;
+                j = 0;
                 builder.append(" (");
                 for (String entrykey : vKeySet) {
                     final Object entryValue = values.get(entrykey);
 //                final String key = entry.getKey();
                     rawParam.put(entrykey + i, entryValue);
-                    builder.append(":").append(entrykey+i).append(j<entrySize-1?",":" ");
+                    builder.append(":").append(entrykey + i).append(j < entrySize - 1 ? "," : " ");
                     ++j;
                 }
                 builder.append(" )");
@@ -146,20 +143,48 @@ public class DbManager extends NamedParameterJdbcTemplate implements SimpleDbInt
 //    }
 
     @Override
-    public boolean execute(String sql) {
-        final Boolean execute = this.execute(sql, new PreparedStatementCallback<Boolean>() {
+    public SQLExecuteStatus execute(String sql, Map<String, Object> param) {
+        SQLExecuteStatus ret = SQLExecuteStatus.INIT;
+        ret = this.execute(sql, param, new PreparedStatementCallback<SQLExecuteStatus>() {
             @Override
-            public Boolean doInPreparedStatement(PreparedStatement ps) throws SQLException {
+            public SQLExecuteStatus doInPreparedStatement(PreparedStatement ps) throws SQLException {
 //                ResultSet rs = null;
                 try {
                     boolean rs = ps.execute();
-                    return rs;
+                    if (rs) {
+                        ResultSet resultSet = ps.getResultSet();
+                        if (resultSet != null) {
+                            if (resultSet.next()) {
+                                return SQLExecuteStatus.RET_HAS_RESULT;
+                            } else {
+                                return SQLExecuteStatus.RET_HAS_NO_RESULT;
+                            }
+                        } else {
+                            //never go here
+                            return SQLExecuteStatus.INIT;
+                        }
+                    } else {
+                        int updateCount = ps.getUpdateCount();
+                        if (updateCount == 0) {
+                            return SQLExecuteStatus.RET_UPDATE_NO_EFFECT;
+                        } else if (updateCount > 0) {
+                            return SQLExecuteStatus.RET_UPDATE_EFFECTIVE;
+                        } else {
+                            return SQLExecuteStatus.RET_NO_RETURN;
+                        }
+                    }
+                } catch (SQLTimeoutException ex) {
+                    return SQLExecuteStatus.RET_TIMEOUT;
+                } catch (SQLException ex) {
+                    return SQLExecuteStatus.RET_SQL_ERR;
+                } catch (Exception ex) {
+                    return SQLExecuteStatus.RET_EXCEPTION;
                 } finally {
 
                 }
             }
         });
-        return execute;
+        return ret;
     }
 
     @Override
@@ -179,7 +204,7 @@ public class DbManager extends NamedParameterJdbcTemplate implements SimpleDbInt
     }
 
     @Override
-    public <T> T queryForObject(String sql, Map<String, ?> paramMap, RowMapper<T>rowMapper)
+    public <T> T queryForObject(String sql, Map<String, ?> paramMap, RowMapper<T> rowMapper)
             throws DataAccessException {
 
         return queryForObject(sql, new MapSqlParameterSource(paramMap), rowMapper);
@@ -204,7 +229,6 @@ public class DbManager extends NamedParameterJdbcTemplate implements SimpleDbInt
         checkNoCondition(sql);
         return super.update(sql, paramSource);
     }
-
 
 
     @Override
@@ -235,15 +259,15 @@ public class DbManager extends NamedParameterJdbcTemplate implements SimpleDbInt
 
     private void checkNoCondition(String sql) {
         final String lowerCase = sql.toLowerCase();
-        SQL base=null;
-        if(lowerCase.startsWith(KEY_WORD_DELETE) || lowerCase.startsWith(KEY_WORD_UPDATE) ){
+        SQL base = null;
+        if (lowerCase.startsWith(KEY_WORD_DELETE) || lowerCase.startsWith(KEY_WORD_UPDATE)) {
 
             base = SQLBuilder.parseSql(sql);
             Expr wheres = base.wheres();
-            if(wheres!=null && !wheres.isEmpty() ){
+            if (wheres != null && !wheres.isEmpty()) {
                 return;
             }
-            throw new IllegalArgumentException("全表更新不被允许："+sql);
+            throw new IllegalArgumentException("全表更新不被允许：" + sql);
         }
     }
 }
