@@ -2,6 +2,7 @@ package com.shawn.ss.lib.tools.db.impl;
 
 
 import com.shawn.ss.lib.tools.CollectionHelper;
+import com.shawn.ss.lib.tools.StringHelper;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.SimpleDbInterface;
 import com.shawn.ss.lib.tools.sql_code_gen.api.SQL;
 import com.shawn.ss.lib.tools.sql_code_gen.api.SQLBuilder;
@@ -174,10 +175,13 @@ public class DbManager extends NamedParameterJdbcTemplate implements SimpleDbInt
                         }
                     }
                 } catch (SQLTimeoutException ex) {
+                    logger.info("run sql exception:{}", StringHelper.exceptionToString(ex));
                     return SQLExecuteStatus.RET_TIMEOUT;
                 } catch (SQLException ex) {
+                    logger.info("run sql exception:{}", StringHelper.exceptionToString(ex));
                     return SQLExecuteStatus.RET_SQL_ERR;
                 } catch (Exception ex) {
+                    logger.info("run sql exception:{}", StringHelper.exceptionToString(ex));
                     return SQLExecuteStatus.RET_EXCEPTION;
                 } finally {
 

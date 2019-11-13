@@ -3,6 +3,7 @@ package com.shawn.ss.lib.tools.db.test;
 import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.StringHelper;
 import com.shawn.ss.lib.tools.db.impl.DbManager;
+import com.shawn.ss.lib.tools.db.impl.utils.HelperFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -14,7 +15,7 @@ import java.util.*;
 public class DbInterfaceTest {
 
     public static Logger L = LoggerFactory.getLogger(DbInterfaceTest.class);
-    static ResourceBundle bundle=ResourceBundle.getBundle("data_store");
+    static ResourceBundle bundle=ResourceBundle.getBundle("db");
     static DbManager manager;
     static final String insertSql="INSERT INTO `t_user_lesson_attendtime_statistic_00`\n" +
             "(\n" +
@@ -34,19 +35,37 @@ public class DbInterfaceTest {
             ":pid,\n" +
             ":sid,\n" +
             ":time);";
-//    @Before
+    @Before
     public void buildEnvirontment(){
-        System.out.println(bundle.getString("jdbc.url"));
+        System.out.println(bundle.getString("db.url"));
         DBConnectionHelper helper=new DBConnectionHelper(
-                bundle.getString("jdbc.url"),
-                bundle.getString("jdbc.username"),
-                bundle.getString("jdbc.password"),
-                bundle.getString("jdbc.driverClassName")
+                bundle.getString("db.url"),
+                bundle.getString("db.userName"),
+                bundle.getString("db.password"),
+                bundle.getString("db.driverClassName")
         );
         manager=new DbManager(helper.conn);
     }
 
-//    @Test
+    @Test
+    public void testTableExist(){
+        boolean info = HelperFactory.getTbHelper(manager).checkTableExist("t_user_info");
+        L.info("result of table tb t_user_info:{}",info);
+        info = HelperFactory.getTbHelper(manager).checkTableExist("ent_portal.t_user_info");
+        L.info("result of table tb t_user_info:{}",info);
+        info = HelperFactory.getTbHelper(manager).checkTableExist("t_not_exist_table");
+        L.info("result of table tb t_user_info:{}",info);
+    }
+
+    @Test
+    public void testTableCreate(){
+        final String table = HelperFactory.getTbHelper(manager).createTable("t_user_info", "_19bak");
+        L.info("create table :{}",table);
+        boolean info = HelperFactory.getTbHelper(manager).checkTableExist("t_user_info_19bak");
+        L.info("result of table tb t_user_info:{}",info);
+    }
+
+    @Test
     public void testExecute(){
         final List<Map<String, Object>> maps = manager.queryForList("select * from t_user_info where mobile in ('15901027363')", Collections.<String, Object>emptyMap());
         L.info("run result:{}",maps);

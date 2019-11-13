@@ -20,6 +20,8 @@ public class SQLBuilder {
         return new SQLDeleteImpl();
     }
 
+
+
     public static <TT extends SQL> SQL<TT> parseSql(String sql){
         return SQLImpl.<TT>parse(sql);
     }
