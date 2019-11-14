@@ -2,7 +2,7 @@ package com.shawn.ss.lib.code_gen.base.dao.common_dao.common_model_builder;
 
 import com.helger.jcodemodel.*;
 import com.shawn.ss.lib.code_gen.CodeBuilderInterface;
-import com.shawn.ss.lib.code_gen.base.helper.CodeConstants;
+import com.shawn.ss.lib.code_gen.base.helper.CodeHelper;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
 import com.shawn.ss.lib.code_gen.model.def_model.dao_def.EnumTypeConf;
 import com.shawn.ss.lib.tools.CollectionHelper;
@@ -46,17 +46,17 @@ public class EnumBuilder implements CodeBuilderInterface {
 
             definedClass.javadoc().append("表").append(tb).append(".").append(col.getFieldName()).append("相关枚举");
             //构造函数
-            JFieldVar val = definedClass.field(JMod.PUBLIC+JMod.FINAL, colType.gettClass(), CodeConstants.FIELD_ENUM_VAL_FIELD);
-            JFieldVar desc = definedClass.field(JMod.PUBLIC+JMod.FINAL, String.class, CodeConstants.FIELD_ENUM_DESC_FIELD);
+            JFieldVar val = definedClass.field(JMod.PUBLIC+JMod.FINAL, colType.gettClass(), CodeHelper.FIELD_ENUM_VAL_FIELD);
+            JFieldVar desc = definedClass.field(JMod.PUBLIC+JMod.FINAL, String.class, CodeHelper.FIELD_ENUM_DESC_FIELD);
             JMethod constructor = definedClass.constructor(JMod.NONE);
             JVar v = constructor.param(colType.gettClass(), "v");
             JVar s = constructor.param(String.class, "s");
             constructor.body().assign(val, v).assign(desc, s);
             //mapping函数
-            AbstractJClass jType = CodeConstants.buildNarrowedClass(cm,Map.class,colType.gettClass(), definedClass);
+            AbstractJClass jType = CodeHelper.buildNarrowedClass(cm,Map.class,colType.gettClass(), definedClass);
 //                                jType.narrow(aClass,intCls);
-            JFieldVar valuesMap = definedClass.field(CodeConstants.MODE_PRIVATE_STATIC, jType, "valuesMap");
-            JMethod method = definedClass.method(CodeConstants.MODE_PUBLIC_STATIC, definedClass, CodeConstants.METHOD_ENUM_FROM_VALUE);
+            JFieldVar valuesMap = definedClass.field(CodeHelper.MODE_PRIVATE_STATIC, jType, "valuesMap");
+            JMethod method = definedClass.method(CodeHelper.MODE_PUBLIC_STATIC, definedClass, CodeHelper.METHOD_ENUM_FROM_VALUE);
             JVar vs = method.param(colType.gettClass(), "v");
             JBlock body = method.body();
             JBlock then = body._if(valuesMap.eq(JExpr._null()))._then();
@@ -79,7 +79,7 @@ public class EnumBuilder implements CodeBuilderInterface {
 //                                        L.w("constant name:", name);
                     JEnumConstant anEnum = definedClass.enumConstant(name);
                     anEnum.javadoc().append(def.getShowName());
-                    anEnum.arg(CodeConstants.litObject(colType.gettClass(),def.getType())).arg(JExpr.lit(def.getShowName()));
+                    anEnum.arg(CodeHelper.litObject(colType.gettClass(),def.getType())).arg(JExpr.lit(def.getShowName()));
 //                    datas.put(def.getType(), def.getShowName());
                 }
             }

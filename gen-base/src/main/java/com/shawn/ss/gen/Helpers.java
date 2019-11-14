@@ -3,7 +3,7 @@ package com.shawn.ss.gen;
 
 import com.helger.jcodemodel.JCodeModel;
 import com.shawn.ss.gen.tools.clzAnalyzer.ClassAnalyze;
-import com.shawn.ss.lib.code_gen.base.helper.CodeConstants;
+import com.shawn.ss.lib.code_gen.base.helper.CodeHelper;
 import com.shawn.ss.lib.code_gen.base.helper.DBConnectionHelper;
 import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.StringHelper;
@@ -108,7 +108,7 @@ public class Helpers {
 //        }
 
     public DBConnectionHelper getConn() {
-        return getConn(CodeConstants.KEY_WORD_DEFAULT_DATA_SOURCE_ID);
+        return getConn(CodeHelper.KEY_WORD_DEFAULT_DATA_SOURCE_ID);
     }
 
     public DBConnectionHelper getConn(String dsName) {
@@ -131,12 +131,12 @@ public class Helpers {
                 final String[] split = allDataSource.split(",");
                 for (String ds : split) {
                     if (StringHelper.isEmpty(ds)) {
-                        ds = CodeConstants.KEY_WORD_DEFAULT_DATA_SOURCE_ID;
+                        ds = CodeHelper.KEY_WORD_DEFAULT_DATA_SOURCE_ID;
                     }
                     conns.put(ds, new DBConnectionHelper(ds, dbProperties));
                 }
             } else {
-                this.conns.put(CodeConstants.KEY_WORD_DEFAULT_DATA_SOURCE_ID, new DBConnectionHelper(dbProperties));
+                this.conns.put(CodeHelper.KEY_WORD_DEFAULT_DATA_SOURCE_ID, new DBConnectionHelper(dbProperties));
             }
         }
         return this;

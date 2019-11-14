@@ -132,7 +132,7 @@ public class DbInfoHandler {
         }
         String dataSourceId = connection.getDataSourceId();
         if (StringHelper.isEmpty(dataSourceId)) {
-            dataSourceId = CodeConstants.KEY_WORD_DEFAULT_DATA_SOURCE_ID;
+            dataSourceId = CodeHelper.KEY_WORD_DEFAULT_DATA_SOURCE_ID;
         }
         this.conf.setDb(db);
 //        if (!dataSourceId.startsWith(data_store)) {
@@ -223,7 +223,7 @@ public class DbInfoHandler {
             final Set<String> ignoreTbPattern = conf.getIgnoreTbPattern();
             final Set<String> includingPattern = conf.getIncludingPattern();
             if ((conf.getIgnoreTbPattern() == null && conf.getIncludingPattern() == null) ||
-                    !CodeConstants.testIgnore(tb.getTable(), conf.getIgnoreTbPattern(), conf.getIncludingPattern())) {
+                    !CodeHelper.testIgnore(tb.getTable(), conf.getIgnoreTbPattern(), conf.getIncludingPattern())) {
                 tbMap.put(tb.getTable(), tb);
             }
         }

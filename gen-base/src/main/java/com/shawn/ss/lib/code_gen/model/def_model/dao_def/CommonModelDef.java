@@ -1,7 +1,8 @@
 package com.shawn.ss.lib.code_gen.model.def_model.dao_def;
 
 import com.helger.jcodemodel.JDefinedClass;
-import com.shawn.ss.lib.code_gen.base.helper.CodeConstants;
+import com.shawn.ss.lib.code_gen.base.helper.CodeHelper;
+import com.shawn.ss.lib.code_gen.base.helper.data_store.DbDataTable;
 import com.shawn.ss.lib.code_gen.model.def_model._BaseConf;
 import com.shawn.ss.lib.code_gen.model.def_model._BaseConfImpl;
 import com.shawn.ss.lib.tools.CollectionHelper;
@@ -16,7 +17,8 @@ import java.util.Set;
  */
 public class CommonModelDef<T extends CommonModelDef> extends _BaseConfImpl implements _BaseConf {
 
-    protected transient TableInfoInterface def;
+    protected final transient TableInfoInterface def;
+//    String table,db;
     protected String baseAssemblerClass;
     protected String baseDaoClass;
     protected String baseTable;
@@ -28,19 +30,28 @@ public class CommonModelDef<T extends CommonModelDef> extends _BaseConfImpl impl
     //    private boolean composed;
 //        protected String baseModelTable;
 
-    public CommonModelDef() {
+    public CommonModelDef(TableInfoInterface def) {
+        super(def);
+        this.def=def;
         enumClzz= CollectionHelper.newMap();
-        this.dataSourceName= CodeConstants.KEY_WORD_DEFAULT_DATA_SOURCE_ID;
+        this.dataSourceName= CodeHelper.KEY_WORD_DEFAULT_DATA_SOURCE_ID;
+    }
+
+    public CommonModelDef(String name,TableInfoInterface def) {
+        super(name);
+        this.def=def;
+        enumClzz= CollectionHelper.newMap();
+        this.dataSourceName= CodeHelper.KEY_WORD_DEFAULT_DATA_SOURCE_ID;
     }
 
     public TableInfoInterface getDef() {
         return def;
     }
 
-    public T setDef(TableInfoInterface def) {
-        this.def = def;
-        return (T)this;
-    }
+//    public T setDef(TableInfoInterface def) {
+//        this.def = def;
+//        return (T)this;
+//    }
 
     public String getBaseTable() {
         return baseTable;
@@ -126,11 +137,23 @@ public class CommonModelDef<T extends CommonModelDef> extends _BaseConfImpl impl
         return this;
     }
 
+    public String getTable() {
+        return def.getTable();
+    }
+
+
+
+    public String getDb() {
+        return def.getDb()==null? DbDataTable.getCurrentDb():def.getDb();
+    }
+
+
+
     //    public String getBaseModelTable() {
 //        return baseModelTable;
 //    }
 //
-//    public SpecialModelDef setBaseModelTable(String baseModelTable) {
+//    public SpecialModelConf setBaseModelTable(String baseModelTable) {
 //        this.baseModelTable = baseModelTable;
 //        return (T)this;
 //    }

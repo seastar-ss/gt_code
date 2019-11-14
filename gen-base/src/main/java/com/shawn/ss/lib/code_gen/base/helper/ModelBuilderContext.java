@@ -315,9 +315,9 @@ public class ModelBuilderContext {
         String tb = (baseTable == null ? table : baseTable);
         String modelSimpleName = CodeStyleTransformHelper.upperFirstCase(CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(tb));
         if (type == 2 && baseTable == null) {
-            return basePackage + ".dao.spdao." + CodeConstants.CLASS_NAME_DAO_PREFIX + modelSimpleName;
+            return basePackage + ".dao.spdao." + CodeHelper.CLASS_NAME_DAO_PREFIX + modelSimpleName;
         } else {
-            return basePackage + ".dao.basedao." + CodeConstants.CLASS_NAME_DAO_PREFIX + modelSimpleName;
+            return basePackage + ".dao.basedao." + CodeHelper.CLASS_NAME_DAO_PREFIX + modelSimpleName;
         }
     }
 
@@ -329,24 +329,24 @@ public class ModelBuilderContext {
 
     public String getServiceClassName(String table) {
         String modelSimpleName = CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(table);
-        return basePackage + ".dao.multi_dao." + CodeConstants.CLASS_NAME_MULTI_DAO_PREFIX + CodeStyleTransformHelper.upperFirstCase(modelSimpleName);
+        return basePackage + ".dao.multi_dao." + CodeHelper.CLASS_NAME_MULTI_DAO_PREFIX + CodeStyleTransformHelper.upperFirstCase(modelSimpleName);
     }
 
     public String getServiceAssemblerClassName(String serviceClassName) {
         String modelSimpleName = CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(serviceClassName);
-        return basePackage + ".dao.multi_dao." + CodeConstants.CLASS_NAME_MULTI_DAO_PREFIX + CodeStyleTransformHelper.upperFirstCase(modelSimpleName)+ CodeConstants.CLASS_NAME_MULTI_DAO_ASSEMBLER_APPENDIX;
+        return basePackage + ".dao.multi_dao." + CodeHelper.CLASS_NAME_MULTI_DAO_PREFIX + CodeStyleTransformHelper.upperFirstCase(modelSimpleName)+ CodeHelper.CLASS_NAME_MULTI_DAO_ASSEMBLER_APPENDIX;
     }
 
     public String getModelClassPrefix(boolean base) {
-        return basePackage + ".dto." + (base ? "basepo." : "composedpo.") + CodeConstants.CLASS_NAME_MODEL_PREFIX;
+        return basePackage + ".dto." + (base ? "basepo." : "composedpo.") + CodeHelper.CLASS_NAME_MODEL_PREFIX;
     }
 
     public String getEnumClzName(String clazzName) {
-        return basePackage + ".dto.enums." + CodeConstants.CLASS_NAME_ENUM_PREFIX + CodeStyleTransformHelper.upperFirstCase(clazzName);
+        return basePackage + ".dto.enums." + CodeHelper.CLASS_NAME_ENUM_PREFIX + CodeStyleTransformHelper.upperFirstCase(clazzName);
     }
 
     private String getClassNameOfSpecialQueryDto(String clzName) {
-        return basePackage + ".dto.input." + CodeConstants.CLASS_NAME_MODEL_PREFIX + CodeStyleTransformHelper.upperFirstCase(clzName);
+        return basePackage + ".dto.input." + CodeHelper.CLASS_NAME_MODEL_PREFIX + CodeStyleTransformHelper.upperFirstCase(clzName);
     }
 
     private String getModelClassName(String table) {
@@ -360,12 +360,12 @@ public class ModelBuilderContext {
 
     public String getRSMapperClassName(String table) {
         String modelClass = getModelClassName(table);
-        return modelClass + "." + CodeConstants.CLASS_NAME_RESULT_SET_MAPPER_PREFIX + CodeConstants.getClassNameFromFullName(modelClass);
+        return modelClass + "." + CodeHelper.CLASS_NAME_RESULT_SET_MAPPER_PREFIX + CodeHelper.getClassNameFromFullName(modelClass);
     }
 
     public String getMapMapperClassName(String table) {
         String modelClass = getModelClassName(table);
-        return modelClass + "." + CodeConstants.CLASS_NAME_REDIS_BYTE_MAPPER_PREFIX + CodeConstants.getClassNameFromFullName(modelClass);
+        return modelClass + "." + CodeHelper.CLASS_NAME_REDIS_BYTE_MAPPER_PREFIX + CodeHelper.getClassNameFromFullName(modelClass);
     }
 
     public void buildBaseModelAndDao() {
@@ -597,13 +597,13 @@ public class ModelBuilderContext {
         JDefinedClass jDefinedClass = method.owningClass();
         String clzName = jDefinedClass.name();
         MethodTypeEnum mType = null;
-        if (clzName.startsWith(CodeConstants.CLASS_NAME_DAO_PREFIX)) {
+        if (clzName.startsWith(CodeHelper.CLASS_NAME_DAO_PREFIX)) {
             mType = MethodTypeEnum.DAO_METHOD;
-        } else if (clzName.startsWith(CodeConstants.CLASS_NAME_MODEL_PREFIX)) {
+        } else if (clzName.startsWith(CodeHelper.CLASS_NAME_MODEL_PREFIX)) {
             mType = MethodTypeEnum.MODEL_METHOD;
-        } else if (clzName.startsWith(CodeConstants.CLASS_NAME_RESULT_SET_MAPPER_PREFIX)) {
+        } else if (clzName.startsWith(CodeHelper.CLASS_NAME_RESULT_SET_MAPPER_PREFIX)) {
             mType = MethodTypeEnum.MODEL_MAPPER_METHOD;
-        } else if (clzName.startsWith(CodeConstants.CLASS_NAME_MULTI_DAO_PREFIX)) {
+        } else if (clzName.startsWith(CodeHelper.CLASS_NAME_MULTI_DAO_PREFIX)) {
             mType = MethodTypeEnum.MUL_DAO_METHOD;
         } else {
             mType = MethodTypeEnum.SQL_DEFINED_METHOD;

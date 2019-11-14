@@ -2,7 +2,7 @@ package com.shawn.ss.lib.code_gen.base.dao.common_dao.common_model_builder;
 
 import com.helger.jcodemodel.*;
 import com.shawn.ss.lib.code_gen.CodeBuilderInterface;
-import com.shawn.ss.lib.code_gen.base.helper.CodeConstants;
+import com.shawn.ss.lib.code_gen.base.helper.CodeHelper;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
 import com.shawn.ss.lib.code_gen.model.def_model.dao_def.CommonModelDef;
 import com.shawn.ss.lib.tools.CodeStyleTransformHelper;
@@ -33,7 +33,7 @@ public class MapperOfMapBuilder implements CodeBuilderInterface {
         modelDef = parentBuilder.getModelDef();
         cm = parentBuilder.getCm();
         String modelClassName = parentBuilder.getModelClassName();
-        mapperClassName = CodeConstants.CLASS_NAME_REDIS_BYTE_MAPPER_PREFIX + CodeConstants.getClassNameFromFullName(modelClassName);
+        mapperClassName = CodeHelper.CLASS_NAME_REDIS_BYTE_MAPPER_PREFIX + CodeHelper.getClassNameFromFullName(modelClassName);
         builderContext = modelDef.getBuilderContext();
     }
 
@@ -41,7 +41,7 @@ public class MapperOfMapBuilder implements CodeBuilderInterface {
     public void buildModel() {
         modelClass = parentBuilder.getDefinedClass();
         try {
-            this.definedClass = modelClass._class(CodeConstants.MODE_PUBLIC_STATIC, mapperClassName);
+            this.definedClass = modelClass._class(CodeHelper.MODE_PUBLIC_STATIC, mapperClassName);
             JNarrowedClass interfaceClass = cm.ref(RedisMapMapper.class).narrow(modelClass);
             definedClass._implements(interfaceClass);
             buildMethodFromMapByte();
@@ -51,7 +51,7 @@ public class MapperOfMapBuilder implements CodeBuilderInterface {
             buildMethodGetField();
             buildMethodSetField();
             buildMethodSetFieldByte();
-            modelClass.field(CodeConstants.MODE_PUBLIC_STATIC_FINAL,definedClass, CodeConstants.FIELD_REDIS_MAP_MAPPER_INSTANCE,JExpr._new(definedClass));
+            modelClass.field(CodeHelper.MODE_PUBLIC_STATIC_FINAL,definedClass, CodeHelper.FIELD_REDIS_MAP_MAPPER_INSTANCE,JExpr._new(definedClass));
 //            JNarrowedClass baseClass = cm.ref(BaseDbMapper.class).narrow(modelClass);
 //            definedClass._extends(baseClass);
         } catch (JClassAlreadyExistsException e) {
@@ -60,7 +60,7 @@ public class MapperOfMapBuilder implements CodeBuilderInterface {
     }
 
     private void buildMethodSetFieldByte() {
-        JMethod method = definedClass.method(JMod.PUBLIC, void.class, CodeConstants.METHOD_JEDIS_MAPPER_SET_FIELD);
+        JMethod method = definedClass.method(JMod.PUBLIC, void.class, CodeHelper.METHOD_JEDIS_MAPPER_SET_FIELD);
         JBlock body = method.body();
         JVar field = method.param(String.class, "field");
         JVar instance = method.param(modelClass, "instance");
@@ -71,15 +71,15 @@ public class MapperOfMapBuilder implements CodeBuilderInterface {
             String colName = col.getFieldName();
             FieldDataTypeInterface type = col.getType();
             JInvocation invocation = field.invoke("equals")
-                    .arg(CodeConstants.getBaseModelColumnStaticRef(modelClass,colName));
+                    .arg(CodeHelper.getBaseModelColumnStaticRef(modelClass,colName));
             if (equals == null) {
                 equals = body._if(invocation);
             } else {
                 equals = equals._elseif(invocation);
             }
 
-            equals._then().invoke(instance, CodeConstants.getMethodNameOfModelSet(colName))
-                    .arg(JExpr.invoke(CodeConstants.getMethodNameOfRedisMapperMapToField(colName))
+            equals._then().invoke(instance, CodeHelper.getMethodNameOfModelSet(colName))
+                    .arg(JExpr.invoke(CodeHelper.getMethodNameOfRedisMapperMapToField(colName))
                             .arg(value)
                     );
         }
@@ -87,7 +87,7 @@ public class MapperOfMapBuilder implements CodeBuilderInterface {
 
     private void buildMethodSetField() {
         JDirectClass genericType = cm.directClass("TT");
-        JMethod method = definedClass.method(JMod.PUBLIC, void.class, CodeConstants.METHOD_JEDIS_MAPPER_SET_FIELD);
+        JMethod method = definedClass.method(JMod.PUBLIC, void.class, CodeHelper.METHOD_JEDIS_MAPPER_SET_FIELD);
         method.generify("TT");
         JBlock body = method.body();
         JVar field = method.param(String.class, "field");
@@ -99,17 +99,17 @@ public class MapperOfMapBuilder implements CodeBuilderInterface {
             String colName = col.getFieldName();
             FieldDataTypeInterface type = col.getType();
             JInvocation invocation = field.invoke("equals")
-                    .arg(CodeConstants.getBaseModelColumnStaticRef(modelClass,colName));
+                    .arg(CodeHelper.getBaseModelColumnStaticRef(modelClass,colName));
             if (equals == null) {
                 equals = body._if(invocation);
             } else {
                 equals = equals._elseif(invocation);
             }
             JTryBlock jTryBlock = equals._then()._try();
-            jTryBlock.body().invoke(instance, CodeConstants.getMethodNameOfModelSet(colName))
-                    .arg(JExpr.invoke(CodeConstants.getMethodNameOfRedisMapperMapToField(colName))
+            jTryBlock.body().invoke(instance, CodeHelper.getMethodNameOfModelSet(colName))
+                    .arg(JExpr.invoke(CodeHelper.getMethodNameOfRedisMapperMapToField(colName))
                             .arg(value));
-            CodeConstants.buildCatchPrintStatement(cm,jTryBlock,Exception.class);
+            CodeHelper.buildCatchPrintStatement(cm,jTryBlock,Exception.class);
 
         }
     }
@@ -117,7 +117,7 @@ public class MapperOfMapBuilder implements CodeBuilderInterface {
     private void buildMethodGetField() {
         JDirectClass genericType = cm.directClass("TT");
 //        AbstractJType declarable =
-        JMethod method = definedClass.method(JMod.PUBLIC, genericType, CodeConstants.METHOD_JEDIS_MAPPER_GET_FIELD);
+        JMethod method = definedClass.method(JMod.PUBLIC, genericType, CodeHelper.METHOD_JEDIS_MAPPER_GET_FIELD);
         method.generify("TT");
         JVar field = method.param(String.class, "field");
         JVar instance = method.param(modelClass, "instance");
@@ -130,22 +130,22 @@ public class MapperOfMapBuilder implements CodeBuilderInterface {
             String colName = col.getFieldName();
             FieldDataTypeInterface type = col.getType();
             JInvocation invocation = field.invoke("equals")
-                    .arg(CodeConstants.getBaseModelColumnStaticRef(modelClass,colName));
+                    .arg(CodeHelper.getBaseModelColumnStaticRef(modelClass,colName));
             if(equals==null){
                 equals=trybody._if(invocation);
             }else {
                 equals=equals._elseif(invocation);
             }
             JBlock then = equals._then();
-            then._return(JExpr.cast(genericType,instance.invoke(CodeConstants.getMethodNameOfModelGet(colName))));
+            then._return(JExpr.cast(genericType,instance.invoke(CodeHelper.getMethodNameOfModelGet(colName))));
         }
-        CodeConstants.buildCatchPrintStatement(cm,aTry,Exception.class);
+        CodeHelper.buildCatchPrintStatement(cm,aTry,Exception.class);
         body._return(JExpr._null());
     }
 
     private void buildMethodFromCommonMap() {
-        AbstractJClass retClass = CodeConstants.buildNarrowedClass(cm, Map.class, String.class, Object.class);
-        JMethod method = definedClass.method(JMod.PUBLIC, modelClass, CodeConstants.METHOD_JEDIS_MAPPER_FROM_COMMON_MAP);
+        AbstractJClass retClass = CodeHelper.buildNarrowedClass(cm, Map.class, String.class, Object.class);
+        JMethod method = definedClass.method(JMod.PUBLIC, modelClass, CodeHelper.METHOD_JEDIS_MAPPER_FROM_COMMON_MAP);
         method.annotate(Override.class);
         JVar param = method.param(retClass, "param");
         JBlock body = method.body();
@@ -155,12 +155,12 @@ public class MapperOfMapBuilder implements CodeBuilderInterface {
         for (ColumnInfoInterface col : columns) {
             String colName = col.getFieldName();
             FieldDataTypeInterface type = col.getType();
-            JFieldRef ref = CodeConstants.getBaseModelColumnStaticRef(modelClass,colName);
+            JFieldRef ref = CodeHelper.getBaseModelColumnStaticRef(modelClass,colName);
             final JVar objVar = body.decl(cm.ref(Object.class), "d" + CodeStyleTransformHelper.upperFirstCase(colName), JExpr.invoke(param, "get").arg(ref));
             final JBlock thenBlock = body._if(objVar.ne(JExpr._null()))._then();
 //            EnumTypeDef enumTypeDef = col.getEnumTypeDef();
             buildMapObjToField(col);
-            thenBlock.invoke(JExpr._this(), CodeConstants.METHOD_JEDIS_MAPPER_SET_FIELD)
+            thenBlock.invoke(JExpr._this(), CodeHelper.METHOD_JEDIS_MAPPER_SET_FIELD)
                     .arg(ref).arg(ret).arg(objVar);
 //            if(enumTypeDef!=null){
 //                invoke=invoke.ref(CodeConstants.FIELD_ENUM_VAL_FIELD);
@@ -174,8 +174,8 @@ public class MapperOfMapBuilder implements CodeBuilderInterface {
     }
 
     private void buildMethodToCommonMap() {
-        AbstractJClass retClass = CodeConstants.buildNarrowedClass(cm, Map.class, String.class, Object.class);
-        JMethod method = definedClass.method(JMod.PUBLIC, retClass, CodeConstants.METHOD_JEDIS_MAPPER_TO_COMMON_MAP);
+        AbstractJClass retClass = CodeHelper.buildNarrowedClass(cm, Map.class, String.class, Object.class);
+        JMethod method = definedClass.method(JMod.PUBLIC, retClass, CodeHelper.METHOD_JEDIS_MAPPER_TO_COMMON_MAP);
         method.annotate(Override.class);
         JVar instance = method.param(modelClass, "instance");
         JBlock body = method.body();
@@ -185,23 +185,23 @@ public class MapperOfMapBuilder implements CodeBuilderInterface {
         for (ColumnInfoInterface col : columns) {
             String colName = col.getFieldName();
             FieldDataTypeInterface type = col.getType();
-            JFieldRef ref = CodeConstants.getBaseModelColumnStaticRef(modelClass,colName);
-            IJExpression invoke = instance.invoke(CodeConstants.getMethodNameOfModelGet(colName));
+            JFieldRef ref = CodeHelper.getBaseModelColumnStaticRef(modelClass,colName);
+            IJExpression invoke = instance.invoke(CodeHelper.getMethodNameOfModelGet(colName));
             EnumTypeDef enumTypeDef = col.getEnumTypeDef();
 //            if(enumTypeDef!=null){
 //                invoke=invoke.ref(CodeConstants.FIELD_ENUM_VAL_FIELD);
 //            }
 
-            JVar jVar = body.decl(CodeConstants.getFieldDefType(cm, modelDef, col, builderContext), "d" + CodeStyleTransformHelper.upperFirstCase(colName)
+            JVar jVar = body.decl(CodeHelper.getFieldDefType(cm, modelDef, col, builderContext), "d" + CodeStyleTransformHelper.upperFirstCase(colName)
                     , invoke );
-            body._if(jVar.ne(JExpr._null()))._then().invoke(ret,"put").arg(ref).arg(enumTypeDef==null?jVar:jVar.ref(CodeConstants.FIELD_ENUM_VAL_FIELD));
+            body._if(jVar.ne(JExpr._null()))._then().invoke(ret,"put").arg(ref).arg(enumTypeDef==null?jVar:jVar.ref(CodeHelper.FIELD_ENUM_VAL_FIELD));
         }
         body._return(ret);
     }
 
     private void buildMethodToMapByte() {
-        AbstractJClass retClass = CodeConstants.buildNarrowedClass(cm, Map.class, byte[].class, byte[].class);
-        JMethod method = definedClass.method(JMod.PUBLIC, retClass, CodeConstants.METHOD_JEDIS_MAPPER_TO_MAP);
+        AbstractJClass retClass = CodeHelper.buildNarrowedClass(cm, Map.class, byte[].class, byte[].class);
+        JMethod method = definedClass.method(JMod.PUBLIC, retClass, CodeHelper.METHOD_JEDIS_MAPPER_TO_MAP);
         method.annotate(Override.class);
         JVar instance = method.param(modelClass, "instance");
         JBlock body = method.body();
@@ -213,8 +213,8 @@ public class MapperOfMapBuilder implements CodeBuilderInterface {
             FieldDataTypeInterface type = col.getType();
             JMethod m= buildMapFieldToBin(col);
             JVar value = body.decl(cm.ref(byte[].class), "value"+CodeStyleTransformHelper.upperFirstCase(colName),
-                    JExpr.invoke(m).arg(instance.invoke(CodeConstants.getMethodNameOfModelGet(colName))));
-            JFieldRef ref = CodeConstants.getBaseModelColumnStaticRef(modelClass,colName);
+                    JExpr.invoke(m).arg(instance.invoke(CodeHelper.getMethodNameOfModelGet(colName))));
+            JFieldRef ref = CodeHelper.getBaseModelColumnStaticRef(modelClass,colName);
             body.invoke(ret,"put").arg(ref.invoke("getBytes")).arg(value);
         }
         body._return(ret);
@@ -223,13 +223,13 @@ public class MapperOfMapBuilder implements CodeBuilderInterface {
 
 
     private void buildMethodFromMapByte() {
-        JMethod method = definedClass.method(JMod.PUBLIC, modelClass, CodeConstants.METHOD_JEDIS_MAPPER_FROM_MAP);
+        JMethod method = definedClass.method(JMod.PUBLIC, modelClass, CodeHelper.METHOD_JEDIS_MAPPER_FROM_MAP);
         method.annotate(Override.class);
-        JVar map = method.param(CodeConstants.buildNarrowedClass(cm, Map.class, byte[].class, byte[].class), "map");
+        JVar map = method.param(CodeHelper.buildNarrowedClass(cm, Map.class, byte[].class, byte[].class), "map");
         JBlock body = method.body();
         JVar instance = body.decl(modelClass, "instance", JExpr._new(modelClass));
-        AbstractJClass mapEntryClz = CodeConstants.buildNarrowedClass(cm, Map.Entry.class, byte[].class, byte[].class);
-        JVar entries = body.decl(CodeConstants.buildNarrowedClass(cm, Set.class, mapEntryClz), "entries", map.invoke("entrySet"));
+        AbstractJClass mapEntryClz = CodeHelper.buildNarrowedClass(cm, Map.Entry.class, byte[].class, byte[].class);
+        JVar entries = body.decl(CodeHelper.buildNarrowedClass(cm, Set.class, mapEntryClz), "entries", map.invoke("entrySet"));
         JForEach forEach = body.forEach(mapEntryClz, "entry", entries);
         JVar var = forEach.var();
         JBlock forBody = forEach.body();
@@ -240,12 +240,12 @@ public class MapperOfMapBuilder implements CodeBuilderInterface {
         for (ColumnInfoInterface col : columns) {
             JMethod fieldMapMethod = buildMapBinToField(col);
             String colName = col.getFieldName();
-            JInvocation condition = varField.invoke("equals").arg(CodeConstants.getBaseModelColumnStaticRef(modelClass,colName));
+            JInvocation condition = varField.invoke("equals").arg(CodeHelper.getBaseModelColumnStaticRef(modelClass,colName));
             if (equals == null)
                 equals = forBody._if(condition);
             else
                 equals = equals._elseif(condition);
-            equals._then().invoke(instance, CodeConstants.getMethodNameOfModelSet(colName)).arg(JExpr.invoke(fieldMapMethod).arg(var.invoke("getValue")));
+            equals._then().invoke(instance, CodeHelper.getMethodNameOfModelSet(colName)).arg(JExpr.invoke(fieldMapMethod).arg(var.invoke("getValue")));
         }
         body._return(instance);
     }
@@ -253,13 +253,13 @@ public class MapperOfMapBuilder implements CodeBuilderInterface {
     private JMethod buildMapBinToField(ColumnInfoInterface col) {
         String colName = col.getFieldName();
         FieldDataTypeInterface type = col.getType();
-        AbstractJClass retClz = CodeConstants.getFieldDefType(cm, modelDef, col,builderContext);
-        JMethod method = definedClass.method(JMod.PROTECTED, retClz, CodeConstants.getMethodNameOfRedisMapperMapToField(colName));
+        AbstractJClass retClz = CodeHelper.getFieldDefType(cm, modelDef, col,builderContext);
+        JMethod method = definedClass.method(JMod.PROTECTED, retClz, CodeHelper.getMethodNameOfRedisMapperMapToField(colName));
         JVar bytes = method.param(cm.ref(byte[].class), "bytes");
         JInvocation invocation = cm.ref(TypeConstantHelper.class).staticInvoke("toObject").arg(bytes).arg(cm.ref(type.gettClass()).dotclass());
         EnumTypeDef enumTypeDef = col.getEnumTypeDef();
         if(enumTypeDef!=null){
-            invocation=retClz.staticInvoke(CodeConstants.METHOD_ENUM_FROM_VALUE).arg(invocation);
+            invocation=retClz.staticInvoke(CodeHelper.METHOD_ENUM_FROM_VALUE).arg(invocation);
         }
         method.body()._return(invocation);
         return method;
@@ -268,19 +268,19 @@ public class MapperOfMapBuilder implements CodeBuilderInterface {
     private JMethod buildMapObjToField(ColumnInfoInterface col) {
         String colName = col.getFieldName();
         FieldDataTypeInterface type = col.getType();
-        AbstractJClass retClz = CodeConstants.getFieldDefType(cm, modelDef, col,builderContext);
+        AbstractJClass retClz = CodeHelper.getFieldDefType(cm, modelDef, col,builderContext);
         if(retClz.isArray() && retClz.equals(cm.ref(byte[].class))){
             return null;
         }
         JMethod method = definedClass.method(JMod.PROTECTED, retClz,
-                CodeConstants.getMethodNameOfRedisMapperMapToField(colName));
+                CodeHelper.getMethodNameOfRedisMapperMapToField(colName));
         JVar bytes = method.param(cm.ref(Object.class), "obj");
         IJExpression invocation =
                 JExpr.cast(cm.ref(type.gettClass()),bytes);
                 //cm.ref(TypeConstantHelper.class).staticInvoke("toObject").arg(bytes).arg(cm.ref(type.gettClass()).dotclass());
         EnumTypeDef enumTypeDef = col.getEnumTypeDef();
         if(enumTypeDef!=null){
-            invocation=retClz.staticInvoke(CodeConstants.METHOD_ENUM_FROM_VALUE).arg(invocation);
+            invocation=retClz.staticInvoke(CodeHelper.METHOD_ENUM_FROM_VALUE).arg(invocation);
         }
         method.body()._return(invocation);
         return method;
@@ -289,12 +289,12 @@ public class MapperOfMapBuilder implements CodeBuilderInterface {
     private JMethod buildMapFieldToBin(ColumnInfoInterface col) {
         String colName = col.getFieldName();
         FieldDataTypeInterface type = col.getType();
-        JMethod method = definedClass.method(JMod.PROTECTED, cm.ref(byte[].class), CodeConstants.getMethodNameOfRedisMapperMapFromField(colName));
-        JVar field = method.param(CodeConstants.getFieldDefType(cm, modelDef, col,builderContext), "field");
+        JMethod method = definedClass.method(JMod.PROTECTED, cm.ref(byte[].class), CodeHelper.getMethodNameOfRedisMapperMapFromField(colName));
+        JVar field = method.param(CodeHelper.getFieldDefType(cm, modelDef, col,builderContext), "field");
         JBlock body = method.body();
         JInvocation invocation;
         EnumTypeDef enumTypeDef = col.getEnumTypeDef();
-        invocation = cm.ref(TypeConstantHelper.class).staticInvoke("fromObjectBin").arg(enumTypeDef==null?field:field.ref(CodeConstants.FIELD_ENUM_VAL_FIELD));
+        invocation = cm.ref(TypeConstantHelper.class).staticInvoke("fromObjectBin").arg(enumTypeDef==null?field:field.ref(CodeHelper.FIELD_ENUM_VAL_FIELD));
         JVar decl = body.decl(method.type(), "ret", invocation );
         body._return(decl);
         return method;
