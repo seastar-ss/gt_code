@@ -269,6 +269,7 @@ public class DAOWikiStructureInfoKeyItem
         buildSelectFieldCluase(sqlBuilder, selectFields);
         if (itemId!= null) {
             sqlBuilder.itemWhere(LogicalRelationshipType.and, LogicalOpType.in, null, ModelWikiStructureInfoKeyItem.FI_ITEMID, ModelWikiStructureInfoKeyItem.FI_ITEMID, ColumnDataType.intData);
+            param.put(ModelWikiStructureInfoKeyItem.FI_ITEMID, itemId);
         }
         sqlBuilder.limit();
         return getResults(assembler, sqlBuilder, param);
@@ -438,6 +439,7 @@ public class DAOWikiStructureInfoKeyItem
         buildSelectFieldCluase(sqlBuilder, selectFields);
         if (itemId!= null) {
             sqlBuilder.itemWhere(LogicalRelationshipType.and, LogicalOpType.in, null, ModelWikiStructureInfoKeyItem.FI_ITEMID, ModelWikiStructureInfoKeyItem.FI_ITEMID, ColumnDataType.intData);
+            param.put(ModelWikiStructureInfoKeyItem.FI_ITEMID, itemId);
         }
         sqlBuilder.limit();
         return getResults(assembler, sqlBuilder, param);
@@ -475,6 +477,7 @@ public class DAOWikiStructureInfoKeyItem
         buildSelectFieldCluase(sqlBuilder, selectFields);
         if (itemId!= null) {
             sqlBuilder.itemWhere(LogicalRelationshipType.and, LogicalOpType.in, null, ModelWikiStructureInfoKeyItem.FI_ITEMID, ModelWikiStructureInfoKeyItem.FI_ITEMID, ColumnDataType.intData);
+            param.put(ModelWikiStructureInfoKeyItem.FI_ITEMID, itemId);
         }
         sqlBuilder.limit();
         return getResults(assembler, sqlBuilder, param);
@@ -609,6 +612,7 @@ public class DAOWikiStructureInfoKeyItem
         buildSelectFieldCluase(sqlBuilder, selectFields);
         if (itemId!= null) {
             sqlBuilder.itemWhere(ModelWikiStructureInfoKeyItem.FI_ITEMID, ColumnDataType.intData);
+            param.put(ModelWikiStructureInfoKeyItem.FI_ITEMID, itemId);
         }
         sqlBuilder.limit();
         return getResult(assembler, sqlBuilder, param);
@@ -714,6 +718,7 @@ public class DAOWikiStructureInfoKeyItem
         buildSelectFieldCluase(sqlBuilder, selectFields);
         if (itemId!= null) {
             sqlBuilder.itemWhere(ModelWikiStructureInfoKeyItem.FI_ITEMID, ColumnDataType.intData);
+            param.put(ModelWikiStructureInfoKeyItem.FI_ITEMID, itemId);
         }
         sqlBuilder.limit();
         return getResult(assembler, sqlBuilder, param);
@@ -960,6 +965,7 @@ public class DAOWikiStructureInfoKeyItem
         sqlBuilder.rawSelectItem(rawItem);
         if (itemId!= null) {
             sqlBuilder.itemWhere(LogicalRelationshipType.and, LogicalOpType.in, null, ModelWikiStructureInfoKeyItem.FI_ITEMID, ModelWikiStructureInfoKeyItem.FI_ITEMID, ColumnDataType.intData);
+            param.put(ModelWikiStructureInfoKeyItem.FI_ITEMID, itemId);
         }
         sqlBuilder.limit();
         return ((List<TT> ) getSingleResults(assembler, sqlBuilder, param, tClass));
@@ -1107,6 +1113,7 @@ public class DAOWikiStructureInfoKeyItem
         buildConditionCluase(sqlBuilder, instance, param);
         if (itemId!= null) {
             sqlBuilder.itemWhere(LogicalRelationshipType.and, LogicalOpType.in, null, ModelWikiStructureInfoKeyItem.FI_ITEMID, ModelWikiStructureInfoKeyItem.FI_ITEMID, ColumnDataType.intData);
+            param.put(ModelWikiStructureInfoKeyItem.FI_ITEMID, itemId);
         }
         sqlBuilder.limit();
         return ((List<TT> ) getSingleResults(assembler, sqlBuilder, param, tClass));

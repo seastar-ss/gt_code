@@ -38,7 +38,7 @@ public class ComposedModelBuilder implements CodeBuilderInterface {
     public ComposedModelBuilder(ModelMulDaoConf modelMulDaoConf) {
 //        this.serviceClassName = modelMulDaoConf.getServiceClassName();
 //        this.modelSelectMethod = modelMulDaoConf.getMainModelSelectMethod();
-        this.mainTable = modelMulDaoConf.getMainTable();
+        this.mainTable = modelMulDaoConf.getTable();
         this.relatedTables = modelMulDaoConf.getRelatedTables();
 //        this.buildController = modelMulDaoConf.isBuildNotAbstract();
         this.modelBuilderContext = modelMulDaoConf.getBuilderContext();

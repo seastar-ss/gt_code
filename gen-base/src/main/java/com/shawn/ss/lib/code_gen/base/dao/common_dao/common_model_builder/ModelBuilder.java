@@ -5,8 +5,8 @@ import com.shawn.ss.lib.code_gen.CodeBuilderInterface;
 import com.shawn.ss.lib.code_gen.base.helper.CodeHelper;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
 import com.shawn.ss.lib.code_gen.model.def_model.dao_def.CommonModelDef;
-import com.shawn.ss.lib.code_gen.model.def_model.dao_def.EnumTypeConf;
-import com.shawn.ss.lib.code_gen.model.def_model.dao_def.SpecialModelDef;
+//import com.shawn.ss.lib.code_gen.model.def_model.dao_def.EnumTypeConf;
+import com.shawn.ss.lib.code_gen.model.def_model.dao_def.SpecialModelConf;
 import com.shawn.ss.lib.tools.CodeStyleTransformHelper;
 import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.ColumnInfoInterface;
@@ -108,8 +108,8 @@ public class ModelBuilder implements CodeBuilderInterface {
             buildIsEmptyMethod();
             buildFeatureMethod();
             buildToStringMethod();
-            if(modelDef instanceof SpecialModelDef){
-                SpecialModelDef sdef=(SpecialModelDef) modelDef;
+            if(modelDef instanceof SpecialModelConf){
+                SpecialModelConf sdef=(SpecialModelConf) modelDef;
                 String sql = sdef.getSql();
                 if(sql!=null){
                     buildSQLField(sql);
@@ -130,7 +130,7 @@ public class ModelBuilder implements CodeBuilderInterface {
             for (ColumnInfoInterface item : columns) {
                 EnumTypeDef enumTypeDef = item.getEnumTypeDef();
                 if(enumTypeDef!=null && enumTypeDef.sizeOfItems()>0){
-                    EnumTypeConf conf=new EnumTypeConf().setDef(enumTypeDef).setTable(table);
+                    com.shawn.ss.lib.code_gen.model.def_model.dao_def.EnumTypeDef   conf=new com.shawn.ss.lib.code_gen.model.def_model.dao_def.EnumTypeDef(enumTypeDef).setTable(table);
                     conf.setBuilderContext(builderContext);
                     EnumBuilder builder=new EnumBuilder(conf);
                     builder.buildModel();

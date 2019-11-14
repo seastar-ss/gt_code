@@ -248,8 +248,8 @@ public class DbInfoHandler {
             }
 //            String table = tableInfo.getTable();
 //            String modelSimpleName = CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(table);
-            final CommonModelDef commonModelDef = new CommonModelDef()
-                    .setDef(tableInfo)
+            final CommonModelDef commonModelDef = new CommonModelDef(tableInfo)
+//                    .setDef(tableInfo)
                     .setBaseTable(null)
                     .setBuildMapper(true)
                     .setIgnoreField(null)
@@ -284,8 +284,8 @@ public class DbInfoHandler {
             }
 //            String table = tableInfo.getTable();
 //            String modelSimpleName = CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(table);
-            final CommonModelDef commonModelDef = new CommonModelDef()
-                    .setDef(tableInfo)
+            final CommonModelDef commonModelDef = new CommonModelDef(tableInfo)
+//                    .setDef(tableInfo)
                     .setBaseTable(null)
                     .setBuildMapper(true)
                     .setIgnoreField(null)

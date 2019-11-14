@@ -292,6 +292,7 @@ public class DAOTWechatInfo
         buildSelectFieldCluase(sqlBuilder, selectFields);
         if (id!= null) {
             sqlBuilder.itemWhere(LogicalRelationshipType.and, LogicalOpType.in, null, ModelTWechatInfo.FI_ID, ModelTWechatInfo.FI_ID, ColumnDataType.intData);
+            param.put(ModelTWechatInfo.FI_ID, id);
         }
         sqlBuilder.limit();
         return getResults(assembler, sqlBuilder, param);
@@ -461,6 +462,7 @@ public class DAOTWechatInfo
         buildSelectFieldCluase(sqlBuilder, selectFields);
         if (id!= null) {
             sqlBuilder.itemWhere(LogicalRelationshipType.and, LogicalOpType.in, null, ModelTWechatInfo.FI_ID, ModelTWechatInfo.FI_ID, ColumnDataType.intData);
+            param.put(ModelTWechatInfo.FI_ID, id);
         }
         sqlBuilder.limit();
         return getResults(assembler, sqlBuilder, param);
@@ -498,6 +500,7 @@ public class DAOTWechatInfo
         buildSelectFieldCluase(sqlBuilder, selectFields);
         if (id!= null) {
             sqlBuilder.itemWhere(LogicalRelationshipType.and, LogicalOpType.in, null, ModelTWechatInfo.FI_ID, ModelTWechatInfo.FI_ID, ColumnDataType.intData);
+            param.put(ModelTWechatInfo.FI_ID, id);
         }
         sqlBuilder.limit();
         return getResults(assembler, sqlBuilder, param);
@@ -632,6 +635,7 @@ public class DAOTWechatInfo
         buildSelectFieldCluase(sqlBuilder, selectFields);
         if (id!= null) {
             sqlBuilder.itemWhere(ModelTWechatInfo.FI_ID, ColumnDataType.intData);
+            param.put(ModelTWechatInfo.FI_ID, id);
         }
         sqlBuilder.limit();
         return getResult(assembler, sqlBuilder, param);
@@ -737,6 +741,7 @@ public class DAOTWechatInfo
         buildSelectFieldCluase(sqlBuilder, selectFields);
         if (id!= null) {
             sqlBuilder.itemWhere(ModelTWechatInfo.FI_ID, ColumnDataType.intData);
+            param.put(ModelTWechatInfo.FI_ID, id);
         }
         sqlBuilder.limit();
         return getResult(assembler, sqlBuilder, param);
@@ -983,6 +988,7 @@ public class DAOTWechatInfo
         sqlBuilder.rawSelectItem(rawItem);
         if (id!= null) {
             sqlBuilder.itemWhere(LogicalRelationshipType.and, LogicalOpType.in, null, ModelTWechatInfo.FI_ID, ModelTWechatInfo.FI_ID, ColumnDataType.intData);
+            param.put(ModelTWechatInfo.FI_ID, id);
         }
         sqlBuilder.limit();
         return ((List<TT> ) getSingleResults(assembler, sqlBuilder, param, tClass));
@@ -1130,6 +1136,7 @@ public class DAOTWechatInfo
         buildConditionCluase(sqlBuilder, instance, param);
         if (id!= null) {
             sqlBuilder.itemWhere(LogicalRelationshipType.and, LogicalOpType.in, null, ModelTWechatInfo.FI_ID, ModelTWechatInfo.FI_ID, ColumnDataType.intData);
+            param.put(ModelTWechatInfo.FI_ID, id);
         }
         sqlBuilder.limit();
         return ((List<TT> ) getSingleResults(assembler, sqlBuilder, param, tClass));

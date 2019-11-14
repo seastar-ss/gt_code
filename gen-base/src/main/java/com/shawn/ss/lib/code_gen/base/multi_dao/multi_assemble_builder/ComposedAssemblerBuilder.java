@@ -35,7 +35,7 @@ public class ComposedAssemblerBuilder implements CodeBuilderInterface {
         this.modelBuilderContext = modelMulDaoConf.getBuilderContext();
         this.wrapperCls = wrapperCls;
         this.cm=modelBuilderContext.getCm();
-        assemblerName = modelBuilderContext.getServiceAssemblerClassName(modelMulDaoConf.getMainTable());
+        assemblerName = modelBuilderContext.getServiceAssemblerClassName(modelMulDaoConf.getTable());
 //        isList=modelMulDaoConf.
     }
 

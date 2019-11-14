@@ -138,18 +138,18 @@ public class MultiDaoSelectServiceBuilder implements CodeBuilderInterface {
             }
         }
 //        this.modelSelectMethod = modelMulDaoConf.getMainModelSelectMethod();
-        this.mainTable = modelMulDaoConf.getMainTable();
+        this.mainTable = modelMulDaoConf.getTable();
         this.relatedTables = modelMulDaoConf.getRelatedTables();
         this.buildNotAbstract = modelMulDaoConf.isBuildNotAbstract();
         this.modelBuilderContext = modelMulDaoConf.getBuilderContext();
-        this.serviceClassName = modelBuilderContext.getServiceClassName(modelMulDaoConf.getMainTable());
+        this.serviceClassName = modelBuilderContext.getServiceClassName(this.mainTable);
 //        this.tbMap = this.modelBuilderContext.getTbMap();
 //        this.listResult = modelMulDaoConf.isListResult();
 
         this.daos = modelMulDaoConf.getDaos();
         this.models = modelMulDaoConf.getModels();
         this.defs = modelMulDaoConf.getDefs();
-        mainDb = modelMulDaoConf.getMainDb();
+        mainDb = modelMulDaoConf.getDb();
         this.cm = modelBuilderContext.getCm();
         modelBuilder = new ComposedModelBuilder(modelMulDaoConf);
 
@@ -296,7 +296,7 @@ public class MultiDaoSelectServiceBuilder implements CodeBuilderInterface {
         String fieldInMainTable = def.getFieldInMainTable();
         String fieldInThisTable = def.getFieldInThisTable();
         String table = def.getTable();
-        boolean isId = def.isFieldInThisTableIsId();
+//        boolean isId = def.is();
         boolean single = def.isSingle();
         AbstractJClass subModelClass = models.get(table);
         SelectMethodEnum subDaoSelectMethod = getSubSelectMethod(def, holder);

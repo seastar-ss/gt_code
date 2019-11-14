@@ -11,7 +11,7 @@ import com.shawn.ss.lib.code_gen.base.dao.common_dao.common_model_builder.Mapper
 import com.shawn.ss.lib.code_gen.base.dao.common_dao.common_model_builder.MapperOfResultSetBuilder;
 import com.shawn.ss.lib.code_gen.base.dao.common_dao.common_model_builder.ModelBuilder;
 import com.shawn.ss.lib.code_gen.model.def_model.dao_def.CommonModelDef;
-import com.shawn.ss.lib.code_gen.model.def_model.dao_def.SpecialModelDef;
+import com.shawn.ss.lib.code_gen.model.def_model.dao_def.SpecialModelConf;
 import com.shawn.ss.lib.code_gen.base.multi_dao.multi_dao_builder.MultiDaoSelectServiceBuilder;
 import com.shawn.ss.lib.code_gen.model.def_model.dao_def.ModelMulDaoConf;
 import com.shawn.ss.lib.code_gen.model.def_model.db_def.DbModelConf;
@@ -480,7 +480,7 @@ public class ModelBuilderContext {
 
     }
 
-    public void buildSpecialModalAndDao(SpecialModelDef def) {
+    public void buildSpecialModalAndDao(SpecialModelConf def) {
 //        NamedParameterJdbcTemplate jdbcTemplate = dataSource.getJdbcTemplate();
         try {
             List<FieldInfoInterface> params = def.getParams();
@@ -523,15 +523,15 @@ public class ModelBuilderContext {
 //            POJOModelBuilder builder=new POJOModelBuilder(commonPOJOConf);
 //            builder.buildModel();
 //        }
-            SpecialModelDef.DataAttrType type = def.getDataType();
+            SpecialModelConf.DataAttrType type = def.getDataType();
             def.setIgnoreField(ignoreField);
             def.setBuildMapper(true);
-            if (type.equals(SpecialModelDef.DataAttrType.LIST_OBJ) || type.equals(SpecialModelDef.DataAttrType.OBJ)) {
+            if (type.equals(SpecialModelConf.DataAttrType.LIST_OBJ) || type.equals(SpecialModelConf.DataAttrType.OBJ)) {
                 ModelBuilder modelBuilder = buildBaseModel(def);
 //        if(type.equals(SpecialModelDef.DataAttrType.SQL)) {
 //            modelBuilder.buildSQLField(modelDef.getSql());
 
-            } else if (type.equals(SpecialModelDef.DataAttrType.LIST) || type.equals(SpecialModelDef.DataAttrType.SINGLE)) {
+            } else if (type.equals(SpecialModelConf.DataAttrType.LIST) || type.equals(SpecialModelConf.DataAttrType.SINGLE)) {
 
 //            SpecialDaoBuilder daoBuilder = new SpecialDaoBuilder(def, this);
 //            daoBuilder.buildModel();

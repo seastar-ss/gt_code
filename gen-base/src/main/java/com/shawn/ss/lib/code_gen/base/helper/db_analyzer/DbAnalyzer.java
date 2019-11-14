@@ -2,7 +2,7 @@ package com.shawn.ss.lib.code_gen.base.helper.db_analyzer;
 
 import com.shawn.ss.lib.code_gen.base.helper.CodeHelper;
 import com.shawn.ss.lib.code_gen.base.helper.DBConnectionHelper;
-import com.shawn.ss.lib.code_gen.model.def_model.dao_def.SpecialModelDef;
+import com.shawn.ss.lib.code_gen.model.def_model.dao_def.SpecialModelConf;
 import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.StringHelper;
 import com.shawn.ss.lib.tools.TypeConstantHelper;
@@ -46,7 +46,7 @@ public class DbAnalyzer {
 //        String TABLE_SCHEMA,TABLE_NAME,COLUMN_NAME,REFERENCED_TABLE_NAME,REFERENCED_COLUMN_NAME,CONSTRAINT_NAME;
 //    }
 
-    public void buildModel(final DBConnectionHelper helper, final SpecialModelDef def) {
+    public void buildModel(final DBConnectionHelper helper, final SpecialModelConf def) {
         NamedParameterJdbcTemplate template = helper.getJdbcTemplate();
         String sql = def.getSql();
         Map<String, Object> defualtParam = makeDefaultParam(def);
@@ -79,11 +79,11 @@ public class DbAnalyzer {
             throw new IllegalArgumentException("sql :" + sql + " query for:" + defualtParam.toString() + " can't be executed");
         } else {
 //            String baseModelTable = modelDef.getBaseModelTable();
-            def.setDef(tableInfo);
+//            def.setDef(tableInfo);
         }
     }
 
-    private Map<String, Object> makeDefaultParam(SpecialModelDef def) {
+    private Map<String, Object> makeDefaultParam(SpecialModelConf def) {
         Map<String, Object> defualtParam = def.getDefualtParam();
         if (defualtParam == null) {
             defualtParam = CollectionHelper.newMap();

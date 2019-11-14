@@ -1,5 +1,6 @@
 package com.shawn.ss.lib.code_gen.model.def_model.common;
 
+import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
 import com.shawn.ss.lib.code_gen.model.def_model._BaseConf;
 import com.shawn.ss.lib.code_gen.model.def_model._BaseConfImpl;
 import com.shawn.ss.lib.tools.CollectionHelper;
@@ -10,7 +11,7 @@ import java.util.List;
 /**
  * Created by ss on 2018/10/27.
  */
-public class CommonPOJOConf extends _BaseConfImpl implements _BaseConf {
+public class CommonPOJOConf implements _BaseConf {
 //    public static class FieldDef{
 //        String name;
 //        String tClass;
@@ -37,10 +38,17 @@ public class CommonPOJOConf extends _BaseConfImpl implements _BaseConf {
     List<FieldInfoInterface> fields;
     String pojoClzName;
     String pojoExtendsClzName;
+    protected transient ModelBuilderContext builderContext;
 
     public CommonPOJOConf() {
+//        super(name);
         fields= CollectionHelper.newList();
     }
+
+//    @Override
+//    public String getDb() {
+//        return null;
+//    }
 
     public List<FieldInfoInterface> getFields() {
         return fields;
@@ -78,6 +86,15 @@ public class CommonPOJOConf extends _BaseConfImpl implements _BaseConf {
 
     public CommonPOJOConf setPojoExtendsClzName(String pojoExtendsClzName) {
         this.pojoExtendsClzName = pojoExtendsClzName;
+        return this;
+    }
+
+    public ModelBuilderContext getBuilderContext() {
+        return builderContext;
+    }
+
+    public CommonPOJOConf setBuilderContext(ModelBuilderContext builderContext) {
+        this.builderContext = builderContext;
         return this;
     }
 }

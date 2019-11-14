@@ -4,7 +4,7 @@ import com.helger.jcodemodel.*;
 import com.shawn.ss.lib.code_gen.CodeBuilderInterface;
 import com.shawn.ss.lib.code_gen.base.helper.CodeHelper;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
-import com.shawn.ss.lib.code_gen.model.def_model.dao_def.EnumTypeConf;
+//import com.shawn.ss.lib.code_gen.model.def_model.dao_def.EnumTypeConf;
 import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.ColumnInfoInterface;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.model.FieldDataTypeInterface;
@@ -17,7 +17,7 @@ import java.util.Map;
  */
 public class EnumBuilder implements CodeBuilderInterface {
 
-    private EnumTypeConf def;
+    private com.shawn.ss.lib.code_gen.model.def_model.dao_def.EnumTypeDef  def;
     private final ModelBuilderContext builderContext;
     private final JCodeModel cm;
     private EnumTypeDef typeDef;
@@ -26,7 +26,7 @@ public class EnumBuilder implements CodeBuilderInterface {
     private JDefinedClass definedClass;
     private final FieldDataTypeInterface colType;
 
-    public EnumBuilder(EnumTypeConf def) {
+    public EnumBuilder(com.shawn.ss.lib.code_gen.model.def_model.dao_def.EnumTypeDef  def) {
         this.def = def;
         builderContext = def.getBuilderContext();
         cm = builderContext.getCm();
@@ -91,7 +91,7 @@ public class EnumBuilder implements CodeBuilderInterface {
         }
     }
 
-    public EnumTypeConf getDef() {
+    public com.shawn.ss.lib.code_gen.model.def_model.dao_def.EnumTypeDef  getDef() {
         return def;
     }
 

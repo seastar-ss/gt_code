@@ -7,6 +7,7 @@ package com.shawn.ss.lib.code_gen;
 import com.shawn.ss.gen.api.conf.SelectMethodEnum;
 import com.shawn.ss.lib.code_gen.base.helper.DBConnectionHelper;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
+import com.shawn.ss.lib.code_gen.model.def_model._BaseConfImpl;
 import com.shawn.ss.lib.code_gen.model.def_model.dao_def.ModelMulDaoConf;
 import com.shawn.ss.lib.code_gen.model.def_model.dao_def.ModelRelatedTableDef;
 import com.shawn.ss.lib.code_gen.model.def_model.db_def.DbModelConf;
@@ -300,7 +301,7 @@ public class ModelBuilderTest {
 //        modelBuilderContext.buildMultiSelectDao(conf1);
 //        modelBuilderContext.buildMultiSelectDao(conf2);
 
-//        modelBuilderContext.buildSpecialModalAndDao(new SpecialModelDef().setMethodName("selectUndispatchedCount").putDefaultParam("",new Date().getTime())
+//        modelBuilderContext.buildSpecialModalAndDao(new SpecialModelConf().setMethodName("selectUndispatchedCount").putDefaultParam("",new Date().getTime())
 //                .setSql("select sum(targetRdState) as sum from t_read_state as rd inner join " +
 //                        "t_content as c on c.id=rd.contentId where c.content like concat('%',:c,'%') group by c.id").setListResult(false));
 
@@ -518,14 +519,14 @@ public class ModelBuilderTest {
 //        modelBuilderContext.buildMultiSelectDao(conf1);
 //        modelBuilderContext.buildMultiSelectDao(conf2);
 //
-////        modelBuilderContext.buildSpecialModalAndDao(new SpecialModelDef().setMethodName("selectUndispatchedCount").putDefaultParam("",new Date().getTime())
+////        modelBuilderContext.buildSpecialModalAndDao(new SpecialModelConf().setMethodName("selectUndispatchedCount").putDefaultParam("",new Date().getTime())
 ////                .setSql("select sum(targetRdState) as sum from t_read_state as rd inner join " +
 ////                        "t_content as c on c.id=rd.contentId where c.content like concat('%',:c,'%') group by c.id").setListResult(false));
 //
 //        modelBuilderContext.writeModel();
     }
 
-//    @Test
+    //    @Test
     public void testGenWWchatDbModel() throws IOException {
         ModelBuilderContext modelBuilderContext = ModelBuilderContext.builderHelper("com.shangde.ent_portal.logical", TEST_POS_DEV);
         Properties p = new Properties();
@@ -555,7 +556,7 @@ public class ModelBuilderTest {
                 p.getProperty("jdbc.url"), p.getProperty("jdbc.username"), p.getProperty("jdbc.password"),
                 p.getProperty("jdbc.driverClassName")
         );
-//        modelBuilderContext.addConnctionAndDb("ent_portal", CodeConstants.KEY_WORD_DEFAULT_DATA_SOURCE_ID, p, false,
+//        modelBuilderContext.addConnctionAndDb("ent_portal", CodeHelper.KEY_WORD_DEFAULT_DATA_SOURCE_ID, p, false,
 //                CollectionHelper.<String>setBuilder()
 //                        .add("mlink_match_result")
 //                        .add("t_mlink_url_info")
@@ -618,57 +619,64 @@ public class ModelBuilderTest {
                         )
         );
         modelBuilderContext.buildBaseModelAndDao();
-        modelBuilderContext.buildMultiSelectDao(
-                new ModelMulDaoConf()
-                        .setMainDb("ent_knownleag_base")
-                        .setMainTable("wiki_index")
-                        .setMainField("wikiIndex")
-                        .setMainModelSelectMethod(
+        ModelMulDaoConf wikiConf = new ModelMulDaoConf("wikiConf").setMainTableDef(
+                new ModelRelatedTableDef().setFieldName("wikiIndex").setName("ent_knownleag_base.wiki_index")
+        )
+//                        .setMainDb("ent_knownleag_base")
+//                        .setMainTable("wiki_index")
+//                        .setMainField("wikiIndex")
+                ;
+        wikiConf.setMainModelSelectMethod(
 //                                CollectionHelper.<SelectMethodEnum>listBuilder()
 //                                        .add(SelectMethodEnum.getOneById)
 //                                        .add(SelectMethodEnum.getByCondition)
 //                                        .add(SelectMethodEnum.getByIndexAndCondition)
 //                                        .getList()
-                                SelectMethodEnum.getNacessarySelectMethod().values().stream().<SelectMethodEnum>map((s) -> {
-                                    return (SelectMethodEnum) s;
-                                }).collect(Collectors.toList())
-                        )
-                        .setRelatedTables(
-                                CollectionHelper.<ModelRelatedTableDef>listBuilder()
-                                        .add(
-                                                new ModelRelatedTableDef()
-                                                        .setFieldName("page")
-                                                        .setDb("ent_knownleag_base")
-                                                        .setTable("wiki_page")
-                                                        .setFieldInThisTable("pageId")
-                                                        .setFieldInMainTable("IndexPageId")
-                                                        .setSingle(false)
-
-                                        )
-                                        .add(
-                                                new ModelRelatedTableDef()
-                                                        .setFieldName("item")
-                                                        .setDb("ent_knownleag_base")
-                                                        .setTable("wiki_structure_info_key_item")
-                                                        .setFieldInThisTable("itemId")
-                                                        .setFieldInMainTable("IndexPageId")
-                                                        .setSingle(true)
-                                                        .setAdditionalWhere("pageType in (2,5,6)")
-                                        )
-                                        .add(
-                                                new ModelRelatedTableDef()
-                                                        .setFieldName("info")
-                                                        .setDb("ent_knownleag_base")
-                                                        .setTable("wiki_index_infos")
-                                                        .setFieldInThisTable("cmsInfoOfIndexId")
-                                                        .setFieldInMainTable("indexId")
-                                                        .setSingle(false)
-                                                        .setAdditionalCondition(Collections.singletonMap("indexTitle", "cmsInfoName"))
-                                        )
-                                        .getList()
-                        )
+                SelectMethodEnum.getNacessarySelectMethod().values().stream().<SelectMethodEnum>map((s) -> {
+                    return (SelectMethodEnum) s;
+                }).collect(Collectors.toList())
         );
-//        modelBuilderContext.buildSpecialModalAndDao(new SpecialModelDef().setMethodName("sample").setClzName("com.test.sample.SampleSqlDAO")
+        modelBuilderContext.buildMultiSelectDao(
+
+                wikiConf.setRelatedTables(
+                        CollectionHelper.<ModelRelatedTableDef>listBuilder()
+                                .add(
+                                        new ModelRelatedTableDef()
+                                                .setFieldName("page")
+                                                .setName("ent_knownleag_base.wiki_page")
+//                                                        .setDb("ent_knownleag_base")
+//                                                        .setTable("wiki_page")
+                                                .setFieldInThisTable("pageId")
+                                                .setFieldInMainTable("IndexPageId")
+                                                .setSingle(false)
+
+                                )
+                                .add(
+                                        new ModelRelatedTableDef()
+                                                .setFieldName("item")
+                                                .setName("ent_knownleag_base.wiki_structure_info_key_item")
+//                                                        .setDb("ent_knownleag_base")
+//                                                        .setTable("wiki_structure_info_key_item")
+                                                .setFieldInThisTable("itemId")
+                                                .setFieldInMainTable("IndexPageId")
+                                                .setSingle(true)
+                                                .setAdditionalWhere("pageType in (2,5,6)")
+                                )
+                                .add(
+                                        new ModelRelatedTableDef()
+                                                .setFieldName("info")
+                                                .setName("ent_knownleag_base.wiki_index_infos")
+//                                                        .setDb("ent_knownleag_base")
+//                                                        .setTable("wiki_index_infos")
+                                                .setFieldInThisTable("cmsInfoOfIndexId")
+                                                .setFieldInMainTable("indexId")
+                                                .setSingle(false)
+                                                .setAdditionalCondition(Collections.singletonMap("indexTitle", "cmsInfoName"))
+                                )
+                                .getList()
+                )
+        );
+//        modelBuilderContext.buildSpecialModalAndDao(new SpecialModelConf().setMethodName("sample").setClzName("com.test.sample.SampleSqlDAO")
 //                .setSql("SELECT\n" +
 //                        "\tDATE_FORMAT(mar.create_time, '%y-%m-%d') AS date,\n" +
 //                        "\tmar.user_id AS userId,\n" +
@@ -737,13 +745,13 @@ public class ModelBuilderTest {
 //                .setServiceClassName("Content");
 //        conf2.setBuilderContext(modelBuilderContext);
 //        modelBuilderContext.buildMultiSelectDao(conf2);
-//        SpecialModelDef specialModelDef = new SpecialModelDef().setMethodName("test").putDefaultParam("id", 1)
+//        SpecialModelConf specialModelDef = new SpecialModelConf().setMethodName("test").putDefaultParam("id", 1)
 //                .setSql("select contentId,c.content,c.createTime,count(*) as count,sum(targetRdState) as sum from t_read_state as rd inner join " +
 //                        "t_content as c on c.id=rd.contentId where c.id=:id group by c.id").setListResult(true).setBaseTable("t_content").setDataSourceName("spcialResource");
 ////        specialModelDef.setBaseTable("t_content");
 ////        specialModelDef.setDataSourceName("spcialResource");
 //        modelBuilderContext.buildSpecialModalAndDao(specialModelDef);
-//        SpecialModelDef specialModelDef1 = new SpecialModelDef().setMethodName("testSingle").putDefaultParam("c", "abc")
+//        SpecialModelConf specialModelDef1 = new SpecialModelConf().setMethodName("testSingle").putDefaultParam("c", "abc")
 //                .setSql("select sum(targetRdState) as sum from t_read_state as rd inner join " +
 //                        "t_content as c on c.id=rd.contentId where c.content like concat('%',:c,'%') group by c.id").setListResult(true);
 //        specialModelDef1.setDataSourceName("spcialResource");

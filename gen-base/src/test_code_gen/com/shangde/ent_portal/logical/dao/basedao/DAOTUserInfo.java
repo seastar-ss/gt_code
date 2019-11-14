@@ -620,6 +620,7 @@ public class DAOTUserInfo
         buildSelectFieldCluase(sqlBuilder, selectFields);
         if (id!= null) {
             sqlBuilder.itemWhere(LogicalRelationshipType.and, LogicalOpType.in, null, ModelTUserInfo.FI_ID, ModelTUserInfo.FI_ID, ColumnDataType.intData);
+            param.put(ModelTUserInfo.FI_ID, id);
         }
         sqlBuilder.limit();
         return getResults(assembler, sqlBuilder, param);
@@ -789,6 +790,7 @@ public class DAOTUserInfo
         buildSelectFieldCluase(sqlBuilder, selectFields);
         if (id!= null) {
             sqlBuilder.itemWhere(LogicalRelationshipType.and, LogicalOpType.in, null, ModelTUserInfo.FI_ID, ModelTUserInfo.FI_ID, ColumnDataType.intData);
+            param.put(ModelTUserInfo.FI_ID, id);
         }
         sqlBuilder.limit();
         return getResults(assembler, sqlBuilder, param);
@@ -826,6 +828,7 @@ public class DAOTUserInfo
         buildSelectFieldCluase(sqlBuilder, selectFields);
         if (id!= null) {
             sqlBuilder.itemWhere(LogicalRelationshipType.and, LogicalOpType.in, null, ModelTUserInfo.FI_ID, ModelTUserInfo.FI_ID, ColumnDataType.intData);
+            param.put(ModelTUserInfo.FI_ID, id);
         }
         sqlBuilder.limit();
         return getResults(assembler, sqlBuilder, param);
@@ -960,6 +963,7 @@ public class DAOTUserInfo
         buildSelectFieldCluase(sqlBuilder, selectFields);
         if (id!= null) {
             sqlBuilder.itemWhere(ModelTUserInfo.FI_ID, ColumnDataType.intData);
+            param.put(ModelTUserInfo.FI_ID, id);
         }
         sqlBuilder.limit();
         return getResult(assembler, sqlBuilder, param);
@@ -1065,6 +1069,7 @@ public class DAOTUserInfo
         buildSelectFieldCluase(sqlBuilder, selectFields);
         if (id!= null) {
             sqlBuilder.itemWhere(ModelTUserInfo.FI_ID, ColumnDataType.intData);
+            param.put(ModelTUserInfo.FI_ID, id);
         }
         sqlBuilder.limit();
         return getResult(assembler, sqlBuilder, param);
@@ -1311,6 +1316,7 @@ public class DAOTUserInfo
         sqlBuilder.rawSelectItem(rawItem);
         if (id!= null) {
             sqlBuilder.itemWhere(LogicalRelationshipType.and, LogicalOpType.in, null, ModelTUserInfo.FI_ID, ModelTUserInfo.FI_ID, ColumnDataType.intData);
+            param.put(ModelTUserInfo.FI_ID, id);
         }
         sqlBuilder.limit();
         return ((List<TT> ) getSingleResults(assembler, sqlBuilder, param, tClass));
@@ -1458,6 +1464,7 @@ public class DAOTUserInfo
         buildConditionCluase(sqlBuilder, instance, param);
         if (id!= null) {
             sqlBuilder.itemWhere(LogicalRelationshipType.and, LogicalOpType.in, null, ModelTUserInfo.FI_ID, ModelTUserInfo.FI_ID, ColumnDataType.intData);
+            param.put(ModelTUserInfo.FI_ID, id);
         }
         sqlBuilder.limit();
         return ((List<TT> ) getSingleResults(assembler, sqlBuilder, param, tClass));

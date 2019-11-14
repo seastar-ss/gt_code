@@ -4,7 +4,7 @@ import com.helger.jcodemodel.*;
 import com.shawn.ss.lib.code_gen.base.dao.AbstractDaoBuilder;
 import com.shawn.ss.lib.code_gen.base.helper.CodeHelper;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
-import com.shawn.ss.lib.code_gen.model.def_model.dao_def.SpecialModelDef;
+import com.shawn.ss.lib.code_gen.model.def_model.dao_def.SpecialModelConf;
 import com.shawn.ss.lib.tools.CodeStyleTransformHelper;
 import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.StringHelper;
@@ -22,12 +22,12 @@ import java.util.Map;
  */
 public class SpecialDaoBuilder extends AbstractDaoBuilder {
 
-    private final SpecialModelDef def;
+    private final SpecialModelConf def;
     private final String name;
     private String handleSqlMethod;
 
 
-    public SpecialDaoBuilder(SpecialModelDef def, ModelBuilderContext builderContext) {
+    public SpecialDaoBuilder(SpecialModelConf def, ModelBuilderContext builderContext) {
         super(def, builderContext);
         this.def = def;
         name = CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(def.getMethodName());
@@ -66,21 +66,21 @@ public class SpecialDaoBuilder extends AbstractDaoBuilder {
     }
 
     private JMethod buildSelectMethod() {
-        SpecialModelDef.DataAttrType type = def.getDataType();
+        SpecialModelConf.DataAttrType type = def.getDataType();
         AbstractJClass abstractJClass = null;
         Class aClass = null;
         ColumnInfoInterface columnInfoInterface;
-        if (type.equals(SpecialModelDef.DataAttrType.LIST_OBJ)) {
+        if (type.equals(SpecialModelConf.DataAttrType.LIST_OBJ)) {
             abstractJClass = CodeHelper.buildNarrowedClass(cm, List.class, modelClass);
-        } else if (type.equals(SpecialModelDef.DataAttrType.OBJ)) {
+        } else if (type.equals(SpecialModelConf.DataAttrType.OBJ)) {
             abstractJClass = modelClass;
         } else {
             columnInfoInterface = info.getColumns().get(0);
 
             aClass = columnInfoInterface.getType().gettClass();
-            if (type.equals(SpecialModelDef.DataAttrType.SINGLE)) {
+            if (type.equals(SpecialModelConf.DataAttrType.SINGLE)) {
                 abstractJClass = cm.ref(aClass);
-            } else if (type.equals(SpecialModelDef.DataAttrType.LIST)) {
+            } else if (type.equals(SpecialModelConf.DataAttrType.LIST)) {
                 abstractJClass = CodeHelper.buildNarrowedClass(cm, List.class, aClass);
             }
         }
@@ -102,13 +102,13 @@ public class SpecialDaoBuilder extends AbstractDaoBuilder {
         }
         JVar mapVar = CodeHelper.buildStringObjectMapParam(cm, body, allVars);
         String methodName = null;
-        if (type.equals(SpecialModelDef.DataAttrType.LIST_OBJ)) {
+        if (type.equals(SpecialModelConf.DataAttrType.LIST_OBJ)) {
             methodName = CodeHelper.LIB_DB_QUERY;
-        } else if (type.equals(SpecialModelDef.DataAttrType.OBJ)) {
+        } else if (type.equals(SpecialModelConf.DataAttrType.OBJ)) {
             methodName = CodeHelper.LIB_DB_QUERY_ONE;
-        } else if (type.equals(SpecialModelDef.DataAttrType.SINGLE)) {
+        } else if (type.equals(SpecialModelConf.DataAttrType.SINGLE)) {
             methodName = CodeHelper.LIB_DB_QUERY_ONE;
-        } else if (type.equals(SpecialModelDef.DataAttrType.LIST)) {
+        } else if (type.equals(SpecialModelConf.DataAttrType.LIST)) {
             methodName = CodeHelper.LIB_DB_QUERY_LIST;
         }
         JFieldRef ref = null;
@@ -142,9 +142,9 @@ public class SpecialDaoBuilder extends AbstractDaoBuilder {
 //            expr=fieldRef;
 //        }
         addLogs(body, fieldRef, mapVar);
-        if (type.equals(SpecialModelDef.DataAttrType.LIST_OBJ) || type.equals(SpecialModelDef.DataAttrType.OBJ)) {
+        if (type.equals(SpecialModelConf.DataAttrType.LIST_OBJ) || type.equals(SpecialModelConf.DataAttrType.OBJ)) {
             invocation.arg(modelClass.staticRef(CodeHelper.FIELD_RESULT_SET_MAPPER_INSTANCE));
-        } else if (type.equals(SpecialModelDef.DataAttrType.SINGLE) || type.equals(SpecialModelDef.DataAttrType.LIST)) {
+        } else if (type.equals(SpecialModelConf.DataAttrType.SINGLE) || type.equals(SpecialModelConf.DataAttrType.LIST)) {
             invocation.arg(JExpr.dotclass(cm.ref(aClass)));
         }
         JVar ret = body.decl(method.type(), "ret", invocation);
@@ -160,7 +160,7 @@ public class SpecialDaoBuilder extends AbstractDaoBuilder {
         return;
     }
 
-    private JFieldRef buildSqlConstantsString(SpecialModelDef def, JFieldRef ref) {
+    private JFieldRef buildSqlConstantsString(SpecialModelConf def, JFieldRef ref) {
         String clzName = builderContext.getClzName(CodeHelper.CLASS_NAME_ALL_SQL_CONTANT_CLASS);
         JDefinedClass contantsClazz = cm._getClass(clzName);
         if (contantsClazz == null) {

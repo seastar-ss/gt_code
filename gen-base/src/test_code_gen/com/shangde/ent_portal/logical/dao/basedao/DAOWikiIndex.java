@@ -445,6 +445,7 @@ public class DAOWikiIndex
         buildSelectFieldCluase(sqlBuilder, selectFields);
         if (indexId!= null) {
             sqlBuilder.itemWhere(LogicalRelationshipType.and, LogicalOpType.in, null, ModelWikiIndex.FI_INDEXID, ModelWikiIndex.FI_INDEXID, ColumnDataType.intData);
+            param.put(ModelWikiIndex.FI_INDEXID, indexId);
         }
         sqlBuilder.limit();
         return getResults(assembler, sqlBuilder, param);
@@ -614,6 +615,7 @@ public class DAOWikiIndex
         buildSelectFieldCluase(sqlBuilder, selectFields);
         if (indexId!= null) {
             sqlBuilder.itemWhere(LogicalRelationshipType.and, LogicalOpType.in, null, ModelWikiIndex.FI_INDEXID, ModelWikiIndex.FI_INDEXID, ColumnDataType.intData);
+            param.put(ModelWikiIndex.FI_INDEXID, indexId);
         }
         sqlBuilder.limit();
         return getResults(assembler, sqlBuilder, param);
@@ -651,6 +653,7 @@ public class DAOWikiIndex
         buildSelectFieldCluase(sqlBuilder, selectFields);
         if (indexId!= null) {
             sqlBuilder.itemWhere(LogicalRelationshipType.and, LogicalOpType.in, null, ModelWikiIndex.FI_INDEXID, ModelWikiIndex.FI_INDEXID, ColumnDataType.intData);
+            param.put(ModelWikiIndex.FI_INDEXID, indexId);
         }
         sqlBuilder.limit();
         return getResults(assembler, sqlBuilder, param);
@@ -785,6 +788,7 @@ public class DAOWikiIndex
         buildSelectFieldCluase(sqlBuilder, selectFields);
         if (indexId!= null) {
             sqlBuilder.itemWhere(ModelWikiIndex.FI_INDEXID, ColumnDataType.intData);
+            param.put(ModelWikiIndex.FI_INDEXID, indexId);
         }
         sqlBuilder.limit();
         return getResult(assembler, sqlBuilder, param);
@@ -890,6 +894,7 @@ public class DAOWikiIndex
         buildSelectFieldCluase(sqlBuilder, selectFields);
         if (indexId!= null) {
             sqlBuilder.itemWhere(ModelWikiIndex.FI_INDEXID, ColumnDataType.intData);
+            param.put(ModelWikiIndex.FI_INDEXID, indexId);
         }
         sqlBuilder.limit();
         return getResult(assembler, sqlBuilder, param);
@@ -1136,6 +1141,7 @@ public class DAOWikiIndex
         sqlBuilder.rawSelectItem(rawItem);
         if (indexId!= null) {
             sqlBuilder.itemWhere(LogicalRelationshipType.and, LogicalOpType.in, null, ModelWikiIndex.FI_INDEXID, ModelWikiIndex.FI_INDEXID, ColumnDataType.intData);
+            param.put(ModelWikiIndex.FI_INDEXID, indexId);
         }
         sqlBuilder.limit();
         return ((List<TT> ) getSingleResults(assembler, sqlBuilder, param, tClass));
@@ -1283,6 +1289,7 @@ public class DAOWikiIndex
         buildConditionCluase(sqlBuilder, instance, param);
         if (indexId!= null) {
             sqlBuilder.itemWhere(LogicalRelationshipType.and, LogicalOpType.in, null, ModelWikiIndex.FI_INDEXID, ModelWikiIndex.FI_INDEXID, ColumnDataType.intData);
+            param.put(ModelWikiIndex.FI_INDEXID, indexId);
         }
         sqlBuilder.limit();
         return ((List<TT> ) getSingleResults(assembler, sqlBuilder, param, tClass));

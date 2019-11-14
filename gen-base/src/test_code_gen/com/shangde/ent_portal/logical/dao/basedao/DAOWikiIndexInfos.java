@@ -260,6 +260,7 @@ public class DAOWikiIndexInfos
         buildSelectFieldCluase(sqlBuilder, selectFields);
         if (cmsIndexInfoId!= null) {
             sqlBuilder.itemWhere(LogicalRelationshipType.and, LogicalOpType.in, null, ModelWikiIndexInfos.FI_CMSINDEXINFOID, ModelWikiIndexInfos.FI_CMSINDEXINFOID, ColumnDataType.intData);
+            param.put(ModelWikiIndexInfos.FI_CMSINDEXINFOID, cmsIndexInfoId);
         }
         sqlBuilder.limit();
         return getResults(assembler, sqlBuilder, param);
@@ -429,6 +430,7 @@ public class DAOWikiIndexInfos
         buildSelectFieldCluase(sqlBuilder, selectFields);
         if (cmsIndexInfoId!= null) {
             sqlBuilder.itemWhere(LogicalRelationshipType.and, LogicalOpType.in, null, ModelWikiIndexInfos.FI_CMSINDEXINFOID, ModelWikiIndexInfos.FI_CMSINDEXINFOID, ColumnDataType.intData);
+            param.put(ModelWikiIndexInfos.FI_CMSINDEXINFOID, cmsIndexInfoId);
         }
         sqlBuilder.limit();
         return getResults(assembler, sqlBuilder, param);
@@ -466,6 +468,7 @@ public class DAOWikiIndexInfos
         buildSelectFieldCluase(sqlBuilder, selectFields);
         if (cmsIndexInfoId!= null) {
             sqlBuilder.itemWhere(LogicalRelationshipType.and, LogicalOpType.in, null, ModelWikiIndexInfos.FI_CMSINDEXINFOID, ModelWikiIndexInfos.FI_CMSINDEXINFOID, ColumnDataType.intData);
+            param.put(ModelWikiIndexInfos.FI_CMSINDEXINFOID, cmsIndexInfoId);
         }
         sqlBuilder.limit();
         return getResults(assembler, sqlBuilder, param);
@@ -600,6 +603,7 @@ public class DAOWikiIndexInfos
         buildSelectFieldCluase(sqlBuilder, selectFields);
         if (cmsIndexInfoId!= null) {
             sqlBuilder.itemWhere(ModelWikiIndexInfos.FI_CMSINDEXINFOID, ColumnDataType.intData);
+            param.put(ModelWikiIndexInfos.FI_CMSINDEXINFOID, cmsIndexInfoId);
         }
         sqlBuilder.limit();
         return getResult(assembler, sqlBuilder, param);
@@ -705,6 +709,7 @@ public class DAOWikiIndexInfos
         buildSelectFieldCluase(sqlBuilder, selectFields);
         if (cmsIndexInfoId!= null) {
             sqlBuilder.itemWhere(ModelWikiIndexInfos.FI_CMSINDEXINFOID, ColumnDataType.intData);
+            param.put(ModelWikiIndexInfos.FI_CMSINDEXINFOID, cmsIndexInfoId);
         }
         sqlBuilder.limit();
         return getResult(assembler, sqlBuilder, param);
@@ -951,6 +956,7 @@ public class DAOWikiIndexInfos
         sqlBuilder.rawSelectItem(rawItem);
         if (cmsIndexInfoId!= null) {
             sqlBuilder.itemWhere(LogicalRelationshipType.and, LogicalOpType.in, null, ModelWikiIndexInfos.FI_CMSINDEXINFOID, ModelWikiIndexInfos.FI_CMSINDEXINFOID, ColumnDataType.intData);
+            param.put(ModelWikiIndexInfos.FI_CMSINDEXINFOID, cmsIndexInfoId);
         }
         sqlBuilder.limit();
         return ((List<TT> ) getSingleResults(assembler, sqlBuilder, param, tClass));
@@ -1098,6 +1104,7 @@ public class DAOWikiIndexInfos
         buildConditionCluase(sqlBuilder, instance, param);
         if (cmsIndexInfoId!= null) {
             sqlBuilder.itemWhere(LogicalRelationshipType.and, LogicalOpType.in, null, ModelWikiIndexInfos.FI_CMSINDEXINFOID, ModelWikiIndexInfos.FI_CMSINDEXINFOID, ColumnDataType.intData);
+            param.put(ModelWikiIndexInfos.FI_CMSINDEXINFOID, cmsIndexInfoId);
         }
         sqlBuilder.limit();
         return ((List<TT> ) getSingleResults(assembler, sqlBuilder, param, tClass));
