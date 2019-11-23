@@ -79,14 +79,14 @@ task runJavaCC {
                     " java -Dfile.encoding=UTF-8 -cp $rootDir/javacc/javacc-7.0.3.jar jjtree " +
                             "-OUTPUT_DIRECTORY=$rootDir/javacc_proj/src/main/gen/java/net/sf/jsqlparser/parser  " +
                             "$rootDir/javacc_proj/src/main/jjtree/JSqlParserCC.jjt && " +
-                            "mv $rootDir/javacc_proj/src/main/gen/java/net/sf/jsqlparser/parser/JSqlParserCC.jj " +
-                            "$rootDir/javacc_proj/src/main/javacc/ && " +
+//                            "mv $rootDir/javacc_proj/src/main/gen/java/net/sf/jsqlparser/parser/JSqlParserCC.jj " +
+//                            "$rootDir/javacc_proj/src/main/javacc/ && " +
                             "java -Dfile.encoding=UTF-8 -cp $rootDir/javacc/javacc-7.0.3.jar javacc  " +
                             "-OUTPUT_DIRECTORY=$rootDir/javacc_proj/src/main/gen/java/net/sf/jsqlparser/parser  " +
-                            "$rootDir/javacc_proj/src/main/javacc/JSqlParserCC.jj && " +
+                            "$rootDir/javacc_proj/src/main/gen/java/net/sf/jsqlparser/parser/JSqlParserCC.jj && " +
                     "java -Dfile.encoding=UTF-8 -cp $rootDir/javacc/javacc-7.0.3.jar jjdoc  " +
                     "-OUTPUT_FILE=$rootDir/javacc_proj/src/main/gen/doc/doc.html -text=true " +
-                    "$rootDir/javacc_proj/src/main/javacc/JSqlParserCC.jj"
+                    "$rootDir/javacc_proj/src/main/gen/java/net/sf/jsqlparser/parser/JSqlParserCC.jj"
             ;
 
             //commandLine "cmd","/C"," echo doing;";

@@ -78,6 +78,9 @@ public class SqlDaoConf extends AbstractGenConf {
             throw new IllegalArgumentException("不能再此处上增加@SqlResp，找不到外围的interface元素");
         }
 
+        TypeMirror returnType = el.getReturnType();
+        //TODO: handle base model
+
         String docComment = helpers.elementUtils.getDocComment(el);
         this.setComment(docComment);
         dataSourceId=annotation.dataSourceId();

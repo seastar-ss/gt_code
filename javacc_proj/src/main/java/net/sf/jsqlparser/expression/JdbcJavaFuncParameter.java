@@ -62,8 +62,12 @@ public class JdbcJavaFuncParameter extends ASTNodeAccessImpl implements Expressi
         final StringBuilder sb = new StringBuilder("${");
         sb.append(className == null ? "" : className).append(funcName).append('(');
         if (funcArgsList != null && funcArgsList.size() > 0) {
-            for (JdbcJavaFuncArgs item : funcArgsList)
+            boolean first = true;
+            for (JdbcJavaFuncArgs item : funcArgsList) {
+                if (first) first = false;
+                else sb.append(",");
                 sb.append(item.toSqlString());
+            }
         }
         sb.append(")}");
         return sb.toString();

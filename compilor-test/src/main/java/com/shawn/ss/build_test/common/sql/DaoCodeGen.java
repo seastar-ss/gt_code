@@ -13,14 +13,14 @@ import java.util.List;
 
 public interface DaoCodeGen {
 
-//    @SqlResp(
-//            sql="SELECT count(*) as insCount,gpInsId FROM ent_knownleag_base.wiki_user " +
-//                    "where wUserState=:state and gpBaseAuth>:auth  group by gpInsId",
-//            dataSourceId = "ent_knownleag_base"
-//    )
-//    <T extends AbstractBaseModel> List<T> queryAllCount(
-//            @SqlRespParam(defaultValue = "0") Integer state,
-//            @SqlRespParam(defaultValue = "255") Integer auth);
+    @SqlResp(
+            sql="SELECT count(*) as insCount,gpInsId FROM ent_knownleag_base.wiki_user " +
+                    "where wUserState=:state and gpBaseAuth>:auth  group by gpInsId",
+            dataSourceId = "ent_knownleag_base"
+    )
+    <T extends AbstractBaseModel> List<T> queryAllCount(
+            @SqlRespParam(defaultValue = "0") Integer state,
+            @SqlRespParam(defaultValue = "255") Integer auth);
 //
 //    @SqlResp(dataSourceId = "ent_knownleag_base",
 //            sql="select *,(select count(*) from wiki_page p where p.pageIndex=i.indexId) as pageCount " +

@@ -483,49 +483,7 @@ public class ModelBuilderContext {
     public void buildSpecialModalAndDao(SpecialModelConf def) {
 //        NamedParameterJdbcTemplate jdbcTemplate = dataSource.getJdbcTemplate();
         try {
-            List<FieldInfoInterface> params = def.getParams();
-            for (FieldInfoInterface defItem : params) {
-                FieldDataTypeInterface type = defItem.getType();
-                if (type.isMap()) {
-                    throw new IllegalArgumentException("no map sql query parameter allowed , for " + defItem.getFieldName());
-                }
-                if (!TypeConstantHelper.BASIC_DATA_CLASS_NAMES.contains(type.getTClassName())) {
-                    throw new IllegalArgumentException("no class sql query parameter allowed , for " + defItem.getFieldName());
-                }
-            }
-            final String dataSourceName = def.getDataSourceName();
-            final DBConnectionHelper dbInfoHolder = DbDataTable.getDataSource(dataSourceName);
-            final DbAnalyzer analyzer = DbInfoHandler.getAnalyzer();
-            analyzer.buildModel(dbInfoHolder, def);
-            def.setBuilderContext(this);
-//        TableInfoInterface tableInfo = modelDef.getModelDef();
-//        boolean composed = modelDef.isComposed();
-            String baseModelTable = def.getBaseTable();
-//        String baseModel = null;
-            Set<String> ignoreField = null;
-            if (baseModelTable != null) {
-//            baseModel=getModelClassName(baseModelTable, true);
-                final DbInfoInterface db = DbDataTable.getDb(baseModelTable);
-                TableInfoInterface baseTbInfo = db.getTable(baseModelTable);
-                String[] columnNames = baseTbInfo.getTableColumnNames();
-                ignoreField = CollectionHelper.newSortedSet();
-                ignoreField.addAll(Arrays.asList(columnNames));
-            }
-
-//        if(params!=null && params.size()>1){
-//            CommonPOJOConf commonPOJOConf=new CommonPOJOConf();
-//            String queryModelClzName=getClassNameOfSpecialQueryDto(def.getClzName());
-//            def.setQueryModelClzName(queryModelClzName);
-//            commonPOJOConf.setPojoClzName(queryModelClzName).setBuilderContext(this);
-//            for(CommonParamModelDef defItem:params){
-//                commonPOJOConf.addField(defItem);
-//            }
-//            POJOModelBuilder builder=new POJOModelBuilder(commonPOJOConf);
-//            builder.buildModel();
-//        }
             SpecialModelConf.DataAttrType type = def.getDataType();
-            def.setIgnoreField(ignoreField);
-            def.setBuildMapper(true);
             if (type.equals(SpecialModelConf.DataAttrType.LIST_OBJ) || type.equals(SpecialModelConf.DataAttrType.OBJ)) {
                 ModelBuilder modelBuilder = buildBaseModel(def);
 //        if(type.equals(SpecialModelDef.DataAttrType.SQL)) {

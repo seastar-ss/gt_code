@@ -46,12 +46,13 @@ public class DbAnalyzer {
 //        String TABLE_SCHEMA,TABLE_NAME,COLUMN_NAME,REFERENCED_TABLE_NAME,REFERENCED_COLUMN_NAME,CONSTRAINT_NAME;
 //    }
 
-    public void buildModel(final DBConnectionHelper helper, final SpecialModelConf def) {
+    public void buildModel(final BuildSQLModelParamHolder def) {
+        DBConnectionHelper helper = def.getHelper();
         NamedParameterJdbcTemplate template = helper.getJdbcTemplate();
         String sql = def.getSql();
         Map<String, Object> defualtParam = makeDefaultParam(def);
-        TableInfoInterface info = def.getDef();
-        final String defName = def.getMethodName();
+        TableInfoInterface info = def.getInfo();
+        final String defName = def.getDefName();
         TableInfo tbInfo;
         if (info == null || !(info instanceof TableInfo)) {
             tbInfo = new TableInfo();
@@ -83,7 +84,7 @@ public class DbAnalyzer {
         }
     }
 
-    private Map<String, Object> makeDefaultParam(SpecialModelConf def) {
+    private Map<String, Object> makeDefaultParam(BuildSQLModelParamHolder def) {
         Map<String, Object> defualtParam = def.getDefualtParam();
         if (defualtParam == null) {
             defualtParam = CollectionHelper.newMap();
@@ -111,6 +112,79 @@ public class DbAnalyzer {
         }
         L.warn("get map:" + defualtParam);
         return defualtParam;
+    }
+
+    public static class BuildSQLModelParamHolder{
+        DBConnectionHelper helper;
+        String sql;
+        Map<String, Object> defualtParam;
+        List<FieldInfoInterface> params;
+        TableInfoInterface info;
+        String comment;
+        String defName;
+
+        public String getComment() {
+            return comment;
+        }
+
+        public BuildSQLModelParamHolder setComment(String comment) {
+            this.comment = comment;
+            return this;
+        }
+
+        public List<FieldInfoInterface> getParams() {
+            return params;
+        }
+
+        public BuildSQLModelParamHolder setParams(List<FieldInfoInterface> params) {
+            this.params = params;
+            return this;
+        }
+
+        public DBConnectionHelper getHelper() {
+            return helper;
+        }
+
+        public BuildSQLModelParamHolder setHelper(DBConnectionHelper helper) {
+            this.helper = helper;
+            return this;
+        }
+
+        public String getSql() {
+            return sql;
+        }
+
+        public BuildSQLModelParamHolder setSql(String sql) {
+            this.sql = sql;
+            return this;
+        }
+
+        public Map<String, Object> getDefualtParam() {
+            return defualtParam;
+        }
+
+        public BuildSQLModelParamHolder setDefualtParam(Map<String, Object> defualtParam) {
+            this.defualtParam = defualtParam;
+            return this;
+        }
+
+        public TableInfoInterface getInfo() {
+            return info;
+        }
+
+        public BuildSQLModelParamHolder setInfo(TableInfoInterface info) {
+            this.info = info;
+            return this;
+        }
+
+        public String getDefName() {
+            return defName;
+        }
+
+        public BuildSQLModelParamHolder setDefName(String defName) {
+            this.defName = defName;
+            return this;
+        }
     }
 
     public static class BuildModelParamHolder {

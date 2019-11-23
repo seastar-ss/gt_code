@@ -62,6 +62,22 @@ public class SelectTest {
     }
 
     @Test
+    public void testSelectJavaFunc() throws Exception {
+        final String statement = "SELECT columnName FROM schemaName.tableName where  tableField1=${get(item:1,item2:['s','abcd'])}";
+        Select select = (Select) parserManager.parse(new StringReader(statement));
+        System.out.println(select.toString());
+//        assertStatementCanBeDeparsedAs(select, statement);
+    }
+
+    @Test
+    public void testSelectJavaFuncWithoutParamInitValue() throws Exception {
+        final String statement = "SELECT columnName FROM schemaName.tableName where  tableField1=${get(item,item2)}";
+        Select select = (Select) parserManager.parse(new StringReader(statement));
+        System.out.println(select.toString());
+//        assertStatementCanBeDeparsedAs(select, statement);
+    }
+
+    @Test
     public void testMultiPartTableNameWithServerNameAndDatabaseName() throws Exception {
         final String statement = "SELECT columnName FROM [server-name\\server-instance].databaseName..tableName";
         Select select = (Select) parserManager.parse(new StringReader(statement));

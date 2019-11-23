@@ -1,0 +1,38 @@
+
+> Configure project :front-end
+D:\project\newProject\new_code_gen\open_gen_generator\gt_code\front-end
+D:\project\newProject\new_code_gen\open_gen_generator\gt_code
+
+> Task :javacc_proj:runJavaCC FAILED
+Java Compiler Compiler Version 7.0.3 (Tree Builder)
+(type "jjtree" with no arguments for help)
+Reading from file D:\project\newProject\new_code_gen\open_gen_generator\gt_code\javacc_proj\src\main\jjtree\JSqlParserCC.jjt . . .
+opt:java
+File "Node.java" is being rebuilt.
+File "SimpleNode.java" is being rebuilt.
+File "CCJSqlParserTreeConstants.java" is being rebuilt.
+File "CCJSqlParserVisitor.java" is being rebuilt.
+File "CCJSqlParserDefaultVisitor.java" is being rebuilt.
+File "JJTCCJSqlParserState.java" is being rebuilt.
+Annotated grammar generated successfully in D:\project\newProject\new_code_gen\open_gen_generator\gt_code\javacc_proj\src\main\gen\java\net\sf\jsqlparser\parser\JSqlParserCC.jj
+Picked up JAVA_TOOL_OPTIONS: -Dfile.encoding=UTF8
+'mv' �����ڲ����ⲿ���Ҳ���ǿ����еĳ���
+���������ļ���
+
+FAILURE: Build failed with an exception.
+
+* Where:
+Build file 'D:\project\newProject\new_code_gen\open_gen_generator\gt_code\javacc_proj\build.gradle' line: 63
+
+* What went wrong:
+Execution failed for task ':javacc_proj:runJavaCC'.
+> Process 'command 'cmd'' finished with non-zero exit value 1
+
+* Try:
+Run with --stacktrace option to get the stack trace. Run with --info or --debug option to get more log output. Run with --scan to get full insights.
+
+* Get more help at https://help.gradle.org
+
+BUILD FAILED in 0s
+1 actionable task: 1 executed
+Picked up JAVA_TOOL_OPTIONS: -Dfile.encoding=UTF8

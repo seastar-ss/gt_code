@@ -1,4 +1,4 @@
-package com.shawn.ss.gen.api.interfaces.base_resp;
+package com.shawn.ss.gen.new_api;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.CLASS)
-@Target({ElementType.PACKAGE,ElementType.TYPE})
-public @interface DefaultResp {
-    DefaultRespConf[] confs() default {} ;
+@Target({ElementType.TYPE})
+public @interface BaseResp {
+    boolean useSpring() default true;
 }

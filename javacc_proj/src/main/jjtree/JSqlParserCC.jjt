@@ -2921,9 +2921,9 @@ JdbcJavaFuncArgs JdbcJavaFuncArgs():{
 {
     (
     (LOOKAHEAD(2) token=<S_IDENTIFIER>"." {retval.setClassType(token.image);})* token=<S_IDENTIFIER> {retval.setVarName(token.image);}
-    ":"
+    (":"
     value=dfValue(){   retval.setVarDefaultValue(value); }
-    | LOOKAHEAD(1) values = dfValues() {  retval.setListVarDefaultValue(values); }
+    | LOOKAHEAD(1) values = dfValues() {  retval.setListVarDefaultValue(values); })*
     )
     {
         return retval;
@@ -2949,7 +2949,7 @@ String dfValue() :   {
     Token token=null;
 }
 {
-    (token=<S_DOUBLE> | token=<S_LONG> | token=<S_HEX> | token=<S_CHAR_LITERAL>)
+    (token=<S_DOUBLE> | token=<S_LONG> | token=<S_HEX> | token=<S_QUOTED_IDENTIFIER>)
     {
          retval = token.image;
     }
