@@ -389,6 +389,8 @@ public class ModelBuilderContext {
         buildBaseModelAndDao(dbInfoHandler);
     }
 
+
+
     public void buildBaseModelAndDao(DbInfoHandler db) {
 //        String dbName = data_store.getDb();
 //        List<String> dataSources=getDataSource(dbName);
@@ -603,6 +605,18 @@ public class ModelBuilderContext {
             return tableInfoInterface.getPriKeyType();
         }
     }
+
+    public String getIdFieldName(String db, String table) {
+        final DbInfoInterface holder = DbDataTable.getDb(db);
+        TableInfoInterface tableInfoInterface = holder.getTable(table);
+        if (tableInfoInterface == null) {
+            return null;
+        } else {
+            return tableInfoInterface.getPriKey();
+        }
+    }
+
+
 
 //    public Map<String, TableInfoInterface> getTbMap() {
 //        return tbMap;

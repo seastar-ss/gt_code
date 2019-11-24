@@ -16,6 +16,7 @@ public class CommonFieldTypeInfo implements FieldDataTypeInterface{
     String keyClassName;
     Class keyClass;
     String[] dataType;
+    Object defaultValue;
 //    public boolean isList() {
 //        return isList;
 //    }
@@ -128,6 +129,16 @@ public class CommonFieldTypeInfo implements FieldDataTypeInterface{
 
     public CommonFieldTypeInfo setKeyClassName(String keyClassName) {
         this.keyClassName = keyClassName;
+        return this;
+    }
+
+    @Override
+    public Object getDefaultValue() {
+        return defaultValue;
+    }
+
+    public CommonFieldTypeInfo setDefaultValue(Object defaultValue) {
+        this.defaultValue = defaultValue;
         return this;
     }
 

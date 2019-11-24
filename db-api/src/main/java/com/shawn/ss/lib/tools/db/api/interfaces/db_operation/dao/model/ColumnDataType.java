@@ -10,33 +10,35 @@ import java.util.Map;
  * Created by ss on 2017/10/11.
  */
 public enum ColumnDataType implements FieldDataTypeInterface {
-    intData(Integer.class,"getInt",new String[]{"INT","MEDIUMINT"}),
-    longData(Long.class,"getLong",new String[]{"BIGINT"}),
-    byteData(Byte.class,"getByte",new String[]{"TINYINT"}),
-    shortData(Short.class,"getShort",new String[]{"SMALLINT"}),
-    dateData(Date.class,"getDate",new String[]{"DATE","YEAR"}),
-    timeData(Date.class,"getTime",new String[]{"TIME"}),
-    timeStampData(Date.class,"getTimestamp",new String[]{"DATETIME","TIMESTAMP"}),
-    stringData(String.class,"getString",new String[]{"VARCHAR","CHAR","TEXT","MEDIUMTEXT","LONGTEXT","TINYTEXT"}),
-    doubleData(Double.class,"getDouble",new String[]{"DOUBLE"}),
-    decimalData(BigDecimal.class,"getBigDecimal",new String[]{"DECIMAL"}),
-    floatData(Float.class,"getFloat",new String[]{"FLOAT"}),
-    bytesData(byte[].class,"getBlob",new String[]{"MEDIUMBLOB","LONGBLOB","TINYBLOB","BLOB"}),
-    booleanData(Boolean.class,"getBoolean",new String[]{"BIT"}),
-    enumData(Enum.class,"",new String[]{}),
-    constValue(String.class,"",new String[]{});
+    intData(Integer.class,"getInt",new String[]{"INT","MEDIUMINT"},0),
+    longData(Long.class,"getLong",new String[]{"BIGINT"},0L),
+    byteData(Byte.class,"getByte",new String[]{"TINYINT"},(byte)0),
+    shortData(Short.class,"getShort",new String[]{"SMALLINT"},(short)0),
+    dateData(Date.class,"getDate",new String[]{"DATE","YEAR"},new Date()),
+    timeData(Date.class,"getTime",new String[]{"TIME"},new Date()),
+    timeStampData(Date.class,"getTimestamp",new String[]{"DATETIME","TIMESTAMP"},new Date()),
+    stringData(String.class,"getString",new String[]{"VARCHAR","CHAR","TEXT","MEDIUMTEXT","LONGTEXT","TINYTEXT"},""),
+    doubleData(Double.class,"getDouble",new String[]{"DOUBLE"},0.0),
+    decimalData(BigDecimal.class,"getBigDecimal",new String[]{"DECIMAL"},new BigDecimal(0)),
+    floatData(Float.class,"getFloat",new String[]{"FLOAT"},0.0f),
+    bytesData(byte[].class,"getBlob",new String[]{"MEDIUMBLOB","LONGBLOB","TINYBLOB","BLOB"},new byte[]{}),
+    booleanData(Boolean.class,"getBoolean",new String[]{"BIT"},false),
+    enumData(Enum.class,"",new String[]{},null),
+    constValue(String.class,"",new String[]{},null);
     public static String SPECIAL_BLOB_METHOD="getBlob";
-    private Class tClass;
-    private String obtainMethod;
-    private String[] dataType;
+    private final Class tClass;
+    private final String obtainMethod;
+    private final String[] dataType;
+    private final Object defaultValue;
 
     private static volatile Map<String,FieldDataTypeInterface> typeMap;
     private static volatile Map<Class,FieldDataTypeInterface> clsTypeMap;
 
-    private ColumnDataType(Class tClass, String obtainMethod, String[] dataType){
+    private ColumnDataType(Class tClass, String obtainMethod, String[] dataType,Object defaultValue){
         this.tClass = tClass;
         this.obtainMethod = obtainMethod;
         this.dataType = dataType;
+        this.defaultValue=defaultValue;
 //        ResultSet res=null;
 //        res.getFloat()
     }
@@ -86,7 +88,15 @@ public enum ColumnDataType implements FieldDataTypeInterface {
         return obtainMethod;
     }
 
+    @Override
+    public Object getDefaultValue() {
+        return defaultValue;
+    }
 
+//    public ColumnDataType setDefaultValue(Object defaultValue) {
+//        this.defaultValue = defaultValue;
+//        return this;
+//    }
 
     public static FieldDataTypeInterface getType(String type){
         if(typeMap==null){

@@ -20,5 +20,6 @@ public @interface SqlMultipleRelatedConf {
     String relationship();
 //    String[] otherRelationship() default {};
     String[] extraCondition() default {};
+    String additionalWhere() default "";
 //    String relatedMainTableField();
 }

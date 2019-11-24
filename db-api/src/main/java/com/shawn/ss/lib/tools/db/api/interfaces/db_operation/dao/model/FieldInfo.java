@@ -6,7 +6,7 @@ public class FieldInfo implements FieldInfoInterface{
     String fieldName;
     FieldDataTypeInterface type;
     String comment;
-    String defaultValue;
+    Object defaultValue;
     EnumTypeDef enumTypeDef;
 
     public String getFieldName() {
@@ -36,11 +36,11 @@ public class FieldInfo implements FieldInfoInterface{
         return this;
     }
 
-    public String getDefaultValue() {
+    public Object getDefaultValue() {
         return defaultValue;
     }
 
-    public FieldInfo setDefaultValue(String defaultValue) {
+    public FieldInfo setDefaultValue(Object defaultValue) {
         this.defaultValue = defaultValue;
         return this;
     }

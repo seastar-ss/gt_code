@@ -5,6 +5,7 @@ import com.shawn.ss.gen.Helpers;
 import com.shawn.ss.gen.api.interfaces.SqlResp;
 import com.shawn.ss.gen.api.interfaces.SqlRespClass;
 import com.shawn.ss.gen.api.interfaces.SqlRespParam;
+import com.shawn.ss.gen.clz_analyze_handlers.TypeAnalyzer;
 import com.shawn.ss.gen.tools.clzAnalyzer.ClassAnalyze;
 import com.shawn.ss.gen.code_build_handlers.AbstractGenConf;
 import com.shawn.ss.gen.model.class_structure.ModelParamEntry;
@@ -19,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.lang.model.element.*;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +39,10 @@ public class SqlDaoConf extends AbstractGenConf {
     protected String comment;
     protected String dataSourceId;
 
-    protected Map<String, Object> defualtParam;
+    protected String baseClz;
+    protected String baseTable;
+
+//    protected Map<String, Object> defualtParam;
     protected final ModelBuilderContext context;
     protected List<FieldInfoInterface> params;
     private final ClassAnalyze analyzer;
@@ -45,7 +50,7 @@ public class SqlDaoConf extends AbstractGenConf {
     public SqlDaoConf(Element element, Helpers helpers) throws IllegalArgumentException {
         super(element);
         analyzer = new ClassAnalyze(helpers);
-        defualtParam= CollectionHelper.newMap();
+//        defualtParam= CollectionHelper.newMap();
         params=CollectionHelper.newList();
         SqlResp annotation = element.getAnnotation(SqlResp.class);
         String sql = annotation.sql();
@@ -64,7 +69,7 @@ public class SqlDaoConf extends AbstractGenConf {
 
         List<? extends VariableElement> parameters = el.getParameters();
         helpers.println("get method param:"+parameters.size());
-        handleParamInfo(this, parameters, helpers);
+        handleParamInfo(this, parameters, helpers,analyzer);
 
         Element enclosingElement = el.getEnclosingElement();
         if (enclosingElement != null && enclosingElement.getKind() == ElementKind.INTERFACE) {
@@ -78,8 +83,8 @@ public class SqlDaoConf extends AbstractGenConf {
             throw new IllegalArgumentException("不能再此处上增加@SqlResp，找不到外围的interface元素");
         }
 
-        TypeMirror returnType = el.getReturnType();
-        //TODO: handle base model
+
+        handleMethodRetType(this, el,helpers,analyzer);
 
         String docComment = helpers.elementUtils.getDocComment(el);
         this.setComment(docComment);
@@ -124,33 +129,41 @@ public class SqlDaoConf extends AbstractGenConf {
         return this;
     }
 
-    public Map<String, Object> getDefualtParam() {
-        return defualtParam;
+//    public Map<String, Object> getDefualtParam() {
+//        return defualtParam;
+//    }
+//
+//    public SqlDaoConf setDefualtParam(Map<String, Object> defualtParam) {
+//        this.defualtParam = defualtParam;
+//        return this;
+//    }
+
+//    public int sizeOfDefaultParam() {
+//        return defualtParam.size();
+//    }
+//
+//    public boolean isDefaultParamEmpty() {
+//        return defualtParam.isEmpty();
+//    }
+//
+//    public Object getDefaultParam(Object key) {
+//        return defualtParam.get(key);
+//    }
+//
+//    public SqlDaoConf putDefaultParam(String key, Object value) {
+//        defualtParam.put(key, value);
+//        return this;
+//    }
+
+    public static void handleMethodRetType(SqlDaoConf sqlDaoConf, ExecutableElement el, Helpers helpers, ClassAnalyze analyzer) {
+        TypeMirror returnType = el.getReturnType();
+        //TODO: handle base model
+        if(returnType.getKind()== TypeKind.WILDCARD){
+
+        }
     }
 
-    public SqlDaoConf setDefualtParam(Map<String, Object> defualtParam) {
-        this.defualtParam = defualtParam;
-        return this;
-    }
-
-    public int sizeOfDefaultParam() {
-        return defualtParam.size();
-    }
-
-    public boolean isDefaultParamEmpty() {
-        return defualtParam.isEmpty();
-    }
-
-    public Object getDefaultParam(Object key) {
-        return defualtParam.get(key);
-    }
-
-    public SqlDaoConf putDefaultParam(String key, Object value) {
-        defualtParam.put(key, value);
-        return this;
-    }
-
-    private void handleClassInfo(SqlDaoConf conf, TypeElement el, Helpers helpers) {
+    public static void handleClassInfo(SqlDaoConf conf, TypeElement el, Helpers helpers) {
         Name qualifiedName = el.getQualifiedName();
         String clName=null;
         SqlRespClass annotation = el.getAnnotation(SqlRespClass.class);
@@ -165,40 +178,45 @@ public class SqlDaoConf extends AbstractGenConf {
         conf.setClassName(clName);
     }
 
-    private void handleParamInfo(SqlDaoConf conf, List<? extends VariableElement> parameters, Helpers helpers) {
+    public static void handleParamInfo(SqlDaoConf conf, List<? extends VariableElement> parameters, Helpers helpers, ClassAnalyze analyzer) {
         for(VariableElement el:parameters){
-            ModelParamEntry entry=new ModelParamEntry();
-            analyzer.assembleParamStructure(entry,el);
-            Integer arrayDemension = entry.getArrayDemension();
-            Name simpleName = el.getSimpleName();
-            helpers.println("handle sql params:" + simpleName);
-            SqlRespParam annotation = el.getAnnotation(SqlRespParam.class);
-            String defaultValue = null;
-            String name = null;
-            if (annotation != null) {
-                defaultValue = annotation.defaultValue();
-                name = annotation.name();
-            }
-            if (StringHelper.isEmpty(name)) {
-                name = simpleName.toString();
-            }
-            if(entry.isSimple() && (arrayDemension ==0 )) {
-                TypeMirror typeMirror = el.asType();
-                Object value = helpers.asObject(defaultValue, typeMirror);
-                helpers.println("handle sql params:" + name + "->" + value);
-                assert (value != null);
-                conf.putDefaultParam(name, value);
-            }
-            boolean add = params.add(buildParam(entry));
+
+            boolean add = conf.params.add(buildParam(el,helpers,analyzer));
         }
     }
 
-    private FieldInfoInterface buildParam(ModelParamEntry entry) {
+    private static FieldInfoInterface buildParam(VariableElement el, Helpers helpers, ClassAnalyze analyzer) {
+        ModelParamEntry entry=new ModelParamEntry();
+        analyzer.assembleParamStructure(entry,el);
+        Integer arrayDemension = entry.getArrayDemension();
+        Name simpleName = el.getSimpleName();
+        Object value=null;
+        helpers.println("handle sql params:" + simpleName);
+        SqlRespParam annotation = el.getAnnotation(SqlRespParam.class);
+        String defaultValue = null;
+        String name = null;
+        if (annotation != null) {
+            defaultValue = annotation.defaultValue();
+            name = annotation.name();
+        }
+        if (StringHelper.isEmpty(name)) {
+            name = simpleName.toString();
+        }
+        if(entry.isSimple() && (arrayDemension ==0 )) {
+            TypeMirror typeMirror = el.asType();
+
+            value = helpers.asObject(defaultValue, typeMirror);
+            helpers.println("handle sql params:" + name + "->" + value);
+            assert (value != null);
+//                conf.putDefaultParam(name, value);
+        }
+
         FieldInfo def=new FieldInfo();
+        def.setDefaultValue(value);
         def.setFieldName(entry.getParamName());
         if(entry.isSimple()){
             def.setFieldName(entry.getClzName());
-            Integer arrayDemension = entry.getArrayDemension();
+
             CommonFieldTypeInfo type=new CommonFieldTypeInfo();
             if(arrayDemension==0){
                 type.setArray(false).setCollection(false).setMap(false);
@@ -221,9 +239,14 @@ public class SqlDaoConf extends AbstractGenConf {
         }else {
             //TODO:
         }
+
         L.info("build param conf:"+def);
         return def;
     }
+
+//    private static FieldInfoInterface buildParam(ModelParamEntry entry) {
+//
+//    }
 
 
     public ModelBuilderContext getContext() {
@@ -254,6 +277,24 @@ public class SqlDaoConf extends AbstractGenConf {
 
     public SqlDaoConf setParams(List<FieldInfoInterface> params) {
         this.params = params;
+        return this;
+    }
+
+    public String getBaseClz() {
+        return baseClz;
+    }
+
+    public SqlDaoConf setBaseClz(String baseClz) {
+        this.baseClz = baseClz;
+        return this;
+    }
+
+    public String getBaseTable() {
+        return baseTable;
+    }
+
+    public SqlDaoConf setBaseTable(String baseTable) {
+        this.baseTable = baseTable;
         return this;
     }
 }

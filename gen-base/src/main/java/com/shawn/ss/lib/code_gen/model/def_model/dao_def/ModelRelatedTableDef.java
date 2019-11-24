@@ -119,6 +119,10 @@ public class ModelRelatedTableDef implements _BaseDef {
         type= EnumFieldDataSrcType.commonDao;
     }
 
+    public ModelRelatedTableDef(String name, String fieldInThisTable, String fieldInMainTable, boolean single) {
+        this(name,EnumFieldDataSrcType.commonDao,fieldInThisTable,fieldInMainTable,single);
+    }
+
     public ModelRelatedTableDef(String name,EnumFieldDataSrcType type, String fieldInThisTable, String fieldInMainTable, boolean single) {
         this.name = name;
         this.type=type;

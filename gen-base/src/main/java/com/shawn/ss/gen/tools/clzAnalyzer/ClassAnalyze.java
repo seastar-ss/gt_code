@@ -1,18 +1,24 @@
 package com.shawn.ss.gen.tools.clzAnalyzer;
 
 import com.shawn.ss.gen.Helpers;
-import com.shawn.ss.lib.code_gen.base.helper.data_store.AnalyzedClzDataTable;
+import com.shawn.ss.gen.base.data_store.AnalyzedClzDataTable;
 import com.shawn.ss.gen.model.class_structure.ModelClazzStructureEntry;
 import com.shawn.ss.gen.model.class_structure.ModelParamEntry;
 import com.shawn.ss.lib.tools.CodeStyleTransformHelper;
 import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.TypeConstantHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.lang.model.element.*;
 import javax.lang.model.type.*;
+import javax.lang.model.util.Types;
 import java.util.*;
 
 public class ClassAnalyze {
+
+    public static final Logger L = LoggerFactory.getLogger(ClassAnalyze.class);
+
     Helpers helpers;
 
     final TypeMirror ROOT_TYPE, COLLECTION_TYPE, MAP_TYPE, SET_TYPE, LIST_TYPE, INT_TYPE, LONG_TYPE, DOUBLE_TYPE,
@@ -357,7 +363,7 @@ public class ClassAnalyze {
                     if (typeParamSize == 2) {
 
                         TypeMirror typeMirror = typeArguments.get(0);
-                        Element element = helpers.asElement(typeMirror);
+                        Element element = asElement(typeMirror);
                         TypeKind mapKeyKind = null;//typeMirror.getKind();
                         ModelClazzStructureEntry keyEntry = new ModelClazzStructureEntry();
                         if (typeMirror.getKind().equals(TypeKind.TYPEVAR)) {
@@ -447,6 +453,54 @@ public class ClassAnalyze {
 //            analyzeClz(context);
 //        }
 //        return new TypePair().setArrayType(arrayType).setType(realType);
+    }
+
+    private Element asElement(TypeMirror asType) {
+        Element element = null;
+        Types typeUtils = helpers.typeUtils;
+        if (asType != null) {
+            TypeKind kind = asType.getKind();
+            if (kind.isPrimitive()) {
+                element = typeUtils.boxedClass((PrimitiveType) asType);
+//                element = typeUtils.asElement(element1);
+            } else if (kind.equals(TypeKind.WILDCARD)
+//                    || kind.equals(TypeKind.INTERSECTION)
+                    ) {
+                WildcardType asWildcardType = (WildcardType) asType;
+                Element tEl = typeUtils.asElement(asWildcardType);
+                L.info("typed element", tEl.getKind());
+            } else if (kind.equals(TypeKind.ARRAY)) {
+//                isArray = true;
+                ArrayType asArrayType = (ArrayType) asType;
+                element = typeUtils.asElement(asArrayType.getComponentType());
+            } else if (kind.equals(TypeKind.DECLARED)) {
+                DeclaredType dtype = (DeclaredType) asType;
+                List<? extends TypeMirror> typeArguments = dtype.getTypeArguments();
+                Element els = typeUtils.asElement(dtype);
+                TypeElement cel = (TypeElement) els;
+                String paramClass = cel.getQualifiedName().toString();
+                if (TypeConstantHelper.COLLECTION_CLASS_NAMES.contains(paramClass)) {
+//                    paramElement.setSimple(false);
+                    if (typeArguments.size() == 1) {
+                        TypeMirror mirror = typeArguments.get(0);
+                        if (mirror != null) {
+                            element = typeUtils.asElement(mirror);
+                        }
+//                        else
+//                            element = elementUtils.getTypeElement(Object.class.getName());
+                    }
+//                    else {
+//                        element = elementUtils.getTypeElement(Object.class.getName());
+//                    }
+                }
+//                TypeElement collectionType = helpers.elementUtils.getTypeElement(ArrayList.class.getName());
+//                if (helpers.typeUtils.isAssignable(asType, collectionType.asType())) {
+//                helpers.println("collection based param:", helpers.typeUtils.isAssignable(collectionType.asType(), asType), " ", element.getSimpleName().toString());
+//                }
+//                helpers.typeUtils.
+            }
+        }
+        return element;
     }
 
     private ModelParamEntry.ArrayType getMapArrayType(DeclaredType type) {

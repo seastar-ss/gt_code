@@ -697,6 +697,17 @@ public class CodeHelper {
         return allSelectMethod.contains(methodName);
     }
 
+    public static final String buildConfNameFromDbAndTable(String db, String table) {
+        String name=null;
+
+        if(db==null){
+            name=table;
+        }else{
+            name=db+"."+table;
+        }
+        return name;
+    }
+
 
     public static interface StringParamFilter {
         boolean accept(JVar var, int i);

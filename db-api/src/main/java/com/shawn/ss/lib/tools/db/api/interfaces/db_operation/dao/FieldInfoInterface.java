@@ -12,5 +12,5 @@ public interface FieldInfoInterface {
 
     EnumTypeDef getEnumTypeDef();
 
-    String getDefaultValue();
+    Object getDefaultValue();
 }

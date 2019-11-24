@@ -7,7 +7,7 @@ import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
 import com.shawn.ss.lib.code_gen.base.helper.data_store.DbDataTable;
 import com.shawn.ss.lib.code_gen.base.helper.db_analyzer.DbAnalyzer;
 import com.shawn.ss.lib.code_gen.model.def_model.dao_def.SpecialModelConf;
-import com.shawn.ss.lib.code_gen.model.def_model.dao_def.SpecialModelDef;
+
 import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.TypeConstantHelper;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.DbInfoInterface;
@@ -50,7 +50,7 @@ public class SqlDaoGen extends AbstractCodeGenerator {
             final DBConnectionHelper dbInfoHolder = DbDataTable.getDataSource(dataSourceName);
             final DbAnalyzer analyzer = DbInfoHandler.getAnalyzer();
 
-            String baseModelTable = context.get;
+            String baseModelTable = ct.getBaseTable();
 //        String baseModel = null;
             Set<String> ignoreField = null;
             if (baseModelTable != null) {
@@ -83,7 +83,7 @@ public class SqlDaoGen extends AbstractCodeGenerator {
             SpecialModelConf ret=new SpecialModelConf(def.getDefName(),def.getInfo())
                     .setClzName(ct.getClassName())
                     .setMethodName(ct.getMethodName())
-                    .setDefualtParam(ct.getDefualtParam())
+//                    .setDefualtParam(ct.getDefualtParam())
                     .setSql(ct.getSql())
                     .setComment(ct.getComment())
                     .setDataSourceName(ct.getDataSourceId())

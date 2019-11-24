@@ -20,4 +20,6 @@ public interface FieldDataTypeInterface {
     String getObtainMethod();
 
     String name();
+
+    Object getDefaultValue();
 }

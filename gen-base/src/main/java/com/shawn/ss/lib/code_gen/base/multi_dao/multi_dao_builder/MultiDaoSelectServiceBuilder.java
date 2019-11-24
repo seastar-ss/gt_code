@@ -3,15 +3,14 @@ package com.shawn.ss.lib.code_gen.base.multi_dao.multi_dao_builder;
 import com.helger.jcodemodel.*;
 import com.shawn.ss.gen.api.conf.SelectMethodEnum;
 import com.shawn.ss.lib.code_gen.CodeBuilderInterface;
-
 import com.shawn.ss.lib.code_gen.base.helper.CodeHelper;
-import com.shawn.ss.lib.code_gen.base.helper.data_store.ClassDataTable;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
-import com.shawn.ss.lib.code_gen.model.MethodTypeEnum;
+import com.shawn.ss.lib.code_gen.base.helper.data_store.ClassDataTable;
 import com.shawn.ss.lib.code_gen.base.multi_dao.composed_model_builder.ComposedModelBuilder;
 import com.shawn.ss.lib.code_gen.base.multi_dao.multi_assemble_builder.ComposedAssemblerBuilder;
-import com.shawn.ss.lib.code_gen.model.def_model.dao_def.ModelRelatedTableDef;
+import com.shawn.ss.lib.code_gen.model.MethodTypeEnum;
 import com.shawn.ss.lib.code_gen.model.def_model.dao_def.ModelMulDaoConf;
+import com.shawn.ss.lib.code_gen.model.def_model.dao_def.ModelRelatedTableDef;
 import com.shawn.ss.lib.tools.CodeStyleTransformHelper;
 import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.StringHelper;
@@ -50,7 +49,7 @@ public class MultiDaoSelectServiceBuilder implements CodeBuilderInterface {
     private final ModelMulDaoConf modelMulDaoConf;
 
 
-//    private final String PARAM_DAO_START = "start";
+    //    private final String PARAM_DAO_START = "start";
 //    private final String PARAM_DAO_COUNT = "count";
     JVar loggerField;
     JMethod afterPropertiesSet;
@@ -67,8 +66,8 @@ public class MultiDaoSelectServiceBuilder implements CodeBuilderInterface {
         SelectMethodEnum modelSelectMethod;
         List<JVar> allVar;
         Map<String, JVar> mapVars;
-        private JVar otherTableAssembler, selectFields;
-        private JMethod mainSelectDaoMethod;
+        JVar otherTableAssembler, selectFields;
+        JMethod mainSelectDaoMethod;
         AbstractJClass mainTableRetCls;
         JDefinedClass assemblerCls;
         boolean listResult;
@@ -76,7 +75,8 @@ public class MultiDaoSelectServiceBuilder implements CodeBuilderInterface {
         AbstractJType retType, mainType;
         JFieldVar[] staticRoundFieldVar;
         JMethod assembleMainList, assembleMain;
-        public JVar mainDataVar;
+        JVar mainDataVar;
+        volatile int subIndex;
 
 
         public AbstractJType getRetType(boolean listResult) {
@@ -129,10 +129,10 @@ public class MultiDaoSelectServiceBuilder implements CodeBuilderInterface {
         modelMulDaoConf.init();
         multiFieldFromSameTable = modelMulDaoConf.isMultiFieldFromSameTable();
         mainModelSelectMethods = modelMulDaoConf.getMainModelSelectMethod();
-        if(mainModelSelectMethods==null){
+        if (mainModelSelectMethods == null) {
             SelectMethodEnum[] values = SelectMethodEnum.values();
-            for(SelectMethodEnum val:values){
-                if(!val.isSingleResult()&&!val.isCount()){
+            for (SelectMethodEnum val : values) {
+                if (!val.isSingleResult() && !val.isCount()) {
                     mainModelSelectMethods.add(val);
                 }
             }
@@ -142,7 +142,7 @@ public class MultiDaoSelectServiceBuilder implements CodeBuilderInterface {
         this.relatedTables = modelMulDaoConf.getRelatedTables();
         this.buildNotAbstract = modelMulDaoConf.isBuildNotAbstract();
         this.modelBuilderContext = modelMulDaoConf.getBuilderContext();
-        this.serviceClassName = modelBuilderContext.getServiceClassName(this.mainTable);
+        this.serviceClassName = modelBuilderContext.getServiceClassName(modelMulDaoConf.getTable());
 //        this.tbMap = this.modelBuilderContext.getTbMap();
 //        this.listResult = modelMulDaoConf.isListResult();
 
@@ -164,7 +164,7 @@ public class MultiDaoSelectServiceBuilder implements CodeBuilderInterface {
         }
         modelBuilder.buildModel();
         wrapperCls = modelBuilder.getWrapperClz();
-        assemblerBuilder = new ComposedAssemblerBuilder(modelMulDaoConf,wrapperCls);
+        assemblerBuilder = new ComposedAssemblerBuilder(modelMulDaoConf, wrapperCls);
         assemblerBuilder.buildModel();
         JDefinedClass multiAsemmblerClz = assemblerBuilder.getMultiAsemmblerClz();
 
@@ -178,8 +178,8 @@ public class MultiDaoSelectServiceBuilder implements CodeBuilderInterface {
 //        int findex = 0;
 //        staticRoundFieldVar[findex] =multiAsemmblerClz.staticRef("");
 //                = definedClass.field(
-//                CodeConstants.MODE_PUBLIC_STATIC_FINAL, cm.INT,
-//                CodeConstants.getFieldNameOfMulDaoRNDName(modelMulDaoConf.getMainField()),
+//                CodeHelper.MODE_PUBLIC_STATIC_FINAL, cm.INT,
+//                CodeHelper.getFieldNameOfMulDaoRNDName(modelMulDaoConf.getMainField()),
 //                JExpr.lit(findex)
 //        );
 //        for (ModelRelatedTableDef def : relatedTables) {
@@ -187,9 +187,9 @@ public class MultiDaoSelectServiceBuilder implements CodeBuilderInterface {
 //            String fieldName = def.getFieldName();
 //            String s = CodeStyleTransformHelper.humpStyleToUnderlineSplittedStyle(fieldName).toUpperCase();
 //            JFieldVar fieldVar = multiAsemmblerClz.field(
-//                    CodeConstants.MODE_PUBLIC_STATIC_FINAL,
+//                    CodeHelper.MODE_PUBLIC_STATIC_FINAL,
 //                    cm.INT,
-//                    CodeConstants.getFieldNameOfMulDaoRNDName(fieldName),
+//                    CodeHelper.getFieldNameOfMulDaoRNDName(fieldName),
 //                    JExpr.lit(findex)
 //            );
 //            staticRoundFieldVar[findex] = fieldVar;
@@ -198,7 +198,7 @@ public class MultiDaoSelectServiceBuilder implements CodeBuilderInterface {
         JMethod assembleMainList = buildAssembleMainToRet(true, holder);
         JMethod assembleMain = buildAssembleMainToRet(false, holder);
         for (SelectMethodEnum modelSelectMethod : mainModelSelectMethods) {
-            if(!modelSelectMethod.isCount()&& !modelSelectMethod.isSingleResult()) {
+            if (!modelSelectMethod.isCount() && !modelSelectMethod.isSingleResult()) {
                 holder.modelSelectMethod = modelSelectMethod;
                 holder.listResult = modelSelectMethod.isMultipleResult();
                 holder.assemblerCls = multiAsemmblerClz;
@@ -209,7 +209,7 @@ public class MultiDaoSelectServiceBuilder implements CodeBuilderInterface {
                 if (method != null) {
                     ModelBuilderContext.registerMethod(method);
                     JMethod methodWithoutSelectFields = CodeHelper.buildReloadMethodWithoutCertainName(method, definedClass, CodeHelper.PARAM_DAO_SELECTED_FIELDS);
-                    if(modelSelectMethod.isMultipleResult()){
+                    if (modelSelectMethod.isMultipleResult()) {
                         CodeHelper.buildReloadMethodWithoutCertainName(methodWithoutSelectFields, definedClass, CodeHelper.PARAM_DAO_START, CodeHelper.PARAM_DAO_COUNT);
                     }
                 }
@@ -219,7 +219,7 @@ public class MultiDaoSelectServiceBuilder implements CodeBuilderInterface {
 //            JVar param;
 //            if(narrow !=null){
 //
-//                param = method.param(CodeConstants.buildNarrowedClass(cm, pDef.getClz(), narrow), pDef.getName());
+//                param = method.param(CodeHelper.buildNarrowedClass(cm, pDef.getClz(), narrow), pDef.getName());
 //                allVar.add(param);
 //            }else{
 //                param = method.param(pDef.getClz(), pDef.getName());
@@ -231,19 +231,20 @@ public class MultiDaoSelectServiceBuilder implements CodeBuilderInterface {
 //        }
 
         }
+        buildInsertOrUpdate(holder);
         buildListify();
         buildMapify(false);
         buildMapify(true);
 //
-//        JFieldRef staticRef = mainModelClass.staticRef(CodeConstants.FIELD_CONST_NAME_PREFIX + tableInfo.getPriKey().toUpperCase());
-//        JInvocation mainMapInvoke = JExpr.invoke(mainDaoField, CodeConstants.METHOD_DAO_BUILD_MAP).arg(allMainList).arg(staticRef);
+//        JFieldRef staticRef = mainModelClass.staticRef(CodeHelper.FIELD_CONST_NAME_PREFIX + tableInfo.getPriKey().toUpperCase());
+//        JInvocation mainMapInvoke = JExpr.invoke(mainDaoField, CodeHelper.METHOD_DAO_BUILD_MAP).arg(allMainList).arg(staticRef);
 //        FieldDataTypeInterface priKeyType = tableInfo.getPriKeyType();
 //        Class priKeyTypeClass = priKeyType.gettClass();
-//        JVar mainMap = body.decl(CodeConstants.buildNarrowedClass(cm, Map.class, priKeyTypeClass, mainModelClass), "mainMap", mainMapInvoke);
+//        JVar mainMap = body.decl(CodeHelper.buildNarrowedClass(cm, Map.class, priKeyTypeClass, mainModelClass), "mainMap", mainMapInvoke);
 //        JVar mainIdList = body.decl(cm.ref(List.class), "mainIdList", cm.ref(CollectionHelper.class).staticInvoke("newList"));
 //        body.invoke(mainIdList,"addAll").arg(mainMap.invoke("keySet"));
-//        AbstractJClass entryClass = CodeConstants.buildNarrowedClass(cm, Map.Entry.class, priKeyTypeClass, mainModelClass);
-//        JVar entries = body.decl(CodeConstants.buildNarrowedClass(cm, Set.class, entryClass),
+//        AbstractJClass entryClass = CodeHelper.buildNarrowedClass(cm, Map.Entry.class, priKeyTypeClass, mainModelClass);
+//        JVar entries = body.decl(CodeHelper.buildNarrowedClass(cm, Set.class, entryClass),
 //                "entries", JExpr.invoke(mainMap, "entrySet")
 //        );
 //        for(ModelRelatedTableDef modelDef:relatedTables){
@@ -263,6 +264,42 @@ public class MultiDaoSelectServiceBuilder implements CodeBuilderInterface {
 //        }
 //        forBlock.invoke(ret, "add").arg(wrapper);
 
+    }
+
+    private JMethod buildInsertOrUpdate(BuildMethodParamHodler holder) {
+
+        List<String> tableOrderedList=sortTables(modelMulDaoConf);
+        return null;
+    }
+
+    private List<String> sortTables(ModelMulDaoConf modelMulDaoConf) {
+        List<String> ret=CollectionHelper.newLinkedList();
+        List<ModelRelatedTableDef> relatedTables = modelMulDaoConf.getRelatedTables();
+        ret.add(mainTable);
+        String idFieldNameInMainTable = modelBuilderContext.getIdFieldName(modelMulDaoConf.getDb(), modelMulDaoConf.getTable());
+        for(ModelRelatedTableDef item:relatedTables){
+            String table = item.getTable();
+            String fieldInMainTable = item.getFieldInMainTable();
+            String idFieldNameInThisTable = modelBuilderContext.getIdFieldName(item.getDb(), table);
+            String fieldInThisTable = item.getFieldInThisTable();
+            if(idFieldNameInThisTable!=null){
+                boolean fieldOfMainIsId = fieldInMainTable.equals(idFieldNameInMainTable);
+                boolean fieldInThidIsId = fieldInThisTable.equals(idFieldNameInThisTable);
+                if(fieldOfMainIsId && !fieldInThidIsId){
+                    ret.add(table);
+                }
+                if(!fieldOfMainIsId && fieldInThidIsId){
+                    ret.add(0,table);
+                }
+                if(!fieldOfMainIsId && !fieldInThidIsId){
+
+                }
+                if(fieldOfMainIsId && fieldInThidIsId){
+
+                }
+            }
+        }
+        return ret;
     }
 
     private JMethod buildAssembleMainToRet(boolean listResult, BuildMethodParamHodler holder) {
@@ -296,14 +333,14 @@ public class MultiDaoSelectServiceBuilder implements CodeBuilderInterface {
         String fieldInMainTable = def.getFieldInMainTable();
         String fieldInThisTable = def.getFieldInThisTable();
         String table = def.getTable();
-//        boolean isId = def.is();
+//        boolean isId = def.isFieldInThisTableIsId();
         boolean single = def.isSingle();
         AbstractJClass subModelClass = models.get(table);
         SelectMethodEnum subDaoSelectMethod = getSubSelectMethod(def, holder);
         String subDaoSelectMethodName = subDaoSelectMethod.getMethodName();
         String mName;
 //        if(multiFieldFromSameTable) {
-//            mName = CodeConstants.METHOD_SERVICE_GET_SUB_DATA_PREFIX
+//            mName = CodeHelper.METHOD_SERVICE_GET_SUB_DATA_PREFIX
 //                    + CodeStyleTransformHelper.upperFirstCase(modelBuilder.getSubModelFieldName(table)
 //                    + CodeStyleTransformHelper.upperFirstCase(fieldInMainTable) + CodeStyleTransformHelper.upperFirstCase(fieldInThisTable));
 //        }else{
@@ -352,11 +389,10 @@ public class MultiDaoSelectServiceBuilder implements CodeBuilderInterface {
         /**
          * start build method
          */
-        String modelSet;
-//            if(multiFieldFromSameTable){
-        modelSet = CodeHelper.getMethodNameOfModelSet(def.getFieldName());
+
+        //            if(multiFieldFromSameTable){
 //            }else {
-//                modelSet = CodeConstants.getMethodNameOfModelSet(modelBuilder.getSubModelFieldName(table));
+//                modelSet = CodeHelper.getMethodNameOfModelSet(modelBuilder.getSubModelFieldName(table));
 //            }
         buildIfMainModelEmptyTest(subBody, dataVar, holder.listResult);
         /**
@@ -377,7 +413,7 @@ public class MultiDaoSelectServiceBuilder implements CodeBuilderInterface {
                 invoke.arg(assemberVar);
             } else if (type.isAssignableFrom(selectedFieldVar.type()) && name.equals(CodeHelper.PARAM_DAO_SELECTED_FIELDS)) {
                 invoke.arg(selectedFieldVar);
-            } else if (type.isAssignableFrom(CodeHelper.buildNarrowedClass(cm,List.class,fieldClzRef))) {
+            } else if (type.isAssignableFrom(CodeHelper.buildNarrowedClass(cm, List.class, fieldClzRef))) {
                 JInvocation mainInvoke;
                 if (holder.listResult) {
                     mainInvoke = JExpr.invoke(mainDaoField, CodeHelper.METHOD_DAO_BUILD_LIST).narrow(fieldClzRef)
@@ -405,7 +441,7 @@ public class MultiDaoSelectServiceBuilder implements CodeBuilderInterface {
                     for (Map.Entry<String, String> cond : entries) {
                         final String condKey = cond.getKey();
                         final AbstractJType typeOfField = CodeHelper.getTypeOfField(cm, modelBuilderContext, db, mainTable, condKey);
-                        if(typeOfField!=null) {
+                        if (typeOfField != null) {
                             JVar mainId = subBody.decl(typeOfField, "mainId" + CodeStyleTransformHelper.upperFirstCase(condKey),
                                     JExpr.invoke(otherDataVar, CodeHelper.getMethodNameOfModelGet(condKey)));
                             subBody.invoke(instance, CodeHelper.getMethodNameOfModelSet(cond.getValue())).arg(mainId);
@@ -415,10 +451,10 @@ public class MultiDaoSelectServiceBuilder implements CodeBuilderInterface {
                 invoke.arg(instance);
             } else if (type.isAssignableFrom(cm.ref(String.class)) && name.equals(CodeHelper.PARAM_DAO_INDEX_IN_FIELD)) {
                 invoke.arg(subBaseModelColumnStaticRef);
-            }else if (
-                    type.isAssignableFrom(CodeHelper.buildNarrowedClass(cm,Set.class,String.class))
-                    && name.equals(CodeHelper.PARAM_DAO_EXT_CONDITION)
-                    && def.getAdditionalWhere()!=null
+            } else if (
+                    type.isAssignableFrom(CodeHelper.buildNarrowedClass(cm, Set.class, String.class))
+                            && name.equals(CodeHelper.PARAM_DAO_EXT_CONDITION)
+                            && def.getAdditionalWhere() != null
                     ) {
 //                Collections.singleton()
                 invoke.arg(cm.ref(Collections.class).staticInvoke("singleton").arg(JExpr.lit(def.getAdditionalWhere())));
@@ -428,9 +464,9 @@ public class MultiDaoSelectServiceBuilder implements CodeBuilderInterface {
         }
 //        if (holder.listResult) {
 //
-//            JInvocation mainInvoke = JExpr.invoke(mainDaoField, CodeConstants.METHOD_DAO_BUILD_LIST).narrow(fileClzRef)
+//            JInvocation mainInvoke = JExpr.invoke(mainDaoField, CodeHelper.METHOD_DAO_BUILD_LIST).narrow(fileClzRef)
 //                    .arg(dataVar).arg(mainBaseModelColumnStaticRef);
-//            JVar list = subBody.decl(CodeConstants.buildNarrowedClass(cm, List.class, fieldTClass), "list", mainInvoke);
+//            JVar list = subBody.decl(CodeHelper.buildNarrowedClass(cm, List.class, fieldTClass), "list", mainInvoke);
 //            JVar condition = null;
 //            if (subDaoSelectMethodName.isCondition()) {
 //
@@ -449,16 +485,16 @@ public class MultiDaoSelectServiceBuilder implements CodeBuilderInterface {
 //        } else {
 //
 //            JVar mainId = subBody.decl(fileClzRef, "mainId",
-//                    JExpr.invoke(dataVar, CodeConstants.getMethodNameOfModelGet(fieldInMainTable)));
+//                    JExpr.invoke(dataVar, CodeHelper.getMethodNameOfModelGet(fieldInMainTable)));
 //            JVar instance = subBody.decl(subModelClass, "instance", JExpr._new(subModelClass));
-//            subBody.invoke(instance, CodeConstants.getMethodNameOfModelSet(fieldInThisTable)).arg(mainId);
+//            subBody.invoke(instance, CodeHelper.getMethodNameOfModelSet(fieldInThisTable)).arg(mainId);
 ////            invoke = JExpr.invoke(daoField, subDaoSelectMethodName.getMethodName())
 ////                    .arg(selectedFieldVar).arg(assemberVar);
 ////                if (isId) {
 ////                    invoke.arg(mainId);
 ////                } else {
 //
-//            subBody.invoke(instance, CodeConstants.getMethodNameOfModelSet(fieldInThisTable)).arg(mainId);
+//            subBody.invoke(instance, CodeHelper.getMethodNameOfModelSet(fieldInThisTable)).arg(mainId);
 //            if (!single) {
 //                invoke.arg(JExpr._null()).arg(JExpr._null());
 //            }
@@ -470,7 +506,125 @@ public class MultiDaoSelectServiceBuilder implements CodeBuilderInterface {
          * 组装结果
          */
         if (holder.listResult) {
+
             JVar subModels = subBody.decl(CodeHelper.buildNarrowedClass(cm, List.class, subModelClass), "subModels", invoke);
+            JMethod jMethod = buildAssembleSubResultToRets(def, holder);
+            subBody.invoke(jMethod).arg(subModels).arg(retVar);
+//            AbstractJClass subMapClz = null;
+//            String subAssembleMethod = null;
+//            if (single) {
+//                subMapClz = CodeHelper.buildNarrowedClass(cm, Map.class, fieldClzRef, subModelClass);
+//                subAssembleMethod = CodeHelper.METHOD_DAO_BUILD_MAP;
+//            } else {
+//                subMapClz = CodeHelper.buildNarrowedClass(cm, Map.class, fieldTClass, CodeHelper.buildNarrowedClass(cm, List.class, subModelClass));
+//                subAssembleMethod = CodeHelper.METHOD_DAO_BUILD_LIST_MAP;
+//            }
+//            JInvocation subInvocation = JExpr.invoke(daoField, subAssembleMethod).arg(subModels).arg(subBaseModelColumnStaticRef);
+//            JVar subModelMap = subBody.decl(subMapClz, "subModelMap", subInvocation);
+//            JForEach forEach = subBody.forEach(wrapperCls, "wrapper", retVar);
+//            JVar loopVar = forEach.var();
+//            JBlock forBody = forEach.body();
+//            JVar mainId = forBody.decl(fieldClzRef, "mainId",
+//                    JExpr.invoke(loopVar, CodeHelper.getMethodNameOfModelGet(modelBuilder.getMainModelFieldName()))
+//                            .invoke(CodeHelper.getMethodNameOfModelGet(fieldInMainTable)));
+//            forBody.invoke(loopVar, modelSet)
+//                    .arg(JExpr.invoke(subModelMap, "get").arg(mainId));
+        } else {
+            AbstractJClass subClz = null;
+            if (single) {
+                subClz = subModelClass;
+                JVar subModel = subBody.decl(subClz, "subModel", invoke);
+                JMethod jMethod = buildAssembleSubResultToRet(def, holder);
+                subBody.invoke(jMethod).arg(subModel).arg(retVar);
+            } else {
+                subClz = CodeHelper.buildNarrowedClass(cm, List.class, subModelClass);
+                JVar subModel = subBody.decl(subClz, "subModel", invoke);
+                JMethod jMethod = buildAssembleSubResultToRet(def, holder);
+                subBody.invoke(jMethod).arg(subModel).arg(retVar);
+            }
+
+//            subBody.invoke(retVar, modelSet).arg(subModel);
+        }
+        /**
+         * end build method
+         */
+        return method;
+//        } else {
+//            throw new IllegalArgumentException(mainTable + "数据表字段" + fieldInMainTable + "与" + table + "数据表中字段" + fieldInThisTable + "类型不匹配");
+//        }
+    }
+
+    private JMethod buildAssembleSubResultToRet(ModelRelatedTableDef def, BuildMethodParamHodler holder) {
+        boolean single = def.isSingle();
+        String mName;
+        AbstractJClass subClz = null;
+        String table = def.getTable();
+        AbstractJClass subModelClass = models.get(table);
+        if (single) {
+            subClz = subModelClass;
+        } else {
+            subClz = CodeHelper.buildNarrowedClass(cm, List.class, subModelClass);
+        }
+        AbstractJType retType = holder.getRetType(holder.listResult);
+        mName = StringHelper.concat(
+                CodeHelper.METHOD_SERVICE_ASSEMBLE_SUB_DATA_PREFIX,
+                CodeStyleTransformHelper.upperFirstCase(def.getFieldName()), (single ? "" : "s"),
+                "ToRet"
+        );
+        String modelSet = CodeHelper.getMethodNameOfModelSet(def.getFieldName());
+        JMethod method = definedClass.getMethod(mName, new AbstractJType[]{subClz, retType});
+        if (method == null) {
+            method = definedClass.method(JMod.PROTECTED, cm.VOID, mName);
+            JVar subDataVar = method.param(subClz, "subData");
+            JVar retVar = method.param(retType, "ret");
+            method.body().invoke(retVar, modelSet).arg(subDataVar);
+        }
+        return method;
+    }
+
+    private JMethod buildAssembleSubResultToRets(ModelRelatedTableDef def, BuildMethodParamHodler holder) {
+        final String db = def.getDb();
+        String fieldInMainTable = def.getFieldInMainTable();
+        String fieldInThisTable = def.getFieldInThisTable();
+        String table = def.getTable();
+//        boolean isId = def.isFieldInThisTableIsId();
+        boolean single = def.isSingle();
+        AbstractJType retType = holder.getRetType(holder.listResult);
+        JFieldVar daoField = daoFields.get(table);
+        AbstractJClass subModelClass = models.get(table);
+        FieldDataTypeInterface mainFieldType = modelBuilderContext.getFieldType(mainDb, mainTable, fieldInMainTable);
+        JFieldRef mainBaseModelColumnStaticRef = CodeHelper.getBaseModelColumnStaticRef(mainModelClass, fieldInMainTable);
+        JFieldRef subBaseModelColumnStaticRef = CodeHelper.getBaseModelColumnStaticRef(subModelClass, fieldInThisTable);
+        FieldDataTypeInterface fieldType = modelBuilderContext.getFieldType(db, table, fieldInThisTable);
+        String modelSet = CodeHelper.getMethodNameOfModelSet(def.getFieldName());
+        if (fieldType == null) {
+            L.warn("not get type of {}.{}.{}", db, table, fieldInMainTable);
+            L.warn("config is {}", modelMulDaoConf);
+            throw new IllegalArgumentException(table + "数据表中字段" + fieldInThisTable + "不存在");
+        }
+        Class fieldTClass = fieldType.gettClass();
+        if (!fieldTClass.equals(mainFieldType.gettClass())) {
+            throw new IllegalArgumentException(mainTable + "数据表字段" + fieldInMainTable + "与" + table + "数据表中字段" + fieldInThisTable + "类型不匹配");
+        }
+
+        AbstractJClass fieldClzRef = cm.ref(fieldTClass);
+
+//        SelectMethodEnum subDaoSelectMethod = getSubSelectMethod(def, holder);
+//        String subDaoSelectMethodName = subDaoSelectMethod.getMethodName();
+        AbstractJType subClz = CodeHelper.buildNarrowedClass(cm, List.class, subModelClass);
+        String mName;
+
+        mName = StringHelper.concat(
+                CodeHelper.METHOD_SERVICE_ASSEMBLE_SUB_DATA_PREFIX,
+                CodeStyleTransformHelper.upperFirstCase(def.getFieldName()), (single ? "" : "s"), "ToRets"
+        );
+        JMethod method = definedClass.getMethod(mName, new AbstractJType[]{subClz, retType});
+        if (method == null) {
+            method = definedClass.method(JMod.PROTECTED, cm.VOID, mName);
+            JVar subDataVar = method.param(CodeHelper.buildNarrowedClass(cm, List.class, subModelClass), "subData");
+            JVar retVar = method.param(retType, "ret");
+
+            JBlock subBody = method.body();
             AbstractJClass subMapClz = null;
             String subAssembleMethod = null;
             if (single) {
@@ -480,7 +634,7 @@ public class MultiDaoSelectServiceBuilder implements CodeBuilderInterface {
                 subMapClz = CodeHelper.buildNarrowedClass(cm, Map.class, fieldTClass, CodeHelper.buildNarrowedClass(cm, List.class, subModelClass));
                 subAssembleMethod = CodeHelper.METHOD_DAO_BUILD_LIST_MAP;
             }
-            JInvocation subInvocation = JExpr.invoke(daoField, subAssembleMethod).arg(subModels).arg(subBaseModelColumnStaticRef);
+            JInvocation subInvocation = JExpr.invoke(daoField, subAssembleMethod).arg(subDataVar).arg(subBaseModelColumnStaticRef);
             JVar subModelMap = subBody.decl(subMapClz, "subModelMap", subInvocation);
             JForEach forEach = subBody.forEach(wrapperCls, "wrapper", retVar);
             JVar loopVar = forEach.var();
@@ -490,23 +644,8 @@ public class MultiDaoSelectServiceBuilder implements CodeBuilderInterface {
                             .invoke(CodeHelper.getMethodNameOfModelGet(fieldInMainTable)));
             forBody.invoke(loopVar, modelSet)
                     .arg(JExpr.invoke(subModelMap, "get").arg(mainId));
-        } else {
-            AbstractJClass subClz = null;
-            if (single) {
-                subClz = subModelClass;
-            } else {
-                subClz = CodeHelper.buildNarrowedClass(cm, List.class, subModelClass);
-            }
-            JVar subModel = subBody.decl(subClz, "subModel", invoke);
-            subBody.invoke(retVar, modelSet).arg(subModel);
         }
-        /**
-         * end build method
-         */
         return method;
-//        } else {
-//            throw new IllegalArgumentException(mainTable + "数据表字段" + fieldInMainTable + "与" + table + "数据表中字段" + fieldInThisTable + "类型不匹配");
-//        }
     }
 
     private void buildIfMainModelEmptyTest(JBlock subBody, JVar dataVar, boolean listResult) {
@@ -522,7 +661,7 @@ public class MultiDaoSelectServiceBuilder implements CodeBuilderInterface {
         boolean single = def.isSingle();
 //        boolean isId=def.isFieldInThisTableIsId();
         boolean listResult = hodler.listResult;
-//        return (single && !listResult) ? CodeConstants.METHOD_DAO_COMMON_SELECT_ONE : CodeConstants.METHOD_DAO_COMMON_SELECT_LIST;
+//        return (single && !listResult) ? CodeHelper.METHOD_DAO_COMMON_SELECT_ONE : CodeHelper.METHOD_DAO_COMMON_SELECT_LIST;
         boolean hasWhere = def.getAdditionalWhere() != null;
         boolean hasCondition = !CollectionHelper.isCollectionEmpty(def.getAdditionalCondition());
         if (single) {
@@ -594,7 +733,7 @@ public class MultiDaoSelectServiceBuilder implements CodeBuilderInterface {
                 JMod.PUBLIC,
                 listResult ? holder.listRetType : holder.retType,
                 holder.modelSelectMethod.getMethodName()
-//                CodeConstants.METHOD_SERVICE_GET_DATA
+//                CodeHelper.METHOD_SERVICE_GET_DATA
         );
 //        List<ModelBuilderContext.ParamDef> methodDef = ModelBuilderContext.getMethodDef(modelSelectMethod);
         holder.allVar = CollectionHelper.newList();
@@ -638,10 +777,10 @@ public class MultiDaoSelectServiceBuilder implements CodeBuilderInterface {
             initInvocation = JExpr._new(wrapperCls);
 
         JVar ret = body.decl(method.type(), "ret", initInvocation);
-        body.invoke(holder.otherTableAssembler,"clearData");
-        if(listResult){
+        body.invoke(holder.otherTableAssembler, "clearData");
+        if (listResult) {
             body.invoke(holder.otherTableAssembler, CodeHelper.KEY_WORD_SET + CodeStyleTransformHelper.upperFirstCase("rets")).arg(ret);
-        }else {
+        } else {
             body.invoke(holder.otherTableAssembler, CodeHelper.KEY_WORD_SET + CodeStyleTransformHelper.upperFirstCase("ret")).arg(ret);
         }
         JMethod getMain = buildGetMainModel(holder);
@@ -661,12 +800,13 @@ public class MultiDaoSelectServiceBuilder implements CodeBuilderInterface {
 //                String fieldName = def.getFieldName();
 //            String s = CodeStyleTransformHelper.humpStyleToUnderlineSplittedStyle(fieldName).toUpperCase();
 //                JFieldVar fieldVar = definedClass.field(
-//                        CodeConstants.MODE_PUBLIC_STATIC_FINAL,
+//                        CodeHelper.MODE_PUBLIC_STATIC_FINAL,
 //                        cm.INT,
-//                        CodeConstants.getFieldNameOfMulDaoRNDName(fieldName),
+//                        CodeHelper.getFieldNameOfMulDaoRNDName(fieldName),
 //                        JExpr.lit(index)
 //                );
             body.invoke(holder.otherTableAssembler, CodeHelper.METHOD_ASSEMBLER_SET_INDEX).arg(holder.assemblerCls.staticRef(holder.staticRoundFieldVar[index]));
+            holder.subIndex = index;
             JMethod subMethod = buildGetSubModel(def, holder);
             body.invoke(subMethod).arg(allMainList).arg(ret).arg(holder.selectFields).arg(holder.otherTableAssembler);
         }
@@ -681,15 +821,15 @@ public class MultiDaoSelectServiceBuilder implements CodeBuilderInterface {
 //        AbstractJClass model = models.get(table);
 //        JFieldVar daoField = daoFields.get(table);
 //        TableInfoInterface tableInfo = tbMap.get(table);
-//        JFieldRef staticRef = CodeConstants.getBaseModelColumnStaticRef(model, fieldInThisTable);
-//        JInvocation arg = JExpr.invoke(daoField, CodeConstants.METHOD_DAO_GET_BY_INDEXES).arg(JExpr._null()).arg(JExpr._null())
+//        JFieldRef staticRef = CodeHelper.getBaseModelColumnStaticRef(model, fieldInThisTable);
+//        JInvocation arg = JExpr.invoke(daoField, CodeHelper.METHOD_DAO_GET_BY_INDEXES).arg(JExpr._null()).arg(JExpr._null())
 //                .arg(JExpr._null()).arg(otherTableAssembler).arg(staticRef).arg(mainIdList);
-//        JVar list = body.decl(CodeConstants.buildNarrowedClass(cm, List.class, model), "rt" + CodeStyleTransformHelper.upperFirstCase(table) + "List", arg);
+//        JVar list = body.decl(CodeHelper.buildNarrowedClass(cm, List.class, model), "rt" + CodeStyleTransformHelper.upperFirstCase(table) + "List", arg);
 //        ColumnInfoInterface type = findColumnType(tableInfo, fieldInThisTable);
 //        Class fieldClz = type.getDataType().gettClass();
-//        JVar mapVar = body.decl(CodeConstants.buildNarrowedClass(cm, Map.class, fieldClz, CodeConstants.buildNarrowedClass(cm, List.class, model)),
+//        JVar mapVar = body.decl(CodeHelper.buildNarrowedClass(cm, Map.class, fieldClz, CodeHelper.buildNarrowedClass(cm, List.class, model)),
 //                "rt" + CodeStyleTransformHelper.upperFirstCase(table) + "Map",
-//                daoField.invoke(CodeConstants.METHOD_DAO_BUILD_LIST_MAP).narrow(cm.ref(fieldClz)).arg(list).arg(staticRef));
+//                daoField.invoke(CodeHelper.METHOD_DAO_BUILD_LIST_MAP).narrow(cm.ref(fieldClz)).arg(list).arg(staticRef));
 //        if (mapVars == null) {
 //            mapVars = CollectionHelper.newMap();
 //        }
@@ -750,9 +890,9 @@ public class MultiDaoSelectServiceBuilder implements CodeBuilderInterface {
 //
 //        try {
 //            JDefinedClass clz = cm._class(wrapperClzName);
-//            String fname = "data" + CodeConstants.getClazzNameFromTableName(mainTable);
+//            String fname = "data" + CodeHelper.getClazzNameFromTableName(mainTable);
 //            JFieldVar var = clz.field(JMod.PROTECTED, mainModelClass, fname);
-//            CodeConstants.buildGetterAndSetter(clz,fname,mainModelClass,var);
+//            CodeHelper.buildGetterAndSetter(clz,fname,mainModelClass,var);
 //            for(ModelRelatedTableDef modelDef:relatedTables){
 //                String table = modelDef.getTable();
 //                boolean single = modelDef.isSingle();
@@ -761,11 +901,11 @@ public class MultiDaoSelectServiceBuilder implements CodeBuilderInterface {
 //                if(single){
 //                    jClass= modelClz;
 //                }else {
-//                    jClass = CodeConstants.buildNarrowedClass(cm, List.class, modelClz);
+//                    jClass = CodeHelper.buildNarrowedClass(cm, List.class, modelClz);
 //                }
-//                fname="data"+CodeConstants.getClazzNameFromTableName(table)+(single?"":"List");
+//                fname="data"+CodeHelper.getClazzNameFromTableName(table)+(single?"":"List");
 //                JFieldVar field = clz.field(JMod.PROTECTED, jClass,fname);
-//                CodeConstants.buildGetterAndSetter(clz,fname,jClass,field);
+//                CodeHelper.buildGetterAndSetter(clz,fname,jClass,field);
 //            }
 //            return clz;
 //        } catch (JClassAlreadyExistsException e) {
@@ -777,11 +917,11 @@ public class MultiDaoSelectServiceBuilder implements CodeBuilderInterface {
 //
 //    private String buildWrapperClzName() {
 //        StringBuilder ret=new StringBuilder(modelBuilderContext.getModelClassPrefix(false));
-//        ret.append(CodeConstants.getClazzNameFromTableName(mainTable));
+//        ret.append(CodeHelper.getClazzNameFromTableName(mainTable));
 //        Set<String> relatedTb=CollectionHelper.newSortedSet();
 //        for(ModelRelatedTableDef modelDef:relatedTables){
 //            String table = modelDef.getTable();
-//            String tbName = CodeConstants.getClazzNameFromTableName(table)+(modelDef.isSingle()?"":"s");
+//            String tbName = CodeHelper.getClazzNameFromTableName(table)+(modelDef.isSingle()?"":"s");
 //            relatedTb.add(tbName);
 //        }
 //        for(String s:relatedTb) ret.append(s);
@@ -796,14 +936,14 @@ public class MultiDaoSelectServiceBuilder implements CodeBuilderInterface {
 
             definedClass._implements(InitializingBean.class);
             FieldDataTypeInterface idFieldType = modelBuilderContext.getIdFieldType(mainDb, mainTable);
-            AbstractJType idType=cm.ref(idFieldType.gettClass());
-            definedClass._implements(CodeHelper.buildNarrowedClass(cm,DaoInterface.class,wrapperCls,idType));
-            if(modelMulDaoConf.getImplInterface()!=null && !buildNotAbstract){
+            AbstractJType idType = cm.ref(idFieldType.gettClass());
+            definedClass._implements(CodeHelper.buildNarrowedClass(cm, DaoInterface.class, wrapperCls, idType));
+            if (modelMulDaoConf.getImplInterface() != null && !buildNotAbstract) {
                 definedClass._implements(cm.ref(modelMulDaoConf.getImplInterface()));
             }
-            definedClass._extends(CodeHelper.buildNarrowedClass(cm,AbstractDao.class,wrapperCls,idType));
-            definedClass.annotate(cm.ref(SuppressWarnings.class)).param("value","unchecked");//.annotationParam(cm.ref(String.class),JExpr.lit("unchecked"))
-            afterPropertiesSet=definedClass.method(JMod.PUBLIC,cm.VOID, CodeHelper.METHOD_SPRING_BEAN_AFTER_PROPERTIES_SET);
+            definedClass._extends(CodeHelper.buildNarrowedClass(cm, AbstractDao.class, wrapperCls, idType));
+            definedClass.annotate(cm.ref(SuppressWarnings.class)).param("value", "unchecked");//.annotationParam(cm.ref(String.class),JExpr.lit("unchecked"))
+            afterPropertiesSet = definedClass.method(JMod.PUBLIC, cm.VOID, CodeHelper.METHOD_SPRING_BEAN_AFTER_PROPERTIES_SET);
             afterPropertiesSet.annotate(Override.class);
             afterPropertiesSet._throws(Exception.class);
             definedClass.constructor(JMod.PUBLIC).body().invoke("super").arg(JExpr.dotclass(wrapperCls));
@@ -863,7 +1003,7 @@ public class MultiDaoSelectServiceBuilder implements CodeBuilderInterface {
         JVar mainVar = block.decl(mainModelClass, "mainVar", JExpr.invoke(var, CodeHelper.getMethodNameOfModelGet(modelMulDaoConf.getMainField())));
         block.invoke(ret, "add").arg(
                 mainModelClass.staticRef(CodeHelper.FIELD_REDIS_MAP_MAPPER_INSTANCE)
-                .invoke(CodeHelper.METHOD_JEDIS_MAPPER_GET_FIELD).narrow(genericType).arg(field).arg(mainVar)
+                        .invoke(CodeHelper.METHOD_JEDIS_MAPPER_GET_FIELD).narrow(genericType).arg(field).arg(mainVar)
         );
         body._return(ret);
     }
@@ -879,7 +1019,6 @@ public class MultiDaoSelectServiceBuilder implements CodeBuilderInterface {
      * }
      *
      * @param isItemList
-
      */
     private void buildMapify(boolean isItemList) {
         JDirectClass genericType = cm.directClass("TT");
