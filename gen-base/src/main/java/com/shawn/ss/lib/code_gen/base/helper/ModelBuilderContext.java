@@ -556,6 +556,7 @@ public class ModelBuilderContext {
         String name = method.name();
         JDefinedClass jDefinedClass = method.owningClass();
         String clzName = jDefinedClass.name();
+        ClassDataTable.putDaoClz(clzName,jDefinedClass);
         MethodTypeEnum mType = null;
         if (clzName.startsWith(CodeHelper.CLASS_NAME_DAO_PREFIX)) {
             mType = MethodTypeEnum.DAO_METHOD;

@@ -11,6 +11,7 @@ import com.shawn.ss.gen.code_build_handlers.AbstractGenConf;
 import com.shawn.ss.gen.model.class_structure.ModelParamEntry;
 //import com.shawn.ss.gen.tools.clzAnalyzer.ClassAnalyze;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
+import com.shawn.ss.lib.code_gen.base.helper.data_store.ClassDataTable;
 import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.StringHelper;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.FieldInfoInterface;
@@ -22,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import javax.lang.model.element.*;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.type.WildcardType;
 import java.util.List;
 import java.util.Map;
 
@@ -159,7 +161,12 @@ public class SqlDaoConf extends AbstractGenConf {
         TypeMirror returnType = el.getReturnType();
         //TODO: handle base model
         if(returnType.getKind()== TypeKind.WILDCARD){
-
+            WildcardType type=(WildcardType)returnType;
+            TypeMirror extendsBound = type.getExtendsBound();
+            String toString = extendsBound.toString();
+            if(ClassDataTable.keySetOfModelClz().contains(toString)){
+                sqlDaoConf.baseTable=toString;
+            }
         }
     }
 

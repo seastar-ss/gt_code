@@ -4,6 +4,7 @@ import com.helger.jcodemodel.*;
 import com.shawn.ss.lib.code_gen.CodeBuilderInterface;
 import com.shawn.ss.lib.code_gen.base.helper.CodeHelper;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
+import com.shawn.ss.lib.code_gen.base.helper.data_store.ClassDataTable;
 import com.shawn.ss.lib.code_gen.model.def_model.dao_def.CommonModelDef;
 //import com.shawn.ss.lib.code_gen.model.def_model.dao_def.EnumTypeConf;
 import com.shawn.ss.lib.code_gen.model.def_model.dao_def.SpecialModelConf;
@@ -115,6 +116,7 @@ public class ModelBuilder implements CodeBuilderInterface {
                     buildSQLField(sql);
                 }
             }
+            ClassDataTable.putModelClz(modelClassName,definedClass);
         } catch (JClassAlreadyExistsException e) {
             e.printStackTrace();
             throw new IllegalStateException("model state abnormal for "+modelClassName);
