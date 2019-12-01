@@ -117,6 +117,7 @@ public class ModelBuilder implements CodeBuilderInterface {
                 }
             }
             ClassDataTable.putModelClz(modelClassName,definedClass);
+//            ClassDataTable.putModelClz(modelClassName,definedClass);
         } catch (JClassAlreadyExistsException e) {
             e.printStackTrace();
             throw new IllegalStateException("model state abnormal for "+modelClassName);

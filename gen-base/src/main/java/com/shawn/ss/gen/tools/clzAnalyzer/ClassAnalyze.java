@@ -223,12 +223,12 @@ public class ClassAnalyze {
                                         CodeStyleTransformHelper.lowerFirstCase(nameStr.replace("set", "")),
                                         parameters.get(0).asType());
                             }
-                        }else if(
+                        } else if (
                                 !modifiers.contains(Modifier.ABSTRACT)
                                         && !modifiers.contains(Modifier.STATIC)
                                         && modifiers.contains(Modifier.PUBLIC)
                                         && nameStr.startsWith("get")
-                                ){
+                                ) {
                             List<? extends VariableElement> parameters = member.getParameters();
                             if (parameters != null && parameters.size() == 0) {
                                 availableFields.put(
@@ -266,7 +266,7 @@ public class ClassAnalyze {
                 }
             }
 
-        } else if(kind.equals(ElementKind.ENUM)){
+        } else if (kind.equals(ElementKind.ENUM)) {
             List<? extends Element> elements = el.getEnclosedElements();
             for (Element e : elements) {
                 ElementKind elkind = e.getKind();
@@ -295,8 +295,8 @@ public class ClassAnalyze {
 
         TypeKind kind = type.getKind();
 
-        List<ModelParamEntry.ArrayType> arrays = model.getArrayType();
-        List<ModelClazzStructureEntry> keyClz = model.getKeyClz();
+        List<ModelParamEntry.ArrayInfo> arrays = model.getArrayType();
+//        List<ModelClazzStructureEntry> keyClz = model.getKeyClz();
         if (ROOT_TYPE.equals(type)) {
 //            model.setSimple(false);
             clz.setClzName(ROOT_CLZ_NAME).setDataType(ModelClazzStructureEntry.DataType.objectClassType).setSimple(false).setSimpleClz(false);
@@ -338,11 +338,14 @@ public class ClassAnalyze {
                 helpers.println(" ****** el is  ", mapAssignable, " & ", collectionAssignable, " & ", typeParamSize);
                 helpers.println(" ****** typeVar is  ", typeArguments);
                 if (collectionAssignable) {
+                    ModelClazzStructureEntry keyEntry;
+                    keyEntry = new ModelClazzStructureEntry()
+                            .setClzName(Integer.class.getName()).setDataType(ModelClazzStructureEntry.DataType.classType);
                     if (typeParamSize == 1) {
-                        ModelClazzStructureEntry keyEntry = new ModelClazzStructureEntry()
-                                .setClzName(Integer.class.getName()).setDataType(ModelClazzStructureEntry.DataType.classType);
+
                         if (helpers.typeUtils.isAssignable(typeErasure, LIST_TYPE)) {
                             arrayType = ModelParamEntry.ArrayType.list;
+
                         } else if (helpers.typeUtils.isAssignable(typeErasure, SET_TYPE)
                                 ) {
                             arrayType = ModelParamEntry.ArrayType.set;
@@ -350,15 +353,17 @@ public class ClassAnalyze {
                             arrayType = ModelParamEntry.ArrayType.collection;
                         }
                         realType = typeArguments.get(0);
-                        keyClz.add(keyEntry);
-                        arrays.add(arrayType);
-                        model.setArrayType(arrays).setKeyClz(keyClz).incrArrayDemension();
-                        context.setCurrentTypeMirror(realType);
-                        analyzeType(context);
+
                     } else {
-                        helpers.error(currentElement, "错误，%s 元素未设定模板参数类型", currentElement.getSimpleName().toString());
-                        throw new IllegalStateException("Collection类型元素需要设置模板类型");
+                        helpers.warn(currentElement, "错误，%s 元素未设定模板参数类型", currentElement.getSimpleName().toString());
+                        realType = ROOT_TYPE;
+//                        throw new IllegalStateException("Collection类型元素需要设置模板类型");
                     }
+//                    keyClz.add(keyEntry);
+                    arrays.add(new ModelParamEntry.ArrayInfo().setKeyType(keyEntry).setType(arrayType));
+                    model.setArrayType(arrays);
+                    context.setCurrentTypeMirror(realType);
+                    analyzeType(context);
                 } else if (mapAssignable) {
                     if (typeParamSize == 2) {
 
@@ -376,25 +381,40 @@ public class ClassAnalyze {
                         if (mapKeyKind.equals(TypeKind.DECLARED)) {
                             element = helpers.typeUtils.asElement(typeMirror);
                             arrayType = getMapArrayType((DeclaredType) typeMirror);
-                            arrays.add(arrayType);
+
                             TypeElement ttEl = (TypeElement) element;
                             final String keyClzName = ttEl.getQualifiedName().toString();
                             keyEntry.setClzName(keyClzName)
                                     .setDataType(ModelClazzStructureEntry.DataType.classType);
-                            keyClz.add(keyEntry);
+                            arrays.add(new ModelParamEntry.ArrayInfo().setKeyType(keyEntry).setType(arrayType));
+//                            keyClz.add(keyEntry);
 //                            model.setKeyClz(keyClz);
-                            model.setArrayType(arrays).setKeyClz(keyClz).incrArrayDemension();
+
                         } else {
-                            throw new IllegalStateException("未知的map key类型 ");
+                            arrays.add(
+                                    new ModelParamEntry.ArrayInfo()
+                                            .setKeyType(null)
+                                            .setType(ModelParamEntry.ArrayType.otherMap)
+                            );
+//                            throw new IllegalStateException("未知的map key类型 ");
                         }
+
 //                        model.set
                         realType = typeArguments.get(1);
-                        context.setCurrentTypeMirror(realType);
-                        analyzeType(context);
+
                     } else {
-                        helpers.error(currentElement, "错误，%s 元素未设定模板参数类型", currentElement.getSimpleName().toString());
-                        throw new IllegalStateException("Map类型元素需要设置模板类型");
+                        helpers.warn(currentElement, "错误，%s 元素未设定模板参数类型", currentElement.getSimpleName().toString());
+                        arrays.add(
+                                new ModelParamEntry.ArrayInfo()
+                                        .setKeyType(null)
+                                        .setType(ModelParamEntry.ArrayType.otherMap)
+                        );
+                        realType = ROOT_TYPE;
+//                        throw new IllegalStateException("Map类型元素需要设置模板类型");
                     }
+                    model.setArrayType(arrays);
+                    context.setCurrentTypeMirror(realType);
+                    analyzeType(context);
                 } else {
                     String clzName = typeEl.getQualifiedName().toString();
                     if (AnalyzedClzDataTable.containsKey(clzName)) {
@@ -437,9 +457,9 @@ public class ClassAnalyze {
                 arrayType = ModelParamEntry.ArrayType.array;
                 ModelClazzStructureEntry keyEntry = new ModelClazzStructureEntry()
                         .setClzName(Integer.class.getName()).setDataType(ModelClazzStructureEntry.DataType.classType);
-                keyClz.add(keyEntry);
-                arrays.add(arrayType);
-                model.setArrayType(arrays).setKeyClz(keyClz).incrArrayDemension();
+//                keyClz.add(keyEntry);
+                arrays.add(new ModelParamEntry.ArrayInfo().setKeyType(keyEntry).setType(arrayType));
+                model.setArrayType(arrays);
                 context.setCurrentTypeMirror(realType);
                 analyzeType(context);
                 break;

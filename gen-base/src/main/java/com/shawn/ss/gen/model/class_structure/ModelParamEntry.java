@@ -13,9 +13,10 @@ import java.util.Set;
 public class ModelParamEntry {
     //    public static final Queue<ParamElement> builtEntry = new ArrayDeque<>();
 
-    public static enum ArrayType{
-        array,list,set,collection,stringMap,intMap,longMap,doubleMap,dateMap,otherMap;
-        public boolean isMap(){
+    public static enum ArrayType {
+        array, list, set, collection, stringMap, intMap, longMap, doubleMap, dateMap, otherMap;
+
+        public boolean isMap() {
             return this.equals(ArrayType.longMap)
                     || this.equals(ArrayType.stringMap)
                     || this.equals(ArrayType.intMap)
@@ -25,30 +26,63 @@ public class ModelParamEntry {
                     || this.equals(ArrayType.dateMap)
                     ;
         }
-        public boolean isCollection(){
+
+        public boolean isCollection() {
             return this.equals(ArrayType.list)
                     || this.equals(ArrayType.set)
                     || this.equals(ArrayType.collection)
                     ;
         }
-        public boolean isArray(){
+
+        public boolean isArray() {
             return this.equals(ArrayType.array);
+        }
+    }
+
+    public static class ArrayInfo {
+        ArrayType type;
+        ModelClazzStructureEntry keyType;
+
+        public ArrayType getType() {
+            return type;
+        }
+
+        public ArrayInfo setType(ArrayType type) {
+            this.type = type;
+            return this;
+        }
+
+        public ModelClazzStructureEntry getKeyType() {
+            return keyType;
+        }
+
+        public ArrayInfo setKeyType(ModelClazzStructureEntry keyType) {
+            this.keyType = keyType;
+            return this;
+        }
+
+        @Override
+        public String toString() {
+            return "ArrayInfo{" +
+                    "type=" + type +
+                    ", keyType=" + keyType +
+                    '}';
         }
     }
 
     String paramName;
     Object defaultValue;
-    List<ArrayType> arrayType;
-    Integer arrayDemension;
+    List<ArrayInfo> arrayType;
+//    Integer arrayDemension;
     Object contantValue;
-    List<ModelClazzStructureEntry> keyClz;
+    //    List<ModelClazzStructureEntry> keyClz;
     ModelClazzStructureEntry clz;
 
     public ModelParamEntry() {
-        clz=new ModelClazzStructureEntry();
-        arrayType=CollectionHelper.newList();
-        keyClz=CollectionHelper.newList();
-        arrayDemension=0;
+        clz = new ModelClazzStructureEntry();
+        arrayType = CollectionHelper.newList();
+//        keyClz=CollectionHelper.newList();
+//        arrayDemension = 0;
     }
 
     public String getParamName() {
@@ -70,11 +104,11 @@ public class ModelParamEntry {
     }
 
 
-    public List<ArrayType> getArrayType() {
+    public List<ArrayInfo> getArrayType() {
         return arrayType;
     }
 
-    public ModelParamEntry setArrayType(List<ArrayType> arrayType) {
+    public ModelParamEntry setArrayType(List<ArrayInfo> arrayType) {
         this.arrayType = arrayType;
         return this;
     }
@@ -166,16 +200,31 @@ public class ModelParamEntry {
     }
 
 
-    public List<ModelClazzStructureEntry> getKeyClz() {
-        return keyClz;
+//    public List<ModelClazzStructureEntry> getKeyClz() {
+//        return keyClz;
+//    }
+//
+//    public ModelParamEntry setKeyClz(List<ModelClazzStructureEntry> keyClz) {
+//        this.keyClz = keyClz;
+//        return this;
+//    }
+
+
+    public int sizeOfArray() {
+        return arrayType.size();
     }
 
-    public ModelParamEntry setKeyClz(List<ModelClazzStructureEntry> keyClz) {
-        this.keyClz = keyClz;
-        return this;
+    public ArrayInfo getArrayInfo(int index) {
+        return arrayType.get(index);
     }
 
+    public ArrayInfo setArrayInfo(int index, ArrayInfo element) {
+        return arrayType.set(index, element);
+    }
 
+    public void addArrayInfo(ArrayInfo element) {
+        arrayType.add(element);
+    }
 
     public Object getContantValue() {
         return contantValue;
@@ -187,22 +236,22 @@ public class ModelParamEntry {
     }
 
     public Integer getArrayDemension() {
-        return arrayDemension;
+        return arrayType.size();
     }
 
-    public ModelParamEntry setArrayDemension(Integer arrayDemension) {
-        this.arrayDemension = arrayDemension;
-        return this;
-    }
+//    public ModelParamEntry setArrayDemension(Integer arrayDemension) {
+//        this.arrayDemension = arrayDemension;
+//        return this;
+//    }
 
-    public ModelParamEntry incrArrayDemension() {
-        if(this.arrayDemension == null){
-            this.arrayDemension=1;
-        }else{
-            this.arrayDemension++;
-        }
-        return this;
-    }
+//    public ModelParamEntry incrArrayDemension() {
+//        if (this.arrayDemension == null) {
+//            this.arrayDemension = 1;
+//        } else {
+//            this.arrayDemension++;
+//        }
+//        return this;
+//    }
 
     @Override
     public String toString() {
@@ -210,9 +259,9 @@ public class ModelParamEntry {
                 "paramName='" + paramName + '\'' +
                 ", defaultValue=" + defaultValue +
                 ", arrayType=" + arrayType +
-                ", arrayDemension=" + arrayDemension +
+                ", arrayDemension=" + getArrayDemension() +
                 ", contantValue=" + contantValue +
-                ", keyClz=" + keyClz +
+//                ", keyClz=" + keyClz +
                 ", clz=" + clz +
                 '}';
     }

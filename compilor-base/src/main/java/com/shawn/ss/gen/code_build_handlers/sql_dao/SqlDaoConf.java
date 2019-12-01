@@ -5,13 +5,11 @@ import com.shawn.ss.gen.Helpers;
 import com.shawn.ss.gen.api.interfaces.SqlResp;
 import com.shawn.ss.gen.api.interfaces.SqlRespClass;
 import com.shawn.ss.gen.api.interfaces.SqlRespParam;
-import com.shawn.ss.gen.clz_analyze_handlers.TypeAnalyzer;
 import com.shawn.ss.gen.tools.clzAnalyzer.ClassAnalyze;
 import com.shawn.ss.gen.code_build_handlers.AbstractGenConf;
 import com.shawn.ss.gen.model.class_structure.ModelParamEntry;
 //import com.shawn.ss.gen.tools.clzAnalyzer.ClassAnalyze;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
-import com.shawn.ss.lib.code_gen.base.helper.data_store.ClassDataTable;
 import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.StringHelper;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.FieldInfoInterface;
@@ -25,7 +23,6 @@ import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.WildcardType;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by ss on 2018/6/17.
@@ -42,7 +39,7 @@ public class SqlDaoConf extends AbstractGenConf {
     protected String dataSourceId;
 
     protected String baseClz;
-    protected String baseTable;
+    protected String baseModel;
 
 //    protected Map<String, Object> defualtParam;
     protected final ModelBuilderContext context;
@@ -160,13 +157,13 @@ public class SqlDaoConf extends AbstractGenConf {
     public static void handleMethodRetType(SqlDaoConf sqlDaoConf, ExecutableElement el, Helpers helpers, ClassAnalyze analyzer) {
         TypeMirror returnType = el.getReturnType();
         //TODO: handle base model
-        if(returnType.getKind()== TypeKind.WILDCARD){
-            WildcardType type=(WildcardType)returnType;
-            TypeMirror extendsBound = type.getExtendsBound();
-            String toString = extendsBound.toString();
-            if(ClassDataTable.keySetOfModelClz().contains(toString)){
-                sqlDaoConf.baseTable=toString;
-            }
+        ModelParamEntry entry=new ModelParamEntry();
+        analyzer.assembleParamStructure(entry,el);
+        Integer demension = entry.getArrayDemension();
+        if(demension >2){
+            throw new IllegalArgumentException("can't build such method with more than 3 demession array returned");
+        }else if(demension ==0){
+
         }
     }
 
@@ -187,7 +184,6 @@ public class SqlDaoConf extends AbstractGenConf {
 
     public static void handleParamInfo(SqlDaoConf conf, List<? extends VariableElement> parameters, Helpers helpers, ClassAnalyze analyzer) {
         for(VariableElement el:parameters){
-
             boolean add = conf.params.add(buildParam(el,helpers,analyzer));
         }
     }
@@ -211,7 +207,6 @@ public class SqlDaoConf extends AbstractGenConf {
         }
         if(entry.isSimple() && (arrayDemension ==0 )) {
             TypeMirror typeMirror = el.asType();
-
             value = helpers.asObject(defaultValue, typeMirror);
             helpers.println("handle sql params:" + name + "->" + value);
             assert (value != null);
@@ -222,14 +217,15 @@ public class SqlDaoConf extends AbstractGenConf {
         def.setDefaultValue(value);
         def.setFieldName(entry.getParamName());
         if(entry.isSimple()){
-            def.setFieldName(entry.getClzName());
+//            def.setFieldName(entry.getClzName());
 
             CommonFieldTypeInfo type=new CommonFieldTypeInfo();
+            type.settClassName(entry.getClzName());
             if(arrayDemension==0){
                 type.setArray(false).setCollection(false).setMap(false);
             }else if(arrayDemension==1){
-                ModelParamEntry.ArrayType arrayType = entry.getArrayType().get(0);
-                switch (arrayType){
+                ModelParamEntry.ArrayInfo arrayType = entry.getArrayType().get(0);
+                switch (arrayType.getType()){
                     case array:
                         type.setArray(true).setCollection(false).setMap(false);
                         break;
@@ -296,12 +292,12 @@ public class SqlDaoConf extends AbstractGenConf {
         return this;
     }
 
-    public String getBaseTable() {
-        return baseTable;
+    public String getBaseModel() {
+        return baseModel;
     }
 
-    public SqlDaoConf setBaseTable(String baseTable) {
-        this.baseTable = baseTable;
+    public SqlDaoConf setBaseModel(String baseModel) {
+        this.baseModel = baseModel;
         return this;
     }
 }

@@ -50,7 +50,7 @@ public class SqlDaoGen extends AbstractCodeGenerator {
             final DBConnectionHelper dbInfoHolder = DbDataTable.getDataSource(dataSourceName);
             final DbAnalyzer analyzer = DbInfoHandler.getAnalyzer();
 
-            String baseModelTable = ct.getBaseTable();
+            String baseModelTable = ct.getBaseModel();
 //        String baseModel = null;
             Set<String> ignoreField = null;
             if (baseModelTable != null) {

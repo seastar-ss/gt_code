@@ -143,33 +143,38 @@ public class Helpers {
     }
 
 
-    public Element asElement(TypeMirror asType) {
-        Element element = null;
+    public TypeElement asComponentElement(TypeMirror asType) {
+        TypeElement element = null;
         if (asType != null) {
             TypeKind kind = asType.getKind();
             if (kind.isPrimitive()) {
                 element = typeUtils.boxedClass((PrimitiveType) asType);
 //                element = typeUtils.asElement(element1);
-            } else if (kind.equals(TypeKind.WILDCARD) || kind.equals(TypeKind.INTERSECTION)) {
+            } else if (kind.equals(TypeKind.WILDCARD) ) {
                 WildcardType asWildcardType = (WildcardType) asType;
-                Element tEl = typeUtils.asElement(asWildcardType);
-                println("typed element", tEl.getKind());
+                if(asWildcardType.getExtendsBound()!=null) {
+                    return asComponentElement(asWildcardType.getExtendsBound());
+
+                }else if(asWildcardType.getSuperBound()!=null){
+                    return asComponentElement(asWildcardType.getSuperBound());
+                }
+//                println("typed element", tEl.getKind());
             } else if (kind.equals(TypeKind.ARRAY)) {
 //                isArray = true;
                 ArrayType asArrayType = (ArrayType) asType;
-                element = typeUtils.asElement(asArrayType.getComponentType());
+                return asComponentElement(asArrayType.getComponentType());
             } else if (kind.equals(TypeKind.DECLARED)) {
                 DeclaredType dtype = (DeclaredType) asType;
                 List<? extends TypeMirror> typeArguments = dtype.getTypeArguments();
-                Element els = typeUtils.asElement(dtype);
-                TypeElement cel = (TypeElement) els;
-                String paramClass = cel.getQualifiedName().toString();
+                TypeElement els = (TypeElement) typeUtils.asElement(dtype);
+//                TypeElement cel = (TypeElement) els;
+                String paramClass = els.getQualifiedName().toString();
                 if (TypeConstantHelper.COLLECTION_CLASS_NAMES.contains(paramClass)) {
 //                    paramElement.setSimple(false);
                     if (typeArguments.size() == 1) {
                         TypeMirror mirror = typeArguments.get(0);
                         if (mirror != null) {
-                            element = typeUtils.asElement(mirror);
+                            return asComponentElement(mirror);
                         }
 //                        else
 //                            element = elementUtils.getTypeElement(Object.class.getName());
@@ -177,6 +182,8 @@ public class Helpers {
 //                    else {
 //                        element = elementUtils.getTypeElement(Object.class.getName());
 //                    }
+                }else{
+                    element = els;
                 }
 //                TypeElement collectionType = helpers.elementUtils.getTypeElement(ArrayList.class.getName());
 //                if (helpers.typeUtils.isAssignable(asType, collectionType.asType())) {
@@ -192,7 +199,7 @@ public class Helpers {
         if (type != null) {
             TypeKind kind = type.getKind();
             String clz = type.toString();
-            Element el = asElement(type);
+            Element el = asComponentElement(type);
             TypeMirror cType = null;
             TypeKind cTypeKind = null;
             String cClz = null;
