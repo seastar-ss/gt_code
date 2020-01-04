@@ -1,6 +1,8 @@
 package com.shawn.ss.lib.tools.db.dto_base.model.json_result_wrapper;
 
-public class BaseResultDTOWrapper<T> extends BaseResultWrapper{
+import com.shawn.ss.lib.tools.db.dto_base.model.AbstractVoModel;
+
+public class BaseResultDTOWrapper<T extends AbstractVoModel> extends BaseResultWrapper{
     T resultMessage;
 
     public T getResultMessage() {

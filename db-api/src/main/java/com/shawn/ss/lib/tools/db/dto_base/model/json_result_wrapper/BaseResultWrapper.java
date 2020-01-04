@@ -5,7 +5,7 @@ import com.shawn.ss.lib.tools.db.dto_base.model.AbstractBaseModel;
 import java.util.Date;
 import java.util.Map;
 
-public class BaseResultWrapper extends AbstractBaseModel {
+public class BaseResultWrapper {
     Integer rs;
     String errMsg;
     Date current=new Date();
@@ -13,10 +13,10 @@ public class BaseResultWrapper extends AbstractBaseModel {
     public BaseResultWrapper() {
     }
 
-    @Override
-    public Map<String, Object> getFieldConfig() {
-        return null;
-    }
+//    @Override
+//    public Map<String, Object> getFieldConfig() {
+//        return null;
+//    }
 
     public BaseResultWrapper(Integer rs, String errMsg) {
         this.rs = rs;

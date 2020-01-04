@@ -26,10 +26,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-public class ModelBuilder implements CodeBuilderInterface {
+public class PoModelBuilder implements CodeBuilderInterface {
 
-    public static final Logger L= LoggerFactory.getLogger(ModelBuilder.class);
-    final static Pattern PATTERN_NUMBER_START=Pattern.compile("^\\d+.*");
+    public static final Logger L= LoggerFactory.getLogger(PoModelBuilder.class);
+
 
     TableInfoInterface info;
     private final ModelBuilderContext builderContext;
@@ -52,12 +52,12 @@ public class ModelBuilder implements CodeBuilderInterface {
     private CommonModelDef modelDef;
 
 
-//    public ModelBuilder(TableInfoInterface info,  ModelBuilderContext builderContext) {
+//    public PoModelBuilder(TableInfoInterface info,  ModelBuilderContext builderContext) {
 //        this(info,builderContext,null,null);
 //
 //    }
 
-    public ModelBuilder(CommonModelDef def) {
+    public PoModelBuilder(CommonModelDef def) {
         this.modelDef = def;
         this.info = def.getDef();
         this.builderContext = def.getBuilderContext();
@@ -173,20 +173,15 @@ public class ModelBuilder implements CodeBuilderInterface {
 //            final EnumTypeDef enumTypeDef = item.getEnumTypeDef();
 
             AbstractJClass jClass=type;
+            String fname=CodeConstants.getFieldNameFromTbColumn(item.getFieldName());
 
-            String humpStyleColName = CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(colName);
-            String fname;
-            if(PATTERN_NUMBER_START.matcher(humpStyleColName).matches()) {
-                fname = CodeConstants.FIELD_MODEL_FIELD_PREFIX + CodeStyleTransformHelper.upperFirstCase(humpStyleColName);
-            }else{
-                fname=humpStyleColName;
-            }
+
             JFieldVar field = definedClass.field(JMod.NONE, jClass, fname);
             allModelFields.put(colName, field);
             field.javadoc().append("对应数据库").append(db).append(".")
                     .append(table).append(".").append(colName).append("字段")
                     .append("\n").append(comment);
-            JMethod[] methods = CodeConstants.buildGetterAndSetter(definedClass, humpStyleColName, jClass, field);
+            JMethod[] methods = CodeConstants.buildGetterAndSetter(definedClass, fname, jClass, field);
             allGetFields.put(colName, methods[0]);
             allSetFields.put(colName, methods[1]);
             definedClass.field(CodeConstants.MODE_PUBLIC_STATIC_FINAL, String.class, CodeConstants.FIELD_CONST_NAME_PREFIX + colName.toUpperCase(), JExpr.lit(colName));

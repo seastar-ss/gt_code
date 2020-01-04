@@ -1,15 +1,18 @@
 package com.shawn.ss.lib.code_gen.base.helper;
 
 import com.helger.jcodemodel.*;
+import com.shawn.ss.lib.code_gen.base.common.MapperOfPojoBuilder;
+import com.shawn.ss.lib.code_gen.base.common.POJOModelBuilder;
 import com.shawn.ss.lib.code_gen.base.dao.common_dao.common_dao_builder.CommonDaoBuilder;
+import com.shawn.ss.lib.code_gen.base.dao.common_dao.common_model_builder.PoModelBuilder;
 import com.shawn.ss.lib.code_gen.base.dao.special_dao.special_dao_builder.SpecialDaoBuilder;
 import com.shawn.ss.lib.code_gen.base.helper.db_analyzer.DbAnalyzer;
 import com.shawn.ss.lib.code_gen.base.helper.data_store.ClassDataTable;
 import com.shawn.ss.lib.code_gen.base.helper.data_store.DbDataTable;
 import com.shawn.ss.lib.code_gen.model.MethodTypeEnum;
-import com.shawn.ss.lib.code_gen.base.dao.common_dao.common_model_builder.MapperOfMapBuilder;
+//import com.shawn.ss.lib.code_gen.base.dao.common_dao.common_model_builder.MapperOfMapBuilder;
 import com.shawn.ss.lib.code_gen.base.dao.common_dao.common_model_builder.MapperOfResultSetBuilder;
-import com.shawn.ss.lib.code_gen.base.dao.common_dao.common_model_builder.ModelBuilder;
+import com.shawn.ss.lib.code_gen.model.def_model.common.CommonPOJOConf;
 import com.shawn.ss.lib.code_gen.model.def_model.dao_def.CommonModelDef;
 import com.shawn.ss.lib.code_gen.model.def_model.dao_def.SpecialModelDef;
 import com.shawn.ss.lib.code_gen.base.multi_dao.multi_dao_builder.MultiDaoSelectServiceBuilder;
@@ -18,10 +21,12 @@ import com.shawn.ss.lib.code_gen.model.def_model.db_def.DbModelConf;
 import com.shawn.ss.lib.tools.CodeStyleTransformHelper;
 import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.TypeConstantHelper;
+import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.ColumnInfoInterface;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.DbInfoInterface;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.FieldInfoInterface;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.TableInfoInterface;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.model.FieldDataTypeInterface;
+import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.model.FieldInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -278,7 +283,7 @@ public class ModelBuilderContext {
         cm = new JCodeModel();
 //        this.dbName = dbName;
 //        if (dataSource == null) {
-//            synchronized (ModelBuilder.class) {
+//            synchronized (PoModelBuilder.class) {
 //                Properties p = new Properties();
 //                L.info("dbInfo properties:{}", p);
 //
@@ -293,7 +298,7 @@ public class ModelBuilderContext {
 //        }
 //        assert (dataSource != null);
 //        if (analyzer == null) {
-//            synchronized (ModelBuilder.class) {
+//            synchronized (PoModelBuilder.class) {
 //                analyzer = new DbAnalyzer();
 //            }
 //        }
@@ -339,6 +344,10 @@ public class ModelBuilderContext {
 
     public String getModelClassPrefix(boolean base) {
         return basePackage + ".dto." + (base ? "basepo." : "composedpo.") + CodeConstants.CLASS_NAME_MODEL_PREFIX;
+    }
+
+    public String getModelVoClassName(String tb){
+        return basePackage+".vo."+ CodeConstants.CLASS_NAME_MODEL_PREFIX+CodeStyleTransformHelper.upperFirstCase(CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(tb));
     }
 
     public String getEnumClzName(String clazzName) {
@@ -406,7 +415,7 @@ public class ModelBuilderContext {
 //            if(dataSources!=null){
 //                commonModelDef.setDataSourceNames(dataSources);
 //            }
-            ModelBuilder builder = buildBaseModel(def);
+            PoModelBuilder builder = buildBaseModel(def);
             try {
                 CommonDaoBuilder daoBuilder = new CommonDaoBuilder(def, this);
                 daoBuilder.buildModel();
@@ -432,7 +441,7 @@ public class ModelBuilderContext {
 //            if(dataSources!=null){
 //                commonModelDef.setDataSourceNames(dataSources);
 //            }
-//            ModelBuilder builder = buildBaseModel(commonModelDef);
+//            PoModelBuilder builder = buildBaseModel(commonModelDef);
 //            try {
 //                CommonDaoBuilder daoBuilder = new CommonDaoBuilder(commonModelDef, this);
 //                daoBuilder.buildModel();
@@ -457,19 +466,43 @@ public class ModelBuilderContext {
 //        return null;
 //    }
 
-    private ModelBuilder buildBaseModel(CommonModelDef def)
+//    public POJOModelBuilder buildPlainVoFromPo(CommonModelDef def){
+//        try {
+//            if (def.getBuilderContext() == null) {
+//                def.setBuilderContext(this);
+//            }
+//            TableInfoInterface tbInfo = def.getDef();
+//            CommonPOJOConf conf=new CommonPOJOConf();
+//            List<ColumnInfoInterface> columns = tbInfo.getColumns();
+//            for(ColumnInfoInterface col:columns){
+//                String fname=CodeConstants.getFieldNameFromTbColumn(col.getFieldName());
+//                FieldDataTypeInterface type = col.getType();
+//                conf.addField(new FieldInfo().setFieldName(fname).setType(type));
+//            }
+//            conf.setPojoClzName(getModelVoClassName(def.getBaseTable()));
+//            POJOModelBuilder builder = new POJOModelBuilder(conf);
+//            builder.buildModel();
+//            return builder;
+//        }catch (Exception ex){
+//            ex.printStackTrace();
+//
+//        }
+//        return null;
+//    }
+
+    public PoModelBuilder buildBaseModel(CommonModelDef def)
 //            (TableInfoInterface tableInfo, String baseTable, boolean buildMapper, Set<String> ignoreField)
     {
         try {
             if (def.getBuilderContext() == null) {
                 def.setBuilderContext(this);
             }
-            ModelBuilder builder = new ModelBuilder(def);
+            PoModelBuilder builder = new PoModelBuilder(def);
             builder.buildModel();
             if (def.isBuildMapper()) {
                 MapperOfResultSetBuilder rsMapperBuilder = new MapperOfResultSetBuilder(builder);
                 rsMapperBuilder.buildModel();
-                MapperOfMapBuilder redisMapperBuilder = new MapperOfMapBuilder(builder);
+                MapperOfPojoBuilder redisMapperBuilder = new MapperOfPojoBuilder(def,this,builder.getDefinedClass());
                 redisMapperBuilder.buildModel();
             }
             return builder;
@@ -527,7 +560,7 @@ public class ModelBuilderContext {
             def.setIgnoreField(ignoreField);
             def.setBuildMapper(true);
             if (type.equals(SpecialModelDef.DataAttrType.LIST_OBJ) || type.equals(SpecialModelDef.DataAttrType.OBJ)) {
-                ModelBuilder modelBuilder = buildBaseModel(def);
+                PoModelBuilder modelBuilder = buildBaseModel(def);
 //        if(type.equals(SpecialModelDef.DataAttrType.SQL)) {
 //            modelBuilder.buildSQLField(modelDef.getSql());
 

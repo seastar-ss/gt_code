@@ -6,6 +6,7 @@ import com.shawn.ss.lib.code_gen.base.helper.CodeConstants;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
 import com.shawn.ss.lib.code_gen.model.def_model.common.CommonPOJOConf;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.FieldInfoInterface;
+import com.shawn.ss.lib.tools.db.dto_base.model.AbstractVoModel;
 
 import java.util.List;
 
@@ -33,8 +34,11 @@ public class POJOModelBuilder  implements CodeBuilderInterface {
         try {
             definedClass = cm._class(def.getPojoClzName());
             String pojoExtendsClzName = def.getPojoExtendsClzName();
+
             if(pojoExtendsClzName!=null) {
                 definedClass._extends(cm.ref(pojoExtendsClzName));
+            }else {
+                definedClass._extends(cm.ref(AbstractVoModel.class));
             }
 
             definedClass.constructor(JMod.PUBLIC);
@@ -54,5 +58,25 @@ public class POJOModelBuilder  implements CodeBuilderInterface {
         String name = fieldDef.getFieldName();
         JFieldVar fieldVar = definedClass.field(JMod.PROTECTED, abstractJClass, name);
         JMethod[] methods = CodeConstants.buildGetterAndSetter(definedClass, name, abstractJClass, fieldVar);
+    }
+
+    public CommonPOJOConf getDef() {
+        return def;
+    }
+
+    public JDefinedClass getDefinedClass() {
+        return definedClass;
+    }
+
+    public void setDefinedClass(JDefinedClass definedClass) {
+        this.definedClass = definedClass;
+    }
+
+    public ModelBuilderContext getBuilderContext() {
+        return builderContext;
+    }
+
+    public JCodeModel getCm() {
+        return cm;
     }
 }

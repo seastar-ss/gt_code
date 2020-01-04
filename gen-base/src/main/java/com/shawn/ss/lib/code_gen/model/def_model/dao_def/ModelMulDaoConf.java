@@ -8,12 +8,13 @@ import com.shawn.ss.lib.code_gen.base.helper.CodeConstants;
 import com.shawn.ss.lib.code_gen.base.helper.data_store.DbDataTable;
 import com.shawn.ss.lib.code_gen.model.def_model._BaseConf;
 import com.shawn.ss.lib.code_gen.model.def_model._BaseConfImpl;
+import com.shawn.ss.lib.code_gen.model.def_model.common.CommonPOJOConf;
 import com.shawn.ss.lib.tools.CollectionHelper;
 
 import java.util.List;
 import java.util.Map;
 
-public class ModelMulDaoConf extends _BaseConfImpl implements _BaseConf {
+public class ModelMulDaoConf extends CommonPOJOConf implements _BaseConf {
     String serviceClassName;
     String serviceMethodName;
     List<SelectMethodEnum> mainModelSelectMethod;

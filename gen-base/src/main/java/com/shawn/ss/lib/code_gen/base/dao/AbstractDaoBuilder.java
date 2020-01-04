@@ -28,7 +28,7 @@ public abstract class AbstractDaoBuilder implements CodeBuilderInterface {
 
     protected final ModelBuilderContext builderContext;
 
-//    protected final ModelBuilder parentBuilder;
+//    protected final PoModelBuilder parentBuilder;
     protected final JCodeModel cm;
     protected  String daoClassName;
     protected JDefinedClass definedClass;

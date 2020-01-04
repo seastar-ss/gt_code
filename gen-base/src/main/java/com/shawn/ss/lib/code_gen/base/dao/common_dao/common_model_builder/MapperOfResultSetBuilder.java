@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Set;
 
 public class MapperOfResultSetBuilder implements CodeBuilderInterface {
-    final ModelBuilder parentBuilder;
+    final PoModelBuilder parentBuilder;
     final JCodeModel cm;
     final String mapperClassName;
     JDefinedClass definedClass;
@@ -32,7 +32,7 @@ public class MapperOfResultSetBuilder implements CodeBuilderInterface {
     private final String baseTable;
     private final ModelBuilderContext builderContext;
 
-    public MapperOfResultSetBuilder(ModelBuilder parentBuilder) {
+    public MapperOfResultSetBuilder(PoModelBuilder parentBuilder) {
         this.parentBuilder = parentBuilder;
         cm = parentBuilder.getCm();
         String modelClassName = parentBuilder.getModelClassName();

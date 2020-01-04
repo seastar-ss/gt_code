@@ -4,8 +4,12 @@ import com.helger.jcodemodel.JDefinedClass;
 import com.shawn.ss.lib.code_gen.base.helper.CodeConstants;
 import com.shawn.ss.lib.code_gen.model.def_model._BaseConf;
 import com.shawn.ss.lib.code_gen.model.def_model._BaseConfImpl;
+import com.shawn.ss.lib.code_gen.model.def_model.common.CommonPOJOConf;
 import com.shawn.ss.lib.tools.CollectionHelper;
+import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.ColumnInfoInterface;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.TableInfoInterface;
+import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.model.FieldDataTypeInterface;
+import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.model.FieldInfo;
 
 import java.util.List;
 import java.util.Map;
@@ -14,7 +18,7 @@ import java.util.Set;
 /**
  * Created by ss on 2018/3/3.
  */
-public class CommonModelDef<T extends CommonModelDef> extends _BaseConfImpl implements _BaseConf {
+public class CommonModelDef<T extends CommonModelDef> extends CommonPOJOConf implements _BaseConf {
 
     protected transient TableInfoInterface def;
     protected String baseAssemblerClass;
@@ -24,13 +28,13 @@ public class CommonModelDef<T extends CommonModelDef> extends _BaseConfImpl impl
     protected Set<String> ignoreField;
     protected String dataSourceName;
     protected List<String> dataSourceNames;
-    protected Map<String,JDefinedClass> enumClzz;//=CollectionHelper.newMap();
+    protected Map<String, JDefinedClass> enumClzz;//=CollectionHelper.newMap();
     //    private boolean composed;
 //        protected String baseModelTable;
 
     public CommonModelDef() {
-        enumClzz= CollectionHelper.newMap();
-        this.dataSourceName= CodeConstants.KEY_WORD_DEFAULT_DATA_SOURCE_ID;
+        enumClzz = CollectionHelper.newMap();
+        this.dataSourceName = CodeConstants.KEY_WORD_DEFAULT_DATA_SOURCE_ID;
     }
 
     public TableInfoInterface getDef() {
@@ -39,7 +43,16 @@ public class CommonModelDef<T extends CommonModelDef> extends _BaseConfImpl impl
 
     public T setDef(TableInfoInterface def) {
         this.def = def;
-        return (T)this;
+        TableInfoInterface tbInfo = def;
+        //CommonPOJOConf conf=new CommonPOJOConf();
+        List<ColumnInfoInterface> columns = tbInfo.getColumns();
+        for (ColumnInfoInterface col : columns) {
+            String fname = CodeConstants.getFieldNameFromTbColumn(col.getFieldName());
+            FieldDataTypeInterface type = col.getType();
+            addField(new FieldInfo().setFieldName(fname).setType(type));
+        }
+        //conf.setPojoClzName(builderContext.getModelVoClassName(def.getBaseTable()));
+        return (T) this;
     }
 
     public String getBaseTable() {
@@ -48,7 +61,8 @@ public class CommonModelDef<T extends CommonModelDef> extends _BaseConfImpl impl
 
     public T setBaseTable(String baseTable) {
         this.baseTable = baseTable;
-        return (T)this;
+        setPojoClzName(builderContext.getModelVoClassName(baseTable));
+        return (T) this;
     }
 
     public boolean isBuildMapper() {
@@ -57,7 +71,7 @@ public class CommonModelDef<T extends CommonModelDef> extends _BaseConfImpl impl
 
     public T setBuildMapper(boolean buildMapper) {
         this.buildMapper = buildMapper;
-        return (T)this;
+        return (T) this;
     }
 
     public Set<String> getIgnoreField() {
@@ -66,7 +80,7 @@ public class CommonModelDef<T extends CommonModelDef> extends _BaseConfImpl impl
 
     public T setIgnoreField(Set<String> ignoreField) {
         this.ignoreField = ignoreField;
-        return (T)this;
+        return (T) this;
     }
 
     public String getDataSourceName() {
@@ -75,7 +89,7 @@ public class CommonModelDef<T extends CommonModelDef> extends _BaseConfImpl impl
 
     public T setDataSourceName(String dataSourceName) {
         this.dataSourceName = dataSourceName;
-        return (T)this;
+        return (T) this;
     }
 
     public Map<String, JDefinedClass> getEnumClzz() {

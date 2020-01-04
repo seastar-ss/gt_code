@@ -1,8 +1,10 @@
 package com.shawn.ss.lib.tools.db.dto_base.model.json_result_wrapper;
 
+import com.shawn.ss.lib.tools.db.dto_base.model.AbstractVoModel;
+
 import java.util.List;
 
-public class BaseResultListWrapper<T> extends BaseResultWrapper{
+public class BaseResultListWrapper<T extends AbstractVoModel> extends BaseResultWrapper{
     List<T> resultMessage;
     Integer total;
 

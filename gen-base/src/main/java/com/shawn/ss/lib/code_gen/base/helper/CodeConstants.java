@@ -5,6 +5,8 @@ import com.helger.jcodemodel.*;
 import com.shawn.ss.gen.api.conf.SelectMethod;
 import com.shawn.ss.gen.api.conf.SelectMethodEnum;
 import com.shawn.ss.lib.code_gen.base.helper.data_store.DbDataTable;
+import com.shawn.ss.lib.code_gen.model.def_model._BaseConfImpl;
+import com.shawn.ss.lib.code_gen.model.def_model.common.CommonPOJOConf;
 import com.shawn.ss.lib.code_gen.model.def_model.dao_def.CommonModelDef;
 import com.shawn.ss.lib.tools.CodeStyleTransformHelper;
 import com.shawn.ss.lib.tools.CollectionHelper;
@@ -21,6 +23,8 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 public class CodeConstants {
+
+    final static Pattern PATTERN_NUMBER_START=Pattern.compile("^\\d+.*");
 
     public static final int MODE_PUBLIC_STATIC_FINAL = JMod.PUBLIC + JMod.STATIC + JMod.FINAL;
     public static final int MODE_PUBLIC_STATIC = JMod.PUBLIC + JMod.STATIC;
@@ -175,6 +179,7 @@ public class CodeConstants {
     //    public static final String CLASS_NAME_ENUM_PREFIX = "Enum";
     public static final String CLASS_NAME_RESULT_SET_MAPPER_PREFIX = "ResultSetMapper";
     public static final String CLASS_NAME_REDIS_BYTE_MAPPER_PREFIX = "ByteMapMapper";
+    public static final String CLASS_NAME_POJO_MAPPER_PREFIX = "PojoMapper";
     public static final String CLASS_NAME_ALL_SPECIAL_DAO_TABLE_NAME = "SqlSpecialDao";
     public static final String CLASS_NAME_ALL_SQL_CONTANT_CLASS = ".constants.SqlConstants";
 //    public static final String CLASS_NAME_COMMON_DB_DAO_PREFIX="DAO";
@@ -200,7 +205,7 @@ public class CodeConstants {
     public static final String PARAM_DAO_T_CLASS = "tClass";
     public static final String LIB_ASSERT_METHOD = "assert";
 
-    //    public CommonDaoBuilder(ModelBuilder parentBuilder,ModelBuilderContext builderContext) {
+    //    public CommonDaoBuilder(PoModelBuilder parentBuilder,ModelBuilderContext builderContext) {
 //        super(parentBuilder, builderContext);
 //    }
     public static Set<SelectMethod> allSelectMethod = CollectionHelper.<SelectMethod>setBuilder(true)
@@ -697,6 +702,18 @@ public class CodeConstants {
         return allSelectMethod.contains(methodName);
     }
 
+    public static String getFieldNameFromTbColumn(String colName) {
+        String fname=null;
+        String humpStyleColName = CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(colName);
+
+        if(PATTERN_NUMBER_START.matcher(humpStyleColName).matches()) {
+            fname = CodeConstants.FIELD_MODEL_FIELD_PREFIX + CodeStyleTransformHelper.upperFirstCase(humpStyleColName);
+        }else{
+            fname=humpStyleColName;
+        }
+        return fname;
+    }
+
 
     public static interface StringParamFilter {
         boolean accept(JVar var, int i);
@@ -724,18 +741,23 @@ public class CodeConstants {
         return jClass;
     }
 
-    public static AbstractJClass getFieldDefType(JCodeModel cm, CommonModelDef def, ColumnInfoInterface item, ModelBuilderContext bc) {
-        AbstractJClass jClass;
-        EnumTypeDef typeDef = item.getEnumTypeDef();
-        if (typeDef == null) {
-            jClass = cm.ref(item.getType().gettClass());
-        } else {
-            jClass = def.getEnumClz(item.getFieldName());
-            if (jClass == null) {
+    public static AbstractJClass getFieldDefType(JCodeModel cm, _BaseConfImpl odef, FieldInfoInterface item, ModelBuilderContext bc) {
+        AbstractJClass jClass=null;
+        if(odef instanceof CommonModelDef) {
+           CommonModelDef def=(CommonModelDef)odef;
+            EnumTypeDef typeDef = item.getEnumTypeDef();
+            if (typeDef == null) {
+                jClass = cm.ref(item.getType().gettClass());
+            } else {
+                jClass = def.getEnumClz(item.getFieldName());
+                if (jClass == null) {
 //                if(type==null && enumTypeDef !=null) {
-                jClass = cm.ref(bc.getEnumClzName(typeDef.getClazzName()));
+                    jClass = cm.ref(bc.getEnumClzName(typeDef.getClazzName()));
 //                }
+                }
             }
+        }else {
+            jClass=cm.ref(item.getType().gettClass());
         }
         return jClass;
     }

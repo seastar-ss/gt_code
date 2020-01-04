@@ -1,6 +1,6 @@
 package com.shawn.ss.lib.code_gen;
 
-//import com.shawn.ss.lib.code_gen.base.dao.common_dao.common_model_builder.ModelBuilder;
+//import com.shawn.ss.lib.code_gen.base.dao.common_dao.common_model_builder.PoModelBuilder;
 
 //import com.shawn.ss.lib.code_gen.base.dao.conf.SelectMethodEnum;
 
@@ -25,8 +25,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
-public class ModelBuilderTest {
-    static final Logger L = LoggerFactory.getLogger(ModelBuilderTest.class.getSimpleName());
+public class PoModelBuilderTest {
+    static final Logger L = LoggerFactory.getLogger(PoModelBuilderTest.class.getSimpleName());
 
     public static final String TEST_POS = "C:\\projects\\WorkSpace\\ent-portal-trunk-source\\cms-parent\\cms_jar\\src\\main\\java";
     //    public static final String TEST_WIKI_POS="C:\\projects\\WorkSpace\\ent-portal-trunk-source\\wiki-parent\\wiki_jar\\src\\main\\java";
@@ -762,7 +762,7 @@ public class ModelBuilderTest {
     //    @Test
     public void testGenModel() {
 //        JCodeModel cm=new JCodeModel();
-//        ModelBuilder builder=new ModelBuilder(new MockTableInfo(),cm,);
+//        PoModelBuilder builder=new PoModelBuilder(new MockTableInfo(),cm,);
 //        builder.buildModel();
 //        MapperOfResultSetBuilder rsMapperBuilder=new MapperOfResultSetBuilder(builder);
 //        rsMapperBuilder.buildModel();
