@@ -1,6 +1,6 @@
 package com.shawn.ss.lib.code_gen.model.def_model.dao_def;
 
-import com.shawn.ss.lib.code_gen.model.def_model._BaseConf;
+import com.shawn.ss.lib.code_gen.model.def_model._BaseModelConf;
 import com.shawn.ss.lib.code_gen.model.def_model._BaseDef;
 import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.FieldInfoInterface;
@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * Created by ss on 2018/2/13.
  */
-public class SpecialModelConf extends CommonModelDef<SpecialModelConf> implements _BaseConf, _BaseDef {
+public class SpecialModelDaoConf extends CommonModelDaoDef<SpecialModelDaoConf> implements _BaseModelConf, _BaseDef {
 //    String name;
     protected String sql;
     protected Map<String, Object> defualtParam;
@@ -37,7 +37,7 @@ public class SpecialModelConf extends CommonModelDef<SpecialModelConf> implement
         DB,REDIS,FIXED
     }
 
-    public SpecialModelConf(String name, TableInfoInterface def) {
+    public SpecialModelDaoConf(String name, TableInfoInterface def) {
         super(name,def);
         defualtParam= CollectionHelper.newMap();
         params= CollectionHelper.newList();
@@ -50,7 +50,7 @@ public class SpecialModelConf extends CommonModelDef<SpecialModelConf> implement
         return sql;
     }
 
-    public SpecialModelConf setSql(String sql) {
+    public SpecialModelDaoConf setSql(String sql) {
         this.sql = sql;
 
         return this;
@@ -60,7 +60,7 @@ public class SpecialModelConf extends CommonModelDef<SpecialModelConf> implement
         return methodName;
     }
 
-    public SpecialModelConf setMethodName(String name) {
+    public SpecialModelDaoConf setMethodName(String name) {
         this.methodName = name;
         return this;
     }
@@ -69,7 +69,7 @@ public class SpecialModelConf extends CommonModelDef<SpecialModelConf> implement
         return defualtParam;
     }
 
-    public SpecialModelConf setDefualtParam(Map<String, Object> defualtParam) {
+    public SpecialModelDaoConf setDefualtParam(Map<String, Object> defualtParam) {
         this.defualtParam = defualtParam;
         return this;
     }
@@ -86,7 +86,7 @@ public class SpecialModelConf extends CommonModelDef<SpecialModelConf> implement
         return defualtParam.get(key);
     }
 
-    public SpecialModelConf putDefaultParam(String key, Object value) {
+    public SpecialModelDaoConf putDefaultParam(String key, Object value) {
         defualtParam.put(key, value);
         return this;
     }
@@ -108,7 +108,7 @@ public class SpecialModelConf extends CommonModelDef<SpecialModelConf> implement
         return dataType;
     }
 
-    public SpecialModelConf setDataType(DataAttrType dataType) {
+    public SpecialModelDaoConf setDataType(DataAttrType dataType) {
         this.dataType = dataType;
         return this;
     }
@@ -117,7 +117,7 @@ public class SpecialModelConf extends CommonModelDef<SpecialModelConf> implement
         return comment;
     }
 
-    public SpecialModelConf setComment(String comment) {
+    public SpecialModelDaoConf setComment(String comment) {
         this.comment = comment;
         return this;
     }
@@ -126,7 +126,7 @@ public class SpecialModelConf extends CommonModelDef<SpecialModelConf> implement
         return listResult;
     }
 
-    public SpecialModelConf setListResult(boolean listResult) {
+    public SpecialModelDaoConf setListResult(boolean listResult) {
         this.listResult = listResult;
         return this;
     }
@@ -135,7 +135,7 @@ public class SpecialModelConf extends CommonModelDef<SpecialModelConf> implement
         return sourceType;
     }
 
-    public SpecialModelConf setSourceType(SourceAttrType sourceType) {
+    public SpecialModelDaoConf setSourceType(SourceAttrType sourceType) {
         this.sourceType = sourceType;
         return this;
     }
@@ -144,7 +144,7 @@ public class SpecialModelConf extends CommonModelDef<SpecialModelConf> implement
         return clzName;
     }
 
-    public SpecialModelConf setClzName(String clzName) {
+    public SpecialModelDaoConf setClzName(String clzName) {
         this.clzName = clzName;
         return this;
     }
@@ -153,7 +153,7 @@ public class SpecialModelConf extends CommonModelDef<SpecialModelConf> implement
         return interfaceClzName;
     }
 
-    public SpecialModelConf setInterfaceClzName(String interfaceClzName) {
+    public SpecialModelDaoConf setInterfaceClzName(String interfaceClzName) {
         this.interfaceClzName = interfaceClzName;
         return this;
     }
@@ -174,7 +174,7 @@ public class SpecialModelConf extends CommonModelDef<SpecialModelConf> implement
         return params.get(index);
     }
 
-    public SpecialModelConf setParams(List<FieldInfoInterface> params) {
+    public SpecialModelDaoConf setParams(List<FieldInfoInterface> params) {
         this.params = params;
         return this;
     }
@@ -183,7 +183,7 @@ public class SpecialModelConf extends CommonModelDef<SpecialModelConf> implement
         return queryModelClzName;
     }
 
-    public SpecialModelConf setQueryModelClzName(String queryModelClzName) {
+    public SpecialModelDaoConf setQueryModelClzName(String queryModelClzName) {
         this.queryModelClzName = queryModelClzName;
         return this;
     }

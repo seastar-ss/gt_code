@@ -1,7 +1,7 @@
-package com.shawn.ss.lib.code_gen.model.def_model;
+package com.shawn.ss.lib.code_gen.model.def_model.dao_def;
 
 import com.shawn.ss.gen.api.conf.SelectMethodEnum;
-import com.shawn.ss.lib.code_gen.base.helper.CodeHelper;
+import com.shawn.ss.lib.code_gen.base.helper.CodeConstants;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
 import com.shawn.ss.lib.code_gen.base.helper.data_store.ConfDataTable;
 import com.shawn.ss.lib.code_gen.base.helper.data_store.DbDataTable;
@@ -12,12 +12,12 @@ import java.util.List;
 /**
  * Created by ss on 2018/3/3.
  */
-public abstract class _BaseConfImpl {
+public abstract class _BaseDaoConfImpl {
     protected final String name;
     protected transient ModelBuilderContext builderContext;
     List<SelectMethodEnum> mainModelSelectMethod;
 
-    public _BaseConfImpl(String name) {
+    public _BaseDaoConfImpl(String name) {
         this.name = name;
         init();
     }
@@ -26,13 +26,13 @@ public abstract class _BaseConfImpl {
         ConfDataTable.put(this.name,this);
     }
 
-    public _BaseConfImpl(TableInfoInterface def) {
+    public _BaseDaoConfImpl(TableInfoInterface def) {
         String table = def.getTable();
         String db = def.getDb();
         if(db==null){
             db= DbDataTable.getCurrentDb();
         }
-        this.name= CodeHelper.buildConfNameFromDbAndTable(db,table);
+        this.name= CodeConstants.buildConfNameFromDbAndTable(db,table);
         init();
     }
 
@@ -40,7 +40,7 @@ public abstract class _BaseConfImpl {
         return builderContext;
     }
 
-    public _BaseConfImpl setBuilderContext(ModelBuilderContext builderContext) {
+    public _BaseDaoConfImpl setBuilderContext(ModelBuilderContext builderContext) {
         this.builderContext = builderContext;
         return this;
     }
@@ -53,7 +53,7 @@ public abstract class _BaseConfImpl {
         return mainModelSelectMethod;
     }
 
-    public _BaseConfImpl setMainModelSelectMethod(List<SelectMethodEnum> mainModelSelectMethod) {
+    public _BaseDaoConfImpl setMainModelSelectMethod(List<SelectMethodEnum> mainModelSelectMethod) {
         this.mainModelSelectMethod = mainModelSelectMethod;
 //        this.listResult= mainModelSelectMethod.isMultipleResult();
         return this;

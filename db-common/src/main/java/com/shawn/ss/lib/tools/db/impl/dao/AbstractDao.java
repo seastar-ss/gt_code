@@ -56,6 +56,82 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
     }
 
 
+    protected<TT> TT getSingleResult(DaoAssembler assembler, SQL<SQLSelect> sqlBuilder, Map<String, Object> param, Class<TT> tClass) {
+        SimpleDbInterface dbInstance = null;
+//        String dbToUse = super.selectDb(assembler, sqlBuilder, param);
+//        if ((dbToUse!= null)&&dbMap.containsKey(dbToUse)) {
+//            dbInstance = dbMap.get(dbToUse);
+//        }
+        return getSingleResult(dbInstance, assembler, sqlBuilder, param, tClass);
+    }
+
+    protected<TT> List<TT> getSingleResults(DaoAssembler assembler, SQL<SQLSelect> sqlBuilder, Map<String, Object> param, Class<TT> tClass) {
+        SimpleDbInterface dbInstance = null;
+//        String dbToUse = super.selectDb(assembler, sqlBuilder, param);
+//        if ((dbToUse!= null)&&dbMap.containsKey(dbToUse)) {
+//            dbInstance = dbMap.get(dbToUse);
+//        }
+        return getSingleResults(dbInstance, assembler, sqlBuilder, param, tClass);
+    }
+
+    protected List<Ty> getResults(DaoAssembler assembler, SQL<SQLSelect> sqlBuilder, Map<String, Object> param) {
+        int status = 0;
+        if (assembler!= null) {
+            status = assembler.assembleSql(sqlBuilder, param, type);
+        }
+        SimpleDbInterface dbInstance = null;
+//        String dbToUse = super.selectDb(assembler, sqlBuilder, param);
+//        if ((dbToUse!= null)&&dbMap.containsKey(dbToUse)) {
+//            dbInstance = dbMap.get(dbToUse);
+//        }
+        if (status == 0) {
+            DbResultSetMapper<Ty> rsMapper = null;
+//            if (assembler!= null) {
+//                ResultSetMapperModelTUserInfo<ModelTUserInfo> rsMapperTmp = ((ResultSetMapperModelTUserInfo<ModelTUserInfo> ) assembler.<ModelTUserInfo> assembleResultSetMapper(param, ModelTUserInfo.class));
+//                if (rsMapperTmp!= null) {
+//                    rsMapper = rsMapperTmp;
+//                }
+//            }
+            try {
+                return getResults(dbInstance, assembler, sqlBuilder, param, rsMapper);
+            } catch (final Exception ex) {
+                logger.error("sql execption", ex);
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+
+    protected Ty getResult(DaoAssembler assembler, SQL<SQLSelect> sqlBuilder, Map<String, Object> param) {
+        int status = 0;
+        if (assembler!= null) {
+            status = assembler.assembleSql(sqlBuilder, param, type);
+        }
+        SimpleDbInterface dbInstance = null;
+//        String dbToUse = super.selectDb(assembler, sqlBuilder, param);
+//        if ((dbToUse!= null)&&dbMap.containsKey(dbToUse)) {
+//            dbInstance = dbMap.get(dbToUse);
+//        }
+        if (status == 0) {
+            DbResultSetMapper<Ty> rsMapper = null;
+//            if (assembler!= null) {
+//                ResultSetMapperModelTUserInfo<ModelTUserInfo> rsMapperTmp = ((ResultSetMapperModelTUserInfo<ModelTUserInfo> ) assembler.<ModelTUserInfo> assembleResultSetMapper(param, ModelTUserInfo.class));
+//                if (rsMapperTmp!= null) {
+//                    rsMapper = rsMapperTmp;
+//                }
+//            }
+            try {
+                return getResult(dbInstance, assembler, sqlBuilder, param, rsMapper);
+            } catch (final Exception ex) {
+                logger.error("sql execption", ex);
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+
 
     protected List<Ty> getResults(SimpleDbInterface db, DaoAssembler assembler, SQL<SQLSelect> sqlBuilder, Map<String, Object> param, DbResultSetMapper<Ty> mapper) {
         setTableName(sqlBuilder,param,assembler);
@@ -169,7 +245,7 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
         if (fieldClassObj instanceof Class) {
             Class fieldClass = ((Class) fieldClassObj);
             param.put("fields", indexes);
-            sqlBuilder.rawWhereItem(LogicalRelationshipType.and,  inField+ " in (:fields)");
+            sqlBuilder.itemWhere(LogicalRelationshipType.and, LogicalOpType.in, null, inField, "fields", (ColumnDataType) ColumnDataType.getType(fieldClass));
             return;
         } else {
             logger.warn("unknown error occured");
@@ -188,7 +264,7 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
             }
             if (!CollectionHelper.isCollectionEmpty(extCondition)) {
                 for (String var : extCondition) {
-                    sqlBuilder.rawWhereItem(LogicalRelationshipType.and,var);
+                    sqlBuilder.rawWhere(var);
                 }
             }
         }
@@ -932,7 +1008,7 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
     public <TT> List<TT> getItemListByIdAndCondAndWhere(Ty instance, List<Tt> id, Class<TT> tClass, String rawItem, Map<String, Object> extParam, Set<String> extCondition) {
         throw new UnsupportedOperationException("no implements");
     }
-    
+
     /*@Override
     public List<Ty> get(Set<String> selectFields, DaoAssembler assembler, Integer start, Integer count) {
         throw new UnsupportedOperationException("no implements");

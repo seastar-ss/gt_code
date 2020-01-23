@@ -1,8 +1,7 @@
 package com.shawn.ss.lib.code_gen.model.def_model.common;
 
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
-import com.shawn.ss.lib.code_gen.model.def_model._BaseConf;
-import com.shawn.ss.lib.code_gen.model.def_model._BaseConfImpl;
+import com.shawn.ss.lib.code_gen.model.def_model._BaseModelConf;
 import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.FieldInfoInterface;
 
@@ -11,7 +10,7 @@ import java.util.List;
 /**
  * Created by ss on 2018/10/27.
  */
-public class CommonPOJOConf implements _BaseConf {
+public class CommonPOJOConf implements _BaseModelConf {
 //    public static class FieldDef{
 //        String name;
 //        String tClass;
@@ -50,6 +49,7 @@ public class CommonPOJOConf implements _BaseConf {
 //        return null;
 //    }
 
+    @Override
     public List<FieldInfoInterface> getFields() {
         return fields;
     }
@@ -59,31 +59,38 @@ public class CommonPOJOConf implements _BaseConf {
         return this;
     }
 
+    @Override
     public int sizeOfField() {
         return fields.size();
     }
 
+    @Override
     public boolean addField(FieldInfoInterface fieldDef) {
         return fields.add(fieldDef);
     }
 
+    @Override
     public FieldInfoInterface getField(int index) {
         return fields.get(index);
     }
 
+    @Override
     public String getPojoClzName() {
         return pojoClzName;
     }
 
+    @Override
     public CommonPOJOConf setPojoClzName(String pojoClzName) {
         this.pojoClzName = pojoClzName;
         return this;
     }
 
+    @Override
     public String getPojoExtendsClzName() {
         return pojoExtendsClzName;
     }
 
+    @Override
     public CommonPOJOConf setPojoExtendsClzName(String pojoExtendsClzName) {
         this.pojoExtendsClzName = pojoExtendsClzName;
         return this;

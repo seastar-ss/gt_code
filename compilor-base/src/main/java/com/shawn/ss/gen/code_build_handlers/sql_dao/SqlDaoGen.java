@@ -6,7 +6,7 @@ import com.shawn.ss.lib.code_gen.base.helper.DbInfoHandler;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
 import com.shawn.ss.lib.code_gen.base.helper.data_store.DbDataTable;
 import com.shawn.ss.lib.code_gen.base.helper.db_analyzer.DbAnalyzer;
-import com.shawn.ss.lib.code_gen.model.def_model.dao_def.SpecialModelConf;
+import com.shawn.ss.lib.code_gen.model.def_model.dao_def.SpecialModelDaoConf;
 
 import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.TypeConstantHelper;
@@ -80,7 +80,7 @@ public class SqlDaoGen extends AbstractCodeGenerator {
 //            POJOModelBuilder builder=new POJOModelBuilder(commonPOJOConf);
 //            builder.buildModel();
 //        }
-            SpecialModelConf ret=new SpecialModelConf(def.getDefName(),def.getInfo())
+            SpecialModelDaoConf ret=new SpecialModelDaoConf(def.getDefName(),def.getInfo())
                     .setClzName(ct.getClassName())
                     .setMethodName(ct.getMethodName())
 //                    .setDefualtParam(ct.getDefualtParam())

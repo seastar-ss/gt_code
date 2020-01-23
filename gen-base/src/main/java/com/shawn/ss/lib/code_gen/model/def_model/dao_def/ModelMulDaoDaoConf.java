@@ -2,15 +2,15 @@ package com.shawn.ss.lib.code_gen.model.def_model.dao_def;
 
 import com.helger.jcodemodel.AbstractJClass;
 import com.helger.jcodemodel.JCodeModel;
-import com.shawn.ss.lib.code_gen.base.helper.CodeHelper;
-import com.shawn.ss.lib.code_gen.model.def_model._BaseConf;
-import com.shawn.ss.lib.code_gen.model.def_model._BaseConfImpl;
+import com.shawn.ss.lib.code_gen.base.helper.CodeConstants;
+import com.shawn.ss.lib.code_gen.model.def_model._BaseModelConf;
 import com.shawn.ss.lib.tools.CollectionHelper;
+import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.FieldInfoInterface;
 
 import java.util.List;
 import java.util.Map;
 
-public class ModelMulDaoConf extends _BaseConfImpl implements _BaseConf {
+public class ModelMulDaoDaoConf extends _BaseDaoConfImpl implements _BaseModelConf {
     String serviceClassName;
     String serviceMethodName;
     //    String mainDb;
@@ -42,7 +42,7 @@ public class ModelMulDaoConf extends _BaseConfImpl implements _BaseConf {
 //        return builderContext ==null?null: builderContext.getTbMap();
 //    }
 
-    public ModelMulDaoConf(String name) {
+    public ModelMulDaoDaoConf(String name) {
         super(name);
         defs= CollectionHelper.newMap();
         models= CollectionHelper.newMap();
@@ -54,7 +54,7 @@ public class ModelMulDaoConf extends _BaseConfImpl implements _BaseConf {
         return implInterface;
     }
 
-    public ModelMulDaoConf setImplInterface(String implInterface) {
+    public ModelMulDaoDaoConf setImplInterface(String implInterface) {
         this.implInterface = implInterface;
         return this;
     }
@@ -63,7 +63,7 @@ public class ModelMulDaoConf extends _BaseConfImpl implements _BaseConf {
         return serviceClassName;
     }
 
-    public ModelMulDaoConf setServiceClassName(String serviceClassName) {
+    public ModelMulDaoDaoConf setServiceClassName(String serviceClassName) {
         this.serviceClassName = serviceClassName;
         return this;
     }
@@ -72,7 +72,7 @@ public class ModelMulDaoConf extends _BaseConfImpl implements _BaseConf {
         return serviceMethodName;
     }
 
-    public ModelMulDaoConf setServiceMethodName(String serviceMethodName) {
+    public ModelMulDaoDaoConf setServiceMethodName(String serviceMethodName) {
         this.serviceMethodName = serviceMethodName;
         return this;
     }
@@ -99,7 +99,7 @@ public class ModelMulDaoConf extends _BaseConfImpl implements _BaseConf {
         return relatedTables;
     }
 
-    public ModelMulDaoConf setRelatedTables(List<ModelRelatedTableDef> relatedTables) {
+    public ModelMulDaoDaoConf setRelatedTables(List<ModelRelatedTableDef> relatedTables) {
         this.relatedTables = relatedTables;
         return this;
     }
@@ -108,7 +108,7 @@ public class ModelMulDaoConf extends _BaseConfImpl implements _BaseConf {
         return buildNotAbstract;
     }
 
-    public ModelMulDaoConf setBuildNotAbstract(boolean buildNotAbstract) {
+    public ModelMulDaoDaoConf setBuildNotAbstract(boolean buildNotAbstract) {
         this.buildNotAbstract = buildNotAbstract;
         return this;
     }
@@ -117,7 +117,7 @@ public class ModelMulDaoConf extends _BaseConfImpl implements _BaseConf {
         return mainTableDef;
     }
 
-    public ModelMulDaoConf setMainTableDef(ModelRelatedTableDef mainTableDef) {
+    public ModelMulDaoDaoConf setMainTableDef(ModelRelatedTableDef mainTableDef) {
         this.mainTableDef = mainTableDef;
         return this;
     }
@@ -156,7 +156,7 @@ public class ModelMulDaoConf extends _BaseConfImpl implements _BaseConf {
             String table = def.getTable();
 //            SpecialModelConf attr = modelDef.getAttr();
 //            attrs.put(attr.getName(),attr);
-            String tbName = CodeHelper.getClazzNameFromTableName(table);
+            String tbName = CodeConstants.getClazzNameFromTableName(table);
             defs.put(table,def);
 
             AbstractJClass daoClass = cm.ref(builderContext.getDaoClassName(table));
@@ -210,7 +210,7 @@ public class ModelMulDaoConf extends _BaseConfImpl implements _BaseConf {
         return dtoClazzName;
     }
 
-    public ModelMulDaoConf setDtoClazzName(String dtoClazzName) {
+    public ModelMulDaoDaoConf setDtoClazzName(String dtoClazzName) {
         this.dtoClazzName = dtoClazzName;
         return this;
     }
@@ -219,7 +219,7 @@ public class ModelMulDaoConf extends _BaseConfImpl implements _BaseConf {
         return isMultiFieldFromSameTable;
     }
 
-    public ModelMulDaoConf setMultiFieldFromSameTable(boolean multiFieldFromSameTable) {
+    public ModelMulDaoDaoConf setMultiFieldFromSameTable(boolean multiFieldFromSameTable) {
         isMultiFieldFromSameTable = multiFieldFromSameTable;
         return this;
     }
@@ -245,5 +245,45 @@ public class ModelMulDaoConf extends _BaseConfImpl implements _BaseConf {
 //                ", attrs=" + attrs +
                 ", isMultiFieldFromSameTable=" + isMultiFieldFromSameTable +
                 '}';
+    }
+
+    @Override
+    public List<FieldInfoInterface> getFields() {
+        return null;
+    }
+
+    @Override
+    public int sizeOfField() {
+        return 0;
+    }
+
+    @Override
+    public boolean addField(FieldInfoInterface fieldDef) {
+        return false;
+    }
+
+    @Override
+    public FieldInfoInterface getField(int index) {
+        return null;
+    }
+
+    @Override
+    public String getPojoClzName() {
+        return null;
+    }
+
+    @Override
+    public _BaseModelConf setPojoClzName(String pojoClzName) {
+        return null;
+    }
+
+    @Override
+    public String getPojoExtendsClzName() {
+        return null;
+    }
+
+    @Override
+    public _BaseModelConf setPojoExtendsClzName(String pojoExtendsClzName) {
+        return null;
     }
 }

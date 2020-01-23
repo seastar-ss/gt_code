@@ -1,25 +1,23 @@
 package com.shawn.ss.lib.code_gen.base.helper;
 
 import com.helger.jcodemodel.*;
+import com.shawn.ss.lib.code_gen.base.common.MapperOfPojoBuilder;
 import com.shawn.ss.lib.code_gen.base.dao.common_dao.common_dao_builder.CommonDaoBuilder;
 import com.shawn.ss.lib.code_gen.base.dao.special_dao.special_dao_builder.SpecialDaoBuilder;
-import com.shawn.ss.lib.code_gen.base.helper.db_analyzer.DbAnalyzer;
 import com.shawn.ss.lib.code_gen.base.helper.data_store.ClassDataTable;
 import com.shawn.ss.lib.code_gen.base.helper.data_store.DbDataTable;
 import com.shawn.ss.lib.code_gen.model.MethodTypeEnum;
-import com.shawn.ss.lib.code_gen.base.dao.common_dao.common_model_builder.MapperOfMapBuilder;
+//import com.shawn.ss.lib.code_gen.base.dao.common_dao.common_model_builder.MapperOfMapBuilder;
 import com.shawn.ss.lib.code_gen.base.dao.common_dao.common_model_builder.MapperOfResultSetBuilder;
 import com.shawn.ss.lib.code_gen.base.dao.common_dao.common_model_builder.ModelBuilder;
-import com.shawn.ss.lib.code_gen.model.def_model.dao_def.CommonModelDef;
-import com.shawn.ss.lib.code_gen.model.def_model.dao_def.SpecialModelConf;
+import com.shawn.ss.lib.code_gen.model.def_model.dao_def.CommonModelDaoDef;
+import com.shawn.ss.lib.code_gen.model.def_model.dao_def.SpecialModelDaoConf;
 import com.shawn.ss.lib.code_gen.base.multi_dao.multi_dao_builder.MultiDaoSelectServiceBuilder;
-import com.shawn.ss.lib.code_gen.model.def_model.dao_def.ModelMulDaoConf;
-import com.shawn.ss.lib.code_gen.model.def_model.db_def.DbModelConf;
+import com.shawn.ss.lib.code_gen.model.def_model.dao_def.ModelMulDaoDaoConf;
+import com.shawn.ss.lib.code_gen.model.gen_param_model.db_def.DbModelConf;
 import com.shawn.ss.lib.tools.CodeStyleTransformHelper;
 import com.shawn.ss.lib.tools.CollectionHelper;
-import com.shawn.ss.lib.tools.TypeConstantHelper;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.DbInfoInterface;
-import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.FieldInfoInterface;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.TableInfoInterface;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.model.FieldDataTypeInterface;
 import org.slf4j.Logger;
@@ -315,9 +313,9 @@ public class ModelBuilderContext {
         String tb = (baseTable == null ? table : baseTable);
         String modelSimpleName = CodeStyleTransformHelper.upperFirstCase(CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(tb));
         if (type == 2 && baseTable == null) {
-            return basePackage + ".dao.spdao." + CodeHelper.CLASS_NAME_DAO_PREFIX + modelSimpleName;
+            return basePackage + ".dao.spdao." + CodeConstants.CLASS_NAME_DAO_PREFIX + modelSimpleName;
         } else {
-            return basePackage + ".dao.basedao." + CodeHelper.CLASS_NAME_DAO_PREFIX + modelSimpleName;
+            return basePackage + ".dao.basedao." + CodeConstants.CLASS_NAME_DAO_PREFIX + modelSimpleName;
         }
     }
 
@@ -329,24 +327,24 @@ public class ModelBuilderContext {
 
     public String getServiceClassName(String table) {
         String modelSimpleName = CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(table);
-        return basePackage + ".dao.multi_dao." + CodeHelper.CLASS_NAME_MULTI_DAO_PREFIX + CodeStyleTransformHelper.upperFirstCase(modelSimpleName);
+        return basePackage + ".dao.multi_dao." + CodeConstants.CLASS_NAME_MULTI_DAO_PREFIX + CodeStyleTransformHelper.upperFirstCase(modelSimpleName);
     }
 
     public String getServiceAssemblerClassName(String serviceClassName) {
         String modelSimpleName = CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(serviceClassName);
-        return basePackage + ".dao.multi_dao." + CodeHelper.CLASS_NAME_MULTI_DAO_PREFIX + CodeStyleTransformHelper.upperFirstCase(modelSimpleName)+ CodeHelper.CLASS_NAME_MULTI_DAO_ASSEMBLER_APPENDIX;
+        return basePackage + ".dao.multi_dao." + CodeConstants.CLASS_NAME_MULTI_DAO_PREFIX + CodeStyleTransformHelper.upperFirstCase(modelSimpleName)+ CodeConstants.CLASS_NAME_MULTI_DAO_ASSEMBLER_APPENDIX;
     }
 
     public String getModelClassPrefix(boolean base) {
-        return basePackage + ".dto." + (base ? "basepo." : "composedpo.") + CodeHelper.CLASS_NAME_MODEL_PREFIX;
+        return basePackage + ".dto." + (base ? "basepo." : "composedpo.") + CodeConstants.CLASS_NAME_MODEL_PREFIX;
     }
 
     public String getEnumClzName(String clazzName) {
-        return basePackage + ".dto.enums." + CodeHelper.CLASS_NAME_ENUM_PREFIX + CodeStyleTransformHelper.upperFirstCase(clazzName);
+        return basePackage + ".dto.enums." + CodeConstants.CLASS_NAME_ENUM_PREFIX + CodeStyleTransformHelper.upperFirstCase(clazzName);
     }
 
     private String getClassNameOfSpecialQueryDto(String clzName) {
-        return basePackage + ".dto.input." + CodeHelper.CLASS_NAME_MODEL_PREFIX + CodeStyleTransformHelper.upperFirstCase(clzName);
+        return basePackage + ".dto.input." + CodeConstants.CLASS_NAME_MODEL_PREFIX + CodeStyleTransformHelper.upperFirstCase(clzName);
     }
 
     private String getModelClassName(String table) {
@@ -360,12 +358,12 @@ public class ModelBuilderContext {
 
     public String getRSMapperClassName(String table) {
         String modelClass = getModelClassName(table);
-        return modelClass + "." + CodeHelper.CLASS_NAME_RESULT_SET_MAPPER_PREFIX + CodeHelper.getClassNameFromFullName(modelClass);
+        return modelClass + "." + CodeConstants.CLASS_NAME_RESULT_SET_MAPPER_PREFIX + CodeConstants.getClassNameFromFullName(modelClass);
     }
 
     public String getMapMapperClassName(String table) {
         String modelClass = getModelClassName(table);
-        return modelClass + "." + CodeHelper.CLASS_NAME_REDIS_BYTE_MAPPER_PREFIX + CodeHelper.getClassNameFromFullName(modelClass);
+        return modelClass + "." + CodeConstants.CLASS_NAME_REDIS_BYTE_MAPPER_PREFIX + CodeConstants.getClassNameFromFullName(modelClass);
     }
 
     public void buildBaseModelAndDao() {
@@ -395,8 +393,8 @@ public class ModelBuilderContext {
 //        String dbName = data_store.getDb();
 //        List<String> dataSources=getDataSource(dbName);
 //        Collection<TableInfoInterface> tables = data_store.getTbMaps().values();
-        List<CommonModelDef> defs = db.getDefs();
-        for (CommonModelDef def : defs) {
+        List<CommonModelDaoDef> defs = db.getDefs();
+        for (CommonModelDaoDef def : defs) {
 //            String table = tableInfo.getTable();
 //            String modelSimpleName = CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(table);
 //            final CommonModelDef commonModelDef = new CommonModelDef()
@@ -459,7 +457,7 @@ public class ModelBuilderContext {
 //        return null;
 //    }
 
-    private ModelBuilder buildBaseModel(CommonModelDef def)
+    private ModelBuilder buildBaseModel(CommonModelDaoDef def)
 //            (TableInfoInterface tableInfo, String baseTable, boolean buildMapper, Set<String> ignoreField)
     {
         try {
@@ -471,7 +469,10 @@ public class ModelBuilderContext {
             if (def.isBuildMapper()) {
                 MapperOfResultSetBuilder rsMapperBuilder = new MapperOfResultSetBuilder(builder);
                 rsMapperBuilder.buildModel();
-                MapperOfMapBuilder redisMapperBuilder = new MapperOfMapBuilder(builder);
+//                MapperOfMapBuilder redisMapperBuilder = new MapperOfMapBuilder(builder);
+//                redisMapperBuilder.buildModel();
+
+                MapperOfPojoBuilder redisMapperBuilder = new MapperOfPojoBuilder(def,this,builder.getDefinedClass());
                 redisMapperBuilder.buildModel();
             }
             return builder;
@@ -482,16 +483,16 @@ public class ModelBuilderContext {
 
     }
 
-    public void buildSpecialModalAndDao(SpecialModelConf def) {
+    public void buildSpecialModalAndDao(SpecialModelDaoConf def) {
 //        NamedParameterJdbcTemplate jdbcTemplate = dataSource.getJdbcTemplate();
         try {
-            SpecialModelConf.DataAttrType type = def.getDataType();
-            if (type.equals(SpecialModelConf.DataAttrType.LIST_OBJ) || type.equals(SpecialModelConf.DataAttrType.OBJ)) {
+            SpecialModelDaoConf.DataAttrType type = def.getDataType();
+            if (type.equals(SpecialModelDaoConf.DataAttrType.LIST_OBJ) || type.equals(SpecialModelDaoConf.DataAttrType.OBJ)) {
                 ModelBuilder modelBuilder = buildBaseModel(def);
 //        if(type.equals(SpecialModelDef.DataAttrType.SQL)) {
 //            modelBuilder.buildSQLField(modelDef.getSql());
 
-            } else if (type.equals(SpecialModelConf.DataAttrType.LIST) || type.equals(SpecialModelConf.DataAttrType.SINGLE)) {
+            } else if (type.equals(SpecialModelDaoConf.DataAttrType.LIST) || type.equals(SpecialModelDaoConf.DataAttrType.SINGLE)) {
 
 //            SpecialDaoBuilder daoBuilder = new SpecialDaoBuilder(def, this);
 //            daoBuilder.buildModel();
@@ -508,7 +509,7 @@ public class ModelBuilderContext {
 
 
 
-    public void buildMultiSelectDao(ModelMulDaoConf conf) {
+    public void buildMultiSelectDao(ModelMulDaoDaoConf conf) {
 //        serviceName = getServiceClassName(serviceName);
         if(conf==null){
             return ;
@@ -558,13 +559,13 @@ public class ModelBuilderContext {
         String clzName = jDefinedClass.name();
         ClassDataTable.putDaoClz(clzName,jDefinedClass);
         MethodTypeEnum mType = null;
-        if (clzName.startsWith(CodeHelper.CLASS_NAME_DAO_PREFIX)) {
+        if (clzName.startsWith(CodeConstants.CLASS_NAME_DAO_PREFIX)) {
             mType = MethodTypeEnum.DAO_METHOD;
-        } else if (clzName.startsWith(CodeHelper.CLASS_NAME_MODEL_PREFIX)) {
+        } else if (clzName.startsWith(CodeConstants.CLASS_NAME_MODEL_PREFIX)) {
             mType = MethodTypeEnum.MODEL_METHOD;
-        } else if (clzName.startsWith(CodeHelper.CLASS_NAME_RESULT_SET_MAPPER_PREFIX)) {
+        } else if (clzName.startsWith(CodeConstants.CLASS_NAME_RESULT_SET_MAPPER_PREFIX)) {
             mType = MethodTypeEnum.MODEL_MAPPER_METHOD;
-        } else if (clzName.startsWith(CodeHelper.CLASS_NAME_MULTI_DAO_PREFIX)) {
+        } else if (clzName.startsWith(CodeConstants.CLASS_NAME_MULTI_DAO_PREFIX)) {
             mType = MethodTypeEnum.MUL_DAO_METHOD;
         } else {
             mType = MethodTypeEnum.SQL_DEFINED_METHOD;

@@ -2,7 +2,7 @@ package com.shawn.ss.lib.code_gen.base.common;
 
 import com.helger.jcodemodel.*;
 import com.shawn.ss.lib.code_gen.CodeBuilderInterface;
-import com.shawn.ss.lib.code_gen.base.helper.CodeHelper;
+import com.shawn.ss.lib.code_gen.base.helper.CodeConstants;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
 import com.shawn.ss.lib.code_gen.model.def_model.common.CommonPOJOConf;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.FieldInfoInterface;
@@ -50,9 +50,9 @@ public class POJOModelBuilder  implements CodeBuilderInterface {
 
     private void buildField(FieldInfoInterface fieldDef) {
 
-        AbstractJClass abstractJClass= CodeHelper.getClassFromDef(cm,fieldDef);
+        AbstractJClass abstractJClass= CodeConstants.getClassFromDef(cm,fieldDef);
         String name = fieldDef.getFieldName();
         JFieldVar fieldVar = definedClass.field(JMod.PROTECTED, abstractJClass, name);
-        JMethod[] methods = CodeHelper.buildGetterAndSetter(definedClass, name, abstractJClass, fieldVar);
+        JMethod[] methods = CodeConstants.buildGetterAndSetter(definedClass, name, abstractJClass, fieldVar);
     }
 }

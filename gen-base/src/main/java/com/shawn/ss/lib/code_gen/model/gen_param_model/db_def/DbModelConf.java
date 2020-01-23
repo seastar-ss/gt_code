@@ -1,4 +1,4 @@
-package com.shawn.ss.lib.code_gen.model.def_model.db_def;
+package com.shawn.ss.lib.code_gen.model.gen_param_model.db_def;
 
 import java.util.Map;
 import java.util.Set;

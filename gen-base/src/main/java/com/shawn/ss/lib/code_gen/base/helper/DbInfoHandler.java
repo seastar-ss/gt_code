@@ -2,8 +2,8 @@ package com.shawn.ss.lib.code_gen.base.helper;
 
 import com.shawn.ss.lib.code_gen.base.helper.db_analyzer.DbAnalyzer;
 import com.shawn.ss.lib.code_gen.base.helper.data_store.DbDataTable;
-import com.shawn.ss.lib.code_gen.model.def_model.dao_def.CommonModelDef;
-import com.shawn.ss.lib.code_gen.model.def_model.db_def.DbModelConf;
+import com.shawn.ss.lib.code_gen.model.def_model.dao_def.CommonModelDaoDef;
+import com.shawn.ss.lib.code_gen.model.gen_param_model.db_def.DbModelConf;
 import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.StringHelper;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.DbInfoInterface;
@@ -132,7 +132,7 @@ public class DbInfoHandler {
         }
         String dataSourceId = connection.getDataSourceId();
         if (StringHelper.isEmpty(dataSourceId)) {
-            dataSourceId = CodeHelper.KEY_WORD_DEFAULT_DATA_SOURCE_ID;
+            dataSourceId = CodeConstants.KEY_WORD_DEFAULT_DATA_SOURCE_ID;
         }
         this.conf.setDb(db);
 //        if (!dataSourceId.startsWith(data_store)) {
@@ -223,15 +223,15 @@ public class DbInfoHandler {
             final Set<String> ignoreTbPattern = conf.getIgnoreTbPattern();
             final Set<String> includingPattern = conf.getIncludingPattern();
             if ((conf.getIgnoreTbPattern() == null && conf.getIncludingPattern() == null) ||
-                    !CodeHelper.testIgnore(tb.getTable(), conf.getIgnoreTbPattern(), conf.getIncludingPattern())) {
+                    !CodeConstants.testIgnore(tb.getTable(), conf.getIgnoreTbPattern(), conf.getIncludingPattern())) {
                 tbMap.put(tb.getTable(), tb);
             }
         }
         return tbMap;
     }
 
-    public CommonModelDef getDefs(String table){
-        CommonModelDef ret=null;
+    public CommonModelDaoDef getDefs(String table){
+        CommonModelDaoDef ret=null;
         String dbName = getDb();
         List<String> dataSources=DbDataTable.getAllSlaveSourceNameByName(dbName);
         final String defaultAssemblerClass = conf.getDefaultAssemblerClass();
@@ -248,7 +248,7 @@ public class DbInfoHandler {
             }
 //            String table = tableInfo.getTable();
 //            String modelSimpleName = CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(table);
-            final CommonModelDef commonModelDef = new CommonModelDef(tableInfo)
+            final CommonModelDaoDef commonModelDaoDef = new CommonModelDaoDef(tableInfo)
 //                    .setDef(tableInfo)
                     .setBaseTable(null)
                     .setBuildMapper(true)
@@ -258,15 +258,15 @@ public class DbInfoHandler {
                     .setBaseDaoClass(baseDaoClass)
                     ;
             if (dataSources != null) {
-                commonModelDef.setDataSourceNames(dataSources);
+                commonModelDaoDef.setDataSourceNames(dataSources);
             }
         }
         return ret;
     }
 
-    public List<CommonModelDef> getDefs(){
+    public List<CommonModelDaoDef> getDefs(){
 
-        List<CommonModelDef> defs=CollectionHelper.newList();
+        List<CommonModelDaoDef> defs=CollectionHelper.newList();
         String dbName = getDb();
         List<String> dataSources=DbDataTable.getAllSlaveSourceNameByName(dbName);
         Collection<TableInfoInterface> tables = getTbMaps().values();
@@ -284,7 +284,7 @@ public class DbInfoHandler {
             }
 //            String table = tableInfo.getTable();
 //            String modelSimpleName = CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(table);
-            final CommonModelDef commonModelDef = new CommonModelDef(tableInfo)
+            final CommonModelDaoDef commonModelDaoDef = new CommonModelDaoDef(tableInfo)
 //                    .setDef(tableInfo)
                     .setBaseTable(null)
                     .setBuildMapper(true)
@@ -294,9 +294,9 @@ public class DbInfoHandler {
                     .setBaseDaoClass(baseDaoClass)
                     ;
             if (dataSources != null) {
-                commonModelDef.setDataSourceNames(dataSources);
+                commonModelDaoDef.setDataSourceNames(dataSources);
             }
-            defs.add(commonModelDef);
+            defs.add(commonModelDaoDef);
         }
         return defs;
     }

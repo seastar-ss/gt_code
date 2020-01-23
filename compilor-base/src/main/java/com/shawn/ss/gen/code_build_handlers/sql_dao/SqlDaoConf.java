@@ -5,10 +5,9 @@ import com.shawn.ss.gen.Helpers;
 import com.shawn.ss.gen.api.interfaces.SqlResp;
 import com.shawn.ss.gen.api.interfaces.SqlRespClass;
 import com.shawn.ss.gen.api.interfaces.SqlRespParam;
-import com.shawn.ss.gen.tools.clzAnalyzer.ClassAnalyze;
 import com.shawn.ss.gen.code_build_handlers.AbstractGenConf;
 import com.shawn.ss.gen.model.class_structure.ModelParamEntry;
-//import com.shawn.ss.gen.tools.clzAnalyzer.ClassAnalyze;
+import com.shawn.ss.gen.tools.clzAnalyzer.ClassAnalyze;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
 import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.StringHelper;
@@ -19,10 +18,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.lang.model.element.*;
-import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
-import javax.lang.model.type.WildcardType;
 import java.util.List;
+
+//import com.shawn.ss.gen.tools.clzAnalyzer.ClassAnalyze;
 
 /**
  * Created by ss on 2018/6/17.
@@ -41,7 +40,7 @@ public class SqlDaoConf extends AbstractGenConf {
     protected String baseClz;
     protected String baseModel;
 
-//    protected Map<String, Object> defualtParam;
+    //    protected Map<String, Object> defualtParam;
     protected final ModelBuilderContext context;
     protected List<FieldInfoInterface> params;
     private final ClassAnalyze analyzer;
@@ -50,7 +49,7 @@ public class SqlDaoConf extends AbstractGenConf {
         super(element);
         analyzer = new ClassAnalyze(helpers);
 //        defualtParam= CollectionHelper.newMap();
-        params=CollectionHelper.newList();
+        params = CollectionHelper.newList();
         SqlResp annotation = element.getAnnotation(SqlResp.class);
         String sql = annotation.sql();
         assert (!StringHelper.isEmpty(sql));
@@ -67,29 +66,26 @@ public class SqlDaoConf extends AbstractGenConf {
         }
 
         List<? extends VariableElement> parameters = el.getParameters();
-        helpers.println("get method param:"+parameters.size());
-        handleParamInfo(this, parameters, helpers,analyzer);
+        helpers.println("get method param:" + parameters.size());
+        handleParamInfo(this, parameters, helpers, analyzer);
 
         Element enclosingElement = el.getEnclosingElement();
         if (enclosingElement != null && enclosingElement.getKind() == ElementKind.INTERFACE) {
             final TypeElement typeElement = (TypeElement) enclosingElement;
             handleClassInfo(this, typeElement, helpers);
-            context=findContextByPos(typeElement,helpers);
-            if(context==null){
+            context = findContextByPos(typeElement, helpers);
+            if (context == null) {
                 throw new IllegalArgumentException("@SqlResp标注的类，应该在@DefaultResp标注的包之下");
             }
-        }else{
+        } else {
             throw new IllegalArgumentException("不能再此处上增加@SqlResp，找不到外围的interface元素");
         }
-
-
-        handleMethodRetType(this, el,helpers,analyzer);
+        handleMethodRetType(this, el, helpers, analyzer);
 
         String docComment = helpers.elementUtils.getDocComment(el);
         this.setComment(docComment);
-        dataSourceId=annotation.dataSourceId();
+        dataSourceId = annotation.dataSourceId();
     }
-
 
 
     public String getSql() {
@@ -155,45 +151,45 @@ public class SqlDaoConf extends AbstractGenConf {
 //    }
 
     public static void handleMethodRetType(SqlDaoConf sqlDaoConf, ExecutableElement el, Helpers helpers, ClassAnalyze analyzer) {
-        TypeMirror returnType = el.getReturnType();
+//        TypeMirror returnType = el.getReturnType();
         //TODO: handle base model
-        ModelParamEntry entry=new ModelParamEntry();
-        analyzer.assembleParamStructure(entry,el);
+        ModelParamEntry entry = new ModelParamEntry();
+        analyzer.assembleParamStructure(entry, el);
         Integer demension = entry.getArrayDemension();
-        if(demension >2){
+        if (demension > 2) {
             throw new IllegalArgumentException("can't build such method with more than 3 demession array returned");
-        }else if(demension ==0){
+        } else if (demension == 0) {
 
         }
     }
 
     public static void handleClassInfo(SqlDaoConf conf, TypeElement el, Helpers helpers) {
         Name qualifiedName = el.getQualifiedName();
-        String clName=null;
+        String clName = null;
         SqlRespClass annotation = el.getAnnotation(SqlRespClass.class);
-        if(annotation!=null){
-            clName=annotation.clazzName();
+        if (annotation != null) {
+            clName = annotation.clazzName();
         }
-        if(StringHelper.isEmpty(clName)){
-            clName=el.getSimpleName().toString()+ Constants.CLASS_IMPL_APPENDIX;
+        if (StringHelper.isEmpty(clName)) {
+            clName = el.getSimpleName().toString() + Constants.CLASS_IMPL_APPENDIX;
         }
         conf.setInterfaceClassName(qualifiedName.toString());
-        helpers.println("get sql class name:"+clName);
+        helpers.println("get sql class name:" + clName);
         conf.setClassName(clName);
     }
 
     public static void handleParamInfo(SqlDaoConf conf, List<? extends VariableElement> parameters, Helpers helpers, ClassAnalyze analyzer) {
-        for(VariableElement el:parameters){
-            boolean add = conf.params.add(buildParam(el,helpers,analyzer));
+        for (VariableElement el : parameters) {
+            boolean add = conf.params.add(buildParam(el, helpers, analyzer));
         }
     }
 
     private static FieldInfoInterface buildParam(VariableElement el, Helpers helpers, ClassAnalyze analyzer) {
-        ModelParamEntry entry=new ModelParamEntry();
-        analyzer.assembleParamStructure(entry,el);
+        ModelParamEntry entry = new ModelParamEntry();
+        analyzer.assembleParamStructure(entry, el);
         Integer arrayDemension = entry.getArrayDemension();
         Name simpleName = el.getSimpleName();
-        Object value=null;
+        Object value = null;
         helpers.println("handle sql params:" + simpleName);
         SqlRespParam annotation = el.getAnnotation(SqlRespParam.class);
         String defaultValue = null;
@@ -205,7 +201,7 @@ public class SqlDaoConf extends AbstractGenConf {
         if (StringHelper.isEmpty(name)) {
             name = simpleName.toString();
         }
-        if(entry.isSimple() && (arrayDemension ==0 )) {
+        if (entry.isSimple() && (arrayDemension == 0)) {
             TypeMirror typeMirror = el.asType();
             value = helpers.asObject(defaultValue, typeMirror);
             helpers.println("handle sql params:" + name + "->" + value);
@@ -213,19 +209,19 @@ public class SqlDaoConf extends AbstractGenConf {
 //                conf.putDefaultParam(name, value);
         }
 
-        FieldInfo def=new FieldInfo();
+        FieldInfo def = new FieldInfo();
         def.setDefaultValue(value);
         def.setFieldName(entry.getParamName());
-        if(entry.isSimple()){
+        if (entry.isSimple()) {
 //            def.setFieldName(entry.getClzName());
 
-            CommonFieldTypeInfo type=new CommonFieldTypeInfo();
+            CommonFieldTypeInfo type = new CommonFieldTypeInfo();
             type.settClassName(entry.getClzName());
-            if(arrayDemension==0){
+            if (arrayDemension == 0) {
                 type.setArray(false).setCollection(false).setMap(false);
-            }else if(arrayDemension==1){
+            } else if (arrayDemension == 1) {
                 ModelParamEntry.ArrayInfo arrayType = entry.getArrayType().get(0);
-                switch (arrayType.getType()){
+                switch (arrayType.getType()) {
                     case array:
                         type.setArray(true).setCollection(false).setMap(false);
                         break;
@@ -235,15 +231,15 @@ public class SqlDaoConf extends AbstractGenConf {
                     default:
                         break;
                 }
-            }else{
+            } else {
                 //TODO:
             }
             def.setType(type);
-        }else {
+        } else {
             //TODO:
         }
 
-        L.info("build param conf:"+def);
+        L.info("build param conf:" + def);
         return def;
     }
 

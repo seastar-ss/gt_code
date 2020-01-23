@@ -4,9 +4,9 @@ import com.shawn.ss.gen.Helpers;
 import com.shawn.ss.gen.api.interfaces.mutli_resp.SqlMultipleInterfaceConf;
 import com.shawn.ss.gen.api.interfaces.mutli_resp.SqlMultipleRelatedConf;
 import com.shawn.ss.gen.code_build_handlers.AbstractGenConf;
-import com.shawn.ss.lib.code_gen.base.helper.CodeHelper;
+import com.shawn.ss.lib.code_gen.base.helper.CodeConstants;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
-import com.shawn.ss.lib.code_gen.model.def_model.dao_def.ModelMulDaoConf;
+import com.shawn.ss.lib.code_gen.model.def_model.dao_def.ModelMulDaoDaoConf;
 import com.shawn.ss.lib.code_gen.model.def_model.dao_def.ModelRelatedTableDef;
 import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.StringHelper;
@@ -39,7 +39,7 @@ public class SqlMultiDaoConf extends AbstractGenConf {
     protected Map<String, Object> defualtParam;
     protected ModelBuilderContext context;
 
-    List<ModelMulDaoConf> conf;
+    List<ModelMulDaoDaoConf> conf;
 
     public SqlMultiDaoConf(Element element, Helpers helpers) throws IllegalArgumentException {
         super(element);
@@ -74,12 +74,12 @@ public class SqlMultiDaoConf extends AbstractGenConf {
         if (StringHelper.isEmpty(dtoClazzName)) {
             dtoClazzName = packageName + ".Model" + clzSimpleName;
         }
-        ModelMulDaoConf conf = new ModelMulDaoConf(daoClazzName);
+        ModelMulDaoDaoConf conf = new ModelMulDaoDaoConf(daoClazzName);
         String mainDb = multipleResps.dbName();
         String mainTable = multipleResps.tableName();
         conf.setMainTableDef(
                 new ModelRelatedTableDef()
-                        .setName(CodeHelper.buildConfNameFromDbAndTable(mainDb, mainTable))
+                        .setName(CodeConstants.buildConfNameFromDbAndTable(mainDb, mainTable))
                         .setFieldName(multipleResps.fieldName())
 //                .set
         );
@@ -109,7 +109,7 @@ public class SqlMultiDaoConf extends AbstractGenConf {
             }
             relatedTbs.add(
                     new ModelRelatedTableDef(
-                            CodeHelper.buildConfNameFromDbAndTable(dbName, tableName),
+                            CodeConstants.buildConfNameFromDbAndTable(dbName, tableName),
                             result[1], result[0], !multipleResp.isList()
                     )
                             .setAdditionalCondition(map)
@@ -180,7 +180,7 @@ public class SqlMultiDaoConf extends AbstractGenConf {
         return this;
     }
 
-    public List<ModelMulDaoConf> getConfModel() {
+    public List<ModelMulDaoDaoConf> getConfModel() {
 
         return conf;
     }

@@ -1,11 +1,11 @@
 package com.shawn.ss.lib.code_gen.model.def_model.dao_def;
 
 import com.helger.jcodemodel.JDefinedClass;
-import com.shawn.ss.lib.code_gen.base.helper.CodeHelper;
+import com.shawn.ss.lib.code_gen.base.helper.CodeConstants;
 import com.shawn.ss.lib.code_gen.base.helper.data_store.DbDataTable;
-import com.shawn.ss.lib.code_gen.model.def_model._BaseConf;
-import com.shawn.ss.lib.code_gen.model.def_model._BaseConfImpl;
+import com.shawn.ss.lib.code_gen.model.def_model._BaseModelConf;
 import com.shawn.ss.lib.tools.CollectionHelper;
+import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.FieldInfoInterface;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.TableInfoInterface;
 
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.Set;
 /**
  * Created by ss on 2018/3/3.
  */
-public class CommonModelDef<T extends CommonModelDef> extends _BaseConfImpl implements _BaseConf {
+public class CommonModelDaoDef<T extends CommonModelDaoDef> extends _BaseDaoConfImpl implements _BaseModelConf {
 
     protected final transient TableInfoInterface def;
 //    String table,db;
@@ -30,18 +30,18 @@ public class CommonModelDef<T extends CommonModelDef> extends _BaseConfImpl impl
     //    private boolean composed;
 //        protected String baseModelTable;
 
-    public CommonModelDef(TableInfoInterface def) {
+    public CommonModelDaoDef(TableInfoInterface def) {
         super(def);
         this.def=def;
         enumClzz= CollectionHelper.newMap();
-        this.dataSourceName= CodeHelper.KEY_WORD_DEFAULT_DATA_SOURCE_ID;
+        this.dataSourceName= CodeConstants.KEY_WORD_DEFAULT_DATA_SOURCE_ID;
     }
 
-    public CommonModelDef(String name,TableInfoInterface def) {
+    public CommonModelDaoDef(String name, TableInfoInterface def) {
         super(name);
         this.def=def;
         enumClzz= CollectionHelper.newMap();
-        this.dataSourceName= CodeHelper.KEY_WORD_DEFAULT_DATA_SOURCE_ID;
+        this.dataSourceName= CodeConstants.KEY_WORD_DEFAULT_DATA_SOURCE_ID;
     }
 
     public TableInfoInterface getDef() {
@@ -93,7 +93,7 @@ public class CommonModelDef<T extends CommonModelDef> extends _BaseConfImpl impl
         return enumClzz;
     }
 
-    public CommonModelDef setEnumClzz(Map<String, JDefinedClass> enumClzz) {
+    public CommonModelDaoDef setEnumClzz(Map<String, JDefinedClass> enumClzz) {
         this.enumClzz = enumClzz;
         return this;
     }
@@ -114,7 +114,7 @@ public class CommonModelDef<T extends CommonModelDef> extends _BaseConfImpl impl
         return dataSourceNames;
     }
 
-    public CommonModelDef setDataSourceNames(List<String> dataSourceNames) {
+    public CommonModelDaoDef setDataSourceNames(List<String> dataSourceNames) {
         this.dataSourceNames = dataSourceNames;
         return this;
     }
@@ -123,7 +123,7 @@ public class CommonModelDef<T extends CommonModelDef> extends _BaseConfImpl impl
         return baseAssemblerClass;
     }
 
-    public CommonModelDef setBaseAssemblerClass(String baseAssemblerClass) {
+    public CommonModelDaoDef setBaseAssemblerClass(String baseAssemblerClass) {
         this.baseAssemblerClass = baseAssemblerClass;
         return this;
     }
@@ -132,7 +132,7 @@ public class CommonModelDef<T extends CommonModelDef> extends _BaseConfImpl impl
         return baseDaoClass;
     }
 
-    public CommonModelDef setBaseDaoClass(String baseDaoClass) {
+    public CommonModelDaoDef setBaseDaoClass(String baseDaoClass) {
         this.baseDaoClass = baseDaoClass;
         return this;
     }
@@ -147,6 +147,45 @@ public class CommonModelDef<T extends CommonModelDef> extends _BaseConfImpl impl
         return def.getDb()==null? DbDataTable.getCurrentDb():def.getDb();
     }
 
+    @Override
+    public List<FieldInfoInterface> getFields() {
+        return null;
+    }
+
+    @Override
+    public int sizeOfField() {
+        return 0;
+    }
+
+    @Override
+    public boolean addField(FieldInfoInterface fieldDef) {
+        return false;
+    }
+
+    @Override
+    public FieldInfoInterface getField(int index) {
+        return null;
+    }
+
+    @Override
+    public String getPojoClzName() {
+        return null;
+    }
+
+    @Override
+    public _BaseModelConf setPojoClzName(String pojoClzName) {
+        return null;
+    }
+
+    @Override
+    public String getPojoExtendsClzName() {
+        return null;
+    }
+
+    @Override
+    public _BaseModelConf setPojoExtendsClzName(String pojoExtendsClzName) {
+        return null;
+    }
 
 
     //    public String getBaseModelTable() {

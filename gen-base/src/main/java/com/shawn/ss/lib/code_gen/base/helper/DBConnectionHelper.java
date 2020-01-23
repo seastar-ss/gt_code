@@ -45,9 +45,9 @@ public class DBConnectionHelper {
         this.p = null;
         //helpers.p;
         if(StringHelper.isEmpty(dataSourceId)){
-            dataSourceId= CodeHelper.KEY_WORD_DEFAULT_DATA_SOURCE_ID;
+            dataSourceId= CodeConstants.KEY_WORD_DEFAULT_DATA_SOURCE_ID;
         }
-        String prefix= (dataSourceId.equals(CodeHelper.KEY_WORD_DEFAULT_DATA_SOURCE_ID)?"":dataSourceId+".");
+        String prefix= (dataSourceId.equals(CodeConstants.KEY_WORD_DEFAULT_DATA_SOURCE_ID)?"":dataSourceId+".");
         try {
             con = new SimpleDataSource();
             con.setUrl(url);
@@ -72,9 +72,9 @@ public class DBConnectionHelper {
         this.p = p;
         //helpers.p;
         if(StringHelper.isEmpty(dataSourceId)){
-            dataSourceId= CodeHelper.KEY_WORD_DEFAULT_DATA_SOURCE_ID;
+            dataSourceId= CodeConstants.KEY_WORD_DEFAULT_DATA_SOURCE_ID;
         }
-        String prefix= (dataSourceId.equals(CodeHelper.KEY_WORD_DEFAULT_DATA_SOURCE_ID)?"":dataSourceId+".");
+        String prefix= (dataSourceId.equals(CodeConstants.KEY_WORD_DEFAULT_DATA_SOURCE_ID)?"":dataSourceId+".");
         try {
             con = new SimpleDataSource();
             con.setUrl(p.getProperty(prefix+"jdbc.url"));
@@ -214,7 +214,7 @@ public class DBConnectionHelper {
     }
 
     public String getDataSourceId() {
-        return StringHelper.isEmpty(dataSourceId)? CodeHelper.KEY_WORD_DEFAULT_DATA_SOURCE_ID:dataSourceId;
+        return StringHelper.isEmpty(dataSourceId)? CodeConstants.KEY_WORD_DEFAULT_DATA_SOURCE_ID:dataSourceId;
     }
 
 //    public DBConnectionHelper setDataSourceId(String dataSourceId) {

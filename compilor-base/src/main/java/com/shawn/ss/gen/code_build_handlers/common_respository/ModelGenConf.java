@@ -8,7 +8,7 @@ import com.shawn.ss.gen.api.interfaces.base_resp.DefaultRespConf;
 import com.shawn.ss.gen.code_build_handlers.AbstractCodeGenerator;
 import com.shawn.ss.gen.code_build_handlers.AbstractGenConf;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
-import com.shawn.ss.lib.code_gen.model.def_model.db_def.DbModelConf;
+import com.shawn.ss.lib.code_gen.model.gen_param_model.db_def.DbModelConf;
 import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.ParamHelper;
 

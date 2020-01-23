@@ -1,7 +1,6 @@
 package com.shawn.ss.lib.code_gen.model.def_model.dao_def;
 
 import com.shawn.ss.lib.code_gen.base.helper.data_store.ConfDataTable;
-import com.shawn.ss.lib.code_gen.model.def_model._BaseConfImpl;
 import com.shawn.ss.lib.code_gen.model.def_model._BaseDef;
 
 import java.util.Map;
@@ -38,7 +37,7 @@ public class ModelRelatedTableDef implements _BaseDef {
 
 
     public String getTable() {
-        _BaseConfImpl conf = ConfDataTable.get(name);
+        _BaseDaoConfImpl conf = ConfDataTable.get(name);
 //        if(conf instanceof CommonModelDef){
 //            CommonModelDef def = (CommonModelDef) conf;
 //            return def.getDef().getTable();
@@ -88,7 +87,7 @@ public class ModelRelatedTableDef implements _BaseDef {
     }
 
     public String getDb() {
-        _BaseConfImpl conf = ConfDataTable.get(name);
+        _BaseDaoConfImpl conf = ConfDataTable.get(name);
 //        if(conf instanceof CommonModelDef){
 //            CommonModelDef def = (CommonModelDef) conf;
 //            return def.getTable();

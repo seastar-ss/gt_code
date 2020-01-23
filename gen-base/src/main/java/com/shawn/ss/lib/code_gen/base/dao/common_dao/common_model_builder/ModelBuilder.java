@@ -2,12 +2,12 @@ package com.shawn.ss.lib.code_gen.base.dao.common_dao.common_model_builder;
 
 import com.helger.jcodemodel.*;
 import com.shawn.ss.lib.code_gen.CodeBuilderInterface;
-import com.shawn.ss.lib.code_gen.base.helper.CodeHelper;
+import com.shawn.ss.lib.code_gen.base.helper.CodeConstants;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
 import com.shawn.ss.lib.code_gen.base.helper.data_store.ClassDataTable;
-import com.shawn.ss.lib.code_gen.model.def_model.dao_def.CommonModelDef;
+import com.shawn.ss.lib.code_gen.model.def_model.dao_def.CommonModelDaoDef;
 //import com.shawn.ss.lib.code_gen.model.def_model.dao_def.EnumTypeConf;
-import com.shawn.ss.lib.code_gen.model.def_model.dao_def.SpecialModelConf;
+import com.shawn.ss.lib.code_gen.model.def_model.dao_def.SpecialModelDaoConf;
 import com.shawn.ss.lib.tools.CodeStyleTransformHelper;
 import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.ColumnInfoInterface;
@@ -50,7 +50,7 @@ public class ModelBuilder implements CodeBuilderInterface {
 //    Map<String,JDefinedClass> enumClzz;
 
     final boolean selectModel;
-    private CommonModelDef modelDef;
+    private CommonModelDaoDef modelDef;
 
 
 //    public ModelBuilder(TableInfoInterface info,  ModelBuilderContext builderContext) {
@@ -58,7 +58,7 @@ public class ModelBuilder implements CodeBuilderInterface {
 //
 //    }
 
-    public ModelBuilder(CommonModelDef def) {
+    public ModelBuilder(CommonModelDaoDef def) {
         this.modelDef = def;
         this.info = def.getDef();
         this.builderContext = def.getBuilderContext();
@@ -109,8 +109,8 @@ public class ModelBuilder implements CodeBuilderInterface {
             buildIsEmptyMethod();
             buildFeatureMethod();
             buildToStringMethod();
-            if(modelDef instanceof SpecialModelConf){
-                SpecialModelConf sdef=(SpecialModelConf) modelDef;
+            if(modelDef instanceof SpecialModelDaoConf){
+                SpecialModelDaoConf sdef=(SpecialModelDaoConf) modelDef;
                 String sql = sdef.getSql();
                 if(sql!=null){
                     buildSQLField(sql);
@@ -125,7 +125,7 @@ public class ModelBuilder implements CodeBuilderInterface {
     }
 
     private void buildToStringMethod() {
-        CodeHelper.genToStringMethod(cm,definedClass,false);
+        CodeConstants.genToStringMethod(cm,definedClass,false);
     }
 
     private void checkTableInfoForEnums() {
@@ -144,7 +144,7 @@ public class ModelBuilder implements CodeBuilderInterface {
     }
 
     public void buildSQLField(String sql){
-        definedClass.field(CodeHelper.MODE_PUBLIC_STATIC_FINAL, String.class, CodeHelper.FIELD_MODEL_RELATED_SQL, JExpr.lit(sql));
+        definedClass.field(CodeConstants.MODE_PUBLIC_STATIC_FINAL, String.class, CodeConstants.FIELD_MODEL_RELATED_SQL, JExpr.lit(sql));
     }
 
     private void buildComments() {
@@ -172,7 +172,7 @@ public class ModelBuilder implements CodeBuilderInterface {
         if(!ignoreField.contains(colName) && colName.length()>0) {
             String comment = item.getComment();
 //            FieldDataTypeInterface type = item.getType();
-            AbstractJClass type = CodeHelper.getFieldDefType(cm, modelDef, item,builderContext);
+            AbstractJClass type = CodeConstants.getFieldDefType(cm, modelDef, item,builderContext);
 //            final EnumTypeDef enumTypeDef = item.getEnumTypeDef();
 
             AbstractJClass jClass=type;
@@ -180,7 +180,7 @@ public class ModelBuilder implements CodeBuilderInterface {
             String humpStyleColName = CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(colName);
             String fname;
             if(PATTERN_NUMBER_START.matcher(humpStyleColName).matches()) {
-                fname = CodeHelper.FIELD_MODEL_FIELD_PREFIX + CodeStyleTransformHelper.upperFirstCase(humpStyleColName);
+                fname = CodeConstants.FIELD_MODEL_FIELD_PREFIX + CodeStyleTransformHelper.upperFirstCase(humpStyleColName);
             }else{
                 fname=humpStyleColName;
             }
@@ -189,10 +189,10 @@ public class ModelBuilder implements CodeBuilderInterface {
             field.javadoc().append("对应数据库").append(db).append(".")
                     .append(table).append(".").append(colName).append("字段")
                     .append("\n").append(comment);
-            JMethod[] methods = CodeHelper.buildGetterAndSetter(definedClass, humpStyleColName, jClass, field);
+            JMethod[] methods = CodeConstants.buildGetterAndSetter(definedClass, humpStyleColName, jClass, field);
             allGetFields.put(colName, methods[0]);
             allSetFields.put(colName, methods[1]);
-            definedClass.field(CodeHelper.MODE_PUBLIC_STATIC_FINAL, String.class, CodeHelper.FIELD_CONST_NAME_PREFIX + colName.toUpperCase(), JExpr.lit(colName));
+            definedClass.field(CodeConstants.MODE_PUBLIC_STATIC_FINAL, String.class, CodeConstants.FIELD_CONST_NAME_PREFIX + colName.toUpperCase(), JExpr.lit(colName));
         }
     }
 
@@ -201,11 +201,11 @@ public class ModelBuilder implements CodeBuilderInterface {
     private void buildStaticFields() {
         String priKey = info.getPriKey();
         if (priKey != null) {
-            definedClass.field(CodeHelper.MODE_PUBLIC_STATIC_FINAL, String.class, CodeHelper.FIELD_PRIMARY_KEY_NAME, JExpr.lit(priKey));
+            definedClass.field(CodeConstants.MODE_PUBLIC_STATIC_FINAL, String.class, CodeConstants.FIELD_PRIMARY_KEY_NAME, JExpr.lit(priKey));
         }
-        definedClass.field(CodeHelper.MODE_PUBLIC_STATIC_FINAL, String.class, CodeHelper.FIELD_TABLE_NAME, table == null ? JExpr._null() : JExpr.lit(table));
-        definedClass.field(CodeHelper.MODE_PUBLIC_STATIC_FINAL, String.class, CodeHelper.FIELD_DB_NAME, db == null ? JExpr._null() : JExpr.lit(db));
-        definedClass.field(CodeHelper.MODE_PUBLIC_STATIC_FINAL, Integer.class, CodeHelper.FIELD_MODEL_TYPE, JExpr.lit(info.getTableType()));
+        definedClass.field(CodeConstants.MODE_PUBLIC_STATIC_FINAL, String.class, CodeConstants.FIELD_TABLE_NAME, table == null ? JExpr._null() : JExpr.lit(table));
+        definedClass.field(CodeConstants.MODE_PUBLIC_STATIC_FINAL, String.class, CodeConstants.FIELD_DB_NAME, db == null ? JExpr._null() : JExpr.lit(db));
+        definedClass.field(CodeConstants.MODE_PUBLIC_STATIC_FINAL, Integer.class, CodeConstants.FIELD_MODEL_TYPE, JExpr.lit(info.getTableType()));
     }
 
 
@@ -213,20 +213,20 @@ public class ModelBuilder implements CodeBuilderInterface {
         AbstractJType ft = cm.directClass("FT");//._(cm.ref(_ObjMapper.class));
 //        JTypeWildcard ft = cm.ref(_ObjMapper.class).(EWildcardBoundMode.EXTENDS);
 //        wildcard.narrow(cm.ref(_ObjMapper.class));
-        JMethod method = definedClass.method(JMod.PUBLIC, ft, CodeHelper.METHOD_METHOD_GET_FEATURE);
+        JMethod method = definedClass.method(JMod.PUBLIC, ft, CodeConstants.METHOD_METHOD_GET_FEATURE);
         method.generify("FT",cm.ref(_ObjMapper.class));
         JVar clazz = method.param(cm.ref(Class.class).narrow(ft), "clazz");
         JBlock body = method.body();
-        body._if(JExpr.dotclass(cm.ref(RedisMapMapper.class)).invoke("isAssignableFrom").arg(clazz))._then()._return(JExpr.cast(ft,definedClass.staticRef(CodeHelper.FIELD_REDIS_MAP_MAPPER_INSTANCE)));
-        body._if(JExpr.dotclass(cm.ref(DbResultSetMapper.class)).invoke("isAssignableFrom").arg(clazz))._then()._return(JExpr.cast(ft,definedClass.staticRef(CodeHelper.FIELD_RESULT_SET_MAPPER_INSTANCE)));
+        body._if(JExpr.dotclass(cm.ref(RedisMapMapper.class)).invoke("isAssignableFrom").arg(clazz))._then()._return(JExpr.cast(ft,definedClass.staticRef(CodeConstants.FIELD_REDIS_MAP_MAPPER_INSTANCE)));
+        body._if(JExpr.dotclass(cm.ref(DbResultSetMapper.class)).invoke("isAssignableFrom").arg(clazz))._then()._return(JExpr.cast(ft,definedClass.staticRef(CodeConstants.FIELD_RESULT_SET_MAPPER_INSTANCE)));
         body._return(JExpr._null());
     }
 
     private void buildIsEmptyMethod() {
         if (columns != null && columns.size() > 0) {
-            JMethod method = definedClass.method(JMod.PUBLIC, cm.BOOLEAN, CodeHelper.METHOD_MODEL_IS_EMPTY);
+            JMethod method = definedClass.method(JMod.PUBLIC, cm.BOOLEAN, CodeConstants.METHOD_MODEL_IS_EMPTY);
             JBlock body = method.body();
-            body._if(JExpr._super().invoke(CodeHelper.METHOD_MODEL_IS_EMPTY).not())._then()._return(JExpr.FALSE);
+            body._if(JExpr._super().invoke(CodeConstants.METHOD_MODEL_IS_EMPTY).not())._then()._return(JExpr.FALSE);
             for (ColumnInfoInterface item : columns) {
 
                 String colName = item.getFieldName();
@@ -240,7 +240,7 @@ public class ModelBuilder implements CodeBuilderInterface {
     }
 
     public JFieldRef referStaticField(String fieldName) {
-        return CodeHelper.getBaseModelColumnStaticRef(definedClass,fieldName);
+        return CodeConstants.getBaseModelColumnStaticRef(definedClass,fieldName);
     }
 
     private void buildFieldTypeMap() {
@@ -249,18 +249,18 @@ public class ModelBuilder implements CodeBuilderInterface {
             for (ColumnInfoInterface item : columns) {
                 String colName = item.getFieldName();
                 if(!ignoreField.contains(colName)) {
-                    final AbstractJClass type = CodeHelper.getFieldDefType(cm, modelDef, item,builderContext);
+                    final AbstractJClass type = CodeConstants.getFieldDefType(cm, modelDef, item,builderContext);
                     invocation = invocation.invoke("put").arg(referStaticField(colName)).arg(JExpr.dotclass(type));
                 }
             }
             invocation = invocation.invoke("getMap");
-            JFieldVar field = definedClass.field(CodeHelper.MODE_PUBLIC_STATIC_FINAL, CodeHelper.buildNarrowedClass(cm, Map.class, String.class, Object.class),
-                    CodeHelper.FIELD_FIELDS_CLASS_CONSTANT_MAP, invocation);
-            JMethod method = definedClass.method(JMod.PUBLIC, CodeHelper.buildNarrowedClass(cm, Map.class, String.class, Object.class), CodeHelper.METHOD_MODEL_GET_FIELD_CONFIG);
+            JFieldVar field = definedClass.field(CodeConstants.MODE_PUBLIC_STATIC_FINAL, CodeConstants.buildNarrowedClass(cm, Map.class, String.class, Object.class),
+                    CodeConstants.FIELD_FIELDS_CLASS_CONSTANT_MAP, invocation);
+            JMethod method = definedClass.method(JMod.PUBLIC, CodeConstants.buildNarrowedClass(cm, Map.class, String.class, Object.class), CodeConstants.METHOD_MODEL_GET_FIELD_CONFIG);
             method.annotate(Override.class);
 
             method.body()._return(field);
-            definedClass.field(CodeHelper.MODE_PUBLIC_STATIC_FINAL, Integer.class, CodeHelper.FIELD_MODEL_FIELD_COUNT, JExpr.lit(columns.size()));
+            definedClass.field(CodeConstants.MODE_PUBLIC_STATIC_FINAL, Integer.class, CodeConstants.FIELD_MODEL_FIELD_COUNT, JExpr.lit(columns.size()));
         }
 
     }
@@ -359,7 +359,7 @@ public class ModelBuilder implements CodeBuilderInterface {
         return builderContext;
     }
 
-    public CommonModelDef getModelDef() {
+    public CommonModelDaoDef getModelDef() {
         return modelDef;
     }
 }

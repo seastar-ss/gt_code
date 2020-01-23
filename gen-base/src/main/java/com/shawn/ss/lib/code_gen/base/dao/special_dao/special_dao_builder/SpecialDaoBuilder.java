@@ -2,9 +2,9 @@ package com.shawn.ss.lib.code_gen.base.dao.special_dao.special_dao_builder;
 
 import com.helger.jcodemodel.*;
 import com.shawn.ss.lib.code_gen.base.dao.AbstractDaoBuilder;
-import com.shawn.ss.lib.code_gen.base.helper.CodeHelper;
+import com.shawn.ss.lib.code_gen.base.helper.CodeConstants;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
-import com.shawn.ss.lib.code_gen.model.def_model.dao_def.SpecialModelConf;
+import com.shawn.ss.lib.code_gen.model.def_model.dao_def.SpecialModelDaoConf;
 import com.shawn.ss.lib.tools.CodeStyleTransformHelper;
 import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.StringHelper;
@@ -22,12 +22,12 @@ import java.util.Map;
  */
 public class SpecialDaoBuilder extends AbstractDaoBuilder {
 
-    private final SpecialModelConf def;
+    private final SpecialModelDaoConf def;
     private final String name;
     private String handleSqlMethod;
 
 
-    public SpecialDaoBuilder(SpecialModelConf def, ModelBuilderContext builderContext) {
+    public SpecialDaoBuilder(SpecialModelDaoConf def, ModelBuilderContext builderContext) {
         super(def, builderContext);
         this.def = def;
         name = CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(def.getMethodName());
@@ -48,10 +48,10 @@ public class SpecialDaoBuilder extends AbstractDaoBuilder {
             } else {
                 if (loggerField == null) {
                     Map<String, JFieldVar> fields = definedClass.fields();
-                    if (fields.containsKey(CodeHelper.FIELD_DAO_LOGGER)) {
+                    if (fields.containsKey(CodeConstants.FIELD_DAO_LOGGER)) {
                         loggerField = fields.get("logger");
                     } else {
-                        loggerField = definedClass.field(CodeHelper.MODE_PUBLIC_STATIC_FINAL, cm.ref(Logger.class), CodeHelper.FIELD_DAO_LOGGER,
+                        loggerField = definedClass.field(CodeConstants.MODE_PUBLIC_STATIC_FINAL, cm.ref(Logger.class), CodeConstants.FIELD_DAO_LOGGER,
                                 cm.ref(LoggerFactory.class).staticInvoke("getLogger").arg(JExpr.dotclass(definedClass)));
                     }
                 }
@@ -66,22 +66,22 @@ public class SpecialDaoBuilder extends AbstractDaoBuilder {
     }
 
     private JMethod buildSelectMethod() {
-        SpecialModelConf.DataAttrType type = def.getDataType();
+        SpecialModelDaoConf.DataAttrType type = def.getDataType();
         AbstractJClass abstractJClass = null;
         Class aClass = null;
         ColumnInfoInterface columnInfoInterface;
-        if (type.equals(SpecialModelConf.DataAttrType.LIST_OBJ)) {
-            abstractJClass = CodeHelper.buildNarrowedClass(cm, List.class, modelClass);
-        } else if (type.equals(SpecialModelConf.DataAttrType.OBJ)) {
+        if (type.equals(SpecialModelDaoConf.DataAttrType.LIST_OBJ)) {
+            abstractJClass = CodeConstants.buildNarrowedClass(cm, List.class, modelClass);
+        } else if (type.equals(SpecialModelDaoConf.DataAttrType.OBJ)) {
             abstractJClass = modelClass;
         } else {
             columnInfoInterface = info.getColumns().get(0);
 
             aClass = columnInfoInterface.getType().gettClass();
-            if (type.equals(SpecialModelConf.DataAttrType.SINGLE)) {
+            if (type.equals(SpecialModelDaoConf.DataAttrType.SINGLE)) {
                 abstractJClass = cm.ref(aClass);
-            } else if (type.equals(SpecialModelConf.DataAttrType.LIST)) {
-                abstractJClass = CodeHelper.buildNarrowedClass(cm, List.class, aClass);
+            } else if (type.equals(SpecialModelDaoConf.DataAttrType.LIST)) {
+                abstractJClass = CodeConstants.buildNarrowedClass(cm, List.class, aClass);
             }
         }
         JMethod method = definedClass.method(JMod.PUBLIC, abstractJClass, CodeStyleTransformHelper.lowerFirstCase(name));
@@ -92,7 +92,7 @@ public class SpecialDaoBuilder extends AbstractDaoBuilder {
         JBlock body = method.body();
 
         for (FieldInfoInterface entry : params) {
-            AbstractJClass classFromDef = CodeHelper.getClassFromDef(cm, entry);
+            AbstractJClass classFromDef = CodeConstants.getClassFromDef(cm, entry);
             String paramName = entry.getFieldName();
             JVar param = method.param(classFromDef, paramName);
 
@@ -100,20 +100,20 @@ public class SpecialDaoBuilder extends AbstractDaoBuilder {
             body.assign(param, JExpr.invoke(paramMethod).arg(param));
             allVars.put(paramName, param);
         }
-        JVar mapVar = CodeHelper.buildStringObjectMapParam(cm, body, allVars);
+        JVar mapVar = CodeConstants.buildStringObjectMapParam(cm, body, allVars);
         String methodName = null;
-        if (type.equals(SpecialModelConf.DataAttrType.LIST_OBJ)) {
-            methodName = CodeHelper.LIB_DB_QUERY;
-        } else if (type.equals(SpecialModelConf.DataAttrType.OBJ)) {
-            methodName = CodeHelper.LIB_DB_QUERY_ONE;
-        } else if (type.equals(SpecialModelConf.DataAttrType.SINGLE)) {
-            methodName = CodeHelper.LIB_DB_QUERY_ONE;
-        } else if (type.equals(SpecialModelConf.DataAttrType.LIST)) {
-            methodName = CodeHelper.LIB_DB_QUERY_LIST;
+        if (type.equals(SpecialModelDaoConf.DataAttrType.LIST_OBJ)) {
+            methodName = CodeConstants.LIB_DB_QUERY;
+        } else if (type.equals(SpecialModelDaoConf.DataAttrType.OBJ)) {
+            methodName = CodeConstants.LIB_DB_QUERY_ONE;
+        } else if (type.equals(SpecialModelDaoConf.DataAttrType.SINGLE)) {
+            methodName = CodeConstants.LIB_DB_QUERY_ONE;
+        } else if (type.equals(SpecialModelDaoConf.DataAttrType.LIST)) {
+            methodName = CodeConstants.LIB_DB_QUERY_LIST;
         }
         JFieldRef ref = null;
         if (dbField == null) {
-            ref = JExpr.ref(JExpr._this(), CodeHelper.FIELD_DAO_DB_FIELD);
+            ref = JExpr.ref(JExpr._this(), CodeConstants.FIELD_DAO_DB_FIELD);
         }
         JInvocation invocation = JExpr.invoke(dbField == null ? ref : dbField, methodName);
 //        JFieldVar field=null;
@@ -142,9 +142,9 @@ public class SpecialDaoBuilder extends AbstractDaoBuilder {
 //            expr=fieldRef;
 //        }
         addLogs(body, fieldRef, mapVar);
-        if (type.equals(SpecialModelConf.DataAttrType.LIST_OBJ) || type.equals(SpecialModelConf.DataAttrType.OBJ)) {
-            invocation.arg(modelClass.staticRef(CodeHelper.FIELD_RESULT_SET_MAPPER_INSTANCE));
-        } else if (type.equals(SpecialModelConf.DataAttrType.SINGLE) || type.equals(SpecialModelConf.DataAttrType.LIST)) {
+        if (type.equals(SpecialModelDaoConf.DataAttrType.LIST_OBJ) || type.equals(SpecialModelDaoConf.DataAttrType.OBJ)) {
+            invocation.arg(modelClass.staticRef(CodeConstants.FIELD_RESULT_SET_MAPPER_INSTANCE));
+        } else if (type.equals(SpecialModelDaoConf.DataAttrType.SINGLE) || type.equals(SpecialModelDaoConf.DataAttrType.LIST)) {
             invocation.arg(JExpr.dotclass(cm.ref(aClass)));
         }
         JVar ret = body.decl(method.type(), "ret", invocation);
@@ -160,8 +160,8 @@ public class SpecialDaoBuilder extends AbstractDaoBuilder {
         return;
     }
 
-    private JFieldRef buildSqlConstantsString(SpecialModelConf def, JFieldRef ref) {
-        String clzName = builderContext.getClzName(CodeHelper.CLASS_NAME_ALL_SQL_CONTANT_CLASS);
+    private JFieldRef buildSqlConstantsString(SpecialModelDaoConf def, JFieldRef ref) {
+        String clzName = builderContext.getClzName(CodeConstants.CLASS_NAME_ALL_SQL_CONTANT_CLASS);
         JDefinedClass contantsClazz = cm._getClass(clzName);
         if (contantsClazz == null) {
             try {
@@ -179,7 +179,7 @@ public class SpecialDaoBuilder extends AbstractDaoBuilder {
             lstName=defClzName;
         }
         if(contantsClazz!=null) {
-            JFieldVar field = contantsClazz.field(CodeHelper.MODE_PUBLIC_STATIC_FINAL, String.class, CodeHelper.FIELD_DAO_RELATED_SQL_PREFIX + lstName.toUpperCase() + "_" + name.toUpperCase(),
+            JFieldVar field = contantsClazz.field(CodeConstants.MODE_PUBLIC_STATIC_FINAL, String.class, CodeConstants.FIELD_DAO_RELATED_SQL_PREFIX + lstName.toUpperCase() + "_" + name.toUpperCase(),
                     ref == null ? JExpr.lit(def.getSql()) : ref);
             return field.fieldRef();
         }
@@ -204,7 +204,7 @@ public class SpecialDaoBuilder extends AbstractDaoBuilder {
             Object o = key.get(paramName);
             if (o != null) {
                 jBlock = mbody._if(mparam.eq(JExpr._null()))._then();
-                jBlock.assign(mparam, CodeHelper.litObject(o));
+                jBlock.assign(mparam, CodeConstants.litObject(o));
             }
         }
         mbody._return(mparam);

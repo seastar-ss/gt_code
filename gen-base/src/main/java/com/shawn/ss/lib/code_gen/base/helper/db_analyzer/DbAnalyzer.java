@@ -1,8 +1,7 @@
 package com.shawn.ss.lib.code_gen.base.helper.db_analyzer;
 
-import com.shawn.ss.lib.code_gen.base.helper.CodeHelper;
+import com.shawn.ss.lib.code_gen.base.helper.CodeConstants;
 import com.shawn.ss.lib.code_gen.base.helper.DBConnectionHelper;
-import com.shawn.ss.lib.code_gen.model.def_model.dao_def.SpecialModelConf;
 import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.StringHelper;
 import com.shawn.ss.lib.tools.TypeConstantHelper;
@@ -287,7 +286,7 @@ public class DbAnalyzer {
             while (rs.next()) {
                 TableInfo tb = new TableInfo();
                 String tableName = rs.getString("TABLE_NAME");
-                if (!CodeHelper.testIgnore(tableName, input.ignoreTbPattern, input.includingTable)) {
+                if (!CodeConstants.testIgnore(tableName, input.ignoreTbPattern, input.includingTable)) {
                     tb.setTableName(tableName);
                     tb.setCharset(rs.getString("TABLE_COLLATION"));
                     tb.setTableComment(rs.getString("TABLE_COMMENT"));
@@ -320,9 +319,9 @@ public class DbAnalyzer {
             rs = st.executeQuery(StringHelper.concat("select * from information_schema.COLUMNS where TABLE_SCHEMA='", input.dbName, "'"));
             while (rs.next()) {
                 String tb = rs.getString("TABLE_NAME");
-                if (!CodeHelper.testIgnore(tb, input.ignoreTbPattern, input.includingTable)) {
+                if (!CodeConstants.testIgnore(tb, input.ignoreTbPattern, input.includingTable)) {
                     String columnName = rs.getString("COLUMN_NAME");
-                    if (CodeHelper.PATTERN_TB_NAME.matcher(columnName).matches()) {
+                    if (CodeConstants.PATTERN_TB_NAME.matcher(columnName).matches()) {
                         final ColumnInfo row = new ColumnInfo();
                         row.setTable(tb);
                         row.setDb(input.dbName);

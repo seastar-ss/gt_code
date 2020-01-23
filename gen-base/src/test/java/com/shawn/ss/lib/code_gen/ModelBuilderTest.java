@@ -7,10 +7,9 @@ package com.shawn.ss.lib.code_gen;
 import com.shawn.ss.gen.api.conf.SelectMethodEnum;
 import com.shawn.ss.lib.code_gen.base.helper.DBConnectionHelper;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
-import com.shawn.ss.lib.code_gen.model.def_model._BaseConfImpl;
-import com.shawn.ss.lib.code_gen.model.def_model.dao_def.ModelMulDaoConf;
+import com.shawn.ss.lib.code_gen.model.def_model.dao_def.ModelMulDaoDaoConf;
 import com.shawn.ss.lib.code_gen.model.def_model.dao_def.ModelRelatedTableDef;
-import com.shawn.ss.lib.code_gen.model.def_model.db_def.DbModelConf;
+import com.shawn.ss.lib.code_gen.model.gen_param_model.db_def.DbModelConf;
 import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.ColumnInfoInterface;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.TableInfoInterface;
@@ -619,7 +618,7 @@ public class ModelBuilderTest {
                         )
         );
         modelBuilderContext.buildBaseModelAndDao();
-        ModelMulDaoConf wikiConf = new ModelMulDaoConf("wikiConf").setMainTableDef(
+        ModelMulDaoDaoConf wikiConf = new ModelMulDaoDaoConf("wikiConf").setMainTableDef(
                 new ModelRelatedTableDef().setFieldName("wikiIndex").setName("ent_knownleag_base.wiki_index")
         )
 //                        .setMainDb("ent_knownleag_base")

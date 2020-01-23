@@ -1,4 +1,4 @@
-package com.shawn.ss.lib.code_gen.model.def_model.common;
+package com.shawn.ss.lib.code_gen.model.gen_param_model.db_def;
 
 /**
  * Created by ss on 2018/7/29.

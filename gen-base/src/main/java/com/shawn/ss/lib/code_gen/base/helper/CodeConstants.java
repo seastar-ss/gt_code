@@ -5,7 +5,9 @@ import com.helger.jcodemodel.*;
 import com.shawn.ss.gen.api.conf.SelectMethod;
 import com.shawn.ss.gen.api.conf.SelectMethodEnum;
 import com.shawn.ss.lib.code_gen.base.helper.data_store.DbDataTable;
-import com.shawn.ss.lib.code_gen.model.def_model.dao_def.CommonModelDef;
+import com.shawn.ss.lib.code_gen.model.def_model._BaseModelConf;
+import com.shawn.ss.lib.code_gen.model.def_model.dao_def._BaseDaoConfImpl;
+import com.shawn.ss.lib.code_gen.model.def_model.dao_def.CommonModelDaoDef;
 import com.shawn.ss.lib.tools.CodeStyleTransformHelper;
 import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.TypeConstantHelper;
@@ -20,7 +22,7 @@ import com.shawn.ss.lib.tools.db.dto_base.model.AbstractBaseModel;
 import java.util.*;
 import java.util.regex.Pattern;
 
-public class CodeHelper {
+public class CodeConstants {
 
     public static final int MODE_PUBLIC_STATIC_FINAL = JMod.PUBLIC + JMod.STATIC + JMod.FINAL;
     public static final int MODE_PUBLIC_STATIC = JMod.PUBLIC + JMod.STATIC;
@@ -39,6 +41,7 @@ public class CodeHelper {
     public static final String FIELD_MODEL_FIELD_COUNT = "FIELD_COUNT";
     public static final String FIELD_REDIS_MAP_MAPPER = "MAP_MAPPER";
     public static final String FIELD_REDIS_MAP_MAPPER_INSTANCE = "MAP_OBJ_MAPPER";
+
     public static final String FIELD_FIELDS_CLASS_CONSTANT_MAP = "FIELD_CLASS";
     public static final String FIELD_DAO_DB_FIELD = "data_store";
     public static final String FIELD_DAO_DB_FIELD_MAP = "dbMap";
@@ -175,6 +178,7 @@ public class CodeHelper {
     //    public static final String CLASS_NAME_ENUM_PREFIX = "Enum";
     public static final String CLASS_NAME_RESULT_SET_MAPPER_PREFIX = "ResultSetMapper";
     public static final String CLASS_NAME_REDIS_BYTE_MAPPER_PREFIX = "ByteMapMapper";
+    public static final String CLASS_NAME_POJO_MAPPER_PREFIX = "PojoMapper";
     public static final String CLASS_NAME_ALL_SPECIAL_DAO_TABLE_NAME = "SqlSpecialDao";
     public static final String CLASS_NAME_ALL_SQL_CONTANT_CLASS = ".constants.SqlConstants";
 //    public static final String CLASS_NAME_COMMON_DB_DAO_PREFIX="DAO";
@@ -243,44 +247,44 @@ public class CodeHelper {
 
     public static boolean isDaoMethodCountResult(String methodName) {
         return (
-                methodName.equals(CodeHelper.METHOD_DAO_GET_COUNT_BY_CONDITION)
-                        || methodName.equals(CodeHelper.METHOD_DAO_GET_COUNT_BY_INDEX_AND_CONDITION)
+                methodName.equals(CodeConstants.METHOD_DAO_GET_COUNT_BY_CONDITION)
+                        || methodName.equals(CodeConstants.METHOD_DAO_GET_COUNT_BY_INDEX_AND_CONDITION)
 
         );
     }
 
     public static boolean isDaoMethodSingleResult(String methodName) {
-        return methodName.equals(CodeHelper.METHOD_DAO_CUSTOMER_GET_ITEM_BY_CONDITION)
-                || methodName.equals(CodeHelper.METHOD_DAO_CUSTOMER_GET_ITEM_BY_INDEXES)
-                || methodName.equals(CodeHelper.METHOD_DAO_CUSTOMER_GET_ITEM_BY_INDEX_AND_CONDITION);
+        return methodName.equals(CodeConstants.METHOD_DAO_CUSTOMER_GET_ITEM_BY_CONDITION)
+                || methodName.equals(CodeConstants.METHOD_DAO_CUSTOMER_GET_ITEM_BY_INDEXES)
+                || methodName.equals(CodeConstants.METHOD_DAO_CUSTOMER_GET_ITEM_BY_INDEX_AND_CONDITION);
     }
 
     public static boolean isDaoMethodNeedConditionList(String methodName) {
         return (
-                methodName.equals(CodeHelper.METHOD_DAO_GET_BY_IDS)
-                        || methodName.equals(CodeHelper.METHOD_DAO_GET_BY_INDEXES)
-                        || methodName.equals(CodeHelper.METHOD_DAO_GET_BY_INDEXES_AND_CONDITION)
-                        || methodName.equals(CodeHelper.METHOD_DAO_GET_COUNT_BY_INDEX_AND_CONDITION)
-                        || methodName.equals(CodeHelper.METHOD_DAO_CUSTOMER_GET_ITEM_BY_INDEXES)
-                        || methodName.equals(CodeHelper.METHOD_DAO_CUSTOMER_GET_ITEM_BY_INDEX_AND_CONDITION)
+                methodName.equals(CodeConstants.METHOD_DAO_GET_BY_IDS)
+                        || methodName.equals(CodeConstants.METHOD_DAO_GET_BY_INDEXES)
+                        || methodName.equals(CodeConstants.METHOD_DAO_GET_BY_INDEXES_AND_CONDITION)
+                        || methodName.equals(CodeConstants.METHOD_DAO_GET_COUNT_BY_INDEX_AND_CONDITION)
+                        || methodName.equals(CodeConstants.METHOD_DAO_CUSTOMER_GET_ITEM_BY_INDEXES)
+                        || methodName.equals(CodeConstants.METHOD_DAO_CUSTOMER_GET_ITEM_BY_INDEX_AND_CONDITION)
         );
     }
 
 
     public static boolean isDaoMethodNeedConditionSet(String methodName) {
         return (
-                methodName.equals(CodeHelper.METHOD_DAO_GET_ONE_BY_CONDITION)
-                        || methodName.equals(CodeHelper.METHOD_DAO_GET_BY_CONDITION)
-                        || methodName.equals(CodeHelper.METHOD_DAO_GET_COUNT_BY_CONDITION)
-                        || methodName.equals(CodeHelper.METHOD_DAO_GET_BY_INDEXES_AND_CONDITION)
-                        || methodName.equals(CodeHelper.METHOD_DAO_GET_COUNT_BY_INDEX_AND_CONDITION)
-                        || methodName.equals(CodeHelper.METHOD_DAO_CUSTOMER_GET_ITEM_BY_CONDITION)
-                        || methodName.equals(CodeHelper.METHOD_DAO_CUSTOMER_GET_ITEM_BY_INDEX_AND_CONDITION)
+                methodName.equals(CodeConstants.METHOD_DAO_GET_ONE_BY_CONDITION)
+                        || methodName.equals(CodeConstants.METHOD_DAO_GET_BY_CONDITION)
+                        || methodName.equals(CodeConstants.METHOD_DAO_GET_COUNT_BY_CONDITION)
+                        || methodName.equals(CodeConstants.METHOD_DAO_GET_BY_INDEXES_AND_CONDITION)
+                        || methodName.equals(CodeConstants.METHOD_DAO_GET_COUNT_BY_INDEX_AND_CONDITION)
+                        || methodName.equals(CodeConstants.METHOD_DAO_CUSTOMER_GET_ITEM_BY_CONDITION)
+                        || methodName.equals(CodeConstants.METHOD_DAO_CUSTOMER_GET_ITEM_BY_INDEX_AND_CONDITION)
         );
     }
 
     public static boolean isDaoMethodNeedIdCondtion(String methodName) {
-        return methodName.equals(CodeHelper.METHOD_DAO_GET_BY_ID) || methodName.equals(CodeHelper.METHOD_DAO_GET_BY_IDS);
+        return methodName.equals(CodeConstants.METHOD_DAO_GET_BY_ID) || methodName.equals(CodeConstants.METHOD_DAO_GET_BY_IDS);
     }
 
     public static IJExpression litObject(Class contentType, Object obj) {
@@ -433,8 +437,8 @@ public class CodeHelper {
     }
 
     public static JMethod[] buildGetterAndSetter(JDefinedClass _class, String fd, AbstractJClass type, JFieldVar field) {
-        JMethod getter = CodeHelper.buildGetter(_class, fd, type, field);
-        JMethod setter = CodeHelper.buildSetter(_class, fd, type, field);
+        JMethod getter = CodeConstants.buildGetter(_class, fd, type, field);
+        JMethod setter = CodeConstants.buildSetter(_class, fd, type, field);
         return new JMethod[]{getter, setter};
     }
 
@@ -505,8 +509,8 @@ public class CodeHelper {
     }
 
     public static void setDefaultLimit(JCodeModel cm, JBlock body, JVar start, JVar count) {
-        body._if(start.eq(JExpr._null()))._then().assign(start, cm.ref(AbstractBaseModel.class).staticRef(CodeHelper.FIELD_DEFAULT_START));
-        body._if(count.eq(JExpr._null()))._then().assign(count, cm.ref(AbstractBaseModel.class).staticRef(CodeHelper.FIELD_DEFAULT_COUNT));
+        body._if(start.eq(JExpr._null()))._then().assign(start, cm.ref(AbstractBaseModel.class).staticRef(CodeConstants.FIELD_DEFAULT_START));
+        body._if(count.eq(JExpr._null()))._then().assign(count, cm.ref(AbstractBaseModel.class).staticRef(CodeConstants.FIELD_DEFAULT_COUNT));
     }
 
     public static JVar buildStringObjectMapParam(JCodeModel cm, JBlock body, Map<String, JVar> map) {
@@ -590,23 +594,23 @@ public class CodeHelper {
     }
 
     public static String getMethodNameOfModelGet(String colName) {
-        return CodeHelper.KEY_WORD_GET + CodeStyleTransformHelper.upperFirstCase(CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(colName));
+        return CodeConstants.KEY_WORD_GET + CodeStyleTransformHelper.upperFirstCase(CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(colName));
     }
 
     public static String getMethodNameOfModelSet(String colName) {
-        return CodeHelper.KEY_WORD_SET + CodeStyleTransformHelper.upperFirstCase(CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(colName));
+        return CodeConstants.KEY_WORD_SET + CodeStyleTransformHelper.upperFirstCase(CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(colName));
     }
 
     public static String getMethodNameOfRedisMapperMapToField(String colName) {
-        return CodeHelper.METHOD_JEDIS_MAPPER_TO_MAP_FIELD_PREFIX + CodeStyleTransformHelper.upperFirstCase(CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(colName));
+        return CodeConstants.METHOD_JEDIS_MAPPER_TO_MAP_FIELD_PREFIX + CodeStyleTransformHelper.upperFirstCase(CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(colName));
     }
 
     public static String getMethodNameOfRedisMapperMapFromField(String colName) {
-        return CodeHelper.METHOD_JEDIS_MAPPER_FROM_MAP_FIELD_PREFIX + CodeStyleTransformHelper.upperFirstCase(CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(colName));
+        return CodeConstants.METHOD_JEDIS_MAPPER_FROM_MAP_FIELD_PREFIX + CodeStyleTransformHelper.upperFirstCase(CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(colName));
     }
 
     public static String getMethodNameOfResultSetMapField(String colName) {
-        return CodeHelper.METHOD_MAPPER_MAP_SINGLE_COLUMN_ROW_PREFIX + CodeStyleTransformHelper.upperFirstCase(colName);
+        return CodeConstants.METHOD_MAPPER_MAP_SINGLE_COLUMN_ROW_PREFIX + CodeStyleTransformHelper.upperFirstCase(colName);
     }
 
     public static String getClazzNameFromTableName(String tableName) {
@@ -618,7 +622,7 @@ public class CodeHelper {
     }
 
     public static JFieldRef getBaseModelColumnStaticRef(AbstractJClass modelClass, String colName) {
-        return modelClass.staticRef(CodeHelper.FIELD_CONST_NAME_PREFIX + colName.toUpperCase());
+        return modelClass.staticRef(CodeConstants.FIELD_CONST_NAME_PREFIX + colName.toUpperCase());
     }
 
     public static void genToStringMethod(JCodeModel cm, JDefinedClass definedClass, boolean includeStatic) {
@@ -673,22 +677,22 @@ public class CodeHelper {
         } else if (type.isArray()) {
             abstractJClass = cm.ref(clzName).array();
         } else if (type.isCollection()) {
-            abstractJClass = CodeHelper.buildNarrowedClass(cm, Collection.class, clzName);
+            abstractJClass = CodeConstants.buildNarrowedClass(cm, Collection.class, clzName);
         } else if (type.isMap()) {
             String keyClzName = type.getKeyClassName();
-            abstractJClass = CodeHelper.buildNarrowedClass(cm, Map.class, keyClzName, clzName);
+            abstractJClass = CodeConstants.buildNarrowedClass(cm, Map.class, keyClzName, clzName);
         }
         return abstractJClass;
     }
 
     public static String getFieldNameOfDBFieldBySourceName(String dsName) {
-        return CodeHelper.FIELD_DAO_DB_FIELD
+        return CodeConstants.FIELD_DAO_DB_FIELD
                 + CodeStyleTransformHelper.upperFirstCase(CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(dsName))
                 ;
     }
 
     public static String getFieldNameOfDBSourceName(String dsName) {
-        return CodeHelper.FIELD_DAO_DS_FIELD_PREFIX
+        return CodeConstants.FIELD_DAO_DS_FIELD_PREFIX
                 + CodeStyleTransformHelper.upperFirstCase(CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(dsName))
                 ;
     }
@@ -735,18 +739,23 @@ public class CodeHelper {
         return jClass;
     }
 
-    public static AbstractJClass getFieldDefType(JCodeModel cm, CommonModelDef def, ColumnInfoInterface item, ModelBuilderContext bc) {
-        AbstractJClass jClass;
-        EnumTypeDef typeDef = item.getEnumTypeDef();
-        if (typeDef == null) {
-            jClass = cm.ref(item.getType().gettClass());
-        } else {
-            jClass = def.getEnumClz(item.getFieldName());
-            if (jClass == null) {
+    public static AbstractJClass getFieldDefType(JCodeModel cm, _BaseModelConf odef, FieldInfoInterface item, ModelBuilderContext bc) {
+        AbstractJClass jClass=null;
+        if(odef instanceof CommonModelDaoDef) {
+            CommonModelDaoDef def=(CommonModelDaoDef)odef;
+            EnumTypeDef typeDef = item.getEnumTypeDef();
+            if (typeDef == null) {
+                jClass = cm.ref(item.getType().gettClass());
+            } else {
+                jClass = def.getEnumClz(item.getFieldName());
+                if (jClass == null) {
 //                if(type==null && enumTypeDef !=null) {
-                jClass = cm.ref(bc.getEnumClzName(typeDef.getClazzName()));
+                    jClass = cm.ref(bc.getEnumClzName(typeDef.getClazzName()));
 //                }
+                }
             }
+        }else {
+            jClass=cm.ref(item.getType().gettClass());
         }
         return jClass;
     }
