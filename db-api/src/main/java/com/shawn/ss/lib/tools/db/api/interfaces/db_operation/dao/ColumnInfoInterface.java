@@ -8,8 +8,6 @@ import java.util.Properties;
 
 public interface ColumnInfoInterface extends FieldInfoInterface {
 
-
-
     String getExtra();
 
     boolean isNullable();

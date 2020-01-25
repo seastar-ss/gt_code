@@ -1,19 +1,20 @@
 package com.shawn.ss.lib.code_gen.base.helper;
 
-import com.helger.jcodemodel.*;
+import com.helger.jcodemodel.JCodeModel;
+import com.helger.jcodemodel.JDefinedClass;
+import com.helger.jcodemodel.JMethod;
 import com.shawn.ss.lib.code_gen.base.common.MapperOfPojoBuilder;
 import com.shawn.ss.lib.code_gen.base.dao.common_dao.common_dao_builder.CommonDaoBuilder;
+import com.shawn.ss.lib.code_gen.base.dao.common_dao.common_model_builder.MapperOfResultSetBuilder;
+import com.shawn.ss.lib.code_gen.base.dao.common_dao.common_model_builder.ModelBuilder;
 import com.shawn.ss.lib.code_gen.base.dao.special_dao.special_dao_builder.SpecialDaoBuilder;
 import com.shawn.ss.lib.code_gen.base.helper.data_store.ClassDataTable;
 import com.shawn.ss.lib.code_gen.base.helper.data_store.DbDataTable;
-import com.shawn.ss.lib.code_gen.model.MethodTypeEnum;
-//import com.shawn.ss.lib.code_gen.base.dao.common_dao.common_model_builder.MapperOfMapBuilder;
-import com.shawn.ss.lib.code_gen.base.dao.common_dao.common_model_builder.MapperOfResultSetBuilder;
-import com.shawn.ss.lib.code_gen.base.dao.common_dao.common_model_builder.ModelBuilder;
-import com.shawn.ss.lib.code_gen.model.def_model.dao_def.CommonModelDaoDef;
-import com.shawn.ss.lib.code_gen.model.def_model.dao_def.SpecialModelDaoConf;
 import com.shawn.ss.lib.code_gen.base.multi_dao.multi_dao_builder.MultiDaoSelectServiceBuilder;
+import com.shawn.ss.lib.code_gen.model.MethodTypeEnum;
+import com.shawn.ss.lib.code_gen.model.def_model.dao_def.CommonModelDaoDef;
 import com.shawn.ss.lib.code_gen.model.def_model.dao_def.ModelMulDaoDaoConf;
+import com.shawn.ss.lib.code_gen.model.def_model.dao_def.SpecialModelDaoConf;
 import com.shawn.ss.lib.code_gen.model.gen_param_model.db_def.DbModelConf;
 import com.shawn.ss.lib.tools.CodeStyleTransformHelper;
 import com.shawn.ss.lib.tools.CollectionHelper;
@@ -25,7 +26,11 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
+//import com.shawn.ss.lib.code_gen.base.dao.common_dao.common_model_builder.MapperOfMapBuilder;
 
 public class ModelBuilderContext {
     final Logger L = LoggerFactory.getLogger(ModelBuilderContext.class.getSimpleName());
@@ -36,7 +41,7 @@ public class ModelBuilderContext {
     volatile String basePackage;
     JCodeModel cm;
     private String filePath;
-    private Map<Long,DbInfoHandler> relatedDbs;
+    private Map<Long, DbInfoHandler> relatedDbs;
 //    private Map<String,List<Long>> dbNameToIndex;
 
 //    private String dbName;
@@ -140,7 +145,7 @@ public class ModelBuilderContext {
 
 
     private ModelBuilderContext() {
-        relatedDbs=CollectionHelper.newMap(32);
+        relatedDbs = CollectionHelper.newMap(32);
 //        dbNameToIndex=CollectionHelper.newMap(32);
     }
 
@@ -199,8 +204,8 @@ public class ModelBuilderContext {
 //        return new DBConnectionHelper(dataSourceId,dbConfig);
 //    }
 
-    public DBConnectionHelper buildConnection(String dataSourceId, String dbUrl,String dbUserName,String dbPassword,String dbDriver){
-        return new DBConnectionHelper(dataSourceId,dbUrl,dbUserName,dbPassword,dbDriver);
+    public DBConnectionHelper buildConnection(String dataSourceId, String dbUrl, String dbUserName, String dbPassword, String dbDriver) {
+        return new DBConnectionHelper(dataSourceId, dbUrl, dbUserName, dbPassword, dbDriver);
     }
 
 //    public long addConnctionAndDb(String db, String dataSourceId, Properties p,boolean isSlave, Set<String> including, Set<String> excluding) {
@@ -230,9 +235,9 @@ public class ModelBuilderContext {
 //    }
 
     public long addDb(DBConnectionHelper conn, DbModelConf conf) {
-        final DbInfoHandler infoHolder = new DbInfoHandler(conn,conf);
-                final long uuid = DbDataTable.putDbInfo(infoHolder);
-        relatedDbs.put(uuid,infoHolder);
+        final DbInfoHandler infoHolder = new DbInfoHandler(conn, conf,this);
+        final long uuid = DbDataTable.putDbInfo(infoHolder);
+        relatedDbs.put(uuid, infoHolder);
 //        List<Long> list = dbNameToIndex.get(data_store);
 //        if(list==null){
 //            list=CollectionHelper.newList();
@@ -332,7 +337,7 @@ public class ModelBuilderContext {
 
     public String getServiceAssemblerClassName(String serviceClassName) {
         String modelSimpleName = CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(serviceClassName);
-        return basePackage + ".dao.multi_dao." + CodeConstants.CLASS_NAME_MULTI_DAO_PREFIX + CodeStyleTransformHelper.upperFirstCase(modelSimpleName)+ CodeConstants.CLASS_NAME_MULTI_DAO_ASSEMBLER_APPENDIX;
+        return basePackage + ".dao.multi_dao." + CodeConstants.CLASS_NAME_MULTI_DAO_PREFIX + CodeStyleTransformHelper.upperFirstCase(modelSimpleName) + CodeConstants.CLASS_NAME_MULTI_DAO_ASSEMBLER_APPENDIX;
     }
 
     public String getModelClassPrefix(boolean base) {
@@ -345,6 +350,10 @@ public class ModelBuilderContext {
 
     private String getClassNameOfSpecialQueryDto(String clzName) {
         return basePackage + ".dto.input." + CodeConstants.CLASS_NAME_MODEL_PREFIX + CodeStyleTransformHelper.upperFirstCase(clzName);
+    }
+
+    public String getModelVoClassName(String tb) {
+        return basePackage + ".vo." + CodeConstants.CLASS_NAME_MODEL_PREFIX + CodeStyleTransformHelper.upperFirstCase(CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(tb));
     }
 
     private String getModelClassName(String table) {
@@ -380,13 +389,12 @@ public class ModelBuilderContext {
     }
 
     public void buildBaseModelAndDao(long uuid) {
-        if(!relatedDbs.containsKey(uuid)){
-            throw new IllegalStateException("错误的uuid，此context不包含此uuid："+uuid+" context:"+relatedDbs.toString());
+        if (!relatedDbs.containsKey(uuid)) {
+            throw new IllegalStateException("错误的uuid，此context不包含此uuid：" + uuid + " context:" + relatedDbs.toString());
         }
         final DbInfoHandler dbInfoHandler = DbDataTable.getHolder(uuid);
         buildBaseModelAndDao(dbInfoHandler);
     }
-
 
 
     public void buildBaseModelAndDao(DbInfoHandler db) {
@@ -408,9 +416,9 @@ public class ModelBuilderContext {
 //            }
             ModelBuilder builder = buildBaseModel(def);
             try {
-                CommonDaoBuilder daoBuilder = new CommonDaoBuilder(def, this);
+                CommonDaoBuilder daoBuilder = new CommonDaoBuilder(def);
                 daoBuilder.buildModel();
-            }catch (Exception ex){
+            } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
@@ -461,9 +469,9 @@ public class ModelBuilderContext {
 //            (TableInfoInterface tableInfo, String baseTable, boolean buildMapper, Set<String> ignoreField)
     {
         try {
-            if (def.getBuilderContext() == null) {
-                def.setBuilderContext(this);
-            }
+//            if (def.getBuilderContext() == null) {
+//                def.setBuilderContext(this);
+//            }
             ModelBuilder builder = new ModelBuilder(def);
             builder.buildModel();
             if (def.isBuildMapper()) {
@@ -472,11 +480,11 @@ public class ModelBuilderContext {
 //                MapperOfMapBuilder redisMapperBuilder = new MapperOfMapBuilder(builder);
 //                redisMapperBuilder.buildModel();
 
-                MapperOfPojoBuilder redisMapperBuilder = new MapperOfPojoBuilder(def,this,builder.getDefinedClass());
+                MapperOfPojoBuilder redisMapperBuilder = new MapperOfPojoBuilder(def, this, builder.getDefinedClass());
                 redisMapperBuilder.buildModel();
             }
             return builder;
-        }catch (Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
             return null;
         }
@@ -499,7 +507,7 @@ public class ModelBuilderContext {
             }
             SpecialDaoBuilder daoBuilder = new SpecialDaoBuilder(def, this);
             daoBuilder.buildModel();
-        }catch (Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
 
         }
@@ -508,21 +516,20 @@ public class ModelBuilderContext {
     }
 
 
-
     public void buildMultiSelectDao(ModelMulDaoDaoConf conf) {
 //        serviceName = getServiceClassName(serviceName);
-        if(conf==null){
-            return ;
+        if (conf == null) {
+            return;
         }
         try {
-            if (conf.getBuilderContext() == null) {
-                conf.setBuilderContext(this);
-            }
+//            if (conf.getBuilderContext() == null) {
+//                conf.setBuilderContext(this);
+//            }
 //            conf.setBuilderContext(this);
             MultiDaoSelectServiceBuilder builder = new MultiDaoSelectServiceBuilder(conf);
 //            builder.
             builder.buildModel();
-        }catch (Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
 //        if (CommonDaoBuilder.hasMethod(selectMethod) ) {
@@ -557,7 +564,7 @@ public class ModelBuilderContext {
         String name = method.name();
         JDefinedClass jDefinedClass = method.owningClass();
         String clzName = jDefinedClass.name();
-        ClassDataTable.putDaoClz(clzName,jDefinedClass);
+        ClassDataTable.putDaoClz(clzName, jDefinedClass);
         MethodTypeEnum mType = null;
         if (clzName.startsWith(CodeConstants.CLASS_NAME_DAO_PREFIX)) {
             mType = MethodTypeEnum.DAO_METHOD;
@@ -619,7 +626,6 @@ public class ModelBuilderContext {
     }
 
 
-
 //    public Map<String, TableInfoInterface> getTbMap() {
 //        return tbMap;
 //    }
@@ -666,7 +672,6 @@ public class ModelBuilderContext {
                 ", relatedDbs=" + relatedDbs +
                 '}';
     }
-
 
 
 }

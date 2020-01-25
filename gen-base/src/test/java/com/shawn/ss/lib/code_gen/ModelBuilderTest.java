@@ -789,190 +789,190 @@ public class ModelBuilderTest {
 //        }
     }
 
-    class MockTableInfo implements TableInfoInterface {
-
-        @Override
-        public String getTable() {
-            return "sample";
-        }
-
-        @Override
-        public String getDb() {
-            return "test_db";
-        }
-
-        @Override
-        public String[] getTableColumnNames() {
-            return new String[0];
-        }
-
-        @Override
-        public String getPriKey() {
-            return "id";
-        }
-
-        @Override
-        public FieldDataTypeInterface getPriKeyType() {
-            return ColumnDataType.longData;
-        }
-
-        @Override
-        public List<ColumnInfoInterface> getColumns() {
-            return CollectionHelper.<ColumnInfoInterface>listBuilder()
-                    .add(new MockColumnInfo("userId", ColumnDataType.intData, "用户id"))
-                    .add(new MockColumnInfo("channel", ColumnDataType.stringData, "登录渠道"))
-
-                    .getList();
-        }
-
-        @Override
-        public TableInfo getTableInfo() {
-            return null;
-        }
-
-        @Override
-        public List<IndexInfo> getIndexes() {
-            return null;
-        }
-
-        @Override
-        public List<TableReferInfo> getReferFromTable() {
-            return null;
-        }
-
-        @Override
-        public List<TableReferInfo> getReferToTable() {
-            return null;
-        }
-
-        @Override
-        public FieldDataTypeInterface getColumnDataType(String s) {
-            return null;
-        }
-
-        @Override
-        public ColumnInfoInterface getColumnData(String s) {
-            return null;
-        }
-
-        @Override
-        public int getTableType() {
-            return 0;
-        }
-
-        @Override
-        public String getTableComment() {
-            return "测试数据库";
-        }
-
-        @Override
-        public String getCharset() {
-            return null;
-        }
-
-        @Override
-        public int getColumnCount() {
-            return 0;
-        }
-
-        private class MockColumnInfo implements ColumnInfoInterface {
-
-            String colName;
-            FieldDataTypeInterface dataType;
-            String comment;
-
-            public MockColumnInfo(String colName, FieldDataTypeInterface dataType, String comment) {
-                this.colName = colName;
-                this.dataType = dataType;
-                this.comment = comment;
-            }
-
-            @Override
-            public String getFieldName() {
-                return colName;
-            }
-
-            @Override
-            public FieldDataTypeInterface getType() {
-                return dataType;
-            }
-
-            @Override
-            public String getComment() {
-                return comment;
-            }
-
-            @Override
-            public String getDefaultValue() {
-                return null;
-            }
-
-            @Override
-            public String getExtra() {
-                return null;
-            }
-
-            @Override
-            public boolean isNullable() {
-                return false;
-            }
-
-            @Override
-            public boolean isPrime() {
-                return false;
-            }
-
-            @Override
-            public boolean isUnique() {
-                return false;
-            }
-
-            @Override
-            public boolean isReferer() {
-                return false;
-            }
-
-            @Override
-            public boolean isIndexed() {
-                return false;
-            }
-
-            @Override
-            public boolean isAutoIncreament() {
-                return false;
-            }
-
-            @Override
-            public String getCharSet() {
-                return null;
-            }
-
-            @Override
-            public long getCharLength() {
-                return 0;
-            }
-
-            @Override
-            public int getPrecision() {
-                return 0;
-            }
-
-            @Override
-            public Properties getExtraInfo() {
-                return null;
-            }
-
-            @Override
-            public TableInfo getInfo() {
-                return null;
-            }
-
-            @Override
-            public EnumTypeDef getEnumTypeDef() {
-                return null;
-            }
-        }
-    }
+//    class MockTableInfo implements TableInfoInterface {
+//
+//        @Override
+//        public String getTable() {
+//            return "sample";
+//        }
+//
+//        @Override
+//        public String getDb() {
+//            return "test_db";
+//        }
+//
+//        @Override
+//        public String[] getTableColumnNames() {
+//            return new String[0];
+//        }
+//
+//        @Override
+//        public String getPriKey() {
+//            return "id";
+//        }
+//
+//        @Override
+//        public FieldDataTypeInterface getPriKeyType() {
+//            return ColumnDataType.longData;
+//        }
+//
+//        @Override
+//        public List<ColumnInfoInterface> getColumns() {
+//            return CollectionHelper.<ColumnInfoInterface>listBuilder()
+//                    .add(new MockColumnInfo("userId", ColumnDataType.intData, "用户id"))
+//                    .add(new MockColumnInfo("channel", ColumnDataType.stringData, "登录渠道"))
+//
+//                    .getList();
+//        }
+//
+//        @Override
+//        public TableInfo getTableInfo() {
+//            return null;
+//        }
+//
+//        @Override
+//        public List<IndexInfo> getIndexes() {
+//            return null;
+//        }
+//
+//        @Override
+//        public List<TableReferInfo> getReferFromTable() {
+//            return null;
+//        }
+//
+//        @Override
+//        public List<TableReferInfo> getReferToTable() {
+//            return null;
+//        }
+//
+//        @Override
+//        public FieldDataTypeInterface getColumnDataType(String s) {
+//            return null;
+//        }
+//
+//        @Override
+//        public ColumnInfoInterface getColumnData(String s) {
+//            return null;
+//        }
+//
+//        @Override
+//        public int getTableType() {
+//            return 0;
+//        }
+//
+//        @Override
+//        public String getTableComment() {
+//            return "测试数据库";
+//        }
+//
+//        @Override
+//        public String getCharset() {
+//            return null;
+//        }
+//
+//        @Override
+//        public int getColumnCount() {
+//            return 0;
+//        }
+//
+//        private class MockColumnInfo implements ColumnInfoInterface {
+//
+//            String colName;
+//            FieldDataTypeInterface dataType;
+//            String comment;
+//
+//            public MockColumnInfo(String colName, FieldDataTypeInterface dataType, String comment) {
+//                this.colName = colName;
+//                this.dataType = dataType;
+//                this.comment = comment;
+//            }
+//
+//            @Override
+//            public String getFieldName() {
+//                return colName;
+//            }
+//
+//            @Override
+//            public FieldDataTypeInterface getType() {
+//                return dataType;
+//            }
+//
+//            @Override
+//            public String getComment() {
+//                return comment;
+//            }
+//
+//            @Override
+//            public String getDefaultValue() {
+//                return null;
+//            }
+//
+//            @Override
+//            public String getExtra() {
+//                return null;
+//            }
+//
+//            @Override
+//            public boolean isNullable() {
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean isPrime() {
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean isUnique() {
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean isReferer() {
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean isIndexed() {
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean isAutoIncreament() {
+//                return false;
+//            }
+//
+//            @Override
+//            public String getCharSet() {
+//                return null;
+//            }
+//
+//            @Override
+//            public long getCharLength() {
+//                return 0;
+//            }
+//
+//            @Override
+//            public int getPrecision() {
+//                return 0;
+//            }
+//
+//            @Override
+//            public Properties getExtraInfo() {
+//                return null;
+//            }
+//
+//            @Override
+//            public TableInfo getInfo() {
+//                return null;
+//            }
+//
+//            @Override
+//            public EnumTypeDef getEnumTypeDef() {
+//                return null;
+//            }
+//        }
+//    }
 
 
 }

@@ -48,7 +48,7 @@ public class ComposedModelBuilder implements CodeBuilderInterface {
         this.models= modelMulDaoConf.getModels();
         subModelFieldNames=CollectionHelper.newMap();
         mainModelFieldName = modelMulDaoConf.getMainField();
-        dtoClazzName = modelMulDaoConf.getDtoClazzName();
+        dtoClazzName = modelMulDaoConf.getPojoClzName();
 //        this.defs=modelMulDaoConf.getDefs();
     }
 

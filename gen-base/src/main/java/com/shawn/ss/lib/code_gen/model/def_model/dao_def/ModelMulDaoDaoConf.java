@@ -3,23 +3,22 @@ package com.shawn.ss.lib.code_gen.model.def_model.dao_def;
 import com.helger.jcodemodel.AbstractJClass;
 import com.helger.jcodemodel.JCodeModel;
 import com.shawn.ss.lib.code_gen.base.helper.CodeConstants;
-import com.shawn.ss.lib.code_gen.model.def_model._BaseModelConf;
+import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
 import com.shawn.ss.lib.tools.CollectionHelper;
-import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.FieldInfoInterface;
 
 import java.util.List;
 import java.util.Map;
 
-public class ModelMulDaoDaoConf extends _BaseDaoConfImpl implements _BaseModelConf {
+public class ModelMulDaoDaoConf extends _BaseDaoConfImpl<ModelMulDaoDaoConf>  {
     String serviceClassName;
     String serviceMethodName;
-    //    String mainDb;
+//    String mainDb;
 //    String mainTable;
 //    String mainField;
     ModelRelatedTableDef mainTableDef;
 
-    String dtoClazzName;
-//    SpecialModelConf relatedMainAttr;
+//    String dtoClazzName;
+    //    SpecialModelConf relatedMainAttr;
     List<ModelRelatedTableDef> relatedTables;
 //    List<SpecialModelConf> relatedAttrs;
 
@@ -31,8 +30,7 @@ public class ModelMulDaoDaoConf extends _BaseDaoConfImpl implements _BaseModelCo
     transient Map<String, AbstractJClass> models;
     transient Map<String, ModelRelatedTableDef> defs;
 //    transient Map<String,SpecialModelConf> attrs;
-
-//    transient boolean listResult;
+    //    transient boolean listResult;
     transient boolean isMultiFieldFromSameTable;
 
 //    transient ModelBuilderContext builderContext;
@@ -42,11 +40,11 @@ public class ModelMulDaoDaoConf extends _BaseDaoConfImpl implements _BaseModelCo
 //        return builderContext ==null?null: builderContext.getTbMap();
 //    }
 
-    public ModelMulDaoDaoConf(String name) {
-        super(name);
-        defs= CollectionHelper.newMap();
-        models= CollectionHelper.newMap();
-        daos= CollectionHelper.newMap();
+    public ModelMulDaoDaoConf(String name, ModelBuilderContext builderContext) {
+        super(name, builderContext);
+        defs = CollectionHelper.newMap();
+        models = CollectionHelper.newMap();
+        daos = CollectionHelper.newMap();
 //        attrs=CollectionHelper.newMap();
     }
 
@@ -148,21 +146,27 @@ public class ModelMulDaoDaoConf extends _BaseDaoConfImpl implements _BaseModelCo
 //        return builderContext ==null?null: builderContext.getDbInfo();
 //    }
 
-    public final void init(){
-        JCodeModel cm=builderContext.getCm();
+    public final void init() {
+        JCodeModel cm = builderContext.getCm();
 //        if(relatedMainAttr!=null)
 //            attrs.put(relatedMainAttr.getMethodName(), relatedMainAttr);
-        for(ModelRelatedTableDef def:relatedTables){
-            String table = def.getTable();
+        for (ModelRelatedTableDef def : relatedTables) {
+            if (def.type == ModelRelatedTableDef.EnumFieldDataSrcType.commonDao) {
+                String table = def.getTable();
 //            SpecialModelConf attr = modelDef.getAttr();
 //            attrs.put(attr.getName(),attr);
-            String tbName = CodeConstants.getClazzNameFromTableName(table);
-            defs.put(table,def);
+                String tbName = CodeConstants.getClazzNameFromTableName(table);
+                defs.put(table, def);
+                AbstractJClass daoClass = cm.ref(builderContext.getDaoClassName(table));
+                daos.put(table, daoClass);
+                AbstractJClass modelClass = cm.ref(builderContext.getReallyModelClassName(table, null));
+                models.put(table, modelClass);
 
-            AbstractJClass daoClass = cm.ref(builderContext.getDaoClassName(table));
-            daos.put(table, daoClass);
-            AbstractJClass modelClass = cm.ref(builderContext.getReallyModelClassName(table,null));
-            models.put(table, modelClass);
+            }else if(def.type== ModelRelatedTableDef.EnumFieldDataSrcType.mulDao){
+                //TODO:
+            }else if(def.type == ModelRelatedTableDef.EnumFieldDataSrcType.specialDao){
+                //TODO:
+            }
         }
 //        this.multiFieldFromSameTable = modelServiceConf.isMultiFieldFromSameTable();
 //        mainModelSelectMethods = modelServiceConf.getMainModelSelectMethod();
@@ -206,14 +210,14 @@ public class ModelMulDaoDaoConf extends _BaseDaoConfImpl implements _BaseModelCo
 //        return this;
 //    }
 
-    public String getDtoClazzName() {
-        return dtoClazzName;
-    }
-
-    public ModelMulDaoDaoConf setDtoClazzName(String dtoClazzName) {
-        this.dtoClazzName = dtoClazzName;
-        return this;
-    }
+//    public String getDtoClazzName() {
+//        return dtoClazzName;
+//    }
+//
+//    public ModelMulDaoDaoConf setDtoClazzName(String dtoClazzName) {
+//        this.dtoClazzName = dtoClazzName;
+//        return this;
+//    }
 
     public boolean isMultiFieldFromSameTable() {
         return isMultiFieldFromSameTable;
@@ -233,7 +237,7 @@ public class ModelMulDaoDaoConf extends _BaseDaoConfImpl implements _BaseModelCo
 //                ", mainDb='" + mainDb + '\'' +
 //                ", mainTable='" + mainTable + '\'' +
 //                ", mainField='" + mainField + '\'' +
-                ", dtoClazzName='" + dtoClazzName + '\'' +
+                ", dtoClazzName='" + super.getPojoClzName() + '\'' +
 //                ", relatedMainAttr=" + relatedMainAttr +
                 ", relatedTables=" + relatedTables +
 //                ", relatedAttrs=" + relatedAttrs +
@@ -247,43 +251,43 @@ public class ModelMulDaoDaoConf extends _BaseDaoConfImpl implements _BaseModelCo
                 '}';
     }
 
-    @Override
-    public List<FieldInfoInterface> getFields() {
-        return null;
-    }
-
-    @Override
-    public int sizeOfField() {
-        return 0;
-    }
-
-    @Override
-    public boolean addField(FieldInfoInterface fieldDef) {
-        return false;
-    }
-
-    @Override
-    public FieldInfoInterface getField(int index) {
-        return null;
-    }
-
-    @Override
-    public String getPojoClzName() {
-        return null;
-    }
-
-    @Override
-    public _BaseModelConf setPojoClzName(String pojoClzName) {
-        return null;
-    }
-
-    @Override
-    public String getPojoExtendsClzName() {
-        return null;
-    }
-
-    @Override
-    public _BaseModelConf setPojoExtendsClzName(String pojoExtendsClzName) {
-        return null;
-    }
+//    @Override
+//    public List<FieldInfoInterface> getFields() {
+//        return null;
+//    }
+//
+//    @Override
+//    public int sizeOfField() {
+//        return 0;
+//    }
+//
+//    @Override
+//    public boolean addField(FieldInfoInterface fieldDef) {
+//        return false;
+//    }
+//
+//    @Override
+//    public FieldInfoInterface getField(int index) {
+//        return null;
+//    }
+//
+//    @Override
+//    public String getPojoClzName() {
+//        return null;
+//    }
+//
+//    @Override
+//    public ModelMulDaoDaoConf setPojoClzName(String pojoClzName) {
+//        return null;
+//    }
+//
+//    @Override
+//    public String getPojoExtendsClzName() {
+//        return null;
+//    }
+//
+//    @Override
+//    public ModelMulDaoDaoConf setPojoExtendsClzName(String pojoExtendsClzName) {
+//        return null;
+//    }
 }

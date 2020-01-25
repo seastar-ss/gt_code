@@ -24,6 +24,8 @@ import java.util.regex.Pattern;
 
 public class CodeConstants {
 
+    final static Pattern PATTERN_NUMBER_START=Pattern.compile("^\\d+.*");
+
     public static final int MODE_PUBLIC_STATIC_FINAL = JMod.PUBLIC + JMod.STATIC + JMod.FINAL;
     public static final int MODE_PUBLIC_STATIC = JMod.PUBLIC + JMod.STATIC;
     public static final int MODE_PRIVATE_STATIC = JMod.PRIVATE + JMod.STATIC;
@@ -445,20 +447,28 @@ public class CodeConstants {
     public static JMethod buildGetter(JDefinedClass _class, String fd, AbstractJClass type, JFieldVar field) {
         int mods = JMod.PUBLIC;
 //        JCodeModel cm=_class.owner();
-        JMethod method = _class.method(mods, type, KEY_WORD_GET + CodeStyleTransformHelper.upperFirstCase(fd));
+        JMethod method = _class.method(mods, type, getModelGetMethodName(fd));
         method.body()._return(field);
         return method;
+    }
+
+    public static String getModelGetMethodName(String fd) {
+        return KEY_WORD_GET + CodeStyleTransformHelper.upperFirstCase(fd);
     }
 
     public static JMethod buildSetter(JDefinedClass _class, String fd, AbstractJClass type, JFieldVar field) {
         int mods = JMod.PUBLIC;
 //        JCodeModel cm=_class.owner();
-        JMethod method = _class.method(mods, _class, KEY_WORD_SET + CodeStyleTransformHelper.upperFirstCase(fd));
+        JMethod method = _class.method(mods, _class, getModelSetMethodName(fd));
         JVar varParam = method.param(type, "l" + CodeStyleTransformHelper.upperFirstCase(fd));
         JBlock body = method.body();
         body.assign(field, varParam);
         body._return(JExpr._this());
         return method;
+    }
+
+    public static String getModelSetMethodName(String fd) {
+        return KEY_WORD_SET + CodeStyleTransformHelper.upperFirstCase(fd);
     }
 
     public static IJExpressionStatement castToType(JCodeModel cm, IJExpressionStatement expr, String tp) {
@@ -712,6 +722,18 @@ public class CodeConstants {
         return name;
     }
 
+    public static String getFieldNameFromTbColumn(String colName) {
+        String fname=null;
+        String humpStyleColName = CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(colName);
+
+        if(PATTERN_NUMBER_START.matcher(humpStyleColName).matches()) {
+            fname = CodeConstants.FIELD_MODEL_FIELD_PREFIX + CodeStyleTransformHelper.upperFirstCase(humpStyleColName);
+        }else{
+            fname=humpStyleColName;
+        }
+        return fname;
+    }
+
 
     public static interface StringParamFilter {
         boolean accept(JVar var, int i);
@@ -747,11 +769,17 @@ public class CodeConstants {
             if (typeDef == null) {
                 jClass = cm.ref(item.getType().gettClass());
             } else {
-                jClass = def.getEnumClz(item.getFieldName());
-                if (jClass == null) {
+                FieldInfoInterface field = def.getField(item.getFieldName());
+                EnumTypeDef enumTypeDef = field.getEnumTypeDef();
+                if(enumTypeDef!=null) {
+                    jClass = cm.ref(enumTypeDef.getClazzName());//def.getEnumClz(item.getFieldName());
+//                    if (jClass == null) {
 //                if(type==null && enumTypeDef !=null) {
-                    jClass = cm.ref(bc.getEnumClzName(typeDef.getClazzName()));
+
 //                }
+//                    }
+                }else{
+                    jClass = cm.ref(bc.getEnumClzName(typeDef.getClazzName()));
                 }
             }
         }else {

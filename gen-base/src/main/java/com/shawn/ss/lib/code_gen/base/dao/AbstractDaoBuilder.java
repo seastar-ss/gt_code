@@ -143,18 +143,18 @@ public abstract class AbstractDaoBuilder implements CodeBuilderInterface {
         dbField=addInjectedDbField("", dataSourceName);
 
         if(multiDs){
-            dbMapField = definedClass.field(
-                    JMod.PROTECTED + JMod.STATIC + JMod.FINAL,
-                    CodeConstants.buildNarrowedClass(cm, Map.class, String.class, SimpleDbInterface.class),
-                    CodeConstants.FIELD_DAO_DB_FIELD_MAP,
-                    cm.ref(CollectionHelper.class).staticInvoke("newMap")
-            );
-            JBlock body = afterPropertiesSet.body();
-            for(String dsName:dataSourceNames) {
-                JFieldVar field = definedClass.field(CodeConstants.MODE_PUBLIC_STATIC_FINAL, String.class, CodeConstants.getFieldNameOfDBSourceName(dsName), JExpr.lit(dsName));
-                final JFieldVar dbField = addInjectedDbField(dsName,dsName);
-                body._if(dbField.ne(JExpr._null()))._then().invoke(dbMapField,"put").arg(field).arg(dbField);
-            }
+//            dbMapField = definedClass.field(
+//                    JMod.PROTECTED + JMod.STATIC + JMod.FINAL,
+//                    CodeConstants.buildNarrowedClass(cm, Map.class, String.class, SimpleDbInterface.class),
+//                    CodeConstants.FIELD_DAO_DB_FIELD_MAP,
+//                    cm.ref(CollectionHelper.class).staticInvoke("newMap")
+//            );
+//            JBlock body = afterPropertiesSet.body();
+//            for(String dsName:dataSourceNames) {
+//                JFieldVar field = definedClass.field(CodeConstants.MODE_PUBLIC_STATIC_FINAL, String.class, CodeConstants.getFieldNameOfDBSourceName(dsName), JExpr.lit(dsName));
+//                final JFieldVar dbField = addInjectedDbField(dsName,dsName);
+//                body._if(dbField.ne(JExpr._null()))._then().invoke(dbMapField,"put").arg(field).arg(dbField);
+//            }
         }
     }
 

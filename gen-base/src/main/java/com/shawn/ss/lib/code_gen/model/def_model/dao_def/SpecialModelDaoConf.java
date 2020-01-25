@@ -1,5 +1,6 @@
 package com.shawn.ss.lib.code_gen.model.def_model.dao_def;
 
+import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
 import com.shawn.ss.lib.code_gen.model.def_model._BaseModelConf;
 import com.shawn.ss.lib.code_gen.model.def_model._BaseDef;
 import com.shawn.ss.lib.tools.CollectionHelper;
@@ -12,7 +13,7 @@ import java.util.Map;
 /**
  * Created by ss on 2018/2/13.
  */
-public class SpecialModelDaoConf extends CommonModelDaoDef<SpecialModelDaoConf> implements _BaseModelConf, _BaseDef {
+public class SpecialModelDaoConf extends CommonModelDaoDef<SpecialModelDaoConf> implements  _BaseDef {
 //    String name;
     protected String sql;
     protected Map<String, Object> defualtParam;
@@ -20,7 +21,6 @@ public class SpecialModelDaoConf extends CommonModelDaoDef<SpecialModelDaoConf> 
 //    protected String name;
     protected String clzName;
     protected String interfaceClzName;
-    protected String comment;
     protected boolean listResult;
     protected List<FieldInfoInterface> params;
     protected String queryModelClzName;
@@ -37,8 +37,8 @@ public class SpecialModelDaoConf extends CommonModelDaoDef<SpecialModelDaoConf> 
         DB,REDIS,FIXED
     }
 
-    public SpecialModelDaoConf(String name, TableInfoInterface def) {
-        super(name,def);
+    public SpecialModelDaoConf(String name, TableInfoInterface def, ModelBuilderContext builderContext) {
+        super(name,def,builderContext);
         defualtParam= CollectionHelper.newMap();
         params= CollectionHelper.newList();
 //        dataType=DataAttrType.LIST_OBJ;
@@ -110,15 +110,6 @@ public class SpecialModelDaoConf extends CommonModelDaoDef<SpecialModelDaoConf> 
 
     public SpecialModelDaoConf setDataType(DataAttrType dataType) {
         this.dataType = dataType;
-        return this;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public SpecialModelDaoConf setComment(String comment) {
-        this.comment = comment;
         return this;
     }
 

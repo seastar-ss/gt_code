@@ -74,7 +74,7 @@ public class SqlMultiDaoConf extends AbstractGenConf {
         if (StringHelper.isEmpty(dtoClazzName)) {
             dtoClazzName = packageName + ".Model" + clzSimpleName;
         }
-        ModelMulDaoDaoConf conf = new ModelMulDaoDaoConf(daoClazzName);
+        ModelMulDaoDaoConf conf = new ModelMulDaoDaoConf(daoClazzName,context);
         String mainDb = multipleResps.dbName();
         String mainTable = multipleResps.tableName();
         conf.setMainTableDef(
@@ -88,7 +88,7 @@ public class SqlMultiDaoConf extends AbstractGenConf {
         conf.setMainModelSelectMethod(Arrays.asList(multipleResps.methodType()));
 
         conf.setServiceClassName(daoClazzName);
-        conf.setDtoClazzName(dtoClazzName);
+        conf.setPojoClzName(dtoClazzName);
         conf.setBuildNotAbstract(false);
         conf.setImplInterface(clzInterfaceName);
 
@@ -124,7 +124,7 @@ public class SqlMultiDaoConf extends AbstractGenConf {
 //                relatedTbs.add(new ModelRelatedTableDef(item.dbName(),item.tableName(), item.condition(), item.relatedMainTableField(), item.isIdInThisTable(), !item.isList(), item.fieldName()));
 //            }
         conf.setRelatedTables(relatedTbs);
-        conf.setBuilderContext(context);
+//        conf.setBuilderContext(context);
         this.conf.add(conf);
 //        }
 //        dataSourceId=annotation.dataSourceId();

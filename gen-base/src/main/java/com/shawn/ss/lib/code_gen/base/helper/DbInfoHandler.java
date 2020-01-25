@@ -20,7 +20,9 @@ public class DbInfoHandler {
         analyzer = new DbAnalyzer();
     }
 
-//    private Set<String> ignoreTbPattern;
+    private final ModelBuilderContext context;
+
+    //    private Set<String> ignoreTbPattern;
 //    private Set<String> includingPattern;
 //    boolean isSlave;
 //    String masterDbName;
@@ -79,12 +81,13 @@ public class DbInfoHandler {
 ////        this.dataSourceId=connection.getDataSourceId();
 //    }
 
-    public DbInfoHandler(DBConnectionHelper connection, boolean isSlave) {
-        this(connection, new DbModelConf().setSlave(isSlave));
+    public DbInfoHandler(DBConnectionHelper connection, boolean isSlave,ModelBuilderContext context) {
+        this(connection, new DbModelConf().setSlave(isSlave),context);
 //        this.dataSourceId=connection.getDataSourceId();
     }
 
-    public DbInfoHandler(DBConnectionHelper connection, DbModelConf conf) {
+    public DbInfoHandler(DBConnectionHelper connection, DbModelConf conf,ModelBuilderContext context) {
+        this.context = context;
         tbMaps = CollectionHelper.newMap();
         this.connection = connection;
         this.conf=conf;
@@ -248,7 +251,7 @@ public class DbInfoHandler {
             }
 //            String table = tableInfo.getTable();
 //            String modelSimpleName = CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(table);
-            final CommonModelDaoDef commonModelDaoDef = new CommonModelDaoDef(tableInfo)
+            final CommonModelDaoDef commonModelDaoDef = new CommonModelDaoDef(tableInfo,context)
 //                    .setDef(tableInfo)
                     .setBaseTable(null)
                     .setBuildMapper(true)
@@ -284,7 +287,7 @@ public class DbInfoHandler {
             }
 //            String table = tableInfo.getTable();
 //            String modelSimpleName = CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(table);
-            final CommonModelDaoDef commonModelDaoDef = new CommonModelDaoDef(tableInfo)
+            final CommonModelDaoDef commonModelDaoDef = new CommonModelDaoDef(tableInfo,context)
 //                    .setDef(tableInfo)
                     .setBaseTable(null)
                     .setBuildMapper(true)

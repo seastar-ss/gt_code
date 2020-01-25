@@ -21,6 +21,8 @@ public class ColumnInfo extends FieldInfo implements ColumnInfoInterface {
     public ColumnInfo() {
     }
 
+
+
     public String getTable() {
         return table;
     }

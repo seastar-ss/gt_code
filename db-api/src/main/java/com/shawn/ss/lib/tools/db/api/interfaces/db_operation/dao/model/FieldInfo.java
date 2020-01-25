@@ -40,6 +40,11 @@ public class FieldInfo implements FieldInfoInterface{
         return defaultValue;
     }
 
+    @Override
+    public String getAliasField() {
+        return null;
+    }
+
     public FieldInfo setDefaultValue(Object defaultValue) {
         this.defaultValue = defaultValue;
         return this;

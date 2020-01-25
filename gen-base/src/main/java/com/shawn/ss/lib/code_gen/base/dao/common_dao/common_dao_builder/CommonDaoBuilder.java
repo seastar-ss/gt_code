@@ -58,8 +58,8 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
 //            .add(CodeConstants.METHOD_DAO_CUSTOMER_GET_LIST_BY_CUSTOMER_CONDITION)
 //            .getSet();
 
-    public CommonDaoBuilder(CommonModelDaoDef commonModelDaoDef, ModelBuilderContext builderContext) {
-        super(commonModelDaoDef, builderContext);
+    public CommonDaoBuilder(CommonModelDaoDef commonModelDaoDef) {
+        super(commonModelDaoDef, commonModelDaoDef.getBuilderContext());
 
     }
 
@@ -329,22 +329,22 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
     }
 
     private JVar buildDbSelectClause(JBlock body,JVar assemblerVar,JVar sqlBuilderVar,JVar paramVar,JVar dbToUseVar){
-        JVar dbToUseValue = body.decl(
-                cm.ref(String.class),
-                "dbToUse",
-                JExpr._super().invoke("selectDb").arg(assemblerVar).arg(sqlBuilderVar).arg(paramVar)
-        );
-//        JBlock then = body._if(assemblerVar.ne(JExpr._null()))._then();
-//        then.assign(
-//                dbToUseValue,
-//                JExpr.invoke(assemblerVar, CodeConstants.LIB_SQL_ASSEMBLE_SELECT_DB)
-//                        .arg(sqlBuilderVar)
-//                        .arg(paramVar)
-//                        .arg(JExpr.dotclass(modelClazzRef))
+//        JVar dbToUseValue = body.decl(
+//                cm.ref(String.class),
+//                "dbToUse",
+//                JExpr._super().invoke("selectDb").arg(assemblerVar).arg(sqlBuilderVar).arg(paramVar)
 //        );
-        body._if(dbToUseValue.ne(JExpr._null()).cand(dbMapField.invoke("containsKey").arg(dbToUseValue)))
-                ._then().assign(dbToUseVar, dbMapField.invoke("get").arg(dbToUseValue));
-        return dbToUseValue;
+////        JBlock then = body._if(assemblerVar.ne(JExpr._null()))._then();
+////        then.assign(
+////                dbToUseValue,
+////                JExpr.invoke(assemblerVar, CodeConstants.LIB_SQL_ASSEMBLE_SELECT_DB)
+////                        .arg(sqlBuilderVar)
+////                        .arg(paramVar)
+////                        .arg(JExpr.dotclass(modelClazzRef))
+////        );
+//        body._if(dbToUseValue.ne(JExpr._null()).cand(dbMapField.invoke("containsKey").arg(dbToUseValue)))
+//                ._then().assign(dbToUseVar, dbMapField.invoke("get").arg(dbToUseValue));
+        return null;
     }
 
 
