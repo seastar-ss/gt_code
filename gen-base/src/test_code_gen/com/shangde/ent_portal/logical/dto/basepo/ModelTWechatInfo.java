@@ -15,7 +15,7 @@ import com.shawn.ss.lib.tools.TypeConstantHelper;
 import com.shawn.ss.lib.tools.db.api.interfaces.mappers.db.DbResultSetMapper;
 import com.shawn.ss.lib.tools.db.api.interfaces.mappers.db.RedisMapMapper;
 import com.shawn.ss.lib.tools.db.dto_base.model.AbstractBaseModel;
-import com.shawn.ss.lib.tools.db.dto_base.model._ObjMapper;
+import com.shawn.ss.lib.tools.db.dto_base.model._APIObj;
 import com.shawn.ss.lib.tools.db.impl.mapper.BaseDbMapper;
 
 
@@ -248,7 +248,7 @@ public class ModelTWechatInfo
         return true;
     }
 
-    public<FT extends _ObjMapper> FT getFeature(Class<FT> clazz) {
+    public<FT extends _APIObj> FT getFeature(Class<FT> clazz) {
         if (RedisMapMapper.class.isAssignableFrom(clazz)) {
             return ((FT) ModelTWechatInfo.MAP_OBJ_MAPPER);
         }

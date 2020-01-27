@@ -16,13 +16,14 @@ import com.shawn.ss.lib.tools.TypeConstantHelper;
 import com.shawn.ss.lib.tools.db.api.interfaces.mappers.db.DbResultSetMapper;
 import com.shawn.ss.lib.tools.db.api.interfaces.mappers.db.RedisMapMapper;
 import com.shawn.ss.lib.tools.db.dto_base.model.AbstractBaseModel;
-import com.shawn.ss.lib.tools.db.dto_base.model._ObjMapper;
+import com.shawn.ss.lib.tools.db.dto_base.model._APIObj;
 import com.shawn.ss.lib.tools.db.impl.mapper.BaseDbMapper;
 
 
 /**
  * base DTO,represent for table :wiki_index
- * 	知识索引表
+ * 	知识索引表
+
  * 用于索引知识，每个索引信息只能对应一个知识
  */
 public class ModelWikiIndex
@@ -646,7 +647,7 @@ public class ModelWikiIndex
         return true;
     }
 
-    public<FT extends _ObjMapper> FT getFeature(Class<FT> clazz) {
+    public<FT extends _APIObj> FT getFeature(Class<FT> clazz) {
         if (RedisMapMapper.class.isAssignableFrom(clazz)) {
             return ((FT) ModelWikiIndex.MAP_OBJ_MAPPER);
         }

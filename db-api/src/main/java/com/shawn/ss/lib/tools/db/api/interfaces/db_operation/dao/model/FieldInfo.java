@@ -8,6 +8,7 @@ public class FieldInfo implements FieldInfoInterface{
     String comment;
     Object defaultValue;
     EnumTypeDef enumTypeDef;
+    boolean isStatic=false;
 
     public String getFieldName() {
         return fieldName;
@@ -45,6 +46,11 @@ public class FieldInfo implements FieldInfoInterface{
         return null;
     }
 
+    @Override
+    public boolean isStatic() {
+        return isStatic;
+    }
+
     public FieldInfo setDefaultValue(Object defaultValue) {
         this.defaultValue = defaultValue;
         return this;
@@ -56,6 +62,11 @@ public class FieldInfo implements FieldInfoInterface{
 
     public FieldInfo setEnumTypeDef(EnumTypeDef enumTypeDef) {
         this.enumTypeDef = enumTypeDef;
+        return this;
+    }
+
+    public FieldInfo setStatic(boolean aStatic) {
+        isStatic = aStatic;
         return this;
     }
 }

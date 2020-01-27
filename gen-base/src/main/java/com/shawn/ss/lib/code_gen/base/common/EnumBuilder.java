@@ -1,37 +1,39 @@
-package com.shawn.ss.lib.code_gen.base.dao.common_dao.common_model_builder;
+package com.shawn.ss.lib.code_gen.base.common;
 
 import com.helger.jcodemodel.*;
 import com.shawn.ss.lib.code_gen.CodeBuilderInterface;
 import com.shawn.ss.lib.code_gen.base.helper.CodeConstants;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
-//import com.shawn.ss.lib.code_gen.model.def_model.dao_def.EnumTypeConf;
+import com.shawn.ss.lib.code_gen.model.def_model.dao_def.EnumTypeConf;
 import com.shawn.ss.lib.tools.CollectionHelper;
-import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.ColumnInfoInterface;
-import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.model.FieldDataTypeInterface;
+import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.FieldInfoInterface;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.model.EnumTypeDef;
+import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.model.FieldDataTypeInterface;
 
 import java.util.Map;
+
+//import com.shawn.ss.lib.code_gen.model.def_model.dao_def.EnumTypeConf;
 
 /**
  * Created by ss on 2018/3/4.
  */
 public class EnumBuilder implements CodeBuilderInterface {
 
-    private com.shawn.ss.lib.code_gen.model.def_model.dao_def.EnumTypeDef  def;
+    private EnumTypeConf def;
     private final ModelBuilderContext builderContext;
     private final JCodeModel cm;
     private EnumTypeDef typeDef;
     private final String tb;
-    private final ColumnInfoInterface col;
+    private final FieldInfoInterface col;
     private JDefinedClass definedClass;
     private final FieldDataTypeInterface colType;
 
-    public EnumBuilder(com.shawn.ss.lib.code_gen.model.def_model.dao_def.EnumTypeDef  def) {
+    public EnumBuilder(EnumTypeConf def) {
         this.def = def;
         builderContext = def.getBuilderContext();
         cm = builderContext.getCm();
         typeDef = def.getDef();
-        tb = def.getTable();
+        tb = def.getName();
         col = typeDef.getCol();
         colType = col.getType();
     }
@@ -39,21 +41,21 @@ public class EnumBuilder implements CodeBuilderInterface {
     @Override
     public void buildModel() {
 
-        String cname = builderContext.getEnumClzName(typeDef.getClazzName());
+        String cname = typeDef.getClazzName();//builderContext.getEnumClzName(typeDef.getClazzName());
         definedClass = null;
         try {
-            definedClass = cm._class(cname,EClassType.ENUM);
+            definedClass = cm._class(cname, EClassType.ENUM);
 
-            definedClass.javadoc().append("表").append(tb).append(".").append(col.getFieldName()).append("相关枚举");
+            definedClass.javadoc().append("表").append(tb).append(".").append(col.getAliasField()).append("相关枚举");
             //构造函数
-            JFieldVar val = definedClass.field(JMod.PUBLIC+JMod.FINAL, colType.gettClass(), CodeConstants.FIELD_ENUM_VAL_FIELD);
-            JFieldVar desc = definedClass.field(JMod.PUBLIC+JMod.FINAL, String.class, CodeConstants.FIELD_ENUM_DESC_FIELD);
+            JFieldVar val = definedClass.field(JMod.PUBLIC + JMod.FINAL, colType.gettClass(), CodeConstants.FIELD_ENUM_VAL_FIELD);
+            JFieldVar desc = definedClass.field(JMod.PUBLIC + JMod.FINAL, String.class, CodeConstants.FIELD_ENUM_DESC_FIELD);
             JMethod constructor = definedClass.constructor(JMod.NONE);
             JVar v = constructor.param(colType.gettClass(), "v");
             JVar s = constructor.param(String.class, "s");
             constructor.body().assign(val, v).assign(desc, s);
             //mapping函数
-            AbstractJClass jType = CodeConstants.buildNarrowedClass(cm,Map.class,colType.gettClass(), definedClass);
+            AbstractJClass jType = CodeConstants.buildNarrowedClass(cm, Map.class, colType.gettClass(), definedClass);
 //                                jType.narrow(aClass,intCls);
             JFieldVar valuesMap = definedClass.field(CodeConstants.MODE_PRIVATE_STATIC, jType, "valuesMap");
             JMethod method = definedClass.method(CodeConstants.MODE_PUBLIC_STATIC, definedClass, CodeConstants.METHOD_ENUM_FROM_VALUE);
@@ -79,7 +81,7 @@ public class EnumBuilder implements CodeBuilderInterface {
 //                                        L.w("constant name:", name);
                     JEnumConstant anEnum = definedClass.enumConstant(name);
                     anEnum.javadoc().append(def.getShowName());
-                    anEnum.arg(CodeConstants.litObject(colType.gettClass(),def.getType())).arg(JExpr.lit(def.getShowName()));
+                    anEnum.arg(CodeConstants.litObject(colType.gettClass(), def.getType())).arg(JExpr.lit(def.getShowName()));
 //                    datas.put(def.getType(), def.getShowName());
                 }
             }
@@ -91,7 +93,7 @@ public class EnumBuilder implements CodeBuilderInterface {
         }
     }
 
-    public com.shawn.ss.lib.code_gen.model.def_model.dao_def.EnumTypeDef  getDef() {
+    public EnumTypeConf getDef() {
         return def;
     }
 

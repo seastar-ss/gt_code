@@ -2,24 +2,22 @@ package com.shawn.ss.lib.code_gen.base.common;
 
 import com.helger.jcodemodel.*;
 import com.shawn.ss.lib.code_gen.CodeBuilderInterface;
-import com.shawn.ss.lib.code_gen.base.dao.common_dao.common_model_builder.EnumBuilder;
-import com.shawn.ss.lib.code_gen.base.dao.common_dao.common_model_builder.PoModelBuilder;
 import com.shawn.ss.lib.code_gen.base.helper.CodeConstants;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
 import com.shawn.ss.lib.code_gen.base.helper.data_store.ClassDataTable;
 import com.shawn.ss.lib.code_gen.model.def_model._BaseModelConf;
-import com.shawn.ss.lib.code_gen.model.def_model.common.CommonPOJOConf;
+import com.shawn.ss.lib.code_gen.model.def_model.dao_def.EnumTypeConf;
 import com.shawn.ss.lib.code_gen.model.def_model.dao_def.SpecialModelDaoConf;
 import com.shawn.ss.lib.tools.CodeStyleTransformHelper;
 import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.FieldInfoInterface;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.model.EnumTypeDef;
-import com.shawn.ss.lib.tools.db.api.interfaces.mappers.db.DbResultSetMapper;
-import com.shawn.ss.lib.tools.db.api.interfaces.mappers.db.RedisMapMapper;
-import com.shawn.ss.lib.tools.db.dto_base.model._ObjMapper;
+import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.model.FieldDataTypeInterface;
+import com.shawn.ss.lib.tools.db.dto_base.model._APIObj;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -49,7 +47,7 @@ public class POJOModelBuilder  implements CodeBuilderInterface {
 //    Map<String,JDefinedClass> enumClzz;
 
     //    final boolean selectModel;
-    private _BaseModelConf modelDef;
+    private _BaseModelConf<_BaseModelConf> modelDef;
     private final List<FieldInfoInterface> fields;
 
     //    public ModelBuilder(TableInfoInterface info,  ModelBuilderContext builderContext) {
@@ -107,18 +105,31 @@ public class POJOModelBuilder  implements CodeBuilderInterface {
             buildIsEmptyMethod();
             buildFeatureMethod();
             buildToStringMethod();
-            if (modelDef instanceof SpecialModelDaoConf) {
-                SpecialModelDaoConf sdef = (SpecialModelDaoConf) modelDef;
-                String sql = sdef.getSql();
-                if (sql != null) {
-                    buildSQLField(sql);
-                }
-            }
+            buildStaticFields();
+//            if (modelDef instanceof SpecialModelDaoConf) {
+//                SpecialModelDaoConf sdef = (SpecialModelDaoConf) modelDef;
+//                String sql = sdef.getSql();
+//                if (sql != null) {
+//                    buildSQLField(sql);
+//                }
+//            }
             ClassDataTable.putModelClz(modelClassName, definedClass);
+            modelDef.setDeclaredModel(definedClass);
 //            ClassDataTable.putModelClz(modelClassName,definedClass);
         } catch (JClassAlreadyExistsException e) {
             e.printStackTrace();
             throw new IllegalStateException("model state abnormal for " + modelClassName);
+        }
+    }
+
+    private void buildStaticFields() {
+        Map<String,FieldInfoInterface> staticConstFields = modelDef.getStaticConstFields();
+        Collection<FieldInfoInterface> collection = staticConstFields.values();
+        for(FieldInfoInterface fd:collection){
+            String fieldName = fd.getFieldName();
+            Object defaultValue = fd.getDefaultValue();
+            FieldDataTypeInterface type = fd.getType();
+            definedClass.field(CodeConstants.MODE_PUBLIC_STATIC_FINAL, cm.ref(type.getTClassName()), fieldName, CodeConstants.litObject(defaultValue));
         }
     }
 
@@ -131,8 +142,8 @@ public class POJOModelBuilder  implements CodeBuilderInterface {
             for (FieldInfoInterface item : fields) {
                 EnumTypeDef enumTypeDef = item.getEnumTypeDef();
                 if (enumTypeDef != null && enumTypeDef.sizeOfItems() > 0) {
-                    com.shawn.ss.lib.code_gen.model.def_model.dao_def.EnumTypeDef conf =
-                            new com.shawn.ss.lib.code_gen.model.def_model.dao_def.EnumTypeDef(enumTypeDef).setTable(modelDef.getName());
+                    EnumTypeConf conf =
+                            new EnumTypeConf(enumTypeDef).setName(modelDef.getName());
                     conf.setBuilderContext(builderContext);
                     EnumBuilder builder = new EnumBuilder(conf);
                     builder.buildModel();
@@ -142,16 +153,16 @@ public class POJOModelBuilder  implements CodeBuilderInterface {
         }
     }
 
-    public void buildSQLField(String sql) {
-        definedClass.field(CodeConstants.MODE_PUBLIC_STATIC_FINAL, String.class, CodeConstants.FIELD_MODEL_RELATED_SQL, JExpr.lit(sql));
-    }
+//    public void buildSQLField(String sql) {
+//        definedClass.field(CodeConstants.MODE_PUBLIC_STATIC_FINAL, String.class, CodeConstants.FIELD_MODEL_RELATED_SQL, JExpr.lit(sql));
+//    }
 
     private void buildComments() {
         JDocComment jDocComment = definedClass.headerComment();
         jDocComment.addAuthor().append("shawn-ss's auto writer");
         jDocComment.append("don't modify , it is generate automatically, any modification will be lost after regeneration next time");
         JDocComment javadoc = definedClass.javadoc();
-        javadoc.append("base DTO").append(",represent for table :").append(modelDef.getName());
+        javadoc.append("base DTO").append(",represent for  :").append(modelDef.getName());
         String tableComment = modelDef.getComment();
         if (tableComment != null) {
             javadoc.append("\n\t").append(tableComment);
@@ -179,7 +190,6 @@ public class POJOModelBuilder  implements CodeBuilderInterface {
 //            FieldDataTypeInterface type = item.getType();
             AbstractJClass type = CodeConstants.getFieldDefType(cm, modelDef, item, builderContext);
 //            final EnumTypeDef enumTypeDef = item.getEnumTypeDef();
-
             AbstractJClass jClass = type;
 
             String humpStyleColName = CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(colName);
@@ -216,11 +226,11 @@ public class POJOModelBuilder  implements CodeBuilderInterface {
 //        JTypeWildcard ft = cm.ref(_ObjMapper.class).(EWildcardBoundMode.EXTENDS);
 //        wildcard.narrow(cm.ref(_ObjMapper.class));
         JMethod method = definedClass.method(JMod.PUBLIC, ft, CodeConstants.METHOD_METHOD_GET_FEATURE);
-        method.generify("FT", cm.ref(_ObjMapper.class));
+        method.generify("FT", cm.ref(_APIObj.class));
         JVar clazz = method.param(cm.ref(Class.class).narrow(ft), "clazz");
         JBlock body = method.body();
-        body._if(JExpr.dotclass(cm.ref(RedisMapMapper.class)).invoke("isAssignableFrom").arg(clazz))._then()._return(JExpr.cast(ft, definedClass.staticRef(CodeConstants.FIELD_REDIS_MAP_MAPPER_INSTANCE)));
-        body._if(JExpr.dotclass(cm.ref(DbResultSetMapper.class)).invoke("isAssignableFrom").arg(clazz))._then()._return(JExpr.cast(ft, definedClass.staticRef(CodeConstants.FIELD_RESULT_SET_MAPPER_INSTANCE)));
+//        body._if(JExpr.dotclass(cm.ref(RedisMapMapper.class)).invoke("isAssignableFrom").arg(clazz))._then()._return(JExpr.cast(ft, definedClass.staticRef(CodeConstants.FIELD_REDIS_MAP_MAPPER_INSTANCE)));
+//        body._if(JExpr.dotclass(cm.ref(DbResultSetMapper.class)).invoke("isAssignableFrom").arg(clazz))._then()._return(JExpr.cast(ft, definedClass.staticRef(CodeConstants.FIELD_RESULT_SET_MAPPER_INSTANCE)));
         body._return(JExpr._null());
     }
 
@@ -252,7 +262,7 @@ public class POJOModelBuilder  implements CodeBuilderInterface {
                 String colName = item.getFieldName();
                 if (!ignoreField.contains(colName)) {
                     final AbstractJClass type = CodeConstants.getFieldDefType(cm, modelDef, item, builderContext);
-                    invocation = invocation.invoke("put").arg(referStaticField(colName)).arg(JExpr.dotclass(type));
+                    invocation = invocation.invoke("put").arg(referStaticField(colName)).arg(JExpr.dotclass(type.erasure()));
                 }
             }
             invocation = invocation.invoke("getMap");
@@ -267,11 +277,9 @@ public class POJOModelBuilder  implements CodeBuilderInterface {
 
     }
 
-
     public JDefinedClass getDefinedClass() {
         return definedClass;
     }
-
 
     public String getModelClassName() {
         return modelClassName;

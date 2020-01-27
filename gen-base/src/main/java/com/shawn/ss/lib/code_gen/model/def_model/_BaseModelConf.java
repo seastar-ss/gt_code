@@ -4,6 +4,7 @@ import com.helger.jcodemodel.AbstractJType;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.FieldInfoInterface;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -23,6 +24,12 @@ public interface _BaseModelConf<T extends _BaseModelConf> extends _BaseModelClas
     Set<String> ignoreField();
 
     String getComment();
+
+    Map<String,FieldInfoInterface> getStaticConstFields();
+
+    boolean addStaticField(FieldInfoInterface fieldDef);
+
+    FieldInfoInterface getStaticField(String key);
 
     /*
      * data access interface

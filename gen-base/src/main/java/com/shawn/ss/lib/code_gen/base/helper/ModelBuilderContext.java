@@ -10,7 +10,7 @@ import com.shawn.ss.lib.code_gen.base.dao.common_dao.common_model_builder.ModelB
 import com.shawn.ss.lib.code_gen.base.dao.special_dao.special_dao_builder.SpecialDaoBuilder;
 import com.shawn.ss.lib.code_gen.base.helper.data_store.ClassDataTable;
 import com.shawn.ss.lib.code_gen.base.helper.data_store.DbDataTable;
-import com.shawn.ss.lib.code_gen.base.multi_dao.multi_dao_builder.MultiDaoSelectServiceBuilder;
+import com.shawn.ss.lib.code_gen.base.dao.multi_dao.multi_dao_builder.MultiDaoSelectServiceBuilder;
 import com.shawn.ss.lib.code_gen.model.MethodTypeEnum;
 import com.shawn.ss.lib.code_gen.model.def_model.dao_def.CommonModelDaoDef;
 import com.shawn.ss.lib.code_gen.model.def_model.dao_def.ModelMulDaoDaoConf;

@@ -1,14 +1,15 @@
-package com.shawn.ss.lib.code_gen.base.multi_dao.multi_dao_builder;
+package com.shawn.ss.lib.code_gen.base.dao.multi_dao.multi_dao_builder;
 
 import com.helger.jcodemodel.*;
 import com.shawn.ss.gen.api.conf.SelectMethodEnum;
 import com.shawn.ss.lib.code_gen.CodeBuilderInterface;
+import com.shawn.ss.lib.code_gen.base.dao.multi_dao.composed_model_builder.ComposedModelBuilder;
+import com.shawn.ss.lib.code_gen.base.dao.multi_dao.multi_assemble_builder.ComposedAssemblerBuilder;
 import com.shawn.ss.lib.code_gen.base.helper.CodeConstants;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
 import com.shawn.ss.lib.code_gen.base.helper.data_store.ClassDataTable;
-import com.shawn.ss.lib.code_gen.base.multi_dao.composed_model_builder.ComposedModelBuilder;
-import com.shawn.ss.lib.code_gen.base.multi_dao.multi_assemble_builder.ComposedAssemblerBuilder;
 import com.shawn.ss.lib.code_gen.model.MethodTypeEnum;
+import com.shawn.ss.lib.code_gen.model.def_model._BaseDaoConf;
 import com.shawn.ss.lib.code_gen.model.def_model.dao_def.ModelMulDaoDaoConf;
 import com.shawn.ss.lib.code_gen.model.def_model.dao_def.ModelRelatedTableDef;
 import com.shawn.ss.lib.tools.CodeStyleTransformHelper;
@@ -28,9 +29,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class MultiDaoSelectServiceBuilder implements CodeBuilderInterface {
+public class MultiDaoBuilder implements CodeBuilderInterface {
 
-    public static final Logger L = LoggerFactory.getLogger(MultiDaoSelectServiceBuilder.class);
+    public static final Logger L = LoggerFactory.getLogger(MultiDaoBuilder.class);
 
     private static final String FIELD_ASSEMBLE_NAME = "assembler";
     private static final String FIELD_SELECTED_FIELDS_NAME = "selectFields";
@@ -46,7 +47,7 @@ public class MultiDaoSelectServiceBuilder implements CodeBuilderInterface {
     private final Map<String, AbstractJClass> models;
     private final Map<String, ModelRelatedTableDef> defs;
     //    private final boolean listResult;
-    private final ModelMulDaoDaoConf modelMulDaoConf;
+    private final _BaseDaoConf<_BaseDaoConf> modelMulDaoConf;
 
 
     //    private final String PARAM_DAO_START = "start";
@@ -56,7 +57,7 @@ public class MultiDaoSelectServiceBuilder implements CodeBuilderInterface {
     JDefinedClass definedClass;
     AbstractJClass mainDaoClass;
     AbstractJClass mainModelClass;
-    ComposedModelBuilder modelBuilder;
+//    ComposedModelBuilder modelBuilder;
 
     Map<String, JFieldVar> daoFields;
     //
@@ -69,7 +70,7 @@ public class MultiDaoSelectServiceBuilder implements CodeBuilderInterface {
         JVar otherTableAssembler, selectFields;
         JMethod mainSelectDaoMethod;
         AbstractJClass mainTableRetCls;
-        JDefinedClass assemblerCls;
+        AbstractJType assemblerCls;
         boolean listResult;
         AbstractJType listRetType, listMainType;
         AbstractJType retType, mainType;
@@ -108,9 +109,9 @@ public class MultiDaoSelectServiceBuilder implements CodeBuilderInterface {
     }
 
     private AbstractJClass wrapperCls;
-    final boolean multiFieldFromSameTable;
+//    final boolean multiFieldFromSameTable;
     final String mainDb;
-    private ComposedAssemblerBuilder assemblerBuilder;
+//    private ComposedAssemblerBuilder assemblerBuilder;
     private final List<SelectMethodEnum> mainModelSelectMethods;
 
 
@@ -124,10 +125,10 @@ public class MultiDaoSelectServiceBuilder implements CodeBuilderInterface {
 //
 //    }
 
-    public MultiDaoSelectServiceBuilder(ModelMulDaoDaoConf modelMulDaoConf) {
+    public MultiDaoBuilder(_BaseDaoConf modelMulDaoConf) {
         this.modelMulDaoConf = modelMulDaoConf;
-        modelMulDaoConf.init();
-        multiFieldFromSameTable = modelMulDaoConf.isMultiFieldFromSameTable();
+//        modelMulDaoConf.init();
+//        multiFieldFromSameTable = modelMulDaoConf.isMultiFieldFromSameTable();
         mainModelSelectMethods = modelMulDaoConf.getMainModelSelectMethod();
         if (mainModelSelectMethods == null) {
             SelectMethodEnum[] values = SelectMethodEnum.values();
@@ -151,7 +152,7 @@ public class MultiDaoSelectServiceBuilder implements CodeBuilderInterface {
         this.defs = modelMulDaoConf.getDefs();
         mainDb = modelMulDaoConf.getDb();
         this.cm = modelBuilderContext.getCm();
-        modelBuilder = new ComposedModelBuilder(modelMulDaoConf);
+//        modelBuilder = new ComposedModelBuilder(modelMulDaoConf);
 
     }
 
@@ -162,11 +163,11 @@ public class MultiDaoSelectServiceBuilder implements CodeBuilderInterface {
         if (size == 0) {
             return;
         }
-        modelBuilder.buildModel();
-        wrapperCls = modelBuilder.getWrapperClz();
-        assemblerBuilder = new ComposedAssemblerBuilder(modelMulDaoConf, wrapperCls);
-        assemblerBuilder.buildModel();
-        JDefinedClass multiAsemmblerClz = assemblerBuilder.getMultiAsemmblerClz();
+//        modelBuilder.buildModel();
+        wrapperCls = cm.ref(modelMulDaoConf.getPojoClzName());
+//        assemblerBuilder = new ComposedAssemblerBuilder(modelMulDaoConf);
+//        assemblerBuilder.buildModel();
+        AbstractJType multiAsemmblerClz = cm.ref(modelMulDaoConf.getAssemblerClzName());
 
         buildClass();
         BuildMethodParamHodler holder = new BuildMethodParamHodler();
@@ -272,33 +273,33 @@ public class MultiDaoSelectServiceBuilder implements CodeBuilderInterface {
         return null;
     }
 
-    private List<String> sortTables(ModelMulDaoDaoConf modelMulDaoConf) {
+    private List<String> sortTables(_BaseDaoConf modelMulDaoConf) {
         List<String> ret=CollectionHelper.newLinkedList();
-        List<ModelRelatedTableDef> relatedTables = modelMulDaoConf.getRelatedTables();
-        ret.add(mainTable);
-        String idFieldNameInMainTable = modelBuilderContext.getIdFieldName(modelMulDaoConf.getDb(), modelMulDaoConf.getTable());
-        for(ModelRelatedTableDef item:relatedTables){
-            String table = item.getTable();
-            String fieldInMainTable = item.getFieldInMainTable();
-            String idFieldNameInThisTable = modelBuilderContext.getIdFieldName(item.getDb(), table);
-            String fieldInThisTable = item.getFieldInThisTable();
-            if(idFieldNameInThisTable!=null){
-                boolean fieldOfMainIsId = fieldInMainTable.equals(idFieldNameInMainTable);
-                boolean fieldInThidIsId = fieldInThisTable.equals(idFieldNameInThisTable);
-                if(fieldOfMainIsId && !fieldInThidIsId){
-                    ret.add(table);
-                }
-                if(!fieldOfMainIsId && fieldInThidIsId){
-                    ret.add(0,table);
-                }
-                if(!fieldOfMainIsId && !fieldInThidIsId){
-
-                }
-                if(fieldOfMainIsId && fieldInThidIsId){
-
-                }
-            }
-        }
+//        List<ModelRelatedTableDef> relatedTables = modelMulDaoConf.getRelatedTables();
+//        ret.add(mainTable);
+//        String idFieldNameInMainTable = modelBuilderContext.getIdFieldName(modelMulDaoConf.getDb(), modelMulDaoConf.getTable());
+//        for(ModelRelatedTableDef item:relatedTables){
+//            String table = item.getTable();
+//            String fieldInMainTable = item.getFieldInMainTable();
+//            String idFieldNameInThisTable = modelBuilderContext.getIdFieldName(item.getDb(), table);
+//            String fieldInThisTable = item.getFieldInThisTable();
+//            if(idFieldNameInThisTable!=null){
+//                boolean fieldOfMainIsId = fieldInMainTable.equals(idFieldNameInMainTable);
+//                boolean fieldInThidIsId = fieldInThisTable.equals(idFieldNameInThisTable);
+//                if(fieldOfMainIsId && !fieldInThidIsId){
+//                    ret.add(table);
+//                }
+//                if(!fieldOfMainIsId && fieldInThidIsId){
+//                    ret.add(0,table);
+//                }
+//                if(!fieldOfMainIsId && !fieldInThidIsId){
+//
+//                }
+//                if(fieldOfMainIsId && fieldInThidIsId){
+//
+//                }
+//            }
+//        }
         return ret;
     }
 
@@ -938,10 +939,12 @@ public class MultiDaoSelectServiceBuilder implements CodeBuilderInterface {
             FieldDataTypeInterface idFieldType = modelBuilderContext.getIdFieldType(mainDb, mainTable);
             AbstractJType idType = cm.ref(idFieldType.gettClass());
             definedClass._implements(CodeConstants.buildNarrowedClass(cm, DaoInterface.class, wrapperCls, idType));
-            if (modelMulDaoConf.getImplInterface() != null && !buildNotAbstract) {
-                definedClass._implements(cm.ref(modelMulDaoConf.getImplInterface()));
+            if (modelMulDaoConf.getAssemblerExtendClzName() != null && !buildNotAbstract) {
+//                definedClass._implements(cm.ref(modelMulDaoConf.getImplInterface()));
+                definedClass._extends(CodeConstants.buildNarrowedClass(cm, cm.ref(modelMulDaoConf.getAssemblerExtendClzName()), wrapperCls, idType));
+            }else {
+                definedClass._extends(CodeConstants.buildNarrowedClass(cm, AbstractDao.class, wrapperCls, idType));
             }
-            definedClass._extends(CodeConstants.buildNarrowedClass(cm, AbstractDao.class, wrapperCls, idType));
             definedClass.annotate(cm.ref(SuppressWarnings.class)).param("value", "unchecked");//.annotationParam(cm.ref(String.class),JExpr.lit("unchecked"))
             afterPropertiesSet = definedClass.method(JMod.PUBLIC, cm.VOID, CodeConstants.METHOD_SPRING_BEAN_AFTER_PROPERTIES_SET);
             afterPropertiesSet.annotate(Override.class);

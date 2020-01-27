@@ -1,4 +1,4 @@
-package com.shawn.ss.lib.code_gen.base.multi_dao.composed_model_builder;
+package com.shawn.ss.lib.code_gen.base.dao.multi_dao.composed_model_builder;
 
 import com.helger.jcodemodel.*;
 import com.shawn.ss.lib.code_gen.CodeBuilderInterface;

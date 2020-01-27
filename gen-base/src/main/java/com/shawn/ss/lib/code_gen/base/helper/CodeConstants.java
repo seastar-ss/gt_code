@@ -1,13 +1,10 @@
 package com.shawn.ss.lib.code_gen.base.helper;
 
 import com.helger.jcodemodel.*;
-
 import com.shawn.ss.gen.api.conf.SelectMethod;
 import com.shawn.ss.gen.api.conf.SelectMethodEnum;
 import com.shawn.ss.lib.code_gen.base.helper.data_store.DbDataTable;
 import com.shawn.ss.lib.code_gen.model.def_model._BaseModelConf;
-import com.shawn.ss.lib.code_gen.model.def_model.dao_def._BaseDaoConfImpl;
-import com.shawn.ss.lib.code_gen.model.def_model.dao_def.CommonModelDaoDef;
 import com.shawn.ss.lib.tools.CodeStyleTransformHelper;
 import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.TypeConstantHelper;
@@ -24,7 +21,7 @@ import java.util.regex.Pattern;
 
 public class CodeConstants {
 
-    final static Pattern PATTERN_NUMBER_START=Pattern.compile("^\\d+.*");
+    final static Pattern PATTERN_NUMBER_START = Pattern.compile("^\\d+.*");
 
     public static final int MODE_PUBLIC_STATIC_FINAL = JMod.PUBLIC + JMod.STATIC + JMod.FINAL;
     public static final int MODE_PUBLIC_STATIC = JMod.PUBLIC + JMod.STATIC;
@@ -712,24 +709,24 @@ public class CodeConstants {
     }
 
     public static final String buildConfNameFromDbAndTable(String db, String table) {
-        String name=null;
+        String name = null;
 
-        if(db==null){
-            name=table;
-        }else{
-            name=db+"."+table;
+        if (db == null) {
+            name = table;
+        } else {
+            name = db + "." + table;
         }
         return name;
     }
 
     public static String getFieldNameFromTbColumn(String colName) {
-        String fname=null;
+        String fname = null;
         String humpStyleColName = CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(colName);
 
-        if(PATTERN_NUMBER_START.matcher(humpStyleColName).matches()) {
+        if (PATTERN_NUMBER_START.matcher(humpStyleColName).matches()) {
             fname = CodeConstants.FIELD_MODEL_FIELD_PREFIX + CodeStyleTransformHelper.upperFirstCase(humpStyleColName);
-        }else{
-            fname=humpStyleColName;
+        } else {
+            fname = humpStyleColName;
         }
         return fname;
     }
@@ -755,36 +752,48 @@ public class CodeConstants {
             jClass = cm.ref(item.getType().gettClass());
         } else {
 //                if(type==null && enumTypeDef !=null) {
-            jClass = cm.ref(bc.getEnumClzName(typeDef.getClazzName()));
+            jClass = cm.ref(typeDef.getClazzName());
 //                }
         }
         return jClass;
     }
 
+    public static AbstractJClass getFieldDefType(JCodeModel cm, FieldInfoInterface item) {
+        return getFieldDefType(cm, null, item, null);
+    }
+
     public static AbstractJClass getFieldDefType(JCodeModel cm, _BaseModelConf odef, FieldInfoInterface item, ModelBuilderContext bc) {
-        AbstractJClass jClass=null;
-        if(odef instanceof CommonModelDaoDef) {
-            CommonModelDaoDef def=(CommonModelDaoDef)odef;
-            EnumTypeDef typeDef = item.getEnumTypeDef();
-            if (typeDef == null) {
-                jClass = cm.ref(item.getType().gettClass());
-            } else {
-                FieldInfoInterface field = def.getField(item.getFieldName());
-                EnumTypeDef enumTypeDef = field.getEnumTypeDef();
-                if(enumTypeDef!=null) {
-                    jClass = cm.ref(enumTypeDef.getClazzName());//def.getEnumClz(item.getFieldName());
+        AbstractJClass jClass = null;
+//        if (odef instanceof CommonModelDaoDef) {
+//            CommonModelDaoDef def = (CommonModelDaoDef) odef;
+        FieldDataTypeInterface type = item.getType();
+        EnumTypeDef typeDef = item.getEnumTypeDef();
+        if (typeDef == null) {
+            jClass = cm.ref(type.gettClass());
+        } else {
+//                FieldInfoInterface field = def.getField(item.getFieldName());
+//                EnumTypeDef enumTypeDef = field.getEnumTypeDef();
+//                if(enumTypeDef!=null) {
+//                    jClass = cm.ref(enumTypeDef.getClazzName());//def.getEnumClz(item.getFieldName());
 //                    if (jClass == null) {
 //                if(type==null && enumTypeDef !=null) {
 
 //                }
 //                    }
-                }else{
-                    jClass = cm.ref(bc.getEnumClzName(typeDef.getClazzName()));
-                }
-            }
-        }else {
-            jClass=cm.ref(item.getType().gettClass());
+//                }else{
+            jClass = cm.ref(typeDef.getClazzName());
+//                }
         }
+        if (type.isArray()) {
+            jClass = jClass.array();
+        } else if (type.isCollection()) {
+            jClass = CodeConstants.buildNarrowedClass(cm, Collection.class, jClass);
+        } else if (type.isMap()) {
+            jClass = CodeConstants.buildNarrowedClass(cm, Map.class, cm.ref(type.getKeyClass()), jClass);
+        }
+//        } else {
+//            jClass = cm.ref(item.getType().gettClass());
+//        }
         return jClass;
     }
 

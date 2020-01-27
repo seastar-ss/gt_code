@@ -41,10 +41,11 @@ public class CommonPOJOConf<T extends CommonPOJOConf> implements _BaseModelConf<
 //        }
 //    }
 
-    List<FieldInfoInterface> fields;
-    Map<String, Integer> fieldIndex;
-    String pojoClzName;
-    String pojoExtendsClzName;
+    protected List<FieldInfoInterface> fields;
+    Map<String, FieldInfoInterface> staticFields;
+    protected Map<String, Integer> fieldIndex;
+    protected String pojoClzName;
+    protected String pojoExtendsClzName;
     protected String comment;
     protected final String name;
 
@@ -58,6 +59,7 @@ public class CommonPOJOConf<T extends CommonPOJOConf> implements _BaseModelConf<
 //        super(name);
         fields = CollectionHelper.newList();
         fieldIndex = CollectionHelper.newMap();
+        staticFields = CollectionHelper.newMap();
     }
 
 //    @Override
@@ -152,6 +154,21 @@ public class CommonPOJOConf<T extends CommonPOJOConf> implements _BaseModelConf<
 
     public String getComment() {
         return comment;
+    }
+
+    @Override
+    public Map<String, FieldInfoInterface> getStaticConstFields() {
+        return Collections.<String, FieldInfoInterface>unmodifiableMap(staticFields);
+    }
+
+    @Override
+    public boolean addStaticField(FieldInfoInterface fieldDef) {
+        return staticFields.put(fieldDef.getFieldName(), fieldDef) != null;
+    }
+
+    @Override
+    public FieldInfoInterface getStaticField(String key) {
+        return staticFields.get(key);
     }
 
     public T setComment(String comment) {

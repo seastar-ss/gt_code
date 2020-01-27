@@ -7,6 +7,7 @@ import com.shawn.ss.lib.code_gen.base.dao.AbstractDaoBuilder;
 
 import com.shawn.ss.lib.code_gen.base.helper.CodeConstants;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
+import com.shawn.ss.lib.code_gen.model.def_model._BaseDaoConf;
 import com.shawn.ss.lib.code_gen.model.def_model.dao_def.CommonModelDaoDef;
 import com.shawn.ss.lib.tools.CodeStyleTransformHelper;
 import com.shawn.ss.lib.tools.CollectionHelper;
@@ -58,7 +59,7 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
 //            .add(CodeConstants.METHOD_DAO_CUSTOMER_GET_LIST_BY_CUSTOMER_CONDITION)
 //            .getSet();
 
-    public CommonDaoBuilder(CommonModelDaoDef commonModelDaoDef) {
+    public CommonDaoBuilder(_BaseDaoConf commonModelDaoDef) {
         super(commonModelDaoDef, commonModelDaoDef.getBuilderContext());
 
     }
@@ -666,10 +667,11 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
         JBlock body = method.body();
         JVar assemblerVar = null;
         assemblerVar = method.param(cm.ref(DaoAssembler.class), CodeConstants.PARAM_DAO_ASSEMBLER);
-        if(!StringHelper.isEmpty(modelDef.getBaseAssemblerClass())) {
+        String assemblerExtendClzName = modelDef.getAssemblerExtendClzName();
+        if(!StringHelper.isEmpty(assemblerExtendClzName)) {
             body._if(assemblerVar.eq(JExpr._null()))
                     ._then()
-                    .assign(assemblerVar, JExpr._new(cm.ref(modelDef.getBaseAssemblerClass())));
+                    .assign(assemblerVar, JExpr._new(cm.ref(assemblerExtendClzName)));
         }
 //        body._if(assemblerVar.eq(JExpr._null()))._then().assign(assemblerVar, JExpr._new(cm.ref(BaseDaoAssembler.class)));
 //        JVar sql = body.decl(cm.ref(String.class), "sql");
@@ -763,10 +765,11 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
         JBlock body = method.body();
         JVar assemblerVar = null;
         assemblerVar = method.param(cm.ref(DaoAssembler.class), CodeConstants.PARAM_DAO_ASSEMBLER);
-        if(!StringHelper.isEmpty(modelDef.getBaseAssemblerClass())) {
+        String assemblerExtendClzName = modelDef.getAssemblerExtendClzName();
+        if(!StringHelper.isEmpty(assemblerExtendClzName)) {
             body._if(assemblerVar.eq(JExpr._null()))
                     ._then()
-                    .assign(assemblerVar, JExpr._new(cm.ref(modelDef.getBaseAssemblerClass())));
+                    .assign(assemblerVar, JExpr._new(cm.ref(assemblerExtendClzName)));
         }
 //        body._if(assemblerVar.eq(JExpr._null()))._then().assign(assemblerVar, JExpr._new(cm.ref(BaseDaoAssembler.class)));
         JFieldRef fieldMapStaticRefer = modelClazzRef.staticRef(CodeConstants.FIELD_FIELDS_CLASS_CONSTANT_MAP);
@@ -835,10 +838,11 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
         JBlock body = method.body();
         JVar assemblerVar = null;
         assemblerVar = method.param(cm.ref(DaoAssembler.class), CodeConstants.PARAM_DAO_ASSEMBLER);
-        if(!StringHelper.isEmpty(modelDef.getBaseAssemblerClass())) {
+        String assemblerExtendClzName = modelDef.getAssemblerExtendClzName();
+        if(!StringHelper.isEmpty(assemblerExtendClzName)) {
             body._if(assemblerVar.eq(JExpr._null()))
                     ._then()
-                    .assign(assemblerVar, JExpr._new(cm.ref(modelDef.getBaseAssemblerClass())));
+                    .assign(assemblerVar, JExpr._new(cm.ref(assemblerExtendClzName)));
         }
 //        body._if(assemblerVar.eq(JExpr._null()))._then().assign(assemblerVar, JExpr._new(cm.ref(BaseDaoAssembler.class)));
 //        JVar sql = body.decl(cm.ref(String.class), "sql");
@@ -1063,10 +1067,11 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
         /**
          * declare method parameters end
          */
-        if(!StringHelper.isEmpty(modelDef.getBaseAssemblerClass())) {
+        String assemblerExtendClzName = modelDef.getAssemblerExtendClzName();
+        if(!StringHelper.isEmpty(assemblerExtendClzName)) {
             body._if(assemblerVar.eq(JExpr._null()))
                     ._then()
-                    .assign(assemblerVar, JExpr._new(cm.ref(modelDef.getBaseAssemblerClass())));
+                    .assign(assemblerVar, JExpr._new(cm.ref(assemblerExtendClzName)));
         }
         JFieldRef fieldMapStaticRefer = modelClazzRef.staticRef(CodeConstants.FIELD_FIELDS_CLASS_CONSTANT_MAP);
         if (!isCount && !isSingle) {

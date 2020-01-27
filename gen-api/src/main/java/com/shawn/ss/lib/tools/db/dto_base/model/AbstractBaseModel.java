@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * @author ss
  */
-public abstract class AbstractBaseModel implements Serializable,_ObjMapper {
+public abstract class AbstractBaseModel implements Serializable,_APIObj {
 //    protected static int modelFieldCount;
 
 
@@ -44,7 +44,7 @@ public abstract class AbstractBaseModel implements Serializable,_ObjMapper {
     }
 
     @Override
-    public <T extends _ObjMapper> T getFeature(Class<T> clazz) {
+    public <T extends _APIObj> T getFeature(Class<T> clazz) {
         return null;
     }
 

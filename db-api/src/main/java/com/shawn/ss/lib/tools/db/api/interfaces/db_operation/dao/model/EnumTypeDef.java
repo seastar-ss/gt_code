@@ -2,6 +2,7 @@ package com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.model;
 
 import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.ColumnInfoInterface;
+import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.FieldInfoInterface;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ public class EnumTypeDef {
     String remark;
     String clazzName;
 //    FieldDataTypeInterface originalType;
-    ColumnInfoInterface col;
+    FieldInfoInterface col;
     List<EnumDef> enumDef;
 
     public EnumTypeDef() {
@@ -75,11 +76,11 @@ public class EnumTypeDef {
 //    }
 
 
-    public ColumnInfoInterface getCol() {
+    public FieldInfoInterface getCol() {
         return col;
     }
 
-    public EnumTypeDef setCol(ColumnInfoInterface col) {
+    public EnumTypeDef setCol(FieldInfoInterface col) {
         this.col = col;
         return this;
     }

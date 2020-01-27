@@ -4,6 +4,7 @@ import com.helger.jcodemodel.AbstractJClass;
 import com.helger.jcodemodel.JCodeModel;
 import com.shawn.ss.lib.code_gen.base.helper.CodeConstants;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
+import com.shawn.ss.lib.code_gen.model.def_model._BaseSubDaoConf;
 import com.shawn.ss.lib.tools.CollectionHelper;
 
 import java.util.List;
@@ -151,7 +152,7 @@ public class ModelMulDaoDaoConf extends _BaseDaoConfImpl<ModelMulDaoDaoConf>  {
 //        if(relatedMainAttr!=null)
 //            attrs.put(relatedMainAttr.getMethodName(), relatedMainAttr);
         for (ModelRelatedTableDef def : relatedTables) {
-            if (def.type == ModelRelatedTableDef.EnumFieldDataSrcType.commonDao) {
+            if (def.type == _BaseSubDaoConf.EnumFieldDataSrcType.commonDao) {
                 String table = def.getTable();
 //            SpecialModelConf attr = modelDef.getAttr();
 //            attrs.put(attr.getName(),attr);
@@ -162,9 +163,9 @@ public class ModelMulDaoDaoConf extends _BaseDaoConfImpl<ModelMulDaoDaoConf>  {
                 AbstractJClass modelClass = cm.ref(builderContext.getReallyModelClassName(table, null));
                 models.put(table, modelClass);
 
-            }else if(def.type== ModelRelatedTableDef.EnumFieldDataSrcType.mulDao){
+            }else if(def.type== _BaseSubDaoConf.EnumFieldDataSrcType.mulDao){
                 //TODO:
-            }else if(def.type == ModelRelatedTableDef.EnumFieldDataSrcType.specialDao){
+            }else if(def.type == _BaseSubDaoConf.EnumFieldDataSrcType.specialDao){
                 //TODO:
             }
         }

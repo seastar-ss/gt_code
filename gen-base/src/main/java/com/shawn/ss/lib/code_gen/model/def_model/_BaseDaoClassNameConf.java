@@ -3,17 +3,26 @@ package com.shawn.ss.lib.code_gen.model.def_model;
 public interface _BaseDaoClassNameConf<T extends _BaseDaoClassNameConf>  extends _BaseContextConf  {
     String getDaoClzName();
 
-    T setDaoClzName(String pojoClzName);
+    T setDaoClzName(String clzName);
 
     String getDaoExtendsClzName();
 
-    T setDaoExtendsClzName(String pojoExtendsClzName);
+    T setDaoExtendsClzName(String clzName);
 
     String getAssemblerClzName();
 
-    T setAssemblerClzName(String pojoClzName);
+    T setAssemblerClzName(String clzName);
 
-    String getBaseAssemblerClzName();
+    String getAssemblerExtendClzName();
 
-    T setBaseAssemblerClzName(String pojoClzName);
+    T setAssemblerExtendClzName(String clzName);
+
+    String getMapperClzName();
+
+    T setMapperClzName(String clzName);
+
+    String getShadingClzName();
+
+    T setShadingClzName(String clzName);
+
 }

@@ -4,6 +4,7 @@ import com.helger.jcodemodel.*;
 import com.shawn.ss.lib.code_gen.CodeBuilderInterface;
 import com.shawn.ss.lib.code_gen.base.helper.CodeConstants;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
+import com.shawn.ss.lib.code_gen.model.def_model._BaseDaoConf;
 import com.shawn.ss.lib.code_gen.model.def_model.dao_def.CommonModelDaoDef;
 import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.StringHelper;
@@ -37,19 +38,19 @@ public abstract class AbstractDaoBuilder implements CodeBuilderInterface {
     protected Map<String,JFieldVar> dbFields;
     protected TableInfoInterface info;
     protected final String table;
-    protected final CommonModelDaoDef modelDef;
+    protected final _BaseDaoConf modelDef;
     protected JFieldVar loggerField;
     protected JMethod afterPropertiesSet;
     protected JFieldVar dbMapField;
 
-    public AbstractDaoBuilder(CommonModelDaoDef def, ModelBuilderContext builderContext) {
+    public AbstractDaoBuilder(_BaseDaoConf def, ModelBuilderContext builderContext) {
         cm = builderContext.getCm();
-        final List<String> dataSourceNames = def.getDataSourceNames();
-        if(dataSourceNames!=null && dataSourceNames.size()>0) {
-            dbFields = CollectionHelper.newMap();
-        }else{
-            dbFields= Collections.emptyMap();
-        }
+//        final List<String> dataSourceNames = def.getDataSourceNames();
+//        if(dataSourceNames!=null && dataSourceNames.size()>0) {
+//            dbFields = CollectionHelper.newMap();
+//        }else{
+//            dbFields= Collections.emptyMap();
+//        }
         /**
          * this.modelDef = def;
          this.info = def.getDef();
@@ -81,7 +82,7 @@ public abstract class AbstractDaoBuilder implements CodeBuilderInterface {
          */
 //        if(parentBuilder!=null) {
 //        this.parentBuilder = parentBuilder;
-        this.info = def.getDef();
+        this.info = def.getTableDef();
         String baseTable = def.getBaseTable();
 
         this.table = info.getTable();
@@ -112,7 +113,7 @@ public abstract class AbstractDaoBuilder implements CodeBuilderInterface {
             definedClass._implements(InitializingBean.class);
             AbstractJType idType=(priKeyType==null?cm.ref(Object.class):cm.ref(priKeyType.gettClass()));
             definedClass._implements(CodeConstants.buildNarrowedClass(cm,DaoInterface.class,modelClass,idType));
-            final String baseDaoClass = modelDef.getBaseDaoClass();
+            final String baseDaoClass = modelDef.getDaoExtendsClzName();
             AbstractJClass ref = cm.ref(AbstractDao.class);
             if(!StringHelper.isEmpty(baseDaoClass)){
                 ref=cm.ref(baseDaoClass);
@@ -132,17 +133,17 @@ public abstract class AbstractDaoBuilder implements CodeBuilderInterface {
     }
 
     protected void buildCommonDbFieldInjection() {
-        String dataSourceName = modelDef.getDataSourceName();
-        final List<String> dataSourceNames = modelDef.getDataSourceNames();
-        boolean multiDs=dataSourceNames!=null && dataSourceNames.size()>0;
-        if(dataSourceName==null){
-            if(multiDs){
-                dataSourceName=dataSourceNames.get(0);
-            }
-        }
-        dbField=addInjectedDbField("", dataSourceName);
+//        String dataSourceName = modelDef.getDataSourceName();
+//        final List<String> dataSourceNames = modelDef.getDataSourceNames();
+//        boolean multiDs=dataSourceNames!=null && dataSourceNames.size()>0;
+//        if(dataSourceName==null){
+//            if(multiDs){
+//                dataSourceName=dataSourceNames.get(0);
+//            }
+//        }
+//        dbField=addInjectedDbField("", dataSourceName);
 
-        if(multiDs){
+//        if(multiDs){
 //            dbMapField = definedClass.field(
 //                    JMod.PROTECTED + JMod.STATIC + JMod.FINAL,
 //                    CodeConstants.buildNarrowedClass(cm, Map.class, String.class, SimpleDbInterface.class),
@@ -155,7 +156,7 @@ public abstract class AbstractDaoBuilder implements CodeBuilderInterface {
 //                final JFieldVar dbField = addInjectedDbField(dsName,dsName);
 //                body._if(dbField.ne(JExpr._null()))._then().invoke(dbMapField,"put").arg(field).arg(dbField);
 //            }
-        }
+//        }
     }
 
     protected JFieldVar addInjectedDbField(String dsFieldName,String dataSourceName){

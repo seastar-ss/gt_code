@@ -16,5 +16,5 @@ public interface FieldInfoInterface {
 
     String getAliasField();
 
-
+    boolean isStatic();
 }

@@ -1,9 +1,10 @@
-package com.shawn.ss.lib.code_gen.base.multi_dao.multi_assemble_builder;
+package com.shawn.ss.lib.code_gen.base.dao.multi_dao.multi_assemble_builder;
 
 import com.helger.jcodemodel.*;
 import com.shawn.ss.lib.code_gen.CodeBuilderInterface;
 import com.shawn.ss.lib.code_gen.base.helper.CodeConstants;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
+import com.shawn.ss.lib.code_gen.model.def_model._BaseDaoConf;
 import com.shawn.ss.lib.code_gen.model.def_model.dao_def.ModelMulDaoDaoConf;
 import com.shawn.ss.lib.code_gen.model.def_model.dao_def.ModelRelatedTableDef;
 import com.shawn.ss.lib.tools.CollectionHelper;
@@ -24,18 +25,19 @@ public class ComposedAssemblerBuilder implements CodeBuilderInterface {
 //    private AbstractJClass multiAsemmblerClz;
 
     private final JCodeModel cm;
-    private final ModelMulDaoDaoConf modelMulDaoConf;
+    private final _BaseDaoConf modelMulDaoConf;
     private String assemblerName;
     private JDefinedClass definedClass;
     boolean isList;
     private JFieldVar[] staticRoundFieldVar;
 
-    public ComposedAssemblerBuilder(ModelMulDaoDaoConf modelMulDaoConf, AbstractJClass wrapperCls) {
+    public ComposedAssemblerBuilder(_BaseDaoConf modelMulDaoConf) {
         this.modelMulDaoConf = modelMulDaoConf;
         this.modelBuilderContext = modelMulDaoConf.getBuilderContext();
-        this.wrapperCls = wrapperCls;
+
         this.cm=modelBuilderContext.getCm();
-        assemblerName = modelBuilderContext.getServiceAssemblerClassName(modelMulDaoConf.getTable());
+        assemblerName = modelMulDaoConf.getAssemblerClzName();//modelBuilderContext.getServiceAssemblerClassName(modelMulDaoConf.getTable());
+        this.wrapperCls = cm.ref(modelMulDaoConf.getPojoClzName());
 //        isList=modelMulDaoConf.
     }
 

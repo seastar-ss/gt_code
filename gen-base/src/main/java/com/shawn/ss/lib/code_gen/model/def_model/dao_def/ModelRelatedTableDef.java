@@ -2,16 +2,13 @@ package com.shawn.ss.lib.code_gen.model.def_model.dao_def;
 
 import com.shawn.ss.lib.code_gen.base.helper.data_store.ConfDataTable;
 import com.shawn.ss.lib.code_gen.model.def_model._BaseDef;
+import com.shawn.ss.lib.code_gen.model.def_model._BaseSubDaoConf;
 
 import java.util.Map;
 
 public class ModelRelatedTableDef implements _BaseDef {
 
-    public static enum EnumFieldDataSrcType {
-        commonDao,specialDao,mulDao
-    }
-
-    EnumFieldDataSrcType type;
+    _BaseSubDaoConf.EnumFieldDataSrcType type;
 
     /* for common dao */
 //    String db;
@@ -115,14 +112,14 @@ public class ModelRelatedTableDef implements _BaseDef {
 
 
     public ModelRelatedTableDef() {
-        type= EnumFieldDataSrcType.commonDao;
+        type= _BaseSubDaoConf.EnumFieldDataSrcType.commonDao;
     }
 
     public ModelRelatedTableDef(String name, String fieldInThisTable, String fieldInMainTable, boolean single) {
-        this(name,EnumFieldDataSrcType.commonDao,fieldInThisTable,fieldInMainTable,single);
+        this(name, _BaseSubDaoConf.EnumFieldDataSrcType.commonDao,fieldInThisTable,fieldInMainTable,single);
     }
 
-    public ModelRelatedTableDef(String name,EnumFieldDataSrcType type, String fieldInThisTable, String fieldInMainTable, boolean single) {
+    public ModelRelatedTableDef(String name, _BaseSubDaoConf.EnumFieldDataSrcType type, String fieldInThisTable, String fieldInMainTable, boolean single) {
         this.name = name;
         this.type=type;
         this.fieldInThisTable = fieldInThisTable;
@@ -176,11 +173,11 @@ public class ModelRelatedTableDef implements _BaseDef {
         return this;
     }
 
-    public EnumFieldDataSrcType getType() {
+    public _BaseSubDaoConf.EnumFieldDataSrcType getType() {
         return type;
     }
 
-    public ModelRelatedTableDef setType(EnumFieldDataSrcType type) {
+    public ModelRelatedTableDef setType(_BaseSubDaoConf.EnumFieldDataSrcType type) {
         this.type = type;
         return this;
     }
