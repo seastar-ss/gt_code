@@ -1,9 +1,12 @@
 package com.shawn.ss.lib.code_gen.model.def_model.common;
 
 import com.helger.jcodemodel.AbstractJType;
+import com.helger.jcodemodel.JDefinedClass;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
-import com.shawn.ss.lib.code_gen.model.def_model._BaseModelClassNameConf;
-import com.shawn.ss.lib.code_gen.model.def_model._BaseModelConf;
+import com.shawn.ss.lib.code_gen.model.def_model._base.AbstractConf;
+import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseConstantConf;
+import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseModelClassNameConf;
+import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseModelConf;
 import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.FieldInfoInterface;
 
@@ -15,7 +18,7 @@ import java.util.Set;
 /**
  * Created by ss on 2018/10/27.
  */
-public class CommonPOJOConf<T extends CommonPOJOConf> implements _BaseModelConf<T>, _BaseModelClassNameConf<T> {
+public class CommonPOJOConf extends AbstractConf implements _BaseModelConf, _BaseModelClassNameConf {
 
 
 //    public static class FieldDef{
@@ -47,15 +50,14 @@ public class CommonPOJOConf<T extends CommonPOJOConf> implements _BaseModelConf<
     protected String pojoClzName;
     protected String pojoExtendsClzName;
     protected String comment;
-    protected final String name;
+//    protected final String name;
 
-    protected transient final ModelBuilderContext builderContext;
+//    protected transient final ModelBuilderContext builderContext;
 
-    private AbstractJType definedClz;
+    private JDefinedClass definedClz;
 
     public CommonPOJOConf(String name, ModelBuilderContext builderContext) {
-        this.builderContext = builderContext;
-        this.name = name;
+        super(name,builderContext);
 //        super(name);
         fields = CollectionHelper.newList();
         fieldIndex = CollectionHelper.newMap();
@@ -116,14 +118,14 @@ public class CommonPOJOConf<T extends CommonPOJOConf> implements _BaseModelConf<
     }
 
     @Override
-    public AbstractJType getDeclaredModel() {
+    public JDefinedClass getDeclaredModel() {
         return definedClz;
     }
 
     @Override
-    public T setDeclaredModel(AbstractJType tclazz) {
+    public void setDeclaredModel(JDefinedClass tclazz) {
         this.definedClz = tclazz;
-        return (T) this;
+
     }
 
     @Override
@@ -131,10 +133,10 @@ public class CommonPOJOConf<T extends CommonPOJOConf> implements _BaseModelConf<
         return pojoClzName;
     }
 
-    @Override
-    public T setPojoClzName(String pojoClzName) {
+//    @Override
+    public void setPojoClzName(String pojoClzName) {
         this.pojoClzName = pojoClzName;
-        return (T) this;
+
     }
 
     @Override
@@ -142,10 +144,10 @@ public class CommonPOJOConf<T extends CommonPOJOConf> implements _BaseModelConf<
         return pojoExtendsClzName;
     }
 
-    @Override
-    public T setPojoExtendsClzName(String pojoExtendsClzName) {
+//    @Override
+    public void setPojoExtendsClzName(String pojoExtendsClzName) {
         this.pojoExtendsClzName = pojoExtendsClzName;
-        return (T) this;
+
     }
 
     public ModelBuilderContext getBuilderContext() {
@@ -171,14 +173,24 @@ public class CommonPOJOConf<T extends CommonPOJOConf> implements _BaseModelConf<
         return staticFields.get(key);
     }
 
-    public T setComment(String comment) {
+    @Override
+    public FieldInfoInterface getPriField() {
+        return null;
+    }
+
+    public void setComment(String comment) {
         this.comment = comment;
-        return (T) this;
+
     }
 
     public String getName() {
         return name;
     }
+
+//    @Override
+//    public _BaseConstantConf getConstant() {
+//        return null;
+//    }
 
 //    public CommonPOJOConf setBuilderContext(ModelBuilderContext builderContext) {
 //        this.builderContext = builderContext;

@@ -143,7 +143,7 @@ public class SpecialDaoBuilder extends AbstractDaoBuilder {
 //        }
         addLogs(body, fieldRef, mapVar);
         if (type.equals(SpecialModelDaoConf.DataAttrType.LIST_OBJ) || type.equals(SpecialModelDaoConf.DataAttrType.OBJ)) {
-            invocation.arg(modelClass.staticRef(CodeConstants.FIELD_RESULT_SET_MAPPER_INSTANCE));
+            invocation.arg(modelClass.staticRef(CodeConstants.FIELD_RESULT_SET_MAPPER_INSTANCE_APPENDIX));
         } else if (type.equals(SpecialModelDaoConf.DataAttrType.SINGLE) || type.equals(SpecialModelDaoConf.DataAttrType.LIST)) {
             invocation.arg(JExpr.dotclass(cm.ref(aClass)));
         }

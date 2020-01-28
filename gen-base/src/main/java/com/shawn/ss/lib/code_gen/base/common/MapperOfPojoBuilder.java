@@ -4,7 +4,8 @@ import com.helger.jcodemodel.*;
 import com.shawn.ss.lib.code_gen.CodeBuilderInterface;
 import com.shawn.ss.lib.code_gen.base.helper.CodeConstants;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
-import com.shawn.ss.lib.code_gen.model.def_model._BaseModelConf;
+import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseConstantDef;
+import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseModelConf;
 import com.shawn.ss.lib.code_gen.model.def_model.common.CommonPOJOConf;
 import com.shawn.ss.lib.code_gen.model.def_model.dao_def.CommonModelDaoDef;
 import com.shawn.ss.lib.tools.CodeStyleTransformHelper;
@@ -37,13 +38,13 @@ public class MapperOfPojoBuilder implements CodeBuilderInterface {
 //        this(null, parentModelBuilder);
 //    }
 
-    public MapperOfPojoBuilder(_BaseModelConf modelDef, ModelBuilderContext context, JDefinedClass enclosingClz){
+    public MapperOfPojoBuilder(_BaseModelConf modelDef, ModelBuilderContext context){
 //        this.parentModelBuilder = parentModelBuilder;
         String modelClassName = modelDef.getPojoClzName();
         mapperClassName = CodeConstants.CLASS_NAME_POJO_MAPPER_PREFIX + CodeConstants.getClassNameFromFullName(modelClassName);
         builderContext = context;
         cm=context.getCm();
-        modelClass=enclosingClz;
+        modelClass=modelDef.getDeclaredModel();
         this.modelDef=modelDef;
        // buildInterception(poModelDef,modelDef);
 //        this.poModelBuilder = poModelBuilder;
@@ -74,12 +75,19 @@ public class MapperOfPojoBuilder implements CodeBuilderInterface {
             buildMethodGetField();
             buildMethodSetField();
             buildMethodSetFieldByte();
-            modelClass.field(CodeConstants.MODE_PUBLIC_STATIC_FINAL, definedClass, CodeConstants.FIELD_REDIS_MAP_MAPPER_INSTANCE, JExpr._new(definedClass));
+//            modelClass.field(CodeConstants.MODE_PUBLIC_STATIC_FINAL, definedClass, CodeConstants.FIELD_REDIS_MAP_MAPPER_INSTANCE, JExpr._new(definedClass));
 //            JNarrowedClass baseClass = cm.ref(BaseDbMapper.class).narrow(modelClass);
 //            definedClass._extends(baseClass);
+            buildNewInstance();
         } catch (JClassAlreadyExistsException e) {
             e.printStackTrace();
         }
+    }
+
+    private void buildNewInstance() {
+        _BaseConstantDef constant = modelDef.getConstant();
+
+        constant.getConstantClz().field(CodeConstants.MODE_PUBLIC_STATIC_FINAL,definedClass.narrow(modelClass), CodeConstants.getFieldNameOfCommonMapperForModel(modelDef.getName()),JExpr._new(definedClass).narrow(modelClass));
     }
 
     private void buildToPo() {

@@ -1,6 +1,6 @@
-package com.shawn.ss.lib.code_gen.model.def_model;
+package com.shawn.ss.lib.code_gen.model.def_model.interfaces;
 
-import com.helger.jcodemodel.AbstractJType;
+import com.helger.jcodemodel.JDefinedClass;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.FieldInfoInterface;
 
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.Set;
 /**
  * Created by ss on 2018/2/13.
  */
-public interface _BaseModelConf<T extends _BaseModelConf> extends _BaseModelClassNameConf<T>, _BaseContextConf {
+public interface _BaseModelConf extends _BaseModelClassNameConf, _BaseContextConf {
     List<FieldInfoInterface> getFields();
 
     int sizeOfField();
@@ -31,11 +31,13 @@ public interface _BaseModelConf<T extends _BaseModelConf> extends _BaseModelClas
 
     FieldInfoInterface getStaticField(String key);
 
+    FieldInfoInterface getPriField();
+
     /*
      * data access interface
      *
      */
-    AbstractJType getDeclaredModel();
+    JDefinedClass getDeclaredModel();
 
-    T setDeclaredModel(AbstractJType tclazz);
+    void setDeclaredModel(JDefinedClass tclazz);
 }

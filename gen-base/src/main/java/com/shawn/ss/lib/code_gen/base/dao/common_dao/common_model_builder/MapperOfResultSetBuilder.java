@@ -4,6 +4,9 @@ import com.helger.jcodemodel.*;
 import com.shawn.ss.lib.code_gen.CodeBuilderInterface;
 import com.shawn.ss.lib.code_gen.base.helper.CodeConstants;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
+
+import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseConstantDef;
+import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseDaoConf;
 import com.shawn.ss.lib.tools.NumberHelper;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.ColumnInfoInterface;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.model.FieldDataTypeInterface;
@@ -15,42 +18,44 @@ import com.shawn.ss.lib.tools.db.impl.mapper.BaseDbMapper;
 import java.sql.Blob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
 public class MapperOfResultSetBuilder implements CodeBuilderInterface {
-    final ModelBuilder parentBuilder;
+//    final ModelBuilder parentBuilder;
     final JCodeModel cm;
     final String mapperClassName;
     JDefinedClass definedClass;
-    JDefinedClass modelClass;
+    AbstractJClass modelClass;
     AbstractJType modelType;
     private JTypeVar typeVar;
-    private final boolean selectModel;
+//    private final boolean selectModel;
     private final Set<String> ignoreField;
     private final String baseTable;
     private final ModelBuilderContext builderContext;
+    private final _BaseDaoConf model;
 
-    public MapperOfResultSetBuilder(ModelBuilder parentBuilder) {
-        this.parentBuilder = parentBuilder;
-        cm = parentBuilder.getCm();
-        String modelClassName = parentBuilder.getModelClassName();
-        mapperClassName= CodeConstants.CLASS_NAME_RESULT_SET_MAPPER_PREFIX+ CodeConstants.getClassNameFromFullName(modelClassName);
-        selectModel = parentBuilder.isSelectModel();
-        Set<String> ignoreField = parentBuilder.getIgnoreField();
-        this.ignoreField = (ignoreField==null? Collections.emptySet():ignoreField);
-        baseTable = parentBuilder.getBaseTable();
-        builderContext = parentBuilder.getBuilderContext();
+    public MapperOfResultSetBuilder(_BaseDaoConf model) {
+//        this.parentBuilder = parentBuilder;
+        this.model=model;
+        this.builderContext = model.getBuilderContext();
+        cm = builderContext.getCm();
+        String modelClassName = model.getPojoClzName();
+        mapperClassName= model.getMapperClzName();
+//        selectModel = parentBuilder.isSelectModel();
+        this.ignoreField= model.ignoreField();
+//        this.ignoreField = (ignoreField==null? Collections.emptySet():ignoreField);
+        baseTable = model.getBaseTable();
+        modelClass =cm.ref(modelClassName);
     }
 
 
     @Override
     public void buildModel() {
         try {
-            modelClass = parentBuilder.getDefinedClass();
+
 //            modelType = cm.directClass("T");
-            this.definedClass = modelClass._class(CodeConstants.MODE_PUBLIC_STATIC,mapperClassName);
+            this.definedClass = cm._class(mapperClassName);
             typeVar = definedClass.generify("T", modelClass);
             JNarrowedClass interfaceClass = cm.ref(DbResultSetMapper.class).narrow(typeVar);
             definedClass._implements(interfaceClass);
@@ -65,14 +70,20 @@ public class MapperOfResultSetBuilder implements CodeBuilderInterface {
 
             buildMapRowMethodWithoutInstanceParam();
             buildMapRowMethod();
-            modelClass.field(CodeConstants.MODE_PUBLIC_STATIC_FINAL,definedClass.narrow(modelClass), CodeConstants.FIELD_RESULT_SET_MAPPER_INSTANCE,JExpr._new(definedClass).narrow(modelClass));
+            buildNewInstance();
         } catch (JClassAlreadyExistsException e) {
             e.printStackTrace();
         }
     }
 
+    private void buildNewInstance() {
+        _BaseConstantDef constant = model.getConstant();
+
+        constant.getConstantClz().field(CodeConstants.MODE_PUBLIC_STATIC_FINAL,definedClass.narrow(modelClass), CodeConstants.getFieldNameOfDbRsMapperForModel(model.getName()),JExpr._new(definedClass).narrow(modelClass));
+    }
+
     private void buildMapRowMethod() {
-        List<ColumnInfoInterface> columns = parentBuilder.getColumns();
+        List<ColumnInfoInterface> columns = model.getTableDef().getColumns();
         JMethod mapperRowSimple = definedClass.method(JMod.PUBLIC, typeVar, CodeConstants.METHOD_MAPPER_MAP_ROW);
         mapperRowSimple.annotate(Override.class);
         mapperRowSimple._throws(SQLException.class);
@@ -138,7 +149,7 @@ public class MapperOfResultSetBuilder implements CodeBuilderInterface {
         }
         EnumTypeDef typeDef = item.getEnumTypeDef();
         if(typeDef !=null){
-            arg= CodeConstants.getFieldDefType(cm, parentBuilder.getModelDef(), item,builderContext).staticInvoke(CodeConstants.METHOD_ENUM_FROM_VALUE).arg(arg);
+            arg= CodeConstants.getFieldDefType(cm, model, item,builderContext).staticInvoke(CodeConstants.METHOD_ENUM_FROM_VALUE).arg(arg);
         }
         thenBlock.invoke(instance, CodeConstants.getMethodNameOfModelSet(colName)).arg(arg);
 

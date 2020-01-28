@@ -4,7 +4,7 @@ import com.helger.jcodemodel.AbstractJClass;
 import com.helger.jcodemodel.JCodeModel;
 import com.shawn.ss.lib.code_gen.base.helper.CodeConstants;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
-import com.shawn.ss.lib.code_gen.model.def_model._BaseSubDaoConf;
+import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseSubDaoConf;
 import com.shawn.ss.lib.tools.CollectionHelper;
 
 import java.util.List;

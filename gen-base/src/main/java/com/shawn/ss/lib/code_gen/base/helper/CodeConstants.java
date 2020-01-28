@@ -4,7 +4,7 @@ import com.helger.jcodemodel.*;
 import com.shawn.ss.gen.api.conf.SelectMethod;
 import com.shawn.ss.gen.api.conf.SelectMethodEnum;
 import com.shawn.ss.lib.code_gen.base.helper.data_store.DbDataTable;
-import com.shawn.ss.lib.code_gen.model.def_model._BaseModelConf;
+import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseModelConf;
 import com.shawn.ss.lib.tools.CodeStyleTransformHelper;
 import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.TypeConstantHelper;
@@ -36,10 +36,10 @@ public class CodeConstants {
     public static final String FIELD_DAO_RELATED_SQL_PREFIX = "DAO_SQL_";
     public static final String FIELD_PRIMARY_KEY_NAME = "PRIMARY_KEY_NAME";
     public static final String FIELD_RESULT_SET_MAPPER = "RESULT_SET_MAPPER";
-    public static final String FIELD_RESULT_SET_MAPPER_INSTANCE = "RESULT_SET_OBJ_MAPPER";
+    public static final String FIELD_RESULT_SET_MAPPER_INSTANCE_APPENDIX = "_RESULT_SET_OBJ_MAPPER";
     public static final String FIELD_MODEL_FIELD_COUNT = "FIELD_COUNT";
     public static final String FIELD_REDIS_MAP_MAPPER = "MAP_MAPPER";
-    public static final String FIELD_REDIS_MAP_MAPPER_INSTANCE = "MAP_OBJ_MAPPER";
+    public static final String FIELD_REDIS_MAP_MAPPER_INSTANCE_APPENDIX = "_MAP_OBJ_MAPPER";
 
     public static final String FIELD_FIELDS_CLASS_CONSTANT_MAP = "FIELD_CLASS";
     public static final String FIELD_DAO_DB_FIELD = "data_store";
@@ -180,6 +180,7 @@ public class CodeConstants {
     public static final String CLASS_NAME_POJO_MAPPER_PREFIX = "PojoMapper";
     public static final String CLASS_NAME_ALL_SPECIAL_DAO_TABLE_NAME = "SqlSpecialDao";
     public static final String CLASS_NAME_ALL_SQL_CONTANT_CLASS = ".constants.SqlConstants";
+    public static final String CLASS_NAME_CONSTANTS = "Constants";
 //    public static final String CLASS_NAME_COMMON_DB_DAO_PREFIX="DAO";
 
     public static final String KEY_WORD_GET = "get";
@@ -203,6 +204,7 @@ public class CodeConstants {
     public static final String PARAM_DAO_T_CLASS = "tClass";
     public static final String LIB_ASSERT_METHOD = "assert";
 
+
     //    public CommonDaoBuilder(ModelBuilder parentBuilder,ModelBuilderContext builderContext) {
 //        super(parentBuilder, builderContext);
 //    }
@@ -211,80 +213,80 @@ public class CodeConstants {
             .getSet();
 
 
-    public static boolean isDaoMethodMulti(String methodName) {
-        return (
-                methodName.equals(METHOD_DAO_GET_BY_IDS)
-                        || methodName.equals(METHOD_DAO_GET_BY_INDEXES)
-                        || methodName.equals(METHOD_DAO_GET_ALL)
-                        || methodName.equals(METHOD_DAO_GET_BY_CONDITION)
-                        || methodName.equals(METHOD_DAO_GET_BY_INDEXES_AND_CONDITION)
-                        || methodName.equals(METHOD_DAO_CUSTOMER_GET_LIST_BY_CUSTOMER_CONDITION)
-        );
-
-    }
-
-    public static boolean isDaoMethodHasRawItem(String methodName) {
-        return (
-                methodName.equals(METHOD_DAO_CUSTOMER_GET_ITEM_BY_INDEXES)
-                        || methodName.equals(METHOD_DAO_CUSTOMER_GET_ITEM_BY_CONDITION)
-                        || methodName.equals(METHOD_DAO_CUSTOMER_GET_ITEM_BY_INDEX_AND_CONDITION)
+//    public static boolean isDaoMethodMulti(String methodName) {
+//        return (
+//                methodName.equals(METHOD_DAO_GET_BY_IDS)
+//                        || methodName.equals(METHOD_DAO_GET_BY_INDEXES)
+//                        || methodName.equals(METHOD_DAO_GET_ALL)
 //                        || methodName.equals(METHOD_DAO_GET_BY_CONDITION)
 //                        || methodName.equals(METHOD_DAO_GET_BY_INDEXES_AND_CONDITION)
-        );
-
-    }
-
-    public static boolean isDaoMethodHasRawCondition(String methodName) {
-        return (
-                methodName.equals(METHOD_DAO_CUSTOMER_GET_ONE_BY_CUSTOMER_CONDITION)
-                        || methodName.equals(METHOD_DAO_CUSTOMER_GET_LIST_BY_CUSTOMER_CONDITION)
-//                        || methodName.equals(METHOD_DAO_GET_ALL) || methodName.equals(METHOD_DAO_GET_BY_CONDITION)
-//                        || methodName.equals(METHOD_DAO_GET_BY_INDEXES_AND_CONDITION)
-        );
-
-    }
-
-    public static boolean isDaoMethodCountResult(String methodName) {
-        return (
-                methodName.equals(CodeConstants.METHOD_DAO_GET_COUNT_BY_CONDITION)
-                        || methodName.equals(CodeConstants.METHOD_DAO_GET_COUNT_BY_INDEX_AND_CONDITION)
-
-        );
-    }
-
-    public static boolean isDaoMethodSingleResult(String methodName) {
-        return methodName.equals(CodeConstants.METHOD_DAO_CUSTOMER_GET_ITEM_BY_CONDITION)
-                || methodName.equals(CodeConstants.METHOD_DAO_CUSTOMER_GET_ITEM_BY_INDEXES)
-                || methodName.equals(CodeConstants.METHOD_DAO_CUSTOMER_GET_ITEM_BY_INDEX_AND_CONDITION);
-    }
-
-    public static boolean isDaoMethodNeedConditionList(String methodName) {
-        return (
-                methodName.equals(CodeConstants.METHOD_DAO_GET_BY_IDS)
-                        || methodName.equals(CodeConstants.METHOD_DAO_GET_BY_INDEXES)
-                        || methodName.equals(CodeConstants.METHOD_DAO_GET_BY_INDEXES_AND_CONDITION)
-                        || methodName.equals(CodeConstants.METHOD_DAO_GET_COUNT_BY_INDEX_AND_CONDITION)
-                        || methodName.equals(CodeConstants.METHOD_DAO_CUSTOMER_GET_ITEM_BY_INDEXES)
-                        || methodName.equals(CodeConstants.METHOD_DAO_CUSTOMER_GET_ITEM_BY_INDEX_AND_CONDITION)
-        );
-    }
-
-
-    public static boolean isDaoMethodNeedConditionSet(String methodName) {
-        return (
-                methodName.equals(CodeConstants.METHOD_DAO_GET_ONE_BY_CONDITION)
-                        || methodName.equals(CodeConstants.METHOD_DAO_GET_BY_CONDITION)
-                        || methodName.equals(CodeConstants.METHOD_DAO_GET_COUNT_BY_CONDITION)
-                        || methodName.equals(CodeConstants.METHOD_DAO_GET_BY_INDEXES_AND_CONDITION)
-                        || methodName.equals(CodeConstants.METHOD_DAO_GET_COUNT_BY_INDEX_AND_CONDITION)
-                        || methodName.equals(CodeConstants.METHOD_DAO_CUSTOMER_GET_ITEM_BY_CONDITION)
-                        || methodName.equals(CodeConstants.METHOD_DAO_CUSTOMER_GET_ITEM_BY_INDEX_AND_CONDITION)
-        );
-    }
-
-    public static boolean isDaoMethodNeedIdCondtion(String methodName) {
-        return methodName.equals(CodeConstants.METHOD_DAO_GET_BY_ID) || methodName.equals(CodeConstants.METHOD_DAO_GET_BY_IDS);
-    }
+//                        || methodName.equals(METHOD_DAO_CUSTOMER_GET_LIST_BY_CUSTOMER_CONDITION)
+//        );
+//
+//    }
+//
+//    public static boolean isDaoMethodHasRawItem(String methodName) {
+//        return (
+//                methodName.equals(METHOD_DAO_CUSTOMER_GET_ITEM_BY_INDEXES)
+//                        || methodName.equals(METHOD_DAO_CUSTOMER_GET_ITEM_BY_CONDITION)
+//                        || methodName.equals(METHOD_DAO_CUSTOMER_GET_ITEM_BY_INDEX_AND_CONDITION)
+////                        || methodName.equals(METHOD_DAO_GET_BY_CONDITION)
+////                        || methodName.equals(METHOD_DAO_GET_BY_INDEXES_AND_CONDITION)
+//        );
+//
+//    }
+//
+//    public static boolean isDaoMethodHasRawCondition(String methodName) {
+//        return (
+//                methodName.equals(METHOD_DAO_CUSTOMER_GET_ONE_BY_CUSTOMER_CONDITION)
+//                        || methodName.equals(METHOD_DAO_CUSTOMER_GET_LIST_BY_CUSTOMER_CONDITION)
+////                        || methodName.equals(METHOD_DAO_GET_ALL) || methodName.equals(METHOD_DAO_GET_BY_CONDITION)
+////                        || methodName.equals(METHOD_DAO_GET_BY_INDEXES_AND_CONDITION)
+//        );
+//
+//    }
+//
+//    public static boolean isDaoMethodCountResult(String methodName) {
+//        return (
+//                methodName.equals(CodeConstants.METHOD_DAO_GET_COUNT_BY_CONDITION)
+//                        || methodName.equals(CodeConstants.METHOD_DAO_GET_COUNT_BY_INDEX_AND_CONDITION)
+//
+//        );
+//    }
+//
+//    public static boolean isDaoMethodSingleResult(String methodName) {
+//        return methodName.equals(CodeConstants.METHOD_DAO_CUSTOMER_GET_ITEM_BY_CONDITION)
+//                || methodName.equals(CodeConstants.METHOD_DAO_CUSTOMER_GET_ITEM_BY_INDEXES)
+//                || methodName.equals(CodeConstants.METHOD_DAO_CUSTOMER_GET_ITEM_BY_INDEX_AND_CONDITION);
+//    }
+//
+//    public static boolean isDaoMethodNeedConditionList(String methodName) {
+//        return (
+//                methodName.equals(CodeConstants.METHOD_DAO_GET_BY_IDS)
+//                        || methodName.equals(CodeConstants.METHOD_DAO_GET_BY_INDEXES)
+//                        || methodName.equals(CodeConstants.METHOD_DAO_GET_BY_INDEXES_AND_CONDITION)
+//                        || methodName.equals(CodeConstants.METHOD_DAO_GET_COUNT_BY_INDEX_AND_CONDITION)
+//                        || methodName.equals(CodeConstants.METHOD_DAO_CUSTOMER_GET_ITEM_BY_INDEXES)
+//                        || methodName.equals(CodeConstants.METHOD_DAO_CUSTOMER_GET_ITEM_BY_INDEX_AND_CONDITION)
+//        );
+//    }
+//
+//
+//    public static boolean isDaoMethodNeedConditionSet(String methodName) {
+//        return (
+//                methodName.equals(CodeConstants.METHOD_DAO_GET_ONE_BY_CONDITION)
+//                        || methodName.equals(CodeConstants.METHOD_DAO_GET_BY_CONDITION)
+//                        || methodName.equals(CodeConstants.METHOD_DAO_GET_COUNT_BY_CONDITION)
+//                        || methodName.equals(CodeConstants.METHOD_DAO_GET_BY_INDEXES_AND_CONDITION)
+//                        || methodName.equals(CodeConstants.METHOD_DAO_GET_COUNT_BY_INDEX_AND_CONDITION)
+//                        || methodName.equals(CodeConstants.METHOD_DAO_CUSTOMER_GET_ITEM_BY_CONDITION)
+//                        || methodName.equals(CodeConstants.METHOD_DAO_CUSTOMER_GET_ITEM_BY_INDEX_AND_CONDITION)
+//        );
+//    }
+//
+//    public static boolean isDaoMethodNeedIdCondtion(String methodName) {
+//        return methodName.equals(CodeConstants.METHOD_DAO_GET_BY_ID) || methodName.equals(CodeConstants.METHOD_DAO_GET_BY_IDS);
+//    }
 
     public static IJExpression litObject(Class contentType, Object obj) {
         if (obj != null && contentType != null) {
@@ -510,7 +512,7 @@ public class CodeConstants {
     }
 
     public static void buildCatchPrintStatement(JCodeModel cm, JTryBlock jTryBlock, Class<Exception> exceptionClass) {
-        JCatchBlock catchBlock = jTryBlock._catch(cm.ref(Exception.class));
+        JCatchBlock catchBlock = jTryBlock._catch(cm.ref(exceptionClass==null?Exception.class:exceptionClass));
         JVar param = catchBlock.param("ex");
         catchBlock.body().invoke(param, "printStackTrace");
     }
@@ -729,6 +731,25 @@ public class CodeConstants {
             fname = humpStyleColName;
         }
         return fname;
+    }
+
+    public static void buildStaticFieldFromMap(JCodeModel cm, JDefinedClass definedClass, Map<String, FieldInfoInterface> staticConstFields) {
+        Collection<FieldInfoInterface> collection = staticConstFields.values();
+        for (FieldInfoInterface fd : collection) {
+            String fieldName = fd.getFieldName();
+            Object defaultValue = fd.getDefaultValue();
+            FieldDataTypeInterface type = fd.getType();
+            definedClass.field(CodeConstants.MODE_PUBLIC_STATIC_FINAL, cm.ref(type.getTClassName()), fieldName, CodeConstants.litObject(defaultValue));
+        }
+
+    }
+
+    public static String getFieldNameOfDbRsMapperForModel(String name) {
+        return name.toUpperCase() +  CodeConstants.FIELD_RESULT_SET_MAPPER_INSTANCE_APPENDIX;
+    }
+
+    public static String getFieldNameOfCommonMapperForModel(String name) {
+        return name.toUpperCase() + CodeConstants.FIELD_REDIS_MAP_MAPPER_INSTANCE_APPENDIX;
     }
 
 

@@ -219,7 +219,7 @@
 //        JVar clazz = method.param(cm.ref(Class.class).narrow(ft), "clazz");
 //        JBlock body = method.body();
 //        body._if(JExpr.dotclass(cm.ref(RedisMapMapper.class)).invoke("isAssignableFrom").arg(clazz))._then()._return(JExpr.cast(ft, definedClass.staticRef(CodeConstants.FIELD_REDIS_MAP_MAPPER_INSTANCE)));
-//        body._if(JExpr.dotclass(cm.ref(DbResultSetMapper.class)).invoke("isAssignableFrom").arg(clazz))._then()._return(JExpr.cast(ft, definedClass.staticRef(CodeConstants.FIELD_RESULT_SET_MAPPER_INSTANCE)));
+//        body._if(JExpr.dotclass(cm.ref(DbResultSetMapper.class)).invoke("isAssignableFrom").arg(clazz))._then()._return(JExpr.cast(ft, definedClass.staticRef(CodeConstants.FIELD_RESULT_SET_MAPPER_INSTANCE_APPENDIX)));
 //        body._return(JExpr._null());
 //    }
 //

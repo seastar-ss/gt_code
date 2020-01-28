@@ -4,9 +4,7 @@ import com.helger.jcodemodel.*;
 import com.shawn.ss.lib.code_gen.CodeBuilderInterface;
 import com.shawn.ss.lib.code_gen.base.helper.CodeConstants;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
-import com.shawn.ss.lib.code_gen.model.def_model._BaseDaoConf;
-import com.shawn.ss.lib.code_gen.model.def_model.dao_def.CommonModelDaoDef;
-import com.shawn.ss.lib.tools.CollectionHelper;
+import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseDaoConf;
 import com.shawn.ss.lib.tools.StringHelper;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.SimpleDbInterface;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.TableInfoInterface;
@@ -20,8 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 public abstract class AbstractDaoBuilder implements CodeBuilderInterface {

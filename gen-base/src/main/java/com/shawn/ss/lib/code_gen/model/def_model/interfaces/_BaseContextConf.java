@@ -1,4 +1,4 @@
-package com.shawn.ss.lib.code_gen.model.def_model;
+package com.shawn.ss.lib.code_gen.model.def_model.interfaces;
 
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
 
@@ -8,4 +8,5 @@ import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
 public interface _BaseContextConf {
     ModelBuilderContext getBuilderContext();
     String getName();
+    _BaseConstantDef getConstant();
 }

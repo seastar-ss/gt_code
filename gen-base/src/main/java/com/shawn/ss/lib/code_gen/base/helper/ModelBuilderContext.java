@@ -356,6 +356,15 @@ public class ModelBuilderContext {
         return basePackage + ".vo." + CodeConstants.CLASS_NAME_MODEL_PREFIX + CodeStyleTransformHelper.upperFirstCase(CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(tb));
     }
 
+    public String getMapperClass(String modelClassName) {
+        return basePackage + ".dto.mapper." +CodeConstants.CLASS_NAME_RESULT_SET_MAPPER_PREFIX+ CodeConstants.getClassNameFromFullName(modelClassName);
+    }
+
+    public String getConstantClzName() {
+
+        return basePackage + ".contants." +CodeConstants.CLASS_NAME_CONSTANTS;
+    }
+
     private String getModelClassName(String table) {
         return getModelClassName(table, true);
     }
@@ -672,6 +681,7 @@ public class ModelBuilderContext {
                 ", relatedDbs=" + relatedDbs +
                 '}';
     }
+
 
 
 }

@@ -1,7 +1,8 @@
-package com.shawn.ss.lib.code_gen.model.def_model;
+package com.shawn.ss.lib.code_gen.model.def_model.interfaces;
 
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.model.EnumTypeDef;
 
 public interface _BaseEnumTypeConf extends _BaseContextConf {
     EnumTypeDef getDef();
+    String getEnumClzName();
 }

@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Created by ss on 2018/3/3.
  */
-public abstract class _BaseDaoConfImpl<T extends _BaseDaoConfImpl> extends CommonPOJOConf<T> {
+public abstract class _BaseDaoConfImpl<T extends _BaseDaoConfImpl> extends CommonPOJOConf {
     //    protected transient final ModelBuilderContext builderContext;
     List<SelectMethodEnum> mainModelSelectMethod;
 

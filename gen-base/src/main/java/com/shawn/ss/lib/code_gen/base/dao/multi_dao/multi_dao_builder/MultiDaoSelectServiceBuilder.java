@@ -164,7 +164,7 @@ public class MultiDaoSelectServiceBuilder implements CodeBuilderInterface {
         }
         modelBuilder.buildModel();
         wrapperCls = modelBuilder.getWrapperClz();
-        assemblerBuilder = new ComposedAssemblerBuilder(modelMulDaoConf, wrapperCls);
+        assemblerBuilder = new ComposedAssemblerBuilder(null);
         assemblerBuilder.buildModel();
         JDefinedClass multiAsemmblerClz = assemblerBuilder.getMultiAsemmblerClz();
 

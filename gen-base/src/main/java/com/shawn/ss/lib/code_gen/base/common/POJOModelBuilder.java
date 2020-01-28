@@ -5,19 +5,16 @@ import com.shawn.ss.lib.code_gen.CodeBuilderInterface;
 import com.shawn.ss.lib.code_gen.base.helper.CodeConstants;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
 import com.shawn.ss.lib.code_gen.base.helper.data_store.ClassDataTable;
-import com.shawn.ss.lib.code_gen.model.def_model._BaseModelConf;
+import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseModelConf;
 import com.shawn.ss.lib.code_gen.model.def_model.dao_def.EnumTypeConf;
-import com.shawn.ss.lib.code_gen.model.def_model.dao_def.SpecialModelDaoConf;
 import com.shawn.ss.lib.tools.CodeStyleTransformHelper;
 import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.FieldInfoInterface;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.model.EnumTypeDef;
-import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.model.FieldDataTypeInterface;
 import com.shawn.ss.lib.tools.db.dto_base.model._APIObj;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -47,7 +44,7 @@ public class POJOModelBuilder  implements CodeBuilderInterface {
 //    Map<String,JDefinedClass> enumClzz;
 
     //    final boolean selectModel;
-    private _BaseModelConf<_BaseModelConf> modelDef;
+    private _BaseModelConf modelDef;
     private final List<FieldInfoInterface> fields;
 
     //    public ModelBuilder(TableInfoInterface info,  ModelBuilderContext builderContext) {
@@ -124,13 +121,7 @@ public class POJOModelBuilder  implements CodeBuilderInterface {
 
     private void buildStaticFields() {
         Map<String,FieldInfoInterface> staticConstFields = modelDef.getStaticConstFields();
-        Collection<FieldInfoInterface> collection = staticConstFields.values();
-        for(FieldInfoInterface fd:collection){
-            String fieldName = fd.getFieldName();
-            Object defaultValue = fd.getDefaultValue();
-            FieldDataTypeInterface type = fd.getType();
-            definedClass.field(CodeConstants.MODE_PUBLIC_STATIC_FINAL, cm.ref(type.getTClassName()), fieldName, CodeConstants.litObject(defaultValue));
-        }
+        CodeConstants.buildStaticFieldFromMap(cm,definedClass,staticConstFields);
     }
 
     private void buildToStringMethod() {
@@ -230,7 +221,7 @@ public class POJOModelBuilder  implements CodeBuilderInterface {
         JVar clazz = method.param(cm.ref(Class.class).narrow(ft), "clazz");
         JBlock body = method.body();
 //        body._if(JExpr.dotclass(cm.ref(RedisMapMapper.class)).invoke("isAssignableFrom").arg(clazz))._then()._return(JExpr.cast(ft, definedClass.staticRef(CodeConstants.FIELD_REDIS_MAP_MAPPER_INSTANCE)));
-//        body._if(JExpr.dotclass(cm.ref(DbResultSetMapper.class)).invoke("isAssignableFrom").arg(clazz))._then()._return(JExpr.cast(ft, definedClass.staticRef(CodeConstants.FIELD_RESULT_SET_MAPPER_INSTANCE)));
+//        body._if(JExpr.dotclass(cm.ref(DbResultSetMapper.class)).invoke("isAssignableFrom").arg(clazz))._then()._return(JExpr.cast(ft, definedClass.staticRef(CodeConstants.FIELD_RESULT_SET_MAPPER_INSTANCE_APPENDIX)));
         body._return(JExpr._null());
     }
 

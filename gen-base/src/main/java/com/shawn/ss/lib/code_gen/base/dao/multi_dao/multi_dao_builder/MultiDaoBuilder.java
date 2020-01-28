@@ -3,14 +3,12 @@ package com.shawn.ss.lib.code_gen.base.dao.multi_dao.multi_dao_builder;
 import com.helger.jcodemodel.*;
 import com.shawn.ss.gen.api.conf.SelectMethodEnum;
 import com.shawn.ss.lib.code_gen.CodeBuilderInterface;
-import com.shawn.ss.lib.code_gen.base.dao.multi_dao.composed_model_builder.ComposedModelBuilder;
-import com.shawn.ss.lib.code_gen.base.dao.multi_dao.multi_assemble_builder.ComposedAssemblerBuilder;
 import com.shawn.ss.lib.code_gen.base.helper.CodeConstants;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
 import com.shawn.ss.lib.code_gen.base.helper.data_store.ClassDataTable;
 import com.shawn.ss.lib.code_gen.model.MethodTypeEnum;
-import com.shawn.ss.lib.code_gen.model.def_model._BaseDaoConf;
-import com.shawn.ss.lib.code_gen.model.def_model.dao_def.ModelMulDaoDaoConf;
+import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseDaoConf;
+import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseSubDaoConf;
 import com.shawn.ss.lib.code_gen.model.def_model.dao_def.ModelRelatedTableDef;
 import com.shawn.ss.lib.tools.CodeStyleTransformHelper;
 import com.shawn.ss.lib.tools.CollectionHelper;
@@ -24,10 +22,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class MultiDaoBuilder implements CodeBuilderInterface {
 
@@ -39,15 +34,15 @@ public class MultiDaoBuilder implements CodeBuilderInterface {
     private final String serviceClassName;
     //    private final SelectMethodEnum modelSelectMethod;
     private final String mainTable;
-    private final List<ModelRelatedTableDef> relatedTables;
+    private final List<_BaseSubDaoConf> relatedTables;
     private final boolean buildNotAbstract;
     private final ModelBuilderContext modelBuilderContext;
     //    private final Map<String, TableInfoInterface> tbMap;
     private final Map<String, AbstractJClass> daos;
     private final Map<String, AbstractJClass> models;
-    private final Map<String, ModelRelatedTableDef> defs;
+//    private final Map<String, ModelRelatedTableDef> defs;
     //    private final boolean listResult;
-    private final _BaseDaoConf<_BaseDaoConf> modelMulDaoConf;
+    private final _BaseDaoConf modelMulDaoConf;
 
 
     //    private final String PARAM_DAO_START = "start";
@@ -140,16 +135,16 @@ public class MultiDaoBuilder implements CodeBuilderInterface {
         }
 //        this.modelSelectMethod = modelMulDaoConf.getMainModelSelectMethod();
         this.mainTable = modelMulDaoConf.getTable();
-        this.relatedTables = modelMulDaoConf.getRelatedTables();
-        this.buildNotAbstract = modelMulDaoConf.isBuildNotAbstract();
+        this.relatedTables = modelMulDaoConf.getRelatedDef();
+        this.buildNotAbstract = modelMulDaoConf.buildAbstractDao();
         this.modelBuilderContext = modelMulDaoConf.getBuilderContext();
         this.serviceClassName = modelBuilderContext.getServiceClassName(modelMulDaoConf.getTable());
 //        this.tbMap = this.modelBuilderContext.getTbMap();
 //        this.listResult = modelMulDaoConf.isListResult();
 
-        this.daos = modelMulDaoConf.getDaos();
-        this.models = modelMulDaoConf.getModels();
-        this.defs = modelMulDaoConf.getDefs();
+        this.daos = CollectionHelper.newMap();
+        this.models = CollectionHelper.newMap();
+//        this.defs = modelMulDaoConf.getDefs();
         mainDb = modelMulDaoConf.getDb();
         this.cm = modelBuilderContext.getCm();
 //        modelBuilder = new ComposedModelBuilder(modelMulDaoConf);

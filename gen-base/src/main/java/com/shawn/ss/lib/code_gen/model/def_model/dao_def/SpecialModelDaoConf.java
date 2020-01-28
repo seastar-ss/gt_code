@@ -1,8 +1,7 @@
 package com.shawn.ss.lib.code_gen.model.def_model.dao_def;
 
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
-import com.shawn.ss.lib.code_gen.model.def_model._BaseModelConf;
-import com.shawn.ss.lib.code_gen.model.def_model._BaseDef;
+import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseDef;
 import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.FieldInfoInterface;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.TableInfoInterface;

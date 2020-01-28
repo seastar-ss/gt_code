@@ -3,17 +3,8 @@ package com.shawn.ss.lib.code_gen.base.dao.multi_dao.composed_model_builder;
 import com.helger.jcodemodel.*;
 import com.shawn.ss.lib.code_gen.CodeBuilderInterface;
 import com.shawn.ss.lib.code_gen.base.common.POJOModelBuilder;
-import com.shawn.ss.lib.code_gen.base.helper.CodeConstants;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
-import com.shawn.ss.lib.code_gen.model.def_model._BaseModelConf;
-import com.shawn.ss.lib.code_gen.model.def_model.dao_def.ModelMulDaoDaoConf;
-import com.shawn.ss.lib.code_gen.model.def_model.dao_def.ModelRelatedTableDef;
-import com.shawn.ss.lib.tools.CollectionHelper;
-import com.shawn.ss.lib.tools.db.dto_base.model.AbstractBaseModel;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseModelConf;
 
 /**
  * Created by ss on 2018/2/13.

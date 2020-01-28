@@ -1,9 +1,11 @@
 package com.shawn.ss.lib.tools.db.api.interfaces.db_operation;
 
 import com.shawn.ss.lib.tools.db.api.exceptions.DataAccessException;
-import com.shawn.ss.lib.tools.db.api.interfaces.mappers.dao_mapper.ModelToModelMapper;
-import com.shawn.ss.lib.tools.db.api.interfaces.mappers.dao_mapper.ResultSetRowToModelMapper;
+//import com.shawn.ss.lib.tools.db.api.interfaces.mappers.dao_mapper.ModelToModelMapper;
+//import com.shawn.ss.lib.tools.db.api.interfaces.mappers.dao_mapper.ResultSetRowToModelMapper;
 //import com.shawn.ss.lib.tools.data_store.api.interfaces.mappers.model_mapper.ModelToMapMapper;
+import com.shawn.ss.lib.tools.db.api.interfaces.mappers.dao_mapper.ModelToModelMapper;
+import com.shawn.ss.lib.tools.db.api.interfaces.mappers.db.DbResultSetMapper;
 import com.shawn.ss.lib.tools.db.dto_base.model.AbstractBaseModel;
 //import com.shawn.ss.lib.tools.data_store.dto_base.model.AbstractModelListWrapper;
 
@@ -25,13 +27,13 @@ public interface SqlDbHelperInterface extends SqlDbInterface {
 
     boolean isExist(String table, Map<String, Object> param);
 
-    <K,T extends AbstractBaseModel> Map<K,T> selectMap(String sql, String keyField, Map<String, ?> paramMap, ResultSetRowToModelMapper<T> ResultSetRowToModelMapper);
+    <K,T extends AbstractBaseModel> Map<K,T> selectMap(String sql, String keyField, Map<String, ?> paramMap, DbResultSetMapper<T> ResultSetRowToModelMapper);
 
-    <K,T extends AbstractBaseModel> Map<K,T> selectMap(String sql, String keyField, AbstractBaseModel param, ResultSetRowToModelMapper<T> ResultSetRowToModelMapper);
+    <K,T extends AbstractBaseModel> Map<K,T> selectMap(String sql, String keyField, AbstractBaseModel param, DbResultSetMapper<T> ResultSetRowToModelMapper);
 
-    <K,T extends AbstractBaseModel> Map<K,List<T>> selectMapAndGroup(String sql, String keyField, Map<String, ?> paramMap, ResultSetRowToModelMapper<T> ResultSetRowToModelMapper);
+    <K,T extends AbstractBaseModel> Map<K,List<T>> selectMapAndGroup(String sql, String keyField, Map<String, ?> paramMap, DbResultSetMapper<T> ResultSetRowToModelMapper);
 
-    <K,T extends AbstractBaseModel> Map<K,List<T>> selectMapAndGroup(String sql, String keyField, AbstractBaseModel param, ResultSetRowToModelMapper<T> ResultSetRowToModelMapper);
+    <K,T extends AbstractBaseModel> Map<K,List<T>> selectMapAndGroup(String sql, String keyField, AbstractBaseModel param, DbResultSetMapper<T> ResultSetRowToModelMapper);
 
     /**
      * @param table 更新或插入数据的数据表

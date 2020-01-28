@@ -7,8 +7,7 @@ import com.shawn.ss.lib.code_gen.base.dao.AbstractDaoBuilder;
 
 import com.shawn.ss.lib.code_gen.base.helper.CodeConstants;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
-import com.shawn.ss.lib.code_gen.model.def_model._BaseDaoConf;
-import com.shawn.ss.lib.code_gen.model.def_model.dao_def.CommonModelDaoDef;
+import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseDaoConf;
 import com.shawn.ss.lib.tools.CodeStyleTransformHelper;
 import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.StringHelper;
@@ -243,7 +242,7 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
         String fullMapperClassName = builderContext.getRSMapperClassName(table);
         JInvocation rsBuildInvocation = JExpr.invoke(assemblerVar, CodeConstants.LIB_SQL_ASSEMBLE_RESULT_SET).narrow(modelClazzRef).arg(paramVar).arg(JExpr.dotclass(modelClazzRef));
         JNarrowedClass mapperClazz = cm.ref(fullMapperClassName).narrow(modelClazzRef);
-        JVar rsMapper = jBlock.decl(mapperClazz, "rsMapper",  modelClazzRef.staticRef(CodeConstants.FIELD_RESULT_SET_MAPPER_INSTANCE));
+        JVar rsMapper = jBlock.decl(mapperClazz, "rsMapper",  modelClazzRef.staticRef(CodeConstants.FIELD_RESULT_SET_MAPPER_INSTANCE_APPENDIX));
         JBlock buildMapperIf = jBlock._if(assemblerVar.ne(JExpr._null()))._then();//.assign(rsMapper, JExpr.cast(mapperClazz, rsBuildInvocation));
         JVar rsMapperTmp = buildMapperIf.decl(mapperClazz, "rsMapperTmp", JExpr.cast(mapperClazz, rsBuildInvocation));
         buildMapperIf._if(rsMapperTmp.ne(JExpr._null()))._then().assign(rsMapper,rsMapperTmp);
@@ -1268,7 +1267,7 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
 //            JInvocation rsBuildInvocation = JExpr.invoke(assemblerVar, CodeConstants.LIB_SQL_ASSEMBLE_RESULT_SET).narrow(modelClazzRef).arg(param).arg(JExpr.dotclass(modelClazzRef));
 //            JNarrowedClass mapperClazz = cm.ref(fullMapperClassName).narrow(modelClazzRef);
 //            JVar rsMapper = jBlock.decl(mapperClazz, "rsMapper", JExpr.cast(mapperClazz, rsBuildInvocation));
-//            jBlock._if(rsMapper.eq(JExpr._null()))._then().assign(rsMapper, modelClazzRef.staticRef(CodeConstants.FIELD_RESULT_SET_MAPPER_INSTANCE));
+//            jBlock._if(rsMapper.eq(JExpr._null()))._then().assign(rsMapper, modelClazzRef.staticRef(CodeConstants.FIELD_RESULT_SET_MAPPER_INSTANCE_APPENDIX));
 //
 //            JInvocation arg = dbField.invoke(multiSelect ? CodeConstants.LIB_DB_QUERY : CodeConstants.LIB_DB_QUERY_ONE).arg(sql).arg(param).arg(rsMapper);
 //            JTryBlock aTry = jBlock._try();

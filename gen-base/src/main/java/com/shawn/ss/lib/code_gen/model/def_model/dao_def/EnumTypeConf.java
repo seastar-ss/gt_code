@@ -1,7 +1,7 @@
 package com.shawn.ss.lib.code_gen.model.def_model.dao_def;
 
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
-import com.shawn.ss.lib.code_gen.model.def_model._BaseEnumTypeConf;
+import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseEnumTypeConf;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.model.EnumTypeDef;
 
 /**
@@ -11,6 +11,7 @@ public class EnumTypeConf implements _BaseEnumTypeConf {
     final EnumTypeDef def;
     protected transient ModelBuilderContext builderContext;
     String name;
+    String clzName;
 
     public EnumTypeConf(EnumTypeDef def) {
 
@@ -21,6 +22,12 @@ public class EnumTypeConf implements _BaseEnumTypeConf {
     public EnumTypeDef getDef() {
         return def;
     }
+
+    @Override
+    public String getEnumClzName() {
+        return clzName;
+    }
+
 
 //    public EnumTypeDef setDef(EnumTypeDef def) {
 //
