@@ -147,7 +147,7 @@ public class ModelMulDaoDaoConf extends _BaseDaoConfImpl<ModelMulDaoDaoConf>  {
 //        return builderContext ==null?null: builderContext.getDbInfo();
 //    }
 
-    public final void init() {
+    public final void initData() {
         JCodeModel cm = builderContext.getCm();
 //        if(relatedMainAttr!=null)
 //            attrs.put(relatedMainAttr.getMethodName(), relatedMainAttr);

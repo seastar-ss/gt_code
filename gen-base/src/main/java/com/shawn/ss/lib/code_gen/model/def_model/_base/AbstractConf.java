@@ -2,6 +2,7 @@ package com.shawn.ss.lib.code_gen.model.def_model._base;
 
 import com.helger.jcodemodel.JDefinedClass;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
+import com.shawn.ss.lib.code_gen.base.helper.data_store.ConfDataTable;
 import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseConstantDef;
 import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseContextConf;
 import com.shawn.ss.lib.tools.CollectionHelper;
@@ -37,7 +38,11 @@ public abstract class AbstractConf implements _BaseContextConf {
     protected AbstractConf(String name, ModelBuilderContext builderContext) {
         this.name = name;
         this.builderContext = builderContext;
+        init();
+    }
 
+    protected final void init() {
+        ConfDataTable.put(this.getName(),this);
     }
 
     @Override

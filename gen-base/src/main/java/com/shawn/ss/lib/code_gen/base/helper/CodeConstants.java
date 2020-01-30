@@ -752,6 +752,10 @@ public class CodeConstants {
         return name.toUpperCase() + CodeConstants.FIELD_REDIS_MAP_MAPPER_INSTANCE_APPENDIX;
     }
 
+    public static String getConfNameOfEnum(EnumTypeDef def) {
+        return def.getCol().getFieldName()+"Enum";
+    }
+
 
     public static interface StringParamFilter {
         boolean accept(JVar var, int i);

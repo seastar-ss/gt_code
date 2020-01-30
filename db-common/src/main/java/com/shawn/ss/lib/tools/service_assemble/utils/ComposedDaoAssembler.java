@@ -1,6 +1,7 @@
 package com.shawn.ss.lib.tools.service_assemble.utils;
 
 import com.shawn.ss.lib.tools.CollectionHelper;
+import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.model.DataSourceAndSchemaAndTable;
 import com.shawn.ss.lib.tools.db.api.interfaces.mappers.db.DbResultSetMapper;
 import com.shawn.ss.lib.tools.db.dto_base.model.AbstractBaseModel;
 import com.shawn.ss.lib.tools.service_assemble.DaoAssembler;
@@ -80,7 +81,7 @@ public class ComposedDaoAssembler implements DaoAssembler {
     }
 
     @Override
-    public String selectDb(SQL sql, Map<String, Object> params, Class<? extends AbstractBaseModel> tClazz) {
+    public DataSourceAndSchemaAndTable selectDb(SQL sql, Map<String, Object> params, Class<? extends AbstractBaseModel> tClazz) {
         if(assemblerList.size()>0){
             return assemblerList.get(0).selectDb(sql,params,tClazz);
         }
@@ -88,7 +89,7 @@ public class ComposedDaoAssembler implements DaoAssembler {
     }
 
     @Override
-    public String selectDb(SQL sql, List<Map<String, Object>> params, Class<? extends AbstractBaseModel> tClazz) {
+    public DataSourceAndSchemaAndTable selectDb(SQL sql, List<Map<String, Object>> params, Class<? extends AbstractBaseModel> tClazz) {
         if(assemblerList.size()>0){
             return assemblerList.get(0).selectDb(sql,params,tClazz);
         }

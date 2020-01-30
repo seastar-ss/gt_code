@@ -62,81 +62,81 @@ public class DAOTWechatInfo
         }
     }
 
-    protected<TT> TT getSingleResult(DaoAssembler assembler, SQLSelect sqlBuilder, Map<String, Object> param, Class<TT> tClass) {
-        SimpleDbInterface dbInstance = data_store;
-        String dbToUse = super.selectDb(assembler, sqlBuilder, param);
-        if ((dbToUse!= null)&&dbMap.containsKey(dbToUse)) {
-            dbInstance = dbMap.get(dbToUse);
-        }
-        return super.getSingleResult(dbInstance, assembler, sqlBuilder, param, tClass);
-    }
-
-    protected<TT> List<TT> getSingleResults(DaoAssembler assembler, SQLSelect sqlBuilder, Map<String, Object> param, Class<TT> tClass) {
-        SimpleDbInterface dbInstance = data_store;
-        String dbToUse = super.selectDb(assembler, sqlBuilder, param);
-        if ((dbToUse!= null)&&dbMap.containsKey(dbToUse)) {
-            dbInstance = dbMap.get(dbToUse);
-        }
-        return super.getSingleResults(dbInstance, assembler, sqlBuilder, param, tClass);
-    }
-
-    protected List<ModelTWechatInfo> getResults(DaoAssembler assembler, SQLSelect sqlBuilder, Map<String, Object> param) {
-        int status = 0;
-        if (assembler!= null) {
-            status = assembler.assembleSql(sqlBuilder, param, ModelTWechatInfo.class);
-        }
-        SimpleDbInterface dbInstance = data_store;
-        String dbToUse = super.selectDb(assembler, sqlBuilder, param);
-        if ((dbToUse!= null)&&dbMap.containsKey(dbToUse)) {
-            dbInstance = dbMap.get(dbToUse);
-        }
-        if (status == 0) {
-            ResultSetMapperModelTWechatInfo<ModelTWechatInfo> rsMapper = ModelTWechatInfo.RESULT_SET_OBJ_MAPPER;
-            if (assembler!= null) {
-                ResultSetMapperModelTWechatInfo<ModelTWechatInfo> rsMapperTmp = ((ResultSetMapperModelTWechatInfo<ModelTWechatInfo> ) assembler.<ModelTWechatInfo> assembleResultSetMapper(param, ModelTWechatInfo.class));
-                if (rsMapperTmp!= null) {
-                    rsMapper = rsMapperTmp;
-                }
-            }
-            try {
-                return super.getResults(dbInstance, assembler, sqlBuilder, param, rsMapper);
-            } catch (final Exception ex) {
-                logger.error("sql execption", ex);
-                return null;
-            }
-        } else {
-            return null;
-        }
-    }
-
-    protected ModelTWechatInfo getResult(DaoAssembler assembler, SQLSelect sqlBuilder, Map<String, Object> param) {
-        int status = 0;
-        if (assembler!= null) {
-            status = assembler.assembleSql(sqlBuilder, param, ModelTWechatInfo.class);
-        }
-        SimpleDbInterface dbInstance = data_store;
-        String dbToUse = super.selectDb(assembler, sqlBuilder, param);
-        if ((dbToUse!= null)&&dbMap.containsKey(dbToUse)) {
-            dbInstance = dbMap.get(dbToUse);
-        }
-        if (status == 0) {
-            ResultSetMapperModelTWechatInfo<ModelTWechatInfo> rsMapper = ModelTWechatInfo.RESULT_SET_OBJ_MAPPER;
-            if (assembler!= null) {
-                ResultSetMapperModelTWechatInfo<ModelTWechatInfo> rsMapperTmp = ((ResultSetMapperModelTWechatInfo<ModelTWechatInfo> ) assembler.<ModelTWechatInfo> assembleResultSetMapper(param, ModelTWechatInfo.class));
-                if (rsMapperTmp!= null) {
-                    rsMapper = rsMapperTmp;
-                }
-            }
-            try {
-                return super.getResult(dbInstance, assembler, sqlBuilder, param, rsMapper);
-            } catch (final Exception ex) {
-                logger.error("sql execption", ex);
-                return null;
-            }
-        } else {
-            return null;
-        }
-    }
+//    protected<TT> TT getSingleResult(DaoAssembler assembler, SQLSelect sqlBuilder, Map<String, Object> param, Class<TT> tClass) {
+//        SimpleDbInterface dbInstance = data_store;
+//        String dbToUse = super.selectDb(assembler, sqlBuilder, param);
+//        if ((dbToUse!= null)&&dbMap.containsKey(dbToUse)) {
+//            dbInstance = dbMap.get(dbToUse);
+//        }
+//        return super.getSingleResult(dbInstance, assembler, sqlBuilder, param, tClass);
+//    }
+//
+//    protected<TT> List<TT> getSingleResults(DaoAssembler assembler, SQLSelect sqlBuilder, Map<String, Object> param, Class<TT> tClass) {
+//        SimpleDbInterface dbInstance = data_store;
+//        String dbToUse = super.selectDb(assembler, sqlBuilder, param);
+//        if ((dbToUse!= null)&&dbMap.containsKey(dbToUse)) {
+//            dbInstance = dbMap.get(dbToUse);
+//        }
+//        return super.getSingleResults(dbInstance, assembler, sqlBuilder, param, tClass);
+//    }
+//
+//    protected List<ModelTWechatInfo> getResults(DaoAssembler assembler, SQLSelect sqlBuilder, Map<String, Object> param) {
+//        int status = 0;
+//        if (assembler!= null) {
+//            status = assembler.assembleSql(sqlBuilder, param, ModelTWechatInfo.class);
+//        }
+//        SimpleDbInterface dbInstance = data_store;
+//        String dbToUse = super.selectDb(assembler, sqlBuilder, param);
+//        if ((dbToUse!= null)&&dbMap.containsKey(dbToUse)) {
+//            dbInstance = dbMap.get(dbToUse);
+//        }
+//        if (status == 0) {
+//            ResultSetMapperModelTWechatInfo<ModelTWechatInfo> rsMapper = ModelTWechatInfo.RESULT_SET_OBJ_MAPPER;
+//            if (assembler!= null) {
+//                ResultSetMapperModelTWechatInfo<ModelTWechatInfo> rsMapperTmp = ((ResultSetMapperModelTWechatInfo<ModelTWechatInfo> ) assembler.<ModelTWechatInfo> assembleResultSetMapper(param, ModelTWechatInfo.class));
+//                if (rsMapperTmp!= null) {
+//                    rsMapper = rsMapperTmp;
+//                }
+//            }
+//            try {
+//                return super.getResults(dbInstance, assembler, sqlBuilder, param, rsMapper);
+//            } catch (final Exception ex) {
+//                logger.error("sql execption", ex);
+//                return null;
+//            }
+//        } else {
+//            return null;
+//        }
+//    }
+//
+//    protected ModelTWechatInfo getResult(DaoAssembler assembler, SQLSelect sqlBuilder, Map<String, Object> param) {
+//        int status = 0;
+//        if (assembler!= null) {
+//            status = assembler.assembleSql(sqlBuilder, param, ModelTWechatInfo.class);
+//        }
+//        SimpleDbInterface dbInstance = data_store;
+//        String dbToUse = super.selectDb(assembler, sqlBuilder, param);
+//        if ((dbToUse!= null)&&dbMap.containsKey(dbToUse)) {
+//            dbInstance = dbMap.get(dbToUse);
+//        }
+//        if (status == 0) {
+//            ResultSetMapperModelTWechatInfo<ModelTWechatInfo> rsMapper = ModelTWechatInfo.RESULT_SET_OBJ_MAPPER;
+//            if (assembler!= null) {
+//                ResultSetMapperModelTWechatInfo<ModelTWechatInfo> rsMapperTmp = ((ResultSetMapperModelTWechatInfo<ModelTWechatInfo> ) assembler.<ModelTWechatInfo> assembleResultSetMapper(param, ModelTWechatInfo.class));
+//                if (rsMapperTmp!= null) {
+//                    rsMapper = rsMapperTmp;
+//                }
+//            }
+//            try {
+//                return super.getResult(dbInstance, assembler, sqlBuilder, param, rsMapper);
+//            } catch (final Exception ex) {
+//                logger.error("sql execption", ex);
+//                return null;
+//            }
+//        } else {
+//            return null;
+//        }
+//    }
 
     protected void buildInClause(SQLSelect sqlBuilder, String inField, Map<String, Object> param, List indexes) {
         if (ModelTWechatInfo.FIELD_CLASS.containsKey(inField)) {

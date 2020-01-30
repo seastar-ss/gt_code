@@ -4,7 +4,7 @@ import com.helger.jcodemodel.AbstractJType;
 import com.helger.jcodemodel.JDefinedClass;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
 import com.shawn.ss.lib.code_gen.model.def_model._base.AbstractConf;
-import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseConstantConf;
+import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseConstantDef;
 import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseModelClassNameConf;
 import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseModelConf;
 import com.shawn.ss.lib.tools.CollectionHelper;

@@ -7,6 +7,7 @@ import com.shawn.ss.lib.code_gen.base.dao.AbstractDaoBuilder;
 
 import com.shawn.ss.lib.code_gen.base.helper.CodeConstants;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
+import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseConstantDef;
 import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseDaoConf;
 import com.shawn.ss.lib.tools.CodeStyleTransformHelper;
 import com.shawn.ss.lib.tools.CollectionHelper;
@@ -38,6 +39,7 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
     private FieldDataTypeInterface priKeyType;
     private String priKey;
     private AbstractJClass modelClazzRef;
+    private final JDefinedClass constantClz;
 
     //    static Set<String> allSelectMethod = CollectionHelper.<String>setBuilder()
 //            .add(CodeConstants.METHOD_DAO_GET_ALL)
@@ -60,7 +62,8 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
 
     public CommonDaoBuilder(_BaseDaoConf commonModelDaoDef) {
         super(commonModelDaoDef, commonModelDaoDef.getBuilderContext());
-
+        _BaseConstantDef constant = commonModelDaoDef.getConstant();
+        constantClz = constant.getConstantClz();
     }
 
     @Override
@@ -74,10 +77,10 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
             definedClass.addImport(modelClass.fullName());
             modelClazzRef = cm.ref(modelClass.name());
 //            modelClazzRef._package();
-            buildGetResultMethod(false);
-            buildGetResultMethod(true);
-            buildGetResultsMethod(true);
-            buildGetResultsMethod(false);
+//            buildGetResultMethod(false);
+//            buildGetResultMethod(true);
+//            buildGetResultsMethod(true);
+//            buildGetResultsMethod(false);
             buildAssembleInCluaseMethod();
             buildCondSelectCluase();
             buildSelectFieldCluase();
@@ -195,7 +198,7 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
                 )
         );
     }
-
+/**
     private void buildGetResultsMethod(boolean multiSelect) {
         AbstractJClass jClass;
         if (multiSelect) {
@@ -327,7 +330,7 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
 //        catchBlock._return(JExpr._null());
 //        retCondition._else()._return(JExpr._null());
     }
-
+**/
     private JVar buildDbSelectClause(JBlock body,JVar assemblerVar,JVar sqlBuilderVar,JVar paramVar,JVar dbToUseVar){
 //        JVar dbToUseValue = body.decl(
 //                cm.ref(String.class),
@@ -366,8 +369,10 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
         JBlock then = body._if(modelClazzRef.staticRef(CodeConstants.FIELD_FIELDS_CLASS_CONSTANT_MAP).invoke("containsKey").arg(field))._then();
         JForEach forEach = then.forEach(modelClazzRef, "item", list);
         JVar var = forEach.var();
-        forEach.body().invoke(ret, "add").arg(modelClazzRef.staticRef(CodeConstants.FIELD_REDIS_MAP_MAPPER_INSTANCE)
-                .invoke(CodeConstants.METHOD_JEDIS_MAPPER_GET_FIELD).narrow(genericType).arg(field).arg(var));
+        forEach.body().invoke(ret, "add").arg(
+                constantClz.staticRef(CodeConstants.getFieldNameOfCommonMapperForModel(table))
+                .invoke(CodeConstants.METHOD_JEDIS_MAPPER_GET_FIELD).narrow(genericType).arg(field).arg(var)
+        );
         body._return(ret);
     }
 
@@ -404,7 +409,7 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
         JForEach forEach = body.forEach(modelClazzRef, "item", list);
         JVar var = forEach.var();
         JBlock block = forEach.body();
-        JInvocation arg = modelClazzRef.staticRef(CodeConstants.FIELD_REDIS_MAP_MAPPER_INSTANCE)
+        JInvocation arg = constantClz.staticRef(CodeConstants.getFieldNameOfCommonMapperForModel(table))
                 .invoke(CodeConstants.METHOD_JEDIS_MAPPER_GET_FIELD).narrow(genericType).arg(field).arg(var);
         if (!isItemList) {
             block.invoke(ret, "put")
@@ -622,7 +627,7 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
 
         } else {
             paramVar = body.decl(CodeConstants.buildNarrowedClass(cm, Map.class, String.class, Object.class), "param",
-                    modelClazzRef.staticRef(CodeConstants.FIELD_REDIS_MAP_MAPPER_INSTANCE).invoke(CodeConstants.METHOD_JEDIS_MAPPER_TO_COMMON_MAP).arg(instance));
+                    constantClz.staticRef(CodeConstants.getFieldNameOfCommonMapperForModel(table)).invoke(CodeConstants.METHOD_JEDIS_MAPPER_TO_COMMON_MAP).arg(instance));
             if (multiple) {
                 body.invoke(paramVar, "put").arg("ids").arg(idsVar);
             }
@@ -717,7 +722,7 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
         }
 
         JVar paramVar = body.decl(CodeConstants.buildNarrowedClass(cm, Map.class, String.class, Object.class), "param",
-                modelClazzRef.staticRef(CodeConstants.FIELD_REDIS_MAP_MAPPER_INSTANCE).invoke(CodeConstants.METHOD_JEDIS_MAPPER_TO_COMMON_MAP).arg(instance));
+                constantClz.staticRef(CodeConstants.getFieldNameOfCommonMapperForModel(table)).invoke(CodeConstants.METHOD_JEDIS_MAPPER_TO_COMMON_MAP).arg(instance));
 
         JVar dbToUseVar = body.decl(cm.ref(SimpleDbInterface.class), "dbInstance", dbField);
         if (dbMapField != null) {
@@ -796,7 +801,7 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
         final JVar instance = forEach.var();
         final JBlock foreachInstancesLoop = forEach.body();
         final JVar instanceMap = foreachInstancesLoop.decl(narrowedMapClass, "paramMap",
-                modelClazzRef.staticRef(CodeConstants.FIELD_REDIS_MAP_MAPPER_INSTANCE).invoke(CodeConstants.METHOD_JEDIS_MAPPER_TO_COMMON_MAP).arg(instance));
+                constantClz.staticRef(CodeConstants.getFieldNameOfCommonMapperForModel(table)).invoke(CodeConstants.METHOD_JEDIS_MAPPER_TO_COMMON_MAP).arg(instance));
         foreachInstancesLoop.invoke(paramVar, "add").arg(instanceMap);
         JVar dbToUseVar = body.decl(cm.ref(SimpleDbInterface.class), "dbInstance", dbField);
         if (dbMapField != null) {
@@ -860,7 +865,7 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
                     .arg(staticRef);
         }
         JVar paramVar = body.decl(CodeConstants.buildNarrowedClass(cm, Map.class, String.class, Object.class), "param",
-                modelClazzRef.staticRef(CodeConstants.FIELD_REDIS_MAP_MAPPER_INSTANCE).invoke(CodeConstants.METHOD_JEDIS_MAPPER_TO_COMMON_MAP).arg(instance));
+                constantClz.staticRef(CodeConstants.getFieldNameOfCommonMapperForModel(table)).invoke(CodeConstants.METHOD_JEDIS_MAPPER_TO_COMMON_MAP).arg(instance));
 //        JVar status = body.decl(cm.INT, "status", JExpr.invoke(assemblerVar, CodeConstants.LIB_SQL_ASSEMBLE_SQL).arg(sqlBuilderVar).arg(paramVar).arg(JExpr.dotclass(modelClazzRef)));
 //        JConditional retCondition = body._if(status.eq(JExpr.lit(0)));
 //        JBlock block = retCondition._then();

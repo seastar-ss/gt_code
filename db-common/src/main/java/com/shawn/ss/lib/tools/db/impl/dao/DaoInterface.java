@@ -17,7 +17,9 @@ public interface DaoInterface<Ty extends AbstractBaseModel, Tt>
 //        _ComplexSelectListDaoInterface<Ty>,_ComplexSelectItemDaoInterface<Ty>,_ComplexSelectOneDaoInterface<Ty>,
 //        JoinableDao<Ty>
 {
-    public static final String KEY_WORD_TABLE_NAME_IN_PARAM="_table_name_";
+    public static final String KEY_WORD_TABLE_NAME_IN_PARAM="__table_name__";
+    public static final String KEY_WORD_DB_NAME_IN_PARAM="__db_name__";
+    public static final String KEY_WORD_DS_NAME_IN_PARAM="__ds_name__";
     String KEY_WORD_LIMIT_START = "start";
     String KEY_WORD_LIMIT_COUNT = "count";
 
@@ -268,6 +270,12 @@ public interface DaoInterface<Ty extends AbstractBaseModel, Tt>
     <TT> Map<TT, List<Ty>> buildListMap(List<Ty> list, String field);
 
     <TT> List<TT> extractItemAsList(List<Ty> list, String field);
+
+    DaoInterface setCurrentQueryTable(String table);
+
+    DaoInterface setCurrentQueryDB(String db);
+
+    DaoInterface setCurrentQueryDataSource(String ds);
 
     List<Ty> select(SelectParamHolder<Ty, Tt> holder);
 

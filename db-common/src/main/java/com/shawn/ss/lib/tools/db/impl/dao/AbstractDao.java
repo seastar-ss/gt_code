@@ -5,6 +5,7 @@ import com.shawn.ss.lib.tools.StringHelper;
 import com.shawn.ss.lib.tools.TypeConstantHelper;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.SimpleDbInterface;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.model.ColumnDataType;
+import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.model.DataSourceAndSchemaAndTable;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.model.LogicalOpType;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.model.LogicalRelationshipType;
 import com.shawn.ss.lib.tools.db.api.interfaces.mappers.db.DbResultSetMapper;
@@ -28,22 +29,50 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
 
     static final Logger logger = LoggerFactory.getLogger(AbstractDao.class);
 
-    final NamedThreadLocal<String> currentQueryTable=new NamedThreadLocal<>("current_operated_table");
-    final NamedThreadLocal<String> currentQueryDb=new NamedThreadLocal<>("current_operated_db");
+    static final NamedThreadLocal<String> currentQueryTable;
+
+    static final NamedThreadLocal<String> currentQueryDb;
+
+    static final NamedThreadLocal<String> currentQueryDataSource;
+
+    static final Map<String, SimpleDbInterface> dataSourceMap;
+
+    static {
+        currentQueryTable = new NamedThreadLocal<>("current_operated_table");
+        currentQueryDataSource = new NamedThreadLocal<>("current_operated_ds");
+        currentQueryDb = new NamedThreadLocal<>("current_operated_db");
+        dataSourceMap = CollectionHelper.newMap();
+
+    }
+
+    public static void registerDb(String name, SimpleDbInterface ds) {
+        dataSourceMap.put(name, ds);
+    }
 
     private final Class<Ty> type;
 
-    protected AbstractDao(Class<Ty> type) {
+    private final DbResultSetMapper<Ty> defaultRSMapper;
+
+    protected AbstractDao(Class<Ty> type, DbResultSetMapper<Ty> defaultRSMapper) {
         this.type = type;
+        this.defaultRSMapper = defaultRSMapper;
     }
 
+    @Override
     public AbstractDao setCurrentQueryTable(String table) {
         this.currentQueryTable.set(table);
         return this;
     }
 
+    @Override
     public AbstractDao setCurrentQueryDB(String db) {
         this.currentQueryDb.set(db);
+        return this;
+    }
+
+    @Override
+    public AbstractDao setCurrentQueryDataSource(String ds) {
+        this.currentQueryDataSource.set(ds);
         return this;
     }
 
@@ -55,28 +84,56 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
         return currentQueryDb.get();
     }
 
-
-    protected<TT> TT getSingleResult(DaoAssembler assembler, SQL<SQLSelect> sqlBuilder, Map<String, Object> param, Class<TT> tClass) {
-        SimpleDbInterface dbInstance = null;
-//        String dbToUse = super.selectDb(assembler, sqlBuilder, param);
-//        if ((dbToUse!= null)&&dbMap.containsKey(dbToUse)) {
-//            dbInstance = dbMap.get(dbToUse);
-//        }
-        return getSingleResult(dbInstance, assembler, sqlBuilder, param, tClass);
+    public String getCurrentQueryDs() {
+        return currentQueryDataSource.get();
     }
 
-    protected<TT> List<TT> getSingleResults(DaoAssembler assembler, SQL<SQLSelect> sqlBuilder, Map<String, Object> param, Class<TT> tClass) {
+
+    protected <TT> TT getSingleResult(DaoAssembler assembler, SQL<SQLSelect> sqlBuilder, Map<String, Object> param, Class<TT> tClass) {
+        if (!TypeConstantHelper.BASIC_DATA_CLASS.contains(tClass)) {
+            throw new IllegalStateException("only can be use with primitive classes");
+        }
+        int status = 0;
+        if (assembler != null) {
+            status = assembler.assembleSql(sqlBuilder, param, type);
+        }
         SimpleDbInterface dbInstance = null;
+        if (status == 0) {
+            dbInstance = selectDb(assembler, sqlBuilder, param);
+//            setTableName(sqlBuilder, param, assembler);
 //        String dbToUse = super.selectDb(assembler, sqlBuilder, param);
 //        if ((dbToUse!= null)&&dbMap.containsKey(dbToUse)) {
 //            dbInstance = dbMap.get(dbToUse);
 //        }
-        return getSingleResults(dbInstance, assembler, sqlBuilder, param, tClass);
+            return getSingleResultImpl(dbInstance, assembler, sqlBuilder, param, tClass);
+        } else {
+            return null;
+        }
+    }
+
+    protected <TT> List<TT> getSingleResults(DaoAssembler assembler, SQL<SQLSelect> sqlBuilder, Map<String, Object> param, Class<TT> tClass) {
+        SimpleDbInterface dbInstance = null;
+        if (!TypeConstantHelper.BASIC_DATA_CLASS.contains(tClass)) {
+            throw new IllegalStateException("only can be use with primitive classes");
+        }
+        int status = 0;
+        if (assembler != null) {
+            status = assembler.assembleSql(sqlBuilder, param, type);
+        }
+
+        if (status == 0) {
+            dbInstance = selectDb(assembler, sqlBuilder, param);
+//            setTableName(sqlBuilder, param, assembler);
+
+            return getSingleResultsImpl(dbInstance, assembler, sqlBuilder, param, tClass);
+        } else {
+            return null;
+        }
     }
 
     protected List<Ty> getResults(DaoAssembler assembler, SQL<SQLSelect> sqlBuilder, Map<String, Object> param) {
         int status = 0;
-        if (assembler!= null) {
+        if (assembler != null) {
             status = assembler.assembleSql(sqlBuilder, param, type);
         }
         SimpleDbInterface dbInstance = null;
@@ -85,15 +142,11 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
 //            dbInstance = dbMap.get(dbToUse);
 //        }
         if (status == 0) {
-            DbResultSetMapper<Ty> rsMapper = null;
-//            if (assembler!= null) {
-//                ResultSetMapperModelTUserInfo<ModelTUserInfo> rsMapperTmp = ((ResultSetMapperModelTUserInfo<ModelTUserInfo> ) assembler.<ModelTUserInfo> assembleResultSetMapper(param, ModelTUserInfo.class));
-//                if (rsMapperTmp!= null) {
-//                    rsMapper = rsMapperTmp;
-//                }
-//            }
+            dbInstance = selectDb(assembler, sqlBuilder, param);
+//            setTableName(sqlBuilder, param, assembler);
+            DbResultSetMapper<Ty> rsMapper = getRsMapper(assembler, sqlBuilder, param);
             try {
-                return getResults(dbInstance, assembler, sqlBuilder, param, rsMapper);
+                return getResultsImpl(dbInstance, assembler, sqlBuilder, param, rsMapper);
             } catch (final Exception ex) {
                 logger.error("sql execption", ex);
                 return null;
@@ -105,7 +158,7 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
 
     protected Ty getResult(DaoAssembler assembler, SQL<SQLSelect> sqlBuilder, Map<String, Object> param) {
         int status = 0;
-        if (assembler!= null) {
+        if (assembler != null) {
             status = assembler.assembleSql(sqlBuilder, param, type);
         }
         SimpleDbInterface dbInstance = null;
@@ -114,15 +167,11 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
 //            dbInstance = dbMap.get(dbToUse);
 //        }
         if (status == 0) {
-            DbResultSetMapper<Ty> rsMapper = null;
-//            if (assembler!= null) {
-//                ResultSetMapperModelTUserInfo<ModelTUserInfo> rsMapperTmp = ((ResultSetMapperModelTUserInfo<ModelTUserInfo> ) assembler.<ModelTUserInfo> assembleResultSetMapper(param, ModelTUserInfo.class));
-//                if (rsMapperTmp!= null) {
-//                    rsMapper = rsMapperTmp;
-//                }
-//            }
+            dbInstance = selectDb(assembler, sqlBuilder, param);
+//            setTableName(sqlBuilder, param, assembler);
+            DbResultSetMapper<Ty> rsMapper = getRsMapper(assembler, sqlBuilder, param);
             try {
-                return getResult(dbInstance, assembler, sqlBuilder, param, rsMapper);
+                return getResultImpl(dbInstance, assembler, sqlBuilder, param, rsMapper);
             } catch (final Exception ex) {
                 logger.error("sql execption", ex);
                 return null;
@@ -132,113 +181,131 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
         }
     }
 
+    private DbResultSetMapper<Ty> getRsMapper(DaoAssembler assembler, SQL<SQLSelect> sqlBuilder, Map<String, Object> param) {
+        DbResultSetMapper<Ty> ret = defaultRSMapper;
+        if (assembler != null) {
+            DbResultSetMapper<Ty> rsMapperTmp = ((DbResultSetMapper<Ty>) assembler.<Ty>assembleResultSetMapper(param, type));
+            if (rsMapperTmp != null) {
+                ret = rsMapperTmp;
+            }
+        }
+        return ret;
+    }
 
-    protected List<Ty> getResults(SimpleDbInterface db, DaoAssembler assembler, SQL<SQLSelect> sqlBuilder, Map<String, Object> param, DbResultSetMapper<Ty> mapper) {
-        setTableName(sqlBuilder,param,assembler);
+
+    protected List<Ty> getResultsImpl(SimpleDbInterface db, DaoAssembler assembler, SQL<SQLSelect> sqlBuilder, Map<String, Object> param, DbResultSetMapper<Ty> mapper) {
         final String sql = sqlBuilder.getSql(null);
-        logger.info("execute sql:\n{}\nwith param:{}", sql, param);
+        logger.debug("execute sql:\n{}\nwith param:{}", sql, param);
         return db.query(sql, param, (RowMapper<Ty>) mapper);
     }
 
-    protected Ty getResult(SimpleDbInterface db, DaoAssembler assembler, SQL<SQLSelect> sqlBuilder, Map<String, Object> param, DbResultSetMapper<Ty> mapper) {
-        setTableName(sqlBuilder,param,assembler);
+    protected Ty getResultImpl(SimpleDbInterface db, DaoAssembler assembler, SQL<SQLSelect> sqlBuilder, Map<String, Object> param, DbResultSetMapper<Ty> mapper) {
         final String sql = sqlBuilder.getSql(null);
-        logger.info("execute sql:\n{}\nwith param:{}", sql, param);
+        logger.debug("execute sql:\n{}\nwith param:{}", sql, param);
         return db.queryForObject(sql, param, (RowMapper<Ty>) mapper);
     }
 
+    protected <Tx> Tx getSingleResultImpl(SimpleDbInterface db, DaoAssembler assembler, SQL<SQLSelect> sqlBuilder, Map<String, Object> param, Class<Tx> tClass) {
+        String sql = sqlBuilder.getSql(null);
+        logger.debug("execute sql:\n{}\nwith param:{}", sql, param);
+        try {
+            return db.queryForObject(sql, param, tClass);
+        } catch (final Exception ex) {
+            logger.error("sql execption", ex);
+            return null;
+        }
+    }
+
+    protected <Tx> List<Tx> getSingleResultsImpl(SimpleDbInterface db, DaoAssembler assembler, SQL<SQLSelect> sqlBuilder, Map<String, Object> param, Class<Tx> tClass) {
+        String sql = sqlBuilder.getSql(null);
+        logger.debug("execute sql:\n{}\nwith param:{}", sql, param);
+        try {
+            return db.queryForList(sql, param, tClass);
+        } catch (final Exception ex) {
+            logger.error("sql execption", ex);
+            return null;
+        }
+    }
+
     protected void setTableName(SQL sqlBuilder, Map<String, Object> param, DaoAssembler assembler) {
-        if (param.containsKey(KEY_WORD_TABLE_NAME_IN_PARAM)) {
-            final String tableName = CollectionHelper.getString(param, KEY_WORD_TABLE_NAME_IN_PARAM);
-            if (!StringHelper.isEmpty(tableName))
+
+    }
+
+    protected SimpleDbInterface selectDb(DaoAssembler assembler, SQL sqlBuilder, Map<String, Object> param) {
+//        SimpleDbInterface ret = null;
+        String dbToUse = null;
+//        String tableName = null, dbName = null;
+        DataSourceAndSchemaAndTable dst = null;
+        if (assembler != null) {
+            dst = assembler.selectDb(sqlBuilder, param, type);
+        }
+        dbToUse = handleDst(dst, param, sqlBuilder);
+        if (dataSourceMap.containsKey(dbToUse))
+            return dataSourceMap.get(dbToUse);
+        else
+            throw new IllegalStateException("data source " + dbToUse + " are not found, check config ");
+    }
+
+    private String handleDst(DataSourceAndSchemaAndTable dst, Map<String, Object> param, SQL sqlBuilder) {
+        String dbToUse = "defaultDs";
+        String tableName = null, dbName = null;
+        if (dst != null) {
+            tableName = dst.getTableName();
+            dbName = dst.getDbName();
+            dbToUse = dst.getDataSourceName();
+        }
+        if (!CollectionHelper.isCollectionEmpty(param)) {
+            if (tableName == null && param.containsKey(KEY_WORD_TABLE_NAME_IN_PARAM)) {
+                tableName = CollectionHelper.getString(param, KEY_WORD_TABLE_NAME_IN_PARAM);
+            }
+            if (dbName == null && param.containsKey(KEY_WORD_DB_NAME_IN_PARAM)) {
+                dbName = CollectionHelper.getString(param, KEY_WORD_DB_NAME_IN_PARAM);
+            }
+            if (dbToUse == null && param.containsKey(KEY_WORD_DS_NAME_IN_PARAM)) {
+                dbToUse = CollectionHelper.getString(param, KEY_WORD_DS_NAME_IN_PARAM);
+            }
+        }
+        if (tableName == null) {
+            tableName = getCurrentQueryTable();
+            if (!StringHelper.isEmpty(tableName)) {
+                setCurrentQueryTable(null);
+            }
+        }
+        if (dbName == null) {
+            dbName = getCurrentQueryDb();
+            if (!StringHelper.isEmpty(dbName)) {
+                setCurrentQueryDB(null);
+            }
+        }
+        if (dbToUse == null) {
+            final String currentQueryDb = getCurrentQueryDs();
+            if (!StringHelper.isEmpty(currentQueryDb)) {
+                dbToUse = currentQueryDb;
+                setCurrentQueryDB(null);
+            }
+        }
+        if (!StringHelper.isEmpty(tableName)) {
+            if (StringHelper.isEmpty(dbName)) {
                 sqlBuilder.table(tableName);
-        }else {
-            final String tname = currentQueryTable.get();
-            if(!StringHelper.isEmpty(tname)){
-                sqlBuilder.table(tname);
-                currentQueryTable.set(null);
-            }
-        }
-    }
-
-    protected String selectDb(DaoAssembler assembler, SQL sqlBuilder, Map<String, Object> param){
-        SimpleDbInterface dbInstance = null;
-        String dbToUse = null;
-        if (assembler!= null) {
-            dbToUse = assembler.selectDb(sqlBuilder, param, type);
-        }
-        if(dbToUse==null ){
-            final String currentQueryDb = getCurrentQueryDb();
-            if(currentQueryDb!=null){
-                dbToUse=currentQueryDb;
-                setCurrentQueryDB(null);
+            } else {
+                sqlBuilder.table(dbName, tableName);
             }
         }
         return dbToUse;
     }
 
-    protected String selectDb(DaoAssembler assembler, SQL sqlBuilder, List<Map<String, Object>> param){
-        SimpleDbInterface dbInstance = null;
+    protected SimpleDbInterface selectDb(DaoAssembler assembler, SQL sqlBuilder, List<Map<String, Object>> param) {
         String dbToUse = null;
-        if (assembler!= null) {
-            dbToUse = assembler.selectDb(sqlBuilder, param, type);
-        }
-        if(dbToUse==null ){
-            final String currentQueryDb = getCurrentQueryDb();
-            if(currentQueryDb!=null){
-                dbToUse=currentQueryDb;
-                setCurrentQueryDB(null);
-            }
-        }
-        return dbToUse;
-    }
-
-    protected <Tx> Tx getSingleResult(SimpleDbInterface db, DaoAssembler assembler, SQL<SQLSelect> sqlBuilder, Map<String, Object> param, Class<Tx> tClass) {
-        setTableName(sqlBuilder,param,assembler);
-        if (!TypeConstantHelper.BASIC_DATA_CLASS.contains(tClass)) {
-            throw new IllegalStateException("only can be use with primitive classes");
-        }
-        int status = 0;
+//        String tableName = null, dbName = null;
+        DataSourceAndSchemaAndTable dst = null;
         if (assembler != null) {
-            status = assembler.assembleSql(sqlBuilder, param, type);
+            dst = assembler.selectDb(sqlBuilder, param, type);
         }
-        String sql;
-        if (status == 0) {
-            sql = sqlBuilder.getSql(null);
-            logger.info("execute sql:\n{}\nwith param:{}", sql, param);
-            try {
-                return db.queryForObject(sql, param, tClass);
-            } catch (final Exception ex) {
-                logger.error("sql execption", ex);
-                return null;
-            }
-        } else {
-            return null;
-        }
-    }
-
-    protected <Tx> List<Tx> getSingleResults(SimpleDbInterface db, DaoAssembler assembler, SQL<SQLSelect> sqlBuilder, Map<String, Object> param, Class<Tx> tClass) {
-        setTableName(sqlBuilder,param,assembler);
-        if (!TypeConstantHelper.BASIC_DATA_CLASS.contains(tClass)) {
-            throw new IllegalStateException("only can be use with primitive classes");
-        }
-        int status = 0;
-        if (assembler != null) {
-            status = assembler.assembleSql(sqlBuilder, param, type);
-        }
-        String sql;
-        if (status == 0) {
-            sql = sqlBuilder.getSql(null);
-            logger.info("execute sql:\n{}\nwith param:{}", sql, param);
-            try {
-                return db.queryForList(sql, param, tClass);
-            } catch (final Exception ex) {
-                logger.error("sql execption", ex);
-                return null;
-            }
-        } else {
-            return null;
-        }
+        dbToUse = handleDst(dst, CollectionHelper.isCollectionEmpty(param) ? null : param.get(0), sqlBuilder);
+        if (dataSourceMap.containsKey(dbToUse))
+            return dataSourceMap.get(dbToUse);
+        else
+            throw new IllegalStateException("data source " + dbToUse + " are not found, check config ");
     }
 
     protected void buildRawInCluase(SQLSelect sqlBuilder, Map<String, Object> param, String inField, Object fieldClassObj, List indexes) {
@@ -274,7 +341,7 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
         int status = 0;
         if (assembler != null)
             status = assembler.assembleSql(sqlBuilder, param, type);
-        setTableName(sqlBuilder,param,assembler);
+        setTableName(sqlBuilder, param, assembler);
         String sql = sqlBuilder.getSql(null);
         if (status == 0) {
             logger.info("execute sql:\n{}\nwith param:{}", sql, param);
@@ -289,10 +356,10 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
         int status = 0;
         if (assembler != null)
             status = assembler.assembleSql(sqlBuilder, param, type);
-        if(param.size()>0) {
+        if (param.size() > 0) {
             final Map<String, Object> map = param.get(0);
-            if(map!=null) {
-                setTableName(sqlBuilder,map,assembler);
+            if (map != null) {
+                setTableName(sqlBuilder, map, assembler);
                 if (status == 0) {
                     String sql = sqlBuilder.getSql(null);
                     logger.info("execute sql:\n{}\nwith param:{}", sql, param);
@@ -313,7 +380,7 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
         int status = 0;
         if (assembler != null)
             status = assembler.assembleSql(sqlBuilder, param, type);
-        setTableName(sqlBuilder,param,assembler);
+        setTableName(sqlBuilder, param, assembler);
         if (status == 0) {
             String sql = sqlBuilder.getSql(null);
             logger.info("execute sql:\n{}\nwith param:{}", sql, param);
@@ -323,26 +390,6 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
             return null;
         }
     }
-
-
-//    public <Tx> TT getItemByDef(final String item, SimpleDbInterface data_store, final DaoAssembler assembler, SQL<SQLSelect> sqlBuilder, Map<String, Object> param, Class<Tx> tClass){
-//        return getSingleResult(data_store,new BaseDaoAssembler(){
-//            @Override
-//            public int assembleSql(SQL statement,Map<String, Object> params,Class<? extends AbstractBaseModel> tClazz) {
-//                SQLSelect select = (SQLSelect) statement;
-//                select.rawItem(item);
-//                return assembler.assembleSql(statement,params,tClazz);
-//            }
-//        },sqlBuilder,param,tClass);
-//    }
-//    protected List<Ty> getListByDef(Map<String,String> fields,Set<String> condition,DaoAssembler assembler,){
-//
-//    }
-//
-//    protected Ty getOneByDef(Map<String,String> fields,Set<String> condition,DaoAssembler assembler,){
-//
-//    }
-
 
     @Override
     public List<Ty> select(SelectParamHolder<Ty, Tt> holder) {

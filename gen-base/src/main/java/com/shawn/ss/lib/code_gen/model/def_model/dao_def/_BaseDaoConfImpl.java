@@ -21,12 +21,10 @@ public abstract class _BaseDaoConfImpl<T extends _BaseDaoConfImpl> extends Commo
         super(name,builderContext);
 
 //        this.builderContext = builderContext;
-        init();
+
     }
 
-    private final void init() {
-        ConfDataTable.put(this.getName(),this);
-    }
+
 
     public _BaseDaoConfImpl(TableInfoInterface def, ModelBuilderContext builderContext) {
         super(CodeConstants.buildConfNameFromDbAndTable(def.getDb(),def.getTable()),builderContext);
@@ -53,10 +51,10 @@ public abstract class _BaseDaoConfImpl<T extends _BaseDaoConfImpl> extends Commo
         return mainModelSelectMethod;
     }
 
-    public _BaseDaoConfImpl setMainModelSelectMethod(List<SelectMethodEnum> mainModelSelectMethod) {
+    public T setMainModelSelectMethod(List<SelectMethodEnum> mainModelSelectMethod) {
         this.mainModelSelectMethod = mainModelSelectMethod;
 //        this.listResult= mainModelSelectMethod.isMultipleResult();
-        return this;
+        return (T)this;
     }
 
     public abstract String getTable();
