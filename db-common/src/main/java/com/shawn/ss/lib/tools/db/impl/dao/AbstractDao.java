@@ -227,6 +227,62 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
         }
     }
 
+    protected Integer update(DaoAssembler assembler, SQL sqlBuilder, Map<String, Object> param) {
+        int status = 0;
+        if (assembler != null)
+            status = assembler.assembleSql(sqlBuilder, param, type);
+        SimpleDbInterface db = selectDb(assembler, sqlBuilder, param);
+        String sql = sqlBuilder.getSql(null);
+        if (status == 0) {
+            logger.info("execute sql:\n{}\nwith param:{}", sql, param);
+            Integer ret = db.update(sql, param);
+            return ret;
+        } else {
+            return null;
+        }
+    }
+
+    protected Integer batchInsert(DaoAssembler assembler, SQL sqlBuilder, List<Map<String, Object>> param) {
+        int status = 0;
+        if (assembler != null)
+            status = assembler.assembleSql(sqlBuilder, param, type);
+        if (param.size() > 0) {
+
+//            final Map<String, Object> map = param.get(0);
+//            if (map != null) {
+            SimpleDbInterface db = selectDb(assembler, sqlBuilder, param);
+            if (status == 0) {
+                String sql = sqlBuilder.getSql(null);
+                logger.info("execute sql:\n{}\nwith param:{}", sql, param);
+                Integer ret = db.batchInsert(sql, param);
+                if (ret < 0) {
+                    logger.warn("batch insert has some error");
+                }
+                return ret;
+//                } else {
+//
+//                }
+            }
+        }
+        return null;
+    }
+
+    protected Long insert( DaoAssembler assembler, SQL sqlBuilder, Map<String, Object> param) {
+        int status = 0;
+        if (assembler != null)
+            status = assembler.assembleSql(sqlBuilder, param, type);
+        setTableName(sqlBuilder, param, assembler);
+        if (status == 0) {
+            SimpleDbInterface db = selectDb(assembler, sqlBuilder, param);
+            String sql = sqlBuilder.getSql(null);
+            logger.info("execute sql:\n{}\nwith param:{}", sql, param);
+            Long ret = db.insert(sql, param);
+            return ret == null ? Long.MIN_VALUE : ret;
+        } else {
+            return null;
+        }
+    }
+
     protected void setTableName(SQL sqlBuilder, Map<String, Object> param, DaoAssembler assembler) {
 
     }
@@ -337,59 +393,6 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
         }
     }
 
-    protected Integer update(SimpleDbInterface db, DaoAssembler assembler, SQL sqlBuilder, Map<String, Object> param) {
-        int status = 0;
-        if (assembler != null)
-            status = assembler.assembleSql(sqlBuilder, param, type);
-        setTableName(sqlBuilder, param, assembler);
-        String sql = sqlBuilder.getSql(null);
-        if (status == 0) {
-            logger.info("execute sql:\n{}\nwith param:{}", sql, param);
-            Integer ret = db.update(sql, param);
-            return ret;
-        } else {
-            return null;
-        }
-    }
-
-    protected Integer batchInsert(SimpleDbInterface db, DaoAssembler assembler, SQL sqlBuilder, List<Map<String, Object>> param) {
-        int status = 0;
-        if (assembler != null)
-            status = assembler.assembleSql(sqlBuilder, param, type);
-        if (param.size() > 0) {
-            final Map<String, Object> map = param.get(0);
-            if (map != null) {
-                setTableName(sqlBuilder, map, assembler);
-                if (status == 0) {
-                    String sql = sqlBuilder.getSql(null);
-                    logger.info("execute sql:\n{}\nwith param:{}", sql, param);
-                    Integer ret = db.batchInsert(sql, param);
-                    if (ret < 0) {
-                        logger.warn("batch insert has some error");
-                    }
-                    return ret;
-                } else {
-
-                }
-            }
-        }
-        return null;
-    }
-
-    protected Long insert(SimpleDbInterface db, DaoAssembler assembler, SQL sqlBuilder, Map<String, Object> param) {
-        int status = 0;
-        if (assembler != null)
-            status = assembler.assembleSql(sqlBuilder, param, type);
-        setTableName(sqlBuilder, param, assembler);
-        if (status == 0) {
-            String sql = sqlBuilder.getSql(null);
-            logger.info("execute sql:\n{}\nwith param:{}", sql, param);
-            Long ret = db.insert(sql, param);
-            return ret == null ? Long.MIN_VALUE : ret;
-        } else {
-            return null;
-        }
-    }
 
     @Override
     public List<Ty> select(SelectParamHolder<Ty, Tt> holder) {
@@ -930,6 +933,10 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
         throw new UnsupportedOperationException("no implements");
     }
 
+    public Integer updateById(Tt id,Ty instance) {
+        throw new UnsupportedOperationException("no implements");
+    }
+
     public Integer updateById(Ty instance) {
         throw new UnsupportedOperationException("no implements");
     }
@@ -1054,6 +1061,12 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
     @Override
     public <TT> List<TT> getItemListByIdAndCondAndWhere(Ty instance, List<Tt> id, Class<TT> tClass, String rawItem, Map<String, Object> extParam, Set<String> extCondition) {
         throw new UnsupportedOperationException("no implements");
+    }
+
+    protected void throwExceptionIf(boolean flag){
+        if(flag){
+            throw new IllegalStateException("param error , not allow to process");
+        }
     }
 
     /*@Override

@@ -4,6 +4,7 @@ import com.helger.jcodemodel.*;
 import com.shawn.ss.lib.code_gen.CodeBuilderInterface;
 import com.shawn.ss.lib.code_gen.base.helper.CodeConstants;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
+import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseConstantDef;
 import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseDaoConf;
 import com.shawn.ss.lib.tools.StringHelper;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.SimpleDbInterface;
@@ -21,23 +22,25 @@ import org.springframework.stereotype.Repository;
 import java.util.Map;
 
 public abstract class AbstractDaoBuilder implements CodeBuilderInterface {
-    public static final String LOGGER_TEMPLATE="execute sql:\n{}\nwith param:{}";
+    public static final String LOGGER_TEMPLATE = "execute sql:\n{}\nwith param:{}";
 
     protected final ModelBuilderContext builderContext;
 
-//    protected final ModelBuilder parentBuilder;
+    //    protected final ModelBuilder parentBuilder;
     protected final JCodeModel cm;
-    protected  String daoClassName;
+    protected final JDefinedClass constantClz;
+    protected String daoClassName;
     protected JDefinedClass definedClass;
     protected AbstractJClass modelClass;
     protected JFieldVar dbField;
-    protected Map<String,JFieldVar> dbFields;
+    protected Map<String, JFieldVar> dbFields;
     protected TableInfoInterface info;
     protected final String table;
     protected final _BaseDaoConf modelDef;
     protected JFieldVar loggerField;
     protected JMethod afterPropertiesSet;
     protected JFieldVar dbMapField;
+    protected final String name;
 
     public AbstractDaoBuilder(_BaseDaoConf def, ModelBuilderContext builderContext) {
         cm = builderContext.getCm();
@@ -82,7 +85,7 @@ public abstract class AbstractDaoBuilder implements CodeBuilderInterface {
         String baseTable = def.getBaseTable();
 
         this.table = info.getTable();
-        modelClass = cm.ref(builderContext.getReallyModelClassName(table,baseTable));
+        modelClass = cm.ref(builderContext.getReallyModelClassName(table, baseTable));
 
         int tableType = this.info.getTableType();
 //        String modelClassName = parentBuilder.getModelClassName();
@@ -90,7 +93,10 @@ public abstract class AbstractDaoBuilder implements CodeBuilderInterface {
 //        String baseTable = parentBuilder.getBaseTable();
         this.builderContext = builderContext;
         this.daoClassName = builderContext.getDaoClassName(table, baseTable, tableType);
-        modelDef =def;
+        modelDef = def;
+        _BaseConstantDef constant = def.getConstant();
+        constantClz = constant.getConstantClz();
+        name = def.getName();
 //        }else{
 //
 //        }
@@ -107,19 +113,19 @@ public abstract class AbstractDaoBuilder implements CodeBuilderInterface {
             JAnnotationUse annotate = definedClass.annotate(Repository.class);
             annotate.param("value", CodeConstants.getClassNameFromFullName(daoClassName));
             definedClass._implements(InitializingBean.class);
-            AbstractJType idType=(priKeyType==null?cm.ref(Object.class):cm.ref(priKeyType.gettClass()));
-            definedClass._implements(CodeConstants.buildNarrowedClass(cm,DaoInterface.class,modelClass,idType));
+            AbstractJType idType = (priKeyType == null ? cm.ref(Object.class) : cm.ref(priKeyType.gettClass()));
+            definedClass._implements(CodeConstants.buildNarrowedClass(cm, DaoInterface.class, modelClass, idType));
             final String baseDaoClass = modelDef.getDaoExtendsClzName();
             AbstractJClass ref = cm.ref(AbstractDao.class);
-            if(!StringHelper.isEmpty(baseDaoClass)){
-                ref=cm.ref(baseDaoClass);
+            if (!StringHelper.isEmpty(baseDaoClass)) {
+                ref = cm.ref(baseDaoClass);
             }
-            definedClass._extends(CodeConstants.buildNarrowedClass(cm,ref,modelClass,idType));
-            definedClass.annotate(cm.ref(SuppressWarnings.class)).param("value","unchecked");//.annotationParam(cm.ref(String.class),JExpr.lit("unchecked"))
-            afterPropertiesSet=definedClass.method(JMod.PUBLIC,cm.VOID, CodeConstants.METHOD_SPRING_BEAN_AFTER_PROPERTIES_SET);
+            definedClass._extends(CodeConstants.buildNarrowedClass(cm, ref, modelClass, idType));
+            definedClass.annotate(cm.ref(SuppressWarnings.class)).param("value", "unchecked");//.annotationParam(cm.ref(String.class),JExpr.lit("unchecked"))
+            afterPropertiesSet = definedClass.method(JMod.PUBLIC, cm.VOID, CodeConstants.METHOD_SPRING_BEAN_AFTER_PROPERTIES_SET);
             afterPropertiesSet.annotate(Override.class);
             afterPropertiesSet._throws(Exception.class);
-            definedClass.constructor(JMod.PUBLIC).body().invoke("super").arg(JExpr.dotclass(modelClass));
+
             buildCommonDbFieldInjection();
 //            info = parentBuilder.getInfo();
         } catch (JClassAlreadyExistsException e) {
@@ -129,6 +135,11 @@ public abstract class AbstractDaoBuilder implements CodeBuilderInterface {
     }
 
     protected void buildCommonDbFieldInjection() {
+        definedClass.constructor(JMod.PUBLIC).body().invoke("super")
+                .arg(JExpr.dotclass(modelClass))
+                .arg(constantClz.staticRef(CodeConstants.getMethodNameOfResultSetMapField(name)))
+        ;
+
 //        String dataSourceName = modelDef.getDataSourceName();
 //        final List<String> dataSourceNames = modelDef.getDataSourceNames();
 //        boolean multiDs=dataSourceNames!=null && dataSourceNames.size()>0;
@@ -155,18 +166,18 @@ public abstract class AbstractDaoBuilder implements CodeBuilderInterface {
 //        }
     }
 
-    protected JFieldVar addInjectedDbField(String dsFieldName,String dataSourceName){
+    protected JFieldVar addInjectedDbField(String dsFieldName, String dataSourceName) {
         JFieldVar ret = definedClass.field(JMod.PROTECTED, cm.ref(SimpleDbInterface.class), CodeConstants.getFieldNameOfDBFieldBySourceName(dsFieldName));
         ret.annotate(Autowired.class).param("required", true);
 //        String dataSourceName = modelDef.getDataSourceName();
-        if(dataSourceName!=null){
-            ret.annotate(Qualifier.class).param("value",JExpr.lit(dataSourceName));
+        if (dataSourceName != null) {
+            ret.annotate(Qualifier.class).param("value", JExpr.lit(dataSourceName));
         }
         return ret;
     }
 
     public void addLogs(JBlock body, IJExpression sql, IJExpression param) {
-        body.invoke(loggerField,"info").arg(JExpr.lit(LOGGER_TEMPLATE)).arg(sql).arg(param);
+        body.invoke(loggerField, "info").arg(JExpr.lit(LOGGER_TEMPLATE)).arg(sql).arg(param);
     }
 
     public JDefinedClass getDefinedClass() {

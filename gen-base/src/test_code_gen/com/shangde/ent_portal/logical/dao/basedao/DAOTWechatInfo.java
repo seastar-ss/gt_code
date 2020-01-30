@@ -40,26 +40,26 @@ public class DAOTWechatInfo
     implements DaoInterface<com.shangde.ent_portal.logical.dto.basepo.ModelTWechatInfo, Integer> , InitializingBean
 {
     public final static Logger logger = LoggerFactory.getLogger(DAOTWechatInfo.class);
-    @Autowired(required = true)
-    @Qualifier("ent_portal_slave")
-    protected SimpleDbInterface data_store;
-    protected final static Map<String, SimpleDbInterface> dbMap = CollectionHelper.newMap();
-    public final static String dbOfEntPortalSlave = "ent_portal_slave";
-    @Autowired(required = true)
-    @Qualifier("ent_portal_slave")
-    protected SimpleDbInterface data_storeEntPortalSlave;
+//    @Autowired(required = true)
+//    @Qualifier("ent_portal_slave")
+//    protected SimpleDbInterface data_store;
+//    protected final static Map<String, SimpleDbInterface> dbMap = CollectionHelper.newMap();
+//    public final static String dbOfEntPortalSlave = "ent_portal_slave";
+//    @Autowired(required = true)
+//    @Qualifier("ent_portal_slave")
+//    protected SimpleDbInterface data_storeEntPortalSlave;
 
     public DAOTWechatInfo() {
-        super(com.shangde.ent_portal.logical.dto.basepo.ModelTWechatInfo.class);
+        super(com.shangde.ent_portal.logical.dto.basepo.ModelTWechatInfo.class, ModelTWechatInfo.RESULT_SET_OBJ_MAPPER);
     }
 
     @Override
     public void afterPropertiesSet()
         throws Exception
     {
-        if (data_storeEntPortalSlave!= null) {
-            dbMap.put(dbOfEntPortalSlave, data_storeEntPortalSlave);
-        }
+//        if (data_storeEntPortalSlave!= null) {
+//            dbMap.put(dbOfEntPortalSlave, data_storeEntPortalSlave);
+//        }
     }
 
 //    protected<TT> TT getSingleResult(DaoAssembler assembler, SQLSelect sqlBuilder, Map<String, Object> param, Class<TT> tClass) {
@@ -1198,12 +1198,8 @@ public class DAOTWechatInfo
             sqlBuilder.itemCol(ModelTWechatInfo.FI_AUTO_REPLY);
         }
         Map<String, Object> param = ModelTWechatInfo.MAP_OBJ_MAPPER.toCommonMap(instance);
-        SimpleDbInterface dbInstance = data_store;
-        String dbToUse = super.selectDb(assembler, sqlBuilder, param);
-        if ((dbToUse!= null)&&dbMap.containsKey(dbToUse)) {
-            dbInstance = dbMap.get(dbToUse);
-        }
-        Long ret = super.insert(dbInstance, assembler, sqlBuilder, param);
+
+        Long ret = super.insert( assembler, sqlBuilder, param);
         if (ret!= null) {
             if (ret >Long.MIN_VALUE) {
                 instance.setId(((Integer) TypeConstantHelper.testPackPrType(ret, Integer.class)));
@@ -1264,12 +1260,8 @@ public class DAOTWechatInfo
             Map<String, Object> paramMap = ModelTWechatInfo.MAP_OBJ_MAPPER.toCommonMap(instance);
             param.add(paramMap);
         }
-        SimpleDbInterface dbInstance = data_store;
-        String dbToUse = super.selectDb(assembler, sqlBuilder, param);
-        if ((dbToUse!= null)&&dbMap.containsKey(dbToUse)) {
-            dbInstance = dbMap.get(dbToUse);
-        }
-        return super.batchInsert(dbInstance, assembler, sqlBuilder, param);
+
+        return super.batchInsert( assembler, sqlBuilder, param);
     }
 
     public Integer insert(List<ModelTWechatInfo> instances, Set<String> fields) {
@@ -1383,12 +1375,8 @@ public class DAOTWechatInfo
             }
         }
         Map<String, Object> param = ModelTWechatInfo.MAP_OBJ_MAPPER.toCommonMap(instance);
-        SimpleDbInterface dbInstance = data_store;
-        String dbToUse = super.selectDb(assembler, sqlBuilder, param);
-        if ((dbToUse!= null)&&dbMap.containsKey(dbToUse)) {
-            dbInstance = dbMap.get(dbToUse);
-        }
-        return super.update(dbInstance, assembler, sqlBuilder, param);
+
+        return super.update( assembler, sqlBuilder, param);
     }
 
     public Integer update(ModelTWechatInfo instance, Set<String> conditionField) {
@@ -1398,7 +1386,7 @@ public class DAOTWechatInfo
     public Integer updateById(ModelTWechatInfo instance, DaoAssembler assembler) {
         SQLUpdate sqlBuilder = SQLBuilder.buildUpdateSql();
         sqlBuilder.table(ModelTWechatInfo.DTO_TABLE_NAME);
-        assert((instance.getId()!= null));
+        throwExceptionIf((instance.getId()!= null));
         Integer dId = instance.getId();
         if (dId!= null) {
             sqlBuilder.itemWhere(ModelTWechatInfo.FI_ID, ColumnDataType.intData);
@@ -1444,12 +1432,8 @@ public class DAOTWechatInfo
             sqlBuilder.itemCol(ModelTWechatInfo.FI_AUTO_REPLY);
         }
         Map<String, Object> param = ModelTWechatInfo.MAP_OBJ_MAPPER.toCommonMap(instance);
-        SimpleDbInterface dbInstance = data_store;
-        String dbToUse = super.selectDb(assembler, sqlBuilder, param);
-        if ((dbToUse!= null)&&dbMap.containsKey(dbToUse)) {
-            dbInstance = dbMap.get(dbToUse);
-        }
-        return super.update(dbInstance, assembler, sqlBuilder, param);
+
+        return super.update( assembler, sqlBuilder, param);
     }
 
     public Integer updateById(ModelTWechatInfo instance) {
@@ -1504,12 +1488,8 @@ public class DAOTWechatInfo
         }
         Map<String, Object> param = ModelTWechatInfo.MAP_OBJ_MAPPER.toCommonMap(instance);
         param.put("ids", ids);
-        SimpleDbInterface dbInstance = data_store;
-        String dbToUse = super.selectDb(assembler, sqlBuilder, param);
-        if ((dbToUse!= null)&&dbMap.containsKey(dbToUse)) {
-            dbInstance = dbMap.get(dbToUse);
-        }
-        return super.update(dbInstance, assembler, sqlBuilder, param);
+
+        return super.update(assembler, sqlBuilder, param);
     }
 
     public Integer updateByIds(ModelTWechatInfo instance, Set<Integer> ids) {
@@ -1575,12 +1555,8 @@ public class DAOTWechatInfo
             sqlBuilder.itemWhere(ModelTWechatInfo.FI_AUTO_REPLY, ColumnDataType.stringData);
         }
         Map<String, Object> param = ModelTWechatInfo.MAP_OBJ_MAPPER.toCommonMap(instance);
-        SimpleDbInterface dbInstance = data_store;
-        String dbToUse = super.selectDb(assembler, sqlBuilder, param);
-        if ((dbToUse!= null)&&dbMap.containsKey(dbToUse)) {
-            dbInstance = dbMap.get(dbToUse);
-        }
-        return super.update(dbInstance, assembler, sqlBuilder, param);
+
+        return super.update( assembler, sqlBuilder, param);
     }
 
     public Integer delete(ModelTWechatInfo instance, Set<String> conditionField) {
@@ -1592,12 +1568,8 @@ public class DAOTWechatInfo
         sqlBuilder.table(ModelTWechatInfo.DTO_TABLE_NAME);
         assert((id!= null));
         Map<String, Object> param = Collections.singletonMap("id", id);
-        SimpleDbInterface dbInstance = data_store;
-        String dbToUse = super.selectDb(assembler, sqlBuilder, param);
-        if ((dbToUse!= null)&&dbMap.containsKey(dbToUse)) {
-            dbInstance = dbMap.get(dbToUse);
-        }
-        return super.update(dbInstance, assembler, sqlBuilder, param);
+
+        return super.update( assembler, sqlBuilder, param);
     }
 
     public Integer deleteById(Integer id) {
@@ -1609,12 +1581,8 @@ public class DAOTWechatInfo
         sqlBuilder.table(ModelTWechatInfo.DTO_TABLE_NAME);
         assert(((ids!= null)&&(ids.size()> 0)));
         Map<String, Object> param = Collections.singletonMap("ids", ids);
-        SimpleDbInterface dbInstance = data_store;
-        String dbToUse = super.selectDb(assembler, sqlBuilder, param);
-        if ((dbToUse!= null)&&dbMap.containsKey(dbToUse)) {
-            dbInstance = dbMap.get(dbToUse);
-        }
-        return super.update(dbInstance, assembler, sqlBuilder, param);
+
+        return super.update( assembler, sqlBuilder, param);
     }
 
     public Integer deleteByIds(Set<Integer> ids) {

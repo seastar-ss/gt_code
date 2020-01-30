@@ -202,7 +202,7 @@ public class CodeConstants {
     public static final String PARAM_DAO_INSTANCE = "instance";
     public static final String PARAM_DAO_RAW_ITEM = "rawItem";
     public static final String PARAM_DAO_T_CLASS = "tClass";
-    public static final String LIB_ASSERT_METHOD = "assert";
+    public static final String LIB_ASSERT_METHOD = "throwExceptionIf";
 
 
     //    public CommonDaoBuilder(ModelBuilder parentBuilder,ModelBuilderContext builderContext) {
