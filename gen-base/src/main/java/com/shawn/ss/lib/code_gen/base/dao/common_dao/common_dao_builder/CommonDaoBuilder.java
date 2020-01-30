@@ -59,7 +59,7 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
 //            .getSet();
 
     public CommonDaoBuilder(_BaseDaoConf commonModelDaoDef) {
-        super(commonModelDaoDef, commonModelDaoDef.getBuilderContext());
+        super(commonModelDaoDef);
     }
 
     @Override

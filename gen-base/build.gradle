@@ -26,6 +26,7 @@ dependencies {
 //    compile group: 'log4j', name: 'log4j', version: '1.2.17'
 
     compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.2'
+
     compile fileTree("$rootDir/libs/")
 //    compile 'com.cs.seastar.libs:base:5.1'
 //    compile 'com.cs.seastar.libs:data_store-api:5.1'

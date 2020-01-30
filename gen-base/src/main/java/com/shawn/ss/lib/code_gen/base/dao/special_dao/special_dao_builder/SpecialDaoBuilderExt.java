@@ -5,6 +5,7 @@ import com.shawn.ss.lib.code_gen.base.dao.AbstractDaoBuilder;
 import com.shawn.ss.lib.code_gen.base.helper.CodeConstants;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
 import com.shawn.ss.lib.code_gen.model.def_model.dao_def.SpecialModelDaoConf;
+import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseDaoSqlConf;
 import com.shawn.ss.lib.tools.CodeStyleTransformHelper;
 import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.StringHelper;
@@ -22,15 +23,15 @@ import java.util.Map;
  */
 public class SpecialDaoBuilderExt extends AbstractDaoBuilder {
 
-    private final SpecialModelDaoConf def;
-    private final String name;
+    private final _BaseDaoSqlConf def;
+//    private final String name;
     private String handleSqlMethod;
 
 
-    public SpecialDaoBuilderExt(SpecialModelDaoConf def, ModelBuilderContext builderContext) {
-        super(def, builderContext);
+    public SpecialDaoBuilderExt(_BaseDaoSqlConf def) {
+        super(def);
         this.def = def;
-        name = CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(def.getMethodName());
+//        name = CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(def.getMethodName());
         String clzName = def.getClzName();
         if (!StringHelper.isEmpty(clzName)) {
             daoClassName = builderContext.getDaoClassName(clzName, def.getBaseTable(), 2);

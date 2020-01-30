@@ -16,9 +16,7 @@ public interface _BaseDaoConf extends _BaseModelConf,_BaseDaoClassNameConf,_Base
     String getDb();
 //    FieldInfoInterface getPriField();
     TableInfoInterface getTableDef();
-    List<_BaseSubDaoConf> getRelatedDef();
     String getBaseTable();
-
     boolean buildAbstractDao();
 
     /////data acess api

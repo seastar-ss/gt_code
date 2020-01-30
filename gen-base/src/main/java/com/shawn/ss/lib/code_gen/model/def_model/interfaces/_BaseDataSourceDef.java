@@ -12,4 +12,6 @@ public interface _BaseDataSourceDef extends _BaseConstantDef {
     boolean hasShardingPolicy();
 
     String getShadingPolicyClzName();
+
+    String getConfigFilePath();
 }

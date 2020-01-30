@@ -33,16 +33,17 @@ public abstract class AbstractDaoBuilder implements CodeBuilderInterface {
     protected JDefinedClass definedClass;
     protected AbstractJClass modelClass;
     protected JFieldVar dbField;
-    protected Map<String, JFieldVar> dbFields;
+//    protected Map<String, JFieldVar> dbFields;
     protected TableInfoInterface info;
     protected final String table;
     protected final _BaseDaoConf modelDef;
     protected JFieldVar loggerField;
     protected JMethod afterPropertiesSet;
-    protected JFieldVar dbMapField;
+//    protected JFieldVar dbMapField;
     protected final String name;
 
-    public AbstractDaoBuilder(_BaseDaoConf def, ModelBuilderContext builderContext) {
+    public AbstractDaoBuilder(_BaseDaoConf def) {
+        this.builderContext = def.getBuilderContext();
         cm = builderContext.getCm();
 //        final List<String> dataSourceNames = def.getDataSourceNames();
 //        if(dataSourceNames!=null && dataSourceNames.size()>0) {
@@ -91,12 +92,12 @@ public abstract class AbstractDaoBuilder implements CodeBuilderInterface {
 //        String modelClassName = parentBuilder.getModelClassName();
 
 //        String baseTable = parentBuilder.getBaseTable();
-        this.builderContext = builderContext;
+
         this.daoClassName = builderContext.getDaoClassName(table, baseTable, tableType);
-        modelDef = def;
+        this.modelDef = def;
         _BaseConstantDef constant = def.getConstant();
-        constantClz = constant.getConstantClz();
-        name = def.getName();
+        this.constantClz = constant.getConstantClz();
+        this.name = def.getName();
 //        }else{
 //
 //        }
