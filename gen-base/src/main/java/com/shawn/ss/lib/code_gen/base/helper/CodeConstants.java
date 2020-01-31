@@ -174,6 +174,7 @@ public class CodeConstants {
     public static final String CLASS_NAME_MULTI_DAO_ASSEMBLER_APPENDIX = "Assembler";
     public static final String CLASS_NAME_MODEL_PREFIX = "Model";
     public static final String CLASS_NAME_ENUM_PREFIX = "Enum";
+    public static final String CLASS_NAME_DB_SOURCE_CONFIG_PREFIX = "DSConfig";
     //    public static final String CLASS_NAME_ENUM_PREFIX = "Enum";
     public static final String CLASS_NAME_RESULT_SET_MAPPER_PREFIX = "ResultSetMapper";
     public static final String CLASS_NAME_REDIS_BYTE_MAPPER_PREFIX = "ByteMapMapper";
@@ -203,6 +204,7 @@ public class CodeConstants {
     public static final String PARAM_DAO_RAW_ITEM = "rawItem";
     public static final String PARAM_DAO_T_CLASS = "tClass";
     public static final String LIB_ASSERT_METHOD = "throwExceptionIf";
+
 
 
     //    public CommonDaoBuilder(ModelBuilder parentBuilder,ModelBuilderContext builderContext) {
@@ -754,6 +756,11 @@ public class CodeConstants {
 
     public static String getConfNameOfEnum(EnumTypeDef def) {
         return def.getCol().getFieldName()+"Enum";
+    }
+
+    public static String getDsConfigClzName(String name) {
+
+        return CLASS_NAME_DB_SOURCE_CONFIG_PREFIX +CodeStyleTransformHelper.upperFirstCase(name);
     }
 
 
