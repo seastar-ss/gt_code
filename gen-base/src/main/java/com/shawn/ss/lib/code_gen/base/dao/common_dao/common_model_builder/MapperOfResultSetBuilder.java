@@ -43,7 +43,7 @@ public class MapperOfResultSetBuilder implements CodeBuilderInterface {
         String modelClassName = model.getPojoClzName();
         mapperClassName= model.getMapperClzName();
 //        selectModel = parentBuilder.isSelectModel();
-        this.ignoreField= model.ignoreField();
+        this.ignoreField= model.getIgnoreField();
 //        this.ignoreField = (ignoreField==null? Collections.emptySet():ignoreField);
         baseTable = model.getBaseTable();
         modelClass =cm.ref(modelClassName);

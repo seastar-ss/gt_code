@@ -56,7 +56,7 @@ public class POJOModelBuilder  implements CodeBuilderInterface {
 //        this.info = def.get();
         this.builderContext = def.getBuilderContext();
 //        this.baseTable = def.getBaseTable();
-        ignoreField = def.ignoreField();
+        ignoreField = def.getIgnoreField();
 //        this.ignoreField = (ignore == null ? Collections.emptySet() : ignore);
 //        db = info.getDb();
 //        table = info.getTable();

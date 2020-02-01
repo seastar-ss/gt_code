@@ -105,7 +105,7 @@ public class CommonPOJOConf extends AbstractConf implements _BaseModelConf, _Bas
     }
 
     @Override
-    public Set<String> ignoreField() {
+    public Set<String> getIgnoreField() {
         return ignoreField;
     }
 

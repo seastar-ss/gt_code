@@ -38,12 +38,12 @@ public class MapperOfPojoBuilder implements CodeBuilderInterface {
 //        this(null, parentModelBuilder);
 //    }
 
-    public MapperOfPojoBuilder(_BaseModelConf modelDef, ModelBuilderContext context){
+    public MapperOfPojoBuilder(_BaseModelConf modelDef){
 //        this.parentModelBuilder = parentModelBuilder;
         String modelClassName = modelDef.getPojoClzName();
         mapperClassName = CodeConstants.CLASS_NAME_POJO_MAPPER_PREFIX + CodeConstants.getClassNameFromFullName(modelClassName);
-        builderContext = context;
-        cm=context.getCm();
+        builderContext = modelDef.getBuilderContext();
+        cm=builderContext.getCm();
         modelClass=modelDef.getDeclaredModel();
         this.modelDef=modelDef;
        // buildInterception(poModelDef,modelDef);

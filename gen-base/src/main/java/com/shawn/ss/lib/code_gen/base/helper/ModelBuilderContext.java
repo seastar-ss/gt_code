@@ -6,15 +6,18 @@ import com.helger.jcodemodel.JMethod;
 import com.shawn.ss.lib.code_gen.base.common.MapperOfPojoBuilder;
 import com.shawn.ss.lib.code_gen.base.dao.common_dao.common_dao_builder.CommonDaoBuilder;
 import com.shawn.ss.lib.code_gen.base.dao.common_dao.common_model_builder.MapperOfResultSetBuilder;
-import com.shawn.ss.lib.code_gen.base.dao.common_dao.common_model_builder.ModelBuilder;
-import com.shawn.ss.lib.code_gen.base.dao.special_dao.special_dao_builder.SpecialDaoBuilder;
+
+import com.shawn.ss.lib.code_gen.base.dao.common_dao.common_model_builder.PoModelBuilder;
+import com.shawn.ss.lib.code_gen.base.dao.multi_dao.composed_model_builder.ComposedPoModelBuilder;
+import com.shawn.ss.lib.code_gen.base.dao.multi_dao.multi_assemble_builder.ComposedAssemblerBuilder;
+import com.shawn.ss.lib.code_gen.base.dao.multi_dao.multi_dao_builder.MultiDaoBuilder;
 import com.shawn.ss.lib.code_gen.base.helper.data_store.ClassDataTable;
 import com.shawn.ss.lib.code_gen.base.helper.data_store.DbDataTable;
-import com.shawn.ss.lib.code_gen.base.dao.multi_dao.multi_dao_builder.MultiDaoSelectServiceBuilder;
+
 import com.shawn.ss.lib.code_gen.model.MethodTypeEnum;
 import com.shawn.ss.lib.code_gen.model.def_model.dao_def.CommonModelDaoDef;
-import com.shawn.ss.lib.code_gen.model.def_model.dao_def.ModelMulDaoDaoConf;
-import com.shawn.ss.lib.code_gen.model.def_model.dao_def.SpecialModelDaoConf;
+
+import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseDaoConf;
 import com.shawn.ss.lib.code_gen.model.gen_param_model.db_def.DbModelConf;
 import com.shawn.ss.lib.tools.CodeStyleTransformHelper;
 import com.shawn.ss.lib.tools.CollectionHelper;
@@ -423,7 +426,7 @@ public class ModelBuilderContext {
 //            if(dataSources!=null){
 //                commonModelDef.setDataSourceNames(dataSources);
 //            }
-            ModelBuilder builder = buildBaseModel(def);
+             buildBaseModel(def);
             try {
                 CommonDaoBuilder daoBuilder = new CommonDaoBuilder(def);
                 daoBuilder.buildModel();
@@ -474,58 +477,58 @@ public class ModelBuilderContext {
 //        return null;
 //    }
 
-    private ModelBuilder buildBaseModel(CommonModelDaoDef def)
+    private void buildBaseModel(_BaseDaoConf def)
 //            (TableInfoInterface tableInfo, String baseTable, boolean buildMapper, Set<String> ignoreField)
     {
         try {
 //            if (def.getBuilderContext() == null) {
 //                def.setBuilderContext(this);
 //            }
-            ModelBuilder builder = new ModelBuilder(def);
+            PoModelBuilder builder = new PoModelBuilder(def);
             builder.buildModel();
-            if (def.isBuildMapper()) {
-                MapperOfResultSetBuilder rsMapperBuilder = new MapperOfResultSetBuilder(builder);
+//            if (def()) {
+                MapperOfResultSetBuilder rsMapperBuilder = new MapperOfResultSetBuilder(def);
                 rsMapperBuilder.buildModel();
 //                MapperOfMapBuilder redisMapperBuilder = new MapperOfMapBuilder(builder);
 //                redisMapperBuilder.buildModel();
 
-                MapperOfPojoBuilder redisMapperBuilder = new MapperOfPojoBuilder(def, this, builder.getDefinedClass());
+                MapperOfPojoBuilder redisMapperBuilder = new MapperOfPojoBuilder(def);
                 redisMapperBuilder.buildModel();
-            }
-            return builder;
+//            }
+
         } catch (Exception ex) {
             ex.printStackTrace();
-            return null;
+
         }
 
     }
 
-    public void buildSpecialModalAndDao(SpecialModelDaoConf def) {
-//        NamedParameterJdbcTemplate jdbcTemplate = dataSource.getJdbcTemplate();
-        try {
-            SpecialModelDaoConf.DataAttrType type = def.getDataType();
-            if (type.equals(SpecialModelDaoConf.DataAttrType.LIST_OBJ) || type.equals(SpecialModelDaoConf.DataAttrType.OBJ)) {
-                ModelBuilder modelBuilder = buildBaseModel(def);
-//        if(type.equals(SpecialModelDef.DataAttrType.SQL)) {
-//            modelBuilder.buildSQLField(modelDef.getSql());
-
-            } else if (type.equals(SpecialModelDaoConf.DataAttrType.LIST) || type.equals(SpecialModelDaoConf.DataAttrType.SINGLE)) {
-
+//    public void buildSpecialModalAndDao(SpecialModelDaoConf def) {
+////        NamedParameterJdbcTemplate jdbcTemplate = dataSource.getJdbcTemplate();
+//        try {
+//            SpecialModelDaoConf.DataAttrType type = def.getDataType();
+//            if (type.equals(SpecialModelDaoConf.DataAttrType.LIST_OBJ) || type.equals(SpecialModelDaoConf.DataAttrType.OBJ)) {
+//                ModelBuilder modelBuilder = buildBaseModel(def);
+////        if(type.equals(SpecialModelDef.DataAttrType.SQL)) {
+////            modelBuilder.buildSQLField(modelDef.getSql());
+//
+//            } else if (type.equals(SpecialModelDaoConf.DataAttrType.LIST) || type.equals(SpecialModelDaoConf.DataAttrType.SINGLE)) {
+//
+////            SpecialDaoBuilder daoBuilder = new SpecialDaoBuilder(def, this);
+////            daoBuilder.buildModel();
+//            }
 //            SpecialDaoBuilder daoBuilder = new SpecialDaoBuilder(def, this);
 //            daoBuilder.buildModel();
-            }
-            SpecialDaoBuilder daoBuilder = new SpecialDaoBuilder(def, this);
-            daoBuilder.buildModel();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-
-        }
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//
 //        }
+////        }
+//
+//    }
 
-    }
 
-
-    public void buildMultiSelectDao(ModelMulDaoDaoConf conf) {
+    public void buildMultiSelectDao(_BaseDaoConf conf) {
 //        serviceName = getServiceClassName(serviceName);
         if (conf == null) {
             return;
@@ -535,7 +538,14 @@ public class ModelBuilderContext {
 //                conf.setBuilderContext(this);
 //            }
 //            conf.setBuilderContext(this);
-            MultiDaoSelectServiceBuilder builder = new MultiDaoSelectServiceBuilder(conf);
+
+            ComposedPoModelBuilder modelBuilder=new ComposedPoModelBuilder(conf);
+            modelBuilder.buildModel();
+
+            ComposedAssemblerBuilder assemblerBuilder=new ComposedAssemblerBuilder(conf);
+            assemblerBuilder.buildModel();
+
+            MultiDaoBuilder builder = new MultiDaoBuilder(conf);
 //            builder.
             builder.buildModel();
         } catch (Exception ex) {

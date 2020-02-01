@@ -21,7 +21,7 @@ public interface _BaseModelConf extends _BaseModelClassNameConf, _BaseContextCon
 
     FieldInfoInterface getField(String key);
 
-    Set<String> ignoreField();
+    Set<String> getIgnoreField();
 
     String getComment();
 

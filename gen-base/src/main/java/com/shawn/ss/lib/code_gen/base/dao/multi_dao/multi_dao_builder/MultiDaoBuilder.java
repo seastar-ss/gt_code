@@ -11,7 +11,6 @@ import com.shawn.ss.lib.code_gen.model.MethodTypeEnum;
 import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseDaoCombineConf;
 import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseDaoConf;
 import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseRelationDef;
-import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseSubDaoConf;
 import com.shawn.ss.lib.tools.CodeStyleTransformHelper;
 import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.StringHelper;
@@ -125,7 +124,7 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
 //
 //    }
 
-    public MultiDaoBuilder(_BaseDaoCombineConf modelMulDaoConf) {
+    public MultiDaoBuilder(_BaseDaoConf modelMulDaoConf) {
         super(modelMulDaoConf);
         this.modelMulDaoConf = modelMulDaoConf;
 //        modelMulDaoConf.init();
