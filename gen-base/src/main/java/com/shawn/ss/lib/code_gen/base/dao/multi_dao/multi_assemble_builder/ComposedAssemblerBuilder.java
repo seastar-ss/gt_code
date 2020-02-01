@@ -26,14 +26,14 @@ public class ComposedAssemblerBuilder implements CodeBuilderInterface {
 //    private AbstractJClass multiAsemmblerClz;
 
     private final JCodeModel cm;
-    private final _BaseDaoCombineConf modelMulDaoConf;
+    private final _BaseDaoConf modelMulDaoConf;
     private String assemblerName;
     private JDefinedClass definedClass;
     boolean isList;
     private JFieldVar[] staticRoundFieldVar;
     private final FieldInfoInterface mainField;
 
-    public ComposedAssemblerBuilder(_BaseDaoCombineConf modelMulDaoConf) {
+    public ComposedAssemblerBuilder(_BaseDaoConf modelMulDaoConf) {
         this.modelMulDaoConf = modelMulDaoConf;
         this.modelBuilderContext = modelMulDaoConf.getBuilderContext();
 
@@ -78,7 +78,7 @@ public class ComposedAssemblerBuilder implements CodeBuilderInterface {
 //            String mulDaoRNDName = CodeConstants.getFieldNameOfMulDaoRNDName(mainField);
 //            String serviceClassName = modelBuilderContext.getServiceClassName(modelMulDaoConf.getMainTable());
 
-        List<_BaseSubDaoConf> relatedTables = modelMulDaoConf.getRelatedDef();
+        List<_BaseDaoConf> relatedTables = modelMulDaoConf.getRelation();
         staticRoundFieldVar = new JFieldVar[relatedTables.size() + 1];
         int findex = 0;
         staticRoundFieldVar[findex]=definedClass.field(
@@ -88,9 +88,9 @@ public class ComposedAssemblerBuilder implements CodeBuilderInterface {
         );
         JBlock jBlock = body._if(JExpr.invoke(CodeConstants.METHOD_ASSEMBLER_GET_INDEX).eq(staticRoundFieldVar[0]))._then();
         jBlock._return(CodeConstants.invokeMethodWithParam(assembleMain,jVars));
-        for (_BaseSubDaoConf def : relatedTables) {
+        for (_BaseDaoConf def : relatedTables) {
             ++findex;
-            String fieldName = def.getRelation().getFieldName();
+            String fieldName = def.getRelatedDef().getFieldName();
 //            String s = CodeStyleTransformHelper.humpStyleToUnderlineSplittedStyle(fieldName).toUpperCase();
             JFieldVar fieldVar = definedClass.field(
                     CodeConstants.MODE_PUBLIC_STATIC_FINAL,

@@ -8,6 +8,7 @@ import java.util.Map;
  * Created by ss on 2018/2/13.
  */
 public interface _BaseRelationDef extends _BaseDef {
+
     String getFieldInThisTable();
     String getFieldInMainTable();
     boolean isSingle();
@@ -15,6 +16,6 @@ public interface _BaseRelationDef extends _BaseDef {
     String getAdditionalWhere();
     Map<String,String> getAdditionalCondition();
     FieldInfoInterface getRelatedField();
-    _BaseDaoConf getRelatedDaoConf();
+//    _BaseDaoConf getRelatedDaoConf();
 
 }

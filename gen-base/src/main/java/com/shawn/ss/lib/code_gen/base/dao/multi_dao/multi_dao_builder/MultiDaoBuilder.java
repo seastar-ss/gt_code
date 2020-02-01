@@ -12,7 +12,6 @@ import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseDaoCombineConf;
 import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseDaoConf;
 import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseRelationDef;
 import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseSubDaoConf;
-import com.shawn.ss.lib.code_gen.model.def_model.dao_def.ModelRelatedTableDef;
 import com.shawn.ss.lib.tools.CodeStyleTransformHelper;
 import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.StringHelper;
@@ -37,7 +36,7 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
     private final String serviceClassName;
     //    private final SelectMethodEnum modelSelectMethod;
     private final String mainTable;
-    private final List<_BaseSubDaoConf> relatedTables;
+    private final List<_BaseDaoConf> relatedTables;
     private final boolean buildNotAbstract;
 //    private final ModelBuilderContext builderContext;
     //    private final Map<String, TableInfoInterface> tbMap;
@@ -142,7 +141,7 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
         }
 //        this.modelSelectMethod = modelMulDaoConf.getMainModelSelectMethod();
         this.mainTable = modelMulDaoConf.getTable();
-        this.relatedTables = modelMulDaoConf.getRelatedDef();
+        this.relatedTables = modelMulDaoConf.getRelation();
         this.buildNotAbstract = modelMulDaoConf.buildAbstractDao();
 //        this.builderContext = modelMulDaoConf.getBuilderContext();
         this.serviceClassName = builderContext.getServiceClassName(modelMulDaoConf.getTable());
@@ -179,8 +178,8 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
         String[] staticRoundFieldVar = new String[size + 1];//assemblerBuilder.getStaticRoundFieldVar();
         staticRoundFieldVar[0]=CodeConstants.getFieldNameOfMulDaoRNDName(mainModelFieldName);
         for(int i=1;i<=size;++i){
-            _BaseSubDaoConf baseSubDaoConf = relatedTables.get(i - 1);
-            _BaseRelationDef relation = baseSubDaoConf.getRelation();
+            _BaseDaoConf baseSubDaoConf = relatedTables.get(i - 1);
+            _BaseRelationDef relation = baseSubDaoConf.getRelatedDef();
             staticRoundFieldVar[i]=CodeConstants.getFieldNameOfMulDaoRNDName(relation.getRelatedField().getFieldName());
         }
         holder.staticRoundFieldVar = staticRoundFieldVar;
@@ -244,35 +243,6 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
         buildListify();
         buildMapify(false);
         buildMapify(true);
-//
-//        JFieldRef staticRef = mainModelClass.staticRef(CodeHelper.FIELD_CONST_NAME_PREFIX + tableInfo.getPriKey().toUpperCase());
-//        JInvocation mainMapInvoke = JExpr.invoke(mainDaoField, CodeHelper.METHOD_DAO_BUILD_MAP).arg(allMainList).arg(staticRef);
-//        FieldDataTypeInterface priKeyType = tableInfo.getPriKeyType();
-//        Class priKeyTypeClass = priKeyType.gettClass();
-//        JVar mainMap = body.decl(CodeHelper.buildNarrowedClass(cm, Map.class, priKeyTypeClass, mainModelClass), "mainMap", mainMapInvoke);
-//        JVar mainIdList = body.decl(cm.ref(List.class), "mainIdList", cm.ref(CollectionHelper.class).staticInvoke("newList"));
-//        body.invoke(mainIdList,"addAll").arg(mainMap.invoke("keySet"));
-//        AbstractJClass entryClass = CodeHelper.buildNarrowedClass(cm, Map.Entry.class, priKeyTypeClass, mainModelClass);
-//        JVar entries = body.decl(CodeHelper.buildNarrowedClass(cm, Set.class, entryClass),
-//                "entries", JExpr.invoke(mainMap, "entrySet")
-//        );
-//        for(ModelRelatedTableDef modelDef:relatedTables){
-//            buildGetRelatedModel(modelDef,body,mainMap,mainIdList,otherTableAssembler);
-//        }
-//        JForEach forEach = body.forEach(entryClass, "entry", entries);
-//        JVar var = forEach.var();
-//        JBlock forBlock = forEach.body();
-//        JVar wrapper = forBlock.decl(wrapperCls, "wrapper", JExpr._new(wrapperCls));
-//        JVar key = forBlock.decl(cm.ref(priKeyTypeClass), "key", var.invoke("getKey"));
-//        JVar value = forBlock.decl(mainModelClass, "value", var.invoke("getValue"));
-//        forBlock.invoke(wrapper,"setData"+CodeStyleTransformHelper.upperFirstCase(mainTable)).arg(value);
-//        for(ModelRelatedTableDef modelDef:relatedTables){
-//            String table = modelDef.getTable();
-//            JVar jVar = mapVars.get(table);
-//            forBlock.invoke(wrapper,"setData"+CodeStyleTransformHelper.upperFirstCase(table)).arg(jVar.invoke("get").arg(key));
-//        }
-//        forBlock.invoke(ret, "add").arg(wrapper);
-
     }
 
     private JMethod buildInsertOrUpdate(BuildMethodParamHodler holder) {
@@ -337,28 +307,26 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
         return retMethod;
     }
 
-    private JMethod buildGetSubModel(_BaseRelationDef def, BuildMethodParamHodler holder) {
-        final String db = def.getRelatedDaoConf().getDb();
+    private JMethod buildGetSubModel(_BaseDaoConf conf, BuildMethodParamHodler holder) {
+        final String db = conf.getDb();
+        String table = conf.getTable();
+        _BaseRelationDef def = conf.getRelatedDef();
         String fieldInMainTable = def.getFieldInMainTable();
         String fieldInThisTable = def.getFieldInThisTable();
-        String table = def.getRelatedDaoConf().getTable();
+
 //        boolean isId = def.isFieldInThisTableIsId();
         boolean single = def.isSingle();
         AbstractJClass subModelClass = models.get(table);
         SelectMethodEnum subDaoSelectMethod = getSubSelectMethod(def, holder);
         String subDaoSelectMethodName = subDaoSelectMethod.getMethodName();
         String mName;
-//        if(multiFieldFromSameTable) {
-//            mName = CodeHelper.METHOD_SERVICE_GET_SUB_DATA_PREFIX
-//                    + CodeStyleTransformHelper.upperFirstCase(modelBuilder.getSubModelFieldName(table)
-//                    + CodeStyleTransformHelper.upperFirstCase(fieldInMainTable) + CodeStyleTransformHelper.upperFirstCase(fieldInThisTable));
-//        }else{
+
         mName = StringHelper.concat(
                 CodeConstants.METHOD_SERVICE_GET_SUB_DATA_PREFIX,
                 CodeStyleTransformHelper.upperFirstCase(def.getFieldName()), (single ? "" : "s"), "Via",
                 CodeStyleTransformHelper.upperFirstCase(subDaoSelectMethodName)
         );
-//        }
+
         JMethod method;
         AbstractJType retType = holder.getRetType(holder.listResult);
         method = definedClass.getMethod(
@@ -395,14 +363,7 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
         JBlock subBody = method.body();
 
         AbstractJClass fieldClzRef = cm.ref(fieldTClass);
-        /**
-         * start build method
-         */
 
-        //            if(multiFieldFromSameTable){
-//            }else {
-//                modelSet = CodeHelper.getMethodNameOfModelSet(modelBuilder.getSubModelFieldName(table));
-//            }
         buildIfMainModelEmptyTest(subBody, dataVar, holder.listResult);
         /**
          * 生成调用
@@ -479,19 +440,19 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
         if (holder.listResult) {
 
             JVar subModels = subBody.decl(CodeConstants.buildNarrowedClass(cm, List.class, subModelClass), "subModels", invoke);
-            JMethod jMethod = buildAssembleSubResultToRets(def, holder);
+            JMethod jMethod = buildAssembleSubResultToRets(conf, holder);
             subBody.invoke(jMethod).arg(subModels).arg(retVar);
         } else {
             AbstractJClass subClz = null;
             if (single) {
                 subClz = subModelClass;
                 JVar subModel = subBody.decl(subClz, "subModel", invoke);
-                JMethod jMethod = buildAssembleSubResultToRet(def, holder);
+                JMethod jMethod = buildAssembleSubResultToRet(conf, holder);
                 subBody.invoke(jMethod).arg(subModel).arg(retVar);
             } else {
                 subClz = CodeConstants.buildNarrowedClass(cm, List.class, subModelClass);
                 JVar subModel = subBody.decl(subClz, "subModel", invoke);
-                JMethod jMethod = buildAssembleSubResultToRet(def, holder);
+                JMethod jMethod = buildAssembleSubResultToRet(conf, holder);
                 subBody.invoke(jMethod).arg(subModel).arg(retVar);
             }
 
@@ -504,11 +465,12 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
 
     }
 
-    private JMethod buildAssembleSubResultToRet(_BaseRelationDef def, BuildMethodParamHodler holder) {
+    private JMethod buildAssembleSubResultToRet(_BaseDaoConf conf, BuildMethodParamHodler holder) {
+        _BaseRelationDef def = conf.getRelatedDef();
         boolean single = def.isSingle();
         String mName;
         AbstractJClass subClz = null;
-        String table = def.getRelatedDaoConf().getTable();
+        String table = conf.getTable();
         AbstractJClass subModelClass = models.get(table);
         if (single) {
             subClz = subModelClass;
@@ -532,11 +494,13 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
         return method;
     }
 
-    private JMethod buildAssembleSubResultToRets(_BaseRelationDef def, BuildMethodParamHodler holder) {
-        final String db = def.getRelatedDaoConf().getDb();
+    private JMethod buildAssembleSubResultToRets(_BaseDaoConf conf, BuildMethodParamHodler holder) {
+        _BaseRelationDef def = conf.getRelatedDef();
+        final String db = conf.getDb();
+        final String table=conf.getTable();
         String fieldInMainTable = def.getFieldInMainTable();
         String fieldInThisTable = def.getFieldInThisTable();
-        String table = def.getRelatedDaoConf().getTable();
+//        String table = def.getRelatedDaoConf().getTable();
 //        boolean isId = def.isFieldInThisTableIsId();
         boolean single = def.isSingle();
         AbstractJType retType = holder.getRetType(holder.listResult);
@@ -559,8 +523,6 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
 
         AbstractJClass fieldClzRef = cm.ref(fieldTClass);
 
-//        SelectMethodEnum subDaoSelectMethod = getSubSelectMethod(def, holder);
-//        String subDaoSelectMethodName = subDaoSelectMethod.getMethodName();
         AbstractJType subClz = CodeConstants.buildNarrowedClass(cm, List.class, subModelClass);
         String mName;
 
@@ -745,19 +707,12 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
         body.invoke(holder.listResult ? holder.assembleMainList : holder.assembleMain).arg(allMainList).arg(ret);
         holder.mainDataVar = allMainList;
 
-        for (_BaseSubDaoConf def : relatedTables) {
+        for (_BaseDaoConf def : relatedTables) {
             ++index;
-//                String fieldName = def.getFieldName();
-//            String s = CodeStyleTransformHelper.humpStyleToUnderlineSplittedStyle(fieldName).toUpperCase();
-//                JFieldVar fieldVar = definedClass.field(
-//                        CodeHelper.MODE_PUBLIC_STATIC_FINAL,
-//                        cm.INT,
-//                        CodeHelper.getFieldNameOfMulDaoRNDName(fieldName),
-//                        JExpr.lit(index)
-//                );
+
             body.invoke(holder.otherTableAssembler, CodeConstants.METHOD_ASSEMBLER_SET_INDEX).arg(holder.assemblerCls.staticRef(holder.staticRoundFieldVar[index]));
             holder.subIndex = index;
-            JMethod subMethod = buildGetSubModel(def.getRelation(), holder);
+            JMethod subMethod = buildGetSubModel(def, holder);
             body.invoke(subMethod).arg(allMainList).arg(ret).arg(holder.selectFields).arg(holder.otherTableAssembler);
         }
         body._return(ret);
@@ -835,49 +790,6 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
         return method;
     }
 
-//    private AbstractJClass buildWapperClass() {
-//        String wrapperClzName=buildWrapperClzName();
-//
-//        try {
-//            JDefinedClass clz = cm._class(wrapperClzName);
-//            String fname = "data" + CodeHelper.getClazzNameFromTableName(mainTable);
-//            JFieldVar var = clz.field(JMod.PROTECTED, mainModelClass, fname);
-//            CodeHelper.buildGetterAndSetter(clz,fname,mainModelClass,var);
-//            for(ModelRelatedTableDef modelDef:relatedTables){
-//                String table = modelDef.getTable();
-//                boolean single = modelDef.isSingle();
-//                AbstractJClass jClass;
-//                AbstractJClass modelClz = models.get(table);
-//                if(single){
-//                    jClass= modelClz;
-//                }else {
-//                    jClass = CodeHelper.buildNarrowedClass(cm, List.class, modelClz);
-//                }
-//                fname="data"+CodeHelper.getClazzNameFromTableName(table)+(single?"":"List");
-//                JFieldVar field = clz.field(JMod.PROTECTED, jClass,fname);
-//                CodeHelper.buildGetterAndSetter(clz,fname,jClass,field);
-//            }
-//            return clz;
-//        } catch (JClassAlreadyExistsException e) {
-//            e.printStackTrace();
-//            AbstractJClass ref = cm.ref(wrapperClzName);
-//            return ref;
-//        }
-//    }
-//
-//    private String buildWrapperClzName() {
-//        StringBuilder ret=new StringBuilder(builderContext.getModelClassPrefix(false));
-//        ret.append(CodeHelper.getClazzNameFromTableName(mainTable));
-//        Set<String> relatedTb=CollectionHelper.newSortedSet();
-//        for(ModelRelatedTableDef modelDef:relatedTables){
-//            String table = modelDef.getTable();
-//            String tbName = CodeHelper.getClazzNameFromTableName(table)+(modelDef.isSingle()?"":"s");
-//            relatedTb.add(tbName);
-//        }
-//        for(String s:relatedTb) ret.append(s);
-//        return ret.toString();
-//    }
-
     private void buildClass() {
         try {
             definedClass = buildNotAbstract ? cm._class(serviceClassName) : cm._class(JMod.PUBLIC + JMod.ABSTRACT, serviceClassName);
@@ -912,7 +824,7 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
             mainDaoField.annotate(Autowired.class);
 
             daoFields = CollectionHelper.newMap();
-            for (_BaseSubDaoConf def : relatedTables) {
+            for (_BaseDaoConf def : relatedTables) {
                 String table = def.getTable();
                 String tbName = CodeConstants.getClazzNameFromTableName(table);
 //                defs.put(table,modelDef);

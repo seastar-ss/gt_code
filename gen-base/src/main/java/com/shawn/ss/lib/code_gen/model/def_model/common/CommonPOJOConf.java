@@ -44,12 +44,14 @@ public class CommonPOJOConf extends AbstractConf implements _BaseModelConf, _Bas
 //        }
 //    }
 
-    protected List<FieldInfoInterface> fields;
+    protected final List<FieldInfoInterface> fields;
     Map<String, FieldInfoInterface> staticFields;
-    protected Map<String, Integer> fieldIndex;
+    protected final Map<String, Integer> fieldIndex;
     protected String pojoClzName;
     protected String pojoExtendsClzName;
     protected String comment;
+
+    protected  final Set<String> ignoreField;
 //    protected final String name;
 
 //    protected transient final ModelBuilderContext builderContext;
@@ -62,6 +64,7 @@ public class CommonPOJOConf extends AbstractConf implements _BaseModelConf, _Bas
         fields = CollectionHelper.newList();
         fieldIndex = CollectionHelper.newMap();
         staticFields = CollectionHelper.newMap();
+        ignoreField=CollectionHelper.newSet();
     }
 
 //    @Override
@@ -74,13 +77,13 @@ public class CommonPOJOConf extends AbstractConf implements _BaseModelConf, _Bas
         return fields;
     }
 
-    public CommonPOJOConf setFields(List<FieldInfoInterface> fields) {
-        this.fields = fields;
-        for (int i = 0, n = fields.size(); i < n; ++i) {
-            fieldIndex.put(fields.get(i).getFieldName(), i);
-        }
-        return this;
-    }
+//    public void setFields(List<FieldInfoInterface> fields) {
+////        this.fields = fields;
+//        for (int i = 0, n = fields.size(); i < n; ++i) {
+//            fieldIndex.put(fields.get(i).getFieldName(), i);
+//        }
+////        return this;
+//    }
 
     @Override
     public int sizeOfField() {
@@ -103,7 +106,15 @@ public class CommonPOJOConf extends AbstractConf implements _BaseModelConf, _Bas
 
     @Override
     public Set<String> ignoreField() {
-        return Collections.emptySet();
+        return ignoreField;
+    }
+
+    public boolean addIgnoreField(String field){
+        if(fieldIndex.containsKey(field)){
+            ignoreField.add(field);
+            return true;
+        }
+        return false;
     }
 
 

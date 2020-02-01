@@ -9,7 +9,6 @@ public interface _BaseDaoSqlConf extends _BaseDaoConf{
         SINGLE, OBJ, LIST, LIST_OBJ
     }
 
-
     String getSql();
     List<FieldInfoInterface> getParams();
     DataAttrType getSqlType();

@@ -1,18 +1,15 @@
 package com.shawn.ss.lib.code_gen.base.dao.dao_constants;
 
 import com.helger.jcodemodel.*;
-import com.shawn.ss.gen.Constants;
 import com.shawn.ss.gen.api.model.data_source_conf.ModelDbConfig;
 import com.shawn.ss.lib.code_gen.CodeBuilderInterface;
 import com.shawn.ss.lib.code_gen.base.helper.CodeConstants;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
 import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseConstantDef;
-import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseContextConf;
 import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseDataSourceConf;
 import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseDataSourceDef;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.SimpleDbInterface;
 import com.shawn.ss.lib.tools.db.impl.utils.HelperFactory;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -44,7 +41,7 @@ public class DaoConstantsBuilder implements CodeBuilderInterface {
 
     @Override
     public void buildModel() {
-        List<_BaseDataSourceDef> defs = conf.getDef();
+        List<_BaseDataSourceDef> defs = conf.getDsDef();
 
         for(_BaseDataSourceDef def:defs){
             buildConfigClz(def);

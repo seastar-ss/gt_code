@@ -124,7 +124,7 @@ public class DbModelConf {
         sb.append(", masterDbName='").append(masterDbName).append('\'');
         sb.append(", defaultAssemblerClass='").append(defaultAssemblerClass).append('\'');
         sb.append(", defaultBaseDaoClass='").append(defaultBaseDaoClass).append('\'');
-        sb.append(", baseDaoClass=").append(baseDaoClass);
+        sb.append(", daoExtendClzName=").append(baseDaoClass);
         sb.append(", baseAssembleClass=").append(baseAssembleClass);
         sb.append('}');
         return sb.toString();
