@@ -1,5 +1,7 @@
 package com.shawn.ss.lib.code_gen.model.def_model.interfaces;
 
+import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.FieldInfoInterface;
+
 import java.util.Map;
 
 /**
@@ -12,6 +14,7 @@ public interface _BaseRelationDef extends _BaseDef {
     String getFieldName();
     String getAdditionalWhere();
     Map<String,String> getAdditionalCondition();
-
+    FieldInfoInterface getRelatedField();
+    _BaseDaoConf getRelatedDaoConf();
 
 }

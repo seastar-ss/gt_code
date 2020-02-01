@@ -4,6 +4,7 @@ import com.helger.jcodemodel.*;
 import com.shawn.ss.lib.code_gen.CodeBuilderInterface;
 import com.shawn.ss.lib.code_gen.base.helper.CodeConstants;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
+import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseDaoCombineConf;
 import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseDaoConf;
 import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseSubDaoConf;
 import com.shawn.ss.lib.tools.CollectionHelper;
@@ -25,14 +26,14 @@ public class ComposedAssemblerBuilder implements CodeBuilderInterface {
 //    private AbstractJClass multiAsemmblerClz;
 
     private final JCodeModel cm;
-    private final _BaseDaoConf modelMulDaoConf;
+    private final _BaseDaoCombineConf modelMulDaoConf;
     private String assemblerName;
     private JDefinedClass definedClass;
     boolean isList;
     private JFieldVar[] staticRoundFieldVar;
     private final FieldInfoInterface mainField;
 
-    public ComposedAssemblerBuilder(_BaseDaoConf modelMulDaoConf) {
+    public ComposedAssemblerBuilder(_BaseDaoCombineConf modelMulDaoConf) {
         this.modelMulDaoConf = modelMulDaoConf;
         this.modelBuilderContext = modelMulDaoConf.getBuilderContext();
 
