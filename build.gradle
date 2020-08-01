@@ -42,10 +42,12 @@ allprojects {
 subprojects {
 
     repositories {
-//        maven { url "http://112.74.19.176:8081/repository/maven-central/" }
-//        maven { url "http://172.16.117.215:8100/archiva/repository/snapshots/" }
-
+        mavenLocal()
+        maven { url "http://maven.aliyun.com/nexus/content/groups/public/"}
+        maven { url "https://repo.maven.apache.org/maven2" }
         mavenCentral()
+//    maven { url "http://112.74.19.176:8081/repository/maven-central/" }
+//    maven { url "https://repo.maven.apache.org/maven2" }
     }
 
 }

@@ -17,9 +17,11 @@ targetCompatibility = 1.7
 
 repositories {
     mavenLocal()
+    maven { url "http://maven.aliyun.com/nexus/content/groups/public/"}
+    maven { url "https://repo.maven.apache.org/maven2" }
     mavenCentral()
 //    maven { url "http://112.74.19.176:8081/repository/maven-central/" }
-    maven { url "https://repo.maven.apache.org/maven2" }
+//    maven { url "https://repo.maven.apache.org/maven2" }
 }
 dependencies {
     testCompile 'junit:junit:4.12'

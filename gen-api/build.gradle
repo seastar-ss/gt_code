@@ -7,9 +7,11 @@ targetCompatibility = 1.8
 
 repositories {
     mavenLocal()
+    maven { url "http://maven.aliyun.com/nexus/content/groups/public/"}
+    maven { url "https://repo.maven.apache.org/maven2" }
     mavenCentral()
-    maven { url "http://112.74.19.176:8081/repository/maven-central/" }
-    maven { url "http://repo.maven.apache.org/maven2" }
+//    maven { url "http://112.74.19.176:8081/repository/maven-central/" }
+//    maven { url "https://repo.maven.apache.org/maven2" }
 }
 dependencies {
     // The production code uses the SLF4J logging API at compile time

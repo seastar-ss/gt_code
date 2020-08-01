@@ -2,12 +2,13 @@ buildscript {
     repositories {
         maven {
             mavenLocal()
-            maven { url "http://repo.maven.apache.org/maven2" }
+            maven { url "http://maven.aliyun.com/nexus/content/groups/public/"}
+            maven { url "https://repo.maven.apache.org/maven2" }
             url "https://plugins.gradle.org/m2/"
         }
     }
     ext {
-        springBootVersion = '2.0.0.RELEASE'
+        springBootVersion = '2.2.9.RELEASE'
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
@@ -19,7 +20,7 @@ plugins {
     id 'java'
     id 'eclipse'
     id 'application'
-    id 'org.springframework.boot' version "2.0.0.RELEASE"
+    id 'org.springframework.boot' version "2.2.9.RELEASE"
     id 'io.spring.dependency-management' version "1.0.6.RELEASE"
 }
 //apply plugin: 'application'
@@ -29,16 +30,18 @@ targetCompatibility = 1.8
 
 repositories {
     mavenLocal()
+    maven { url "http://maven.aliyun.com/nexus/content/groups/public/"}
+    maven { url "https://repo.maven.apache.org/maven2" }
     mavenCentral()
-    maven { url "http://112.74.19.176:8081/repository/maven-central/" }
-    maven { url "http://repo.maven.apache.org/maven2" }
+//    maven { url "http://112.74.19.176:8081/repository/maven-central/" }
+//    maven { url "https://repo.maven.apache.org/maven2" }
 }
 dependencies {
     // The production code uses the SLF4J logging API at compile time
     compile 'org.slf4j:slf4j-api:1.7.25'
     compile 'ch.qos.logback:logback-classic:1.2.3'
-    implementation('org.springframework.boot:spring-boot-starter-web')
-    implementation("org.springframework.boot:spring-boot-starter-jdbc")
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.2.9.RELEASE'
+    compile group: 'org.springframework', name: 'spring-jdbc', version: '5.0.4.RELEASE'
 //    compile 'com.helger:jcodemodel:3.0.0'
     compile group: 'commons-codec', name: 'commons-codec', version: '1.10'
     compile group: 'com.google.code.gson', name: 'gson', version:'2.2.4'
@@ -56,6 +59,7 @@ dependencies {
 //    compile 'com.cs.seastar.libs:data_store-api:5.1'
     compile project(":code-model")
     compile project(":gen-api")
+    compile project(":base")
     compile project(":data_store-common")
     compile project(":data_store-spring-jdbc")
     compile project(":data_store-api")

@@ -51,3 +51,10 @@ project(':base').projectDir = "$rootDir/base" as File
 
 include ':base-impl'
 project(':base-impl').projectDir = "$rootDir/base-impl" as File
+
+
+include ':javacc_proj'
+project(':javacc_proj').projectDir = "$rootDir/javacc_proj" as File
+
+//include ':maven-plugin'
+//project(':maven-plugin').projectDir = "$rootDir/maven-plugin" as File

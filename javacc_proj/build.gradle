@@ -7,10 +7,18 @@ version = '0.8.1-SNAPSHOT'
 description = """JSqlParser javacc extention"""
 
 buildscript {
+
     repositories {
+        mavenLocal()
+
+        maven { url "http://maven.aliyun.com/nexus/content/groups/public/"}
         maven {
             url "https://plugins.gradle.org/m2/"
         }
+        maven { url "https://repo.maven.apache.org/maven2" }
+        mavenCentral()
+//    maven { url "http://112.74.19.176:8081/repository/maven-central/" }
+//    maven { url "https://repo.maven.apache.org/maven2" }
     }
     dependencies {
         classpath "gradle.plugin.ca.coglinc2:javacc-gradle-plugin:3.0.0"
@@ -35,9 +43,14 @@ configurations.all {
 }
 
 repositories {
+    mavenLocal()
 
-    maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
-    maven { url "http://repo.maven.apache.org/maven2" }
+    maven { url "http://maven.aliyun.com/nexus/content/groups/public/"}
+//    maven {url "https://plugins.gradle.org/m2/"}
+    maven { url "https://repo.maven.apache.org/maven2" }
+    mavenCentral()
+//    maven { url "http://112.74.19.176:8081/repository/maven-central/" }
+//    maven { url "https://repo.maven.apache.org/maven2" }
 }
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
