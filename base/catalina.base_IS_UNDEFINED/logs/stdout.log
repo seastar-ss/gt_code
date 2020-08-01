@@ -1,0 +1,7 @@
+2019-09-08 23:29:21,619 [main][IP:|USER:][INFO  com.shawn.ss.gen.GenProcessor] conf :{conf.file=D:\project\company\base-foundation-libs\base\project, src.base.fold=D:\project\company\base-foundation-libs\base\src\main\java, gen.file.pos=base}
+2019-09-08 23:29:21,621 [main][IP:|USER:][INFO  codeBuilder] [java.lang.Float, java.lang.Double, double, byte, java.util.Date, float, java.lang.Integer, int, long, boolean, java.lang.Character, java.lang.Long, java.lang.Short, char, short, java.lang.Boolean, java.lang.String, java.lang.Byte]
+2019-09-08 23:29:21,622 [main][IP:|USER:][INFO  codeBuilder] 
+****************
+未配置数据库参数
+*************
+2019-09-08 23:29:21,622 [main][IP:|USER:][INFO  com.shawn.ss.gen.GenProcessor] support types:[com.shawn.ss.gen.api.interfaces.base_resp.DefaultResp, com.shawn.ss.gen.api.interfaces.SqlResp, com.shawn.ss.gen.api.interfaces.SqlMultipleResp, com.shawn.ss.gen.api.interfaces.doc.EntryPoint]

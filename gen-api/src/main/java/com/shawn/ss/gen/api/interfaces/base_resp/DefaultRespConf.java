@@ -6,16 +6,26 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.CLASS)
-@Target({ElementType.METHOD})
+@Target(ElementType.PACKAGE)
 public @interface DefaultRespConf {
     String db();
+
     String dataSourceId();
+
+    String prefix() default "";
+
     boolean isSlave() default false;
+
     String[] exceptedTables() default {};
+
     String[] includeTables() default {};
+
     String defaultDaoClass() default "";
+
     String defaultAssembleClass() default "";
+
     String daoClass() default "";
+
     String assembleClass() default "";
 
 }

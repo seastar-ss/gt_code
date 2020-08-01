@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.CLASS)
-@Target({ElementType.PACKAGE,ElementType.TYPE})
+@Target(ElementType.PACKAGE)
 public @interface DefaultResp {
-    DefaultRespConf[] confs() default {} ;
+    DefaultRespConf[] confs() ;
 }

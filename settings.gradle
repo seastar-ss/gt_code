@@ -43,11 +43,11 @@ project(':data_store-spring-jdbc').projectDir = "$rootDir/db-spring-jdbc" as Fil
 include ':gen-api'
 project(':gen-api').projectDir = "$rootDir/gen-api" as File
 
-//include ':sql-gen'
-//project(':sql-gen').projectDir = "$rootDir/sqlGen" as File
+include ':sql-gen'
+project(':sql-gen').projectDir = "$rootDir/sqlGen" as File
 
-include ':javacc_proj'
-project(':javacc_proj').projectDir = "$rootDir/javacc_proj" as File
+include ':base'
+project(':base').projectDir = "$rootDir/base" as File
 
-//include ':maven-plugin'
-//project(':maven-plugin').projectDir = "$rootDir/maven-plugin" as File
+include ':base-impl'
+project(':base-impl').projectDir = "$rootDir/base-impl" as File

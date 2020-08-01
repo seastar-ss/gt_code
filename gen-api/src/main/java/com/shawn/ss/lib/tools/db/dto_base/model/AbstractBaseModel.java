@@ -5,19 +5,22 @@
  */
 package com.shawn.ss.lib.tools.db.dto_base.model;
 
+import com.shawn.ss.lib.tools.db.api.interfaces.mappers._ObjMapper;
+
 import java.io.Serializable;
 import java.util.Map;
 
 /**
  * @author ss
  */
-public abstract class AbstractBaseModel implements Serializable,_APIObj {
+public abstract class AbstractBaseModel implements Serializable, _ObjMapper {
 //    protected static int modelFieldCount;
 
 
 //    public final static long serialVersionUID ;
 
-    public static final int DEFAULT_START=0,DEFUALT_COUNT=1000;
+    public static final int DEFAULT_START = 0, DEFUALT_COUNT = 1000;
+
     static {
 
     }
@@ -26,12 +29,25 @@ public abstract class AbstractBaseModel implements Serializable,_APIObj {
 
     protected transient String currentTableName;
 
+    protected transient Boolean inserted;
+
+    protected transient Integer updateCount;
+
     public void setIndex(int index) {
         this.index = index;
     }
 
     public int getIndex() {
         return index;
+    }
+
+    public Boolean getInserted() {
+        return inserted;
+    }
+
+    public AbstractBaseModel setInserted(Boolean inserted) {
+        this.inserted = inserted;
+        return this;
     }
 
     public String getCurrentTableName() {
@@ -44,32 +60,41 @@ public abstract class AbstractBaseModel implements Serializable,_APIObj {
     }
 
     @Override
-    public <T extends _APIObj> T getFeature(Class<T> clazz) {
+    public <T extends _ObjMapper> T getFeature(Class<T> clazz) {
         return null;
     }
 
-    public static String compressStr(int length, String str){
-        if(str==null){
+    public static String compressStr(int length, String str) {
+        if (str == null) {
             return null;
         }
         String compressString = "";
-        if(str==null || str.length()==0){
-            return str;
+        if (str.length() == 0 || str.trim().equals("")) {
+            return str.trim();
         }
-        if(length > str.length() || length < 1){
+        if (length > str.length() || length < 1) {
             return str;
-        }else {
-            compressString  = str.substring(0, length);
+        } else {
+            compressString = str.substring(0, length);
         }
         return compressString;
     }
 
-    public Map<String,Object> getFieldConfig(){
+    public Map<String, Object> getFieldConfig() {
         return null;
     }
 
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         return true;
+    }
+
+    public Integer getUpdateCount() {
+        return updateCount;
+    }
+
+    public AbstractBaseModel setUpdateCount(Integer updateCount) {
+        this.updateCount = updateCount;
+        return this;
     }
 
     //    @Override

@@ -48,3 +48,7 @@
 /gen_class
 /compilor
 /code-model/.settings/*.prefs
+/base/src/test/output.png
+/base/src/test/sharePics
+/base/src/test/background.png
+/base/src/test/clip1.png
