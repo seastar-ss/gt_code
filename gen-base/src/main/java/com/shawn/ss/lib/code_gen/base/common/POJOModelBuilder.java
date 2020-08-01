@@ -134,8 +134,8 @@ public class POJOModelBuilder  implements CodeBuilderInterface {
                 EnumTypeDef enumTypeDef = item.getEnumTypeDef();
                 if (enumTypeDef != null && enumTypeDef.sizeOfItems() > 0) {
                     EnumTypeConf conf =
-                            new EnumTypeConf(enumTypeDef).setName(modelDef.getName());
-                    conf.setBuilderContext(builderContext);
+                            new EnumTypeConf(enumTypeDef,builderContext).setName(modelDef.getName());
+//                    conf.setBuilderContext(builderContext);
                     EnumBuilder builder = new EnumBuilder(conf);
                     builder.buildModel();
 //                    modelDef.putEnumClz(item.getFieldName(), builder.getDefinedClass());

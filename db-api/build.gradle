@@ -26,6 +26,7 @@ repositories {
 dependencies {
     testCompile 'junit:junit:4.12'
     compile project(":gen-api")
+    compile project(":base")
     compile group: 'commons-codec', name: 'commons-codec', version: '1.11'
     compile group: 'commons-net', name: 'commons-net', version: '3.5'
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'

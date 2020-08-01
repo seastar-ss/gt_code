@@ -448,7 +448,7 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
             }
             JInvocation arg = cm.ref(Collections.class).staticInvoke("singleton").arg(staticRef);
             JVar selected = body.decl(modelClazzRef, "selected",
-                    JExpr.invoke(SelectMethod.makeUpMethodName(SelectMethodEnum.getOneByCondtion)).arg(arg).arg(assemblerVar)
+                    JExpr.invoke(SelectMethodEnum.makeUpMethodName(SelectMethodEnum.getOneByCondtion)).arg(arg).arg(assemblerVar)
                             .arg(checkInstance));
             body.invoke(assemblerVar, CodeConstants.METHOD_ASSEMBLER_INCREASE_INDEX);
             JConditional anIf = body._if(selected.eq(JExpr._null()));
@@ -486,7 +486,7 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
             }
             JInvocation arg = cm.ref(Collections.class).staticInvoke("singleton").arg(staticRef);
             JVar selected = body.decl(modelClazzRef, "selected",
-                    JExpr.invoke(SelectMethod.makeUpMethodName(SelectMethodEnum.getOneByCondtion)).arg(arg).arg(assemblerVar).arg(checkInstance));
+                    JExpr.invoke(SelectMethodEnum.makeUpMethodName(SelectMethodEnum.getOneByCondtion)).arg(arg).arg(assemblerVar).arg(checkInstance));
             body.invoke(assemblerVar, CodeConstants.METHOD_ASSEMBLER_INCREASE_INDEX);
             JConditional anIf = body._if(selected.eq(JExpr._null()));
 

@@ -41,8 +41,8 @@ public class CommonModelDaoDef<T extends CommonModelDaoDef> extends _BaseDaoConf
     protected String sql;
 
     protected boolean buildAbstractDao;
-//    protected String dataSourceName;
-//    protected List<String> dataSourceNames;
+    protected String dataSourceName;
+    protected List<String> dataSourceNames;
 
     protected JDefinedClass declaredDao, declaredAssembler, declaredMapper, declaredDsConfig;
 
@@ -53,7 +53,7 @@ public class CommonModelDaoDef<T extends CommonModelDaoDef> extends _BaseDaoConf
         relationDao = CollectionHelper.newList();
         initDef();
 //        enumClzz= CollectionHelper.newMap();
-//        this.dataSourceName = CodeConstants.KEY_WORD_DEFAULT_DATA_SOURCE_ID;
+        this.dataSourceName = CodeConstants.KEY_WORD_DEFAULT_DATA_SOURCE_ID;
     }
 
     public CommonModelDaoDef(String name, TableInfoInterface def, ModelBuilderContext builderContext) {
@@ -63,7 +63,7 @@ public class CommonModelDaoDef<T extends CommonModelDaoDef> extends _BaseDaoConf
         relationDao = CollectionHelper.newList();
         initDef();
 //        enumClzz= CollectionHelper.newMap();
-//        this.dataSourceName = CodeConstants.KEY_WORD_DEFAULT_DATA_SOURCE_ID;
+        this.dataSourceName = CodeConstants.KEY_WORD_DEFAULT_DATA_SOURCE_ID;
     }
 
     public void initDef() {
@@ -331,23 +331,23 @@ public class CommonModelDaoDef<T extends CommonModelDaoDef> extends _BaseDaoConf
 //        return (T)this;
 //    }
 
-    //    public Set<String> getIgnoreField() {
+//        public Set<String> getIgnoreField() {
 //        return ignoreField;
 //    }
-
+//
 //    public T setIgnoreField(Set<String> ignoreField) {
 //        this.ignoreField = ignoreField;
 //        return (T) this;
 //    }
 
-//    public String getDataSourceName() {
-//        return dataSourceName;
-//    }
+    public String getDataSourceName() {
+        return dataSourceName;
+    }
 
-//    public T setDataSourceName(String dataSourceName) {
-//        this.dataSourceName = dataSourceName;
-//        return (T) this;
-//    }
+    public T setDataSourceName(String dataSourceName) {
+        this.dataSourceName = dataSourceName;
+        return (T) this;
+    }
 
 //    public Map<String, JDefinedClass> getEnumClzz() {
 //        return enumClzz;
@@ -370,14 +370,14 @@ public class CommonModelDaoDef<T extends CommonModelDaoDef> extends _BaseDaoConf
 //        return getEnumClzz().put(key, value);
 //    }
 
-//    public List<String> getDataSourceNames() {
-//        return dataSourceNames;
-//    }
-//
-//    public CommonModelDaoDef setDataSourceNames(List<String> dataSourceNames) {
-//        this.dataSourceNames = dataSourceNames;
-//        return this;
-//    }
+    public List<String> getDataSourceNames() {
+        return dataSourceNames;
+    }
+
+    public CommonModelDaoDef setDataSourceNames(List<String> dataSourceNames) {
+        this.dataSourceNames = dataSourceNames;
+        return this;
+    }
 
     //    public String getTable() {
 //        return def.getTable();

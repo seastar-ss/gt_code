@@ -7,8 +7,8 @@ package com.shawn.ss.lib.code_gen;
 import com.shawn.ss.gen.api.conf.SelectMethodEnum;
 import com.shawn.ss.lib.code_gen.base.helper.DBConnectionHelper;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
-import com.shawn.ss.lib.code_gen.model.def_model.dao_def.ModelMulDaoDaoConf;
-import com.shawn.ss.lib.code_gen.model.def_model.dao_def.ModelRelatedTableDef;
+//import com.shawn.ss.lib.code_gen.model.def_model.dao_def.ModelMulDaoDaoConf;
+//import com.shawn.ss.lib.code_gen.model.def_model.dao_def.ModelRelatedTableDef;
 import com.shawn.ss.lib.code_gen.model.gen_param_model.db_def.DbModelConf;
 import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.ColumnInfoInterface;
@@ -618,63 +618,63 @@ public class ModelBuilderTest {
                         )
         );
         modelBuilderContext.buildBaseModelAndDao();
-        ModelMulDaoDaoConf wikiConf = new ModelMulDaoDaoConf("wikiConf").setMainTableDef(
-                new ModelRelatedTableDef().setFieldName("wikiIndex").setName("ent_knownleag_base.wiki_index")
-        )
-//                        .setMainDb("ent_knownleag_base")
-//                        .setMainTable("wiki_index")
-//                        .setMainField("wikiIndex")
-                ;
-        wikiConf.setMainModelSelectMethod(
-//                                CollectionHelper.<SelectMethodEnum>listBuilder()
-//                                        .add(SelectMethodEnum.getOneById)
-//                                        .add(SelectMethodEnum.getByCondition)
-//                                        .add(SelectMethodEnum.getByIndexAndCondition)
-//                                        .getList()
-                SelectMethodEnum.getNacessarySelectMethod().values().stream().<SelectMethodEnum>map((s) -> {
-                    return (SelectMethodEnum) s;
-                }).collect(Collectors.toList())
-        );
-        modelBuilderContext.buildMultiSelectDao(
-
-                wikiConf.setRelatedTables(
-                        CollectionHelper.<ModelRelatedTableDef>listBuilder()
-                                .add(
-                                        new ModelRelatedTableDef()
-                                                .setFieldName("page")
-                                                .setName("ent_knownleag_base.wiki_page")
-//                                                        .setDb("ent_knownleag_base")
-//                                                        .setTable("wiki_page")
-                                                .setFieldInThisTable("pageId")
-                                                .setFieldInMainTable("IndexPageId")
-                                                .setSingle(false)
-
-                                )
-                                .add(
-                                        new ModelRelatedTableDef()
-                                                .setFieldName("item")
-                                                .setName("ent_knownleag_base.wiki_structure_info_key_item")
-//                                                        .setDb("ent_knownleag_base")
-//                                                        .setTable("wiki_structure_info_key_item")
-                                                .setFieldInThisTable("itemId")
-                                                .setFieldInMainTable("IndexPageId")
-                                                .setSingle(true)
-                                                .setAdditionalWhere("pageType in (2,5,6)")
-                                )
-                                .add(
-                                        new ModelRelatedTableDef()
-                                                .setFieldName("info")
-                                                .setName("ent_knownleag_base.wiki_index_infos")
-//                                                        .setDb("ent_knownleag_base")
-//                                                        .setTable("wiki_index_infos")
-                                                .setFieldInThisTable("cmsInfoOfIndexId")
-                                                .setFieldInMainTable("indexId")
-                                                .setSingle(false)
-                                                .setAdditionalCondition(Collections.singletonMap("indexTitle", "cmsInfoName"))
-                                )
-                                .getList()
-                )
-        );
+//        ModelMulDaoDaoConf wikiConf = new ModelMulDaoDaoConf("wikiConf").setMainTableDef(
+//                new ModelRelatedTableDef().setFieldName("wikiIndex").setName("ent_knownleag_base.wiki_index")
+//        )
+////                        .setMainDb("ent_knownleag_base")
+////                        .setMainTable("wiki_index")
+////                        .setMainField("wikiIndex")
+//                ;
+//        wikiConf.setMainModelSelectMethod(
+////                                CollectionHelper.<SelectMethodEnum>listBuilder()
+////                                        .add(SelectMethodEnum.getOneById)
+////                                        .add(SelectMethodEnum.getByCondition)
+////                                        .add(SelectMethodEnum.getByIndexAndCondition)
+////                                        .getList()
+//                SelectMethodEnum.getNacessarySelectMethod().values().stream().<SelectMethodEnum>map((s) -> {
+//                    return (SelectMethodEnum) s;
+//                }).collect(Collectors.toList())
+//        );
+//        modelBuilderContext.buildMultiSelectDao(
+//
+//                wikiConf.setRelatedTables(
+//                        CollectionHelper.<ModelRelatedTableDef>listBuilder()
+//                                .add(
+//                                        new ModelRelatedTableDef()
+//                                                .setFieldName("page")
+//                                                .setName("ent_knownleag_base.wiki_page")
+////                                                        .setDb("ent_knownleag_base")
+////                                                        .setTable("wiki_page")
+//                                                .setFieldInThisTable("pageId")
+//                                                .setFieldInMainTable("IndexPageId")
+//                                                .setSingle(false)
+//
+//                                )
+//                                .add(
+//                                        new ModelRelatedTableDef()
+//                                                .setFieldName("item")
+//                                                .setName("ent_knownleag_base.wiki_structure_info_key_item")
+////                                                        .setDb("ent_knownleag_base")
+////                                                        .setTable("wiki_structure_info_key_item")
+//                                                .setFieldInThisTable("itemId")
+//                                                .setFieldInMainTable("IndexPageId")
+//                                                .setSingle(true)
+//                                                .setAdditionalWhere("pageType in (2,5,6)")
+//                                )
+//                                .add(
+//                                        new ModelRelatedTableDef()
+//                                                .setFieldName("info")
+//                                                .setName("ent_knownleag_base.wiki_index_infos")
+////                                                        .setDb("ent_knownleag_base")
+////                                                        .setTable("wiki_index_infos")
+//                                                .setFieldInThisTable("cmsInfoOfIndexId")
+//                                                .setFieldInMainTable("indexId")
+//                                                .setSingle(false)
+//                                                .setAdditionalCondition(Collections.singletonMap("indexTitle", "cmsInfoName"))
+//                                )
+//                                .getList()
+//                )
+//        );
 //        modelBuilderContext.buildSpecialModalAndDao(new SpecialModelConf().setMethodName("sample").setClzName("com.test.sample.SampleSqlDAO")
 //                .setSql("SELECT\n" +
 //                        "\tDATE_FORMAT(mar.create_time, '%y-%m-%d') AS date,\n" +

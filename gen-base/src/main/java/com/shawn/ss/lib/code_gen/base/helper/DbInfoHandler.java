@@ -255,14 +255,14 @@ public class DbInfoHandler {
 //                    .setDef(tableInfo)
                     .setBaseTable(null)
                     .setBuildMapper(true)
-                    .setIgnoreField(null)
+//                    .setIgnoreField(null)
                     .setDataSourceName(getDataSourceId())
-                    .setBaseAssemblerClass(assembleClass)
-                    .setBaseDaoClass(baseDaoClass)
+                    .setAssemblerExtendClzName(assembleClass)
+                    .setDaoExtendClzName(baseDaoClass)
                     ;
-            if (dataSources != null) {
-                commonModelDaoDef.setDataSourceNames(dataSources);
-            }
+//            if (dataSources != null) {
+//                commonModelDaoDef.setDataSourceNames(dataSources);
+//            }
         }
         return ret;
     }
@@ -291,10 +291,9 @@ public class DbInfoHandler {
 //                    .setDef(tableInfo)
                     .setBaseTable(null)
                     .setBuildMapper(true)
-                    .setIgnoreField(null)
                     .setDataSourceName(getDataSourceId())
-                    .setBaseAssemblerClass(assembleClass)
-                    .setBaseDaoClass(baseDaoClass)
+                    .setAssemblerExtendClzName(assembleClass)
+                    .setDaoExtendClzName(baseDaoClass)
                     ;
             if (dataSources != null) {
                 commonModelDaoDef.setDataSourceNames(dataSources);
