@@ -11,40 +11,43 @@ import java.util.Map;
 
 public class CommonDsDef implements _BaseDataSourceDef {
 
-    private final ConstantConf conf;
+//    private final static ConstantConf conf ;
+//    static {
+//        conf=new ConstantConf();
+//    }
 
     protected String configFilePath, configPrefix;
 
     final String name;
 
-    public CommonDsDef(String name, ConstantConf conf) {
+    public CommonDsDef(String name) {
         this.name=name;
-        this.conf = conf;
+//        this.conf = conf;
     }
 
-    @Override
-    public Map<String, FieldInfoInterface> getStaticFields() {
-        return conf.getStaticFields();
-    }
-
-    @Override
-    public String getConstantClzName() {
-        return conf.getConstantClzName();
-    }
-
-    public ConstantConf setClzName(String clzName) {
-        return conf.setClzName(clzName);
-    }
-
-    @Override
-    public void setConstantClz(JDefinedClass definedClass) {
-        conf.setConstantClz(definedClass);
-    }
-
-    @Override
-    public JDefinedClass getConstantClz() {
-        return conf.getConstantClz();
-    }
+//    @Override
+//    public Map<String, FieldInfoInterface> getStaticFields() {
+//        return conf.getStaticFields();
+//    }
+//
+//    @Override
+//    public String getConstantClzName() {
+//        return conf.getConstantClzName();
+//    }
+//
+//    public ConstantConf setClzName(String clzName) {
+//        return conf.setClzName(clzName);
+//    }
+//
+//    @Override
+//    public void setConstantClz(JDefinedClass definedClass) {
+//        conf.setConstantClz(definedClass);
+//    }
+//
+//    @Override
+//    public JDefinedClass getConstantClz() {
+//        return conf.getConstantClz();
+//    }
 
     @Override
     public String getDataSourceBaseName() {

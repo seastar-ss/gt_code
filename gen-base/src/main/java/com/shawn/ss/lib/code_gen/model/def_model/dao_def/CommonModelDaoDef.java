@@ -10,6 +10,7 @@ import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.ColumnInfoInterface;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.FieldInfoInterface;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.TableInfoInterface;
+import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.model.CommonFieldTypeInfo;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.model.FieldDataTypeInterface;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.model.FieldInfo;
 
@@ -73,7 +74,7 @@ public class CommonModelDaoDef<T extends CommonModelDaoDef> extends _BaseDaoConf
         for (ColumnInfoInterface col : columns) {
             String fname = CodeConstants.getFieldNameFromTbColumn(col.getFieldName());
             FieldDataTypeInterface type = col.getType();
-            addField(new FieldInfo().setFieldName(fname).setType(type));
+            addField(new FieldInfo().setFieldName(fname).setType(type).setAliasFieldName(col.getFieldName()));
         }
 
         setPojoClzName(builderContext.getReallyModelClassName(def.getTable(), baseTable));
@@ -375,8 +376,23 @@ public class CommonModelDaoDef<T extends CommonModelDaoDef> extends _BaseDaoConf
     }
 
     public CommonModelDaoDef setDataSourceNames(List<String> dataSourceNames) {
-        this.dataSourceNames = dataSourceNames;
+        for (String name : dataSourceNames) {
+            final String key = CodeConstants.KEY_WORD_FOR_DATA_SOURCE + name;
+            constantConf.putField(
+                    key,
+                    new FieldInfo()
+                            .setFieldName(key)
+                            .setType(new CommonFieldTypeInfo().settClass(String.class))
+                            .setDefaultValue(name)
+            );
+        }
+//        this.dataSourceNames = dataSourceNames;
         return this;
+    }
+
+    @Override
+    public FieldInfoInterface getPriField() {
+        return def.getPriKeyInfo();
     }
 
     //    public String getTable() {

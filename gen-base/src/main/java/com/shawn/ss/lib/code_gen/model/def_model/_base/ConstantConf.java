@@ -11,7 +11,7 @@ import java.util.Map;
 public class ConstantConf implements _BaseConstantDef {
 
     JDefinedClass definedClass;
-    final Map<String,FieldInfoInterface> fields;
+    final Map<String, FieldInfoInterface> fields;
     String clzName;
 
     ConstantConf() {
@@ -21,6 +21,18 @@ public class ConstantConf implements _BaseConstantDef {
     @Override
     public Map<String, FieldInfoInterface> getStaticFields() {
         return Collections.unmodifiableMap(fields);
+    }
+
+    public int sizeOfStaticFields() {
+        return fields.size();
+    }
+
+    public FieldInfoInterface getField(Object key) {
+        return fields.get(key);
+    }
+
+    public FieldInfoInterface putField(String key, FieldInfoInterface value) {
+        return fields.put(key, value);
     }
 
     @Override
@@ -35,7 +47,7 @@ public class ConstantConf implements _BaseConstantDef {
 
     @Override
     public void setConstantClz(JDefinedClass definedClass) {
-        this.definedClass=definedClass;
+        this.definedClass = definedClass;
     }
 
     @Override

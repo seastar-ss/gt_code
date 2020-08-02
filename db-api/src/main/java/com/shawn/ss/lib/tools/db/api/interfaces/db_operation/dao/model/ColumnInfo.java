@@ -159,4 +159,8 @@ public class ColumnInfo extends FieldInfo implements ColumnInfoInterface {
         return this;
     }
 
+//    @Override
+//    public String getAliasField() {
+//        return super.getAliasField();
+//    }
 }

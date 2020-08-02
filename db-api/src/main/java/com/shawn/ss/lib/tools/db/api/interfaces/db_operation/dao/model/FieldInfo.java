@@ -2,13 +2,14 @@ package com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.model;
 
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.FieldInfoInterface;
 
-public class FieldInfo implements FieldInfoInterface{
+public class FieldInfo implements FieldInfoInterface {
     String fieldName;
     FieldDataTypeInterface type;
     String comment;
     Object defaultValue;
     EnumTypeDef enumTypeDef;
-    boolean isStatic=false;
+    String aliasFieldName;
+    boolean isStatic = false;
 
     public String getFieldName() {
         return fieldName;
@@ -43,7 +44,7 @@ public class FieldInfo implements FieldInfoInterface{
 
     @Override
     public String getAliasField() {
-        return null;
+        return aliasFieldName == null ? fieldName : aliasFieldName;
     }
 
     @Override
@@ -67,6 +68,15 @@ public class FieldInfo implements FieldInfoInterface{
 
     public FieldInfo setStatic(boolean aStatic) {
         isStatic = aStatic;
+        return this;
+    }
+
+//    public String getAliasFieldName() {
+//        return aliasFieldName;
+//    }
+
+    public FieldInfo setAliasFieldName(String aliasFieldName) {
+        this.aliasFieldName = aliasFieldName;
         return this;
     }
 }

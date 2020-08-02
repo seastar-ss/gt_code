@@ -19,6 +19,8 @@ public interface TableInfoInterface {
 
     FieldDataTypeInterface getPriKeyType();
 
+    FieldInfoInterface getPriKeyInfo();
+
     List<ColumnInfoInterface> getColumns();
 
     TableInfo getTableInfo();

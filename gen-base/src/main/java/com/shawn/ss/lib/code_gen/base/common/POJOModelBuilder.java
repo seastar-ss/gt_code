@@ -11,10 +11,12 @@ import com.shawn.ss.lib.tools.CodeStyleTransformHelper;
 import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.FieldInfoInterface;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.model.EnumTypeDef;
+import com.shawn.ss.lib.tools.db.dto_base.model.AbstractBaseModel;
 import com.shawn.ss.lib.tools.db.dto_base.model._APIObj;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -22,7 +24,7 @@ import java.util.Set;
 /**
  * Created by ss on 2018/10/27.
  */
-public class POJOModelBuilder  implements CodeBuilderInterface {
+public class POJOModelBuilder implements CodeBuilderInterface {
 
     public static final Logger L = LoggerFactory.getLogger(POJOModelBuilder.class);
 
@@ -56,7 +58,7 @@ public class POJOModelBuilder  implements CodeBuilderInterface {
 //        this.info = def.get();
         this.builderContext = def.getBuilderContext();
 //        this.baseTable = def.getBaseTable();
-        ignoreField = def.getIgnoreField();
+        ignoreField = CollectionHelper.isCollectionEmpty(def.getIgnoreField()) ? Collections.emptySet() : def.getIgnoreField();
 //        this.ignoreField = (ignore == null ? Collections.emptySet() : ignore);
 //        db = info.getDb();
 //        table = info.getTable();
@@ -68,7 +70,10 @@ public class POJOModelBuilder  implements CodeBuilderInterface {
         this.cm = builderContext.getCm();
 
         this.modelClassName = def.getPojoClzName();
-        extendedClazz = cm.ref(def.getPojoExtendsClzName());
+        if (def.getPojoExtendsClzName() != null)
+            extendedClazz = cm.ref(def.getPojoExtendsClzName());
+        else
+            extendedClazz = cm.ref(AbstractBaseModel.class);
         fields = modelDef.getFields();
 //        this.allModelFields = CollectionHelper.newMap();
 //        this.allGetFields = CollectionHelper.newMap();
@@ -90,7 +95,8 @@ public class POJOModelBuilder  implements CodeBuilderInterface {
             L.info("build model:" + modelClassName);
             checkTableInfoForEnums();
             definedClass = cm._class(modelClassName);
-            definedClass._extends(extendedClazz);
+            if (extendedClazz != null)
+                definedClass._extends(extendedClazz);
 
             definedClass.constructor(JMod.PUBLIC);
             buildComments();
@@ -120,8 +126,8 @@ public class POJOModelBuilder  implements CodeBuilderInterface {
     }
 
     private void buildStaticFields() {
-        Map<String,FieldInfoInterface> staticConstFields = modelDef.getStaticConstFields();
-        CodeConstants.buildStaticFieldFromMap(cm,definedClass,staticConstFields);
+        Map<String, FieldInfoInterface> staticConstFields = modelDef.getStaticConstFields();
+        CodeConstants.buildStaticFieldFromMap(cm, definedClass, staticConstFields);
     }
 
     private void buildToStringMethod() {
@@ -134,7 +140,7 @@ public class POJOModelBuilder  implements CodeBuilderInterface {
                 EnumTypeDef enumTypeDef = item.getEnumTypeDef();
                 if (enumTypeDef != null && enumTypeDef.sizeOfItems() > 0) {
                     EnumTypeConf conf =
-                            new EnumTypeConf(enumTypeDef,builderContext).setName(modelDef.getName());
+                            new EnumTypeConf(enumTypeDef, builderContext).setName(modelDef.getName());
 //                    conf.setBuilderContext(builderContext);
                     EnumBuilder builder = new EnumBuilder(conf);
                     builder.buildModel();
@@ -183,18 +189,18 @@ public class POJOModelBuilder  implements CodeBuilderInterface {
 //            final EnumTypeDef enumTypeDef = item.getEnumTypeDef();
             AbstractJClass jClass = type;
 
-            String humpStyleColName = CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(colName);
-            String fname = CodeConstants.getFieldNameFromTbColumn(colName);
+            String itemFieldName = item.getFieldName();
+//            String fname = CodeConstants.getFieldNameFromTbColumn(colName);
             ;
 //            if(PATTERN_NUMBER_START.matcher(humpStyleColName).matches()) {
 //                fname = CodeConstants.FIELD_MODEL_FIELD_PREFIX + CodeStyleTransformHelper.upperFirstCase(humpStyleColName);
 //            }else{
 //                fname=humpStyleColName;
 //            }
-            JFieldVar field = definedClass.field(JMod.NONE, jClass, fname);
+            JFieldVar field = definedClass.field(JMod.NONE, jClass, itemFieldName);
 
             field.javadoc().append(comment);
-            JMethod[] methods = CodeConstants.buildGetterAndSetter(definedClass, humpStyleColName, jClass, field);
+            JMethod[] methods = CodeConstants.buildGetterAndSetter(definedClass, itemFieldName, jClass, field);
 
             definedClass.field(CodeConstants.MODE_PUBLIC_STATIC_FINAL, String.class, CodeConstants.FIELD_CONST_NAME_PREFIX + colName.toUpperCase(), JExpr.lit(colName));
         }

@@ -3,6 +3,7 @@ package com.shawn.ss.lib.code_gen.base.helper;
 import com.helger.jcodemodel.JCodeModel;
 import com.helger.jcodemodel.JDefinedClass;
 import com.helger.jcodemodel.JMethod;
+import com.shawn.ss.lib.code_gen.base.common.ConstantsBuilder;
 import com.shawn.ss.lib.code_gen.base.common.MapperOfPojoBuilder;
 import com.shawn.ss.lib.code_gen.base.dao.common_dao.common_dao_builder.CommonDaoBuilder;
 import com.shawn.ss.lib.code_gen.base.dao.common_dao.common_model_builder.MapperOfResultSetBuilder;
@@ -15,8 +16,10 @@ import com.shawn.ss.lib.code_gen.base.helper.data_store.ClassDataTable;
 import com.shawn.ss.lib.code_gen.base.helper.data_store.DbDataTable;
 
 import com.shawn.ss.lib.code_gen.model.MethodTypeEnum;
+import com.shawn.ss.lib.code_gen.model.def_model._base.AbstractConf;
 import com.shawn.ss.lib.code_gen.model.def_model.dao_def.CommonModelDaoDef;
 
+import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseConstantDef;
 import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseDaoConf;
 import com.shawn.ss.lib.code_gen.model.gen_param_model.db_def.DbModelConf;
 import com.shawn.ss.lib.tools.CodeStyleTransformHelper;
@@ -238,7 +241,7 @@ public class ModelBuilderContext {
 //    }
 
     public long addDb(DBConnectionHelper conn, DbModelConf conf) {
-        final DbInfoHandler infoHolder = new DbInfoHandler(conn, conf,this);
+        final DbInfoHandler infoHolder = new DbInfoHandler(conn, conf, this);
         final long uuid = DbDataTable.putDbInfo(infoHolder);
         relatedDbs.put(uuid, infoHolder);
 //        List<Long> list = dbNameToIndex.get(data_store);
@@ -360,12 +363,12 @@ public class ModelBuilderContext {
     }
 
     public String getMapperClass(String modelClassName) {
-        return basePackage + ".dto.mapper." +CodeConstants.CLASS_NAME_RESULT_SET_MAPPER_PREFIX+ CodeConstants.getClassNameFromFullName(modelClassName);
+        return basePackage + ".dto.mapper." + CodeConstants.CLASS_NAME_RESULT_SET_MAPPER_PREFIX + CodeConstants.getClassNameFromFullName(modelClassName);
     }
 
     public String getConstantClzName() {
 
-        return basePackage + ".contants." +CodeConstants.CLASS_NAME_CONSTANTS;
+        return basePackage + ".contants." + CodeConstants.CLASS_NAME_CONSTANTS;
     }
 
     private String getModelClassName(String table) {
@@ -378,8 +381,9 @@ public class ModelBuilderContext {
     }
 
     public String getRSMapperClassName(String table) {
-        String modelClass = getModelClassName(table);
-        return modelClass + "." + CodeConstants.CLASS_NAME_RESULT_SET_MAPPER_PREFIX + CodeConstants.getClassNameFromFullName(modelClass);
+//        String modelClass = getModelClassName(table);
+        String modelSimpleName = CodeStyleTransformHelper.upperFirstCase(CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(table));
+        return basePackage + ".dto." + "basepo." + CodeConstants.CLASS_NAME_RESULT_SET_MAPPER_PREFIX + modelSimpleName;
     }
 
     public String getMapMapperClassName(String table) {
@@ -426,7 +430,7 @@ public class ModelBuilderContext {
 //            if(dataSources!=null){
 //                commonModelDef.setDataSourceNames(dataSources);
 //            }
-             buildBaseModel(def);
+            buildBaseModel(def);
             try {
                 CommonDaoBuilder daoBuilder = new CommonDaoBuilder(def);
                 daoBuilder.buildModel();
@@ -487,13 +491,13 @@ public class ModelBuilderContext {
             PoModelBuilder builder = new PoModelBuilder(def);
             builder.buildModel();
 //            if (def()) {
-                MapperOfResultSetBuilder rsMapperBuilder = new MapperOfResultSetBuilder(def);
-                rsMapperBuilder.buildModel();
+            MapperOfResultSetBuilder rsMapperBuilder = new MapperOfResultSetBuilder(def);
+            rsMapperBuilder.buildModel();
 //                MapperOfMapBuilder redisMapperBuilder = new MapperOfMapBuilder(builder);
 //                redisMapperBuilder.buildModel();
 
-                MapperOfPojoBuilder redisMapperBuilder = new MapperOfPojoBuilder(def);
-                redisMapperBuilder.buildModel();
+            MapperOfPojoBuilder redisMapperBuilder = new MapperOfPojoBuilder(def);
+            redisMapperBuilder.buildModel();
 //            }
 
         } catch (Exception ex) {
@@ -539,10 +543,10 @@ public class ModelBuilderContext {
 //            }
 //            conf.setBuilderContext(this);
 
-            ComposedPoModelBuilder modelBuilder=new ComposedPoModelBuilder(conf);
+            ComposedPoModelBuilder modelBuilder = new ComposedPoModelBuilder(conf);
             modelBuilder.buildModel();
 
-            ComposedAssemblerBuilder assemblerBuilder=new ComposedAssemblerBuilder(conf);
+            ComposedAssemblerBuilder assemblerBuilder = new ComposedAssemblerBuilder(conf);
             assemblerBuilder.buildModel();
 
             MultiDaoBuilder builder = new MultiDaoBuilder(conf);
@@ -693,5 +697,22 @@ public class ModelBuilderContext {
     }
 
 
+    public void initBaseClazz() {
+        ConstantsBuilder builder = new ConstantsBuilder(new DefaultConf("init", this));
+        builder.buildModel();
+    }
+
+    private class DefaultConf extends AbstractConf {
+        protected DefaultConf(String name, ModelBuilderContext builderContext) {
+            super(name, builderContext);
+            initConstantClz();
+        }
+
+        private void initConstantClz() {
+            constantConf.setClzName(getConstantClzName());
+        }
+
+
+    }
 
 }

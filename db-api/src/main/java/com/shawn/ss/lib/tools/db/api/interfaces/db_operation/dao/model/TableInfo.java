@@ -2,6 +2,7 @@ package com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.model;
 
 import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.ColumnInfoInterface;
+import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.FieldInfoInterface;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.TableInfoInterface;
 
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.Map;
 /**
  * Created by ss on 2017/10/11.
  */
-public class TableInfo implements TableInfoInterface{
+public class TableInfo implements TableInfoInterface {
     public static final String EXTEND_BY_NUMBER = "extendedByNumber", EXTEND_BY_DATE = "extendedByDate";
     String tableName;
     String dbName;
@@ -19,15 +20,15 @@ public class TableInfo implements TableInfoInterface{
     String tablePattern;
     String extendType;
     String tableComment;
-    int tableType=0;
+    int tableType = 0;
     String charset;
     Integer prKeyIndex;
     List<ColumnInfoInterface> columns;
-    Map<String,ColumnInfoInterface> columnMap;
+    Map<String, ColumnInfoInterface> columnMap;
 
     public TableInfo() {
-        columns= CollectionHelper.newList();
-        columnMap=CollectionHelper.newMap();
+        columns = CollectionHelper.newList();
+        columnMap = CollectionHelper.newMap();
     }
 
     public void setTableName(String tableName) {
@@ -64,8 +65,8 @@ public class TableInfo implements TableInfoInterface{
 
     public void setColumns(List<ColumnInfoInterface> columns) {
         this.columns = columns;
-        for(ColumnInfoInterface column:columns){
-            columnMap.put(column.getFieldName(),column);
+        for (ColumnInfoInterface column : columns) {
+            columnMap.put(column.getFieldName(), column);
         }
     }
 
@@ -78,7 +79,7 @@ public class TableInfo implements TableInfoInterface{
     }
 
     public boolean addCol(ColumnInfoInterface columnInfoInterface) {
-        columnMap.put(columnInfoInterface.getFieldName(),columnInfoInterface);
+        columnMap.put(columnInfoInterface.getFieldName(), columnInfoInterface);
         return columns.add(columnInfoInterface);
     }
 
@@ -99,11 +100,11 @@ public class TableInfo implements TableInfoInterface{
     @Override
     public String[] getTableColumnNames() {
         int size = columns.size();
-        String[] ret=new String[size];
-        for(int i = 0, n = size; i<n; ++i){
+        String[] ret = new String[size];
+        for (int i = 0, n = size; i < n; ++i) {
             ColumnInfoInterface col = columns.get(i);
-            if(col!=null){
-                ret[i]=col.getFieldName();
+            if (col != null) {
+                ret[i] = col.getFieldName();
             }
         }
         return ret;
@@ -111,16 +112,21 @@ public class TableInfo implements TableInfoInterface{
 
     @Override
     public String getPriKey() {
-        if(prKeyIndex!=null && prKeyIndex>=0 && prKeyIndex<columns.size()){
-            return columns.get(prKeyIndex).getFieldName();
-        }
-        return null;
+
+        final FieldInfoInterface priKeyInfo = getPriKeyInfo();
+        return priKeyInfo == null ? null : priKeyInfo.getFieldName();
     }
 
     @Override
     public FieldDataTypeInterface getPriKeyType() {
-        if(prKeyIndex!=null && prKeyIndex>=0 && prKeyIndex<columns.size()){
-            return columns.get(prKeyIndex).getType();
+        final FieldInfoInterface priKeyInfo = getPriKeyInfo();
+        return priKeyInfo == null ? null : priKeyInfo.getType();
+    }
+
+    @Override
+    public FieldInfoInterface getPriKeyInfo() {
+        if (prKeyIndex != null && prKeyIndex >= 0 && prKeyIndex < columns.size()) {
+            return columns.get(prKeyIndex);
         }
         return null;
     }
@@ -153,7 +159,7 @@ public class TableInfo implements TableInfoInterface{
     @Override
     public FieldDataTypeInterface getColumnDataType(String colName) {
         ColumnInfoInterface columnInfoInterface = columnMap.get(colName);
-        return columnInfoInterface==null?null:columnInfoInterface.getType();
+        return columnInfoInterface == null ? null : columnInfoInterface.getType();
     }
 
     @Override
@@ -163,7 +169,7 @@ public class TableInfo implements TableInfoInterface{
     }
 
 
-    public Map<String,ColumnInfoInterface> getColMap(){
+    public Map<String, ColumnInfoInterface> getColMap() {
         return columnMap;
     }
 
@@ -184,9 +190,8 @@ public class TableInfo implements TableInfoInterface{
 
     @Override
     public int getColumnCount() {
-        return columns==null?-1:columns.size();
+        return columns == null ? -1 : columns.size();
     }
-
 
 
     //    @Override

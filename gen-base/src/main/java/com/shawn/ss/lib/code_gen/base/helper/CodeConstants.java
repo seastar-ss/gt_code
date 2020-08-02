@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
 
 public class CodeConstants {
 
+
     final static Pattern PATTERN_NUMBER_START = Pattern.compile("^\\d+.*");
 
     public static final int MODE_PUBLIC_STATIC_FINAL = JMod.PUBLIC + JMod.STATIC + JMod.FINAL;
@@ -53,7 +54,7 @@ public class CodeConstants {
 
 
     public static final String FIELD_DEFAULT_START = "DEFAULT_START", FIELD_DEFAULT_COUNT = "DEFUALT_COUNT";
-
+    public static final String KEY_WORD_FOR_DATA_SOURCE = "DATA_SOURCE_OF_";
 
     /*
      * method start

@@ -186,6 +186,7 @@ public class CommonPOJOConf extends AbstractConf implements _BaseModelConf, _Bas
 
     @Override
     public FieldInfoInterface getPriField() {
+
         return null;
     }
 

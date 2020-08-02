@@ -16,17 +16,17 @@ public abstract class AbstractConf implements _BaseContextConf {
 
     protected transient final ModelBuilderContext builderContext;
 
-    protected volatile static ConstantConf constantConf;
+    protected final static ConstantConf constantConf;
 
     static {
-        constantConf=new ConstantConf();
+        constantConf = new ConstantConf();
     }
 
     public static void addGlobalStaticField(FieldInfoInterface info) {
-        constantConf.fields.put(info.getFieldName(),info);
+        constantConf.fields.put(info.getFieldName(), info);
     }
 
-    public static void setConstantClzName(String clzName){
+    public static void setConstantClzName(String clzName) {
         constantConf.setClzName(clzName);
     }
 
@@ -37,7 +37,7 @@ public abstract class AbstractConf implements _BaseContextConf {
     }
 
     protected final void init() {
-        ConfDataTable.put(this.getName(),this);
+        ConfDataTable.put(this.getName(), this);
     }
 
     @Override
@@ -53,6 +53,10 @@ public abstract class AbstractConf implements _BaseContextConf {
     @Override
     public ModelBuilderContext getBuilderContext() {
         return builderContext;
+    }
+
+    public static ConstantConf getConstantConf() {
+        return constantConf;
     }
 
     //    public _BaseConstantConf getConstantConf() {

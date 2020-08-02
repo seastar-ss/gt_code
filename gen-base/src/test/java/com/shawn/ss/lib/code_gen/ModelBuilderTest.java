@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ModelBuilderTest {
@@ -57,7 +58,7 @@ public class ModelBuilderTest {
     static List<SelectMethodEnum> list = CollectionHelper.<SelectMethodEnum>listBuilder()
             .add(SelectMethodEnum.getAll)
             .getList();
-
+/**
     @Test
     public void testGenCommonActivity() {
 //        ModelBuilderContext modelBuilderContext = ModelBuilderContext.builderHelper(
@@ -542,6 +543,7 @@ public class ModelBuilderTest {
         modelBuilderContext.buildBaseModelAndDao();
         modelBuilderContext.writeModel();
     }
+**/
 
     @Test
     public void testGenSqlDbModel() throws IOException {
@@ -563,20 +565,21 @@ public class ModelBuilderTest {
 //                        .add("t_user_info")
 //                        .getSet(),
 //                CollectionHelper.<String>setBuilder().add("ent_.*").add(".*\\d+$").getSet());
+        final Set<String> set = CollectionHelper.<String>setBuilder()
+                .add("b_menu")
+                .add("b_user")
+                .add("b_role")
+                .add("b_material")
+                .getSet();
         modelBuilderContext.addDb(connectionMaster, new DbModelConf().setSlave(false)
                 .setIncludingPattern(
-                        CollectionHelper.<String>setBuilder()
-                                .add("mlink_match_result")
-                                .add("t_mlink_url_info")
-                                .add("t_wechat_info")
-                                .add("t_user_info")
-                                .getSet()
+                        set
                 )
 //                .setDefaultBaseDaoClass("com.nonexist.claswws.DAO")
 //                .setBaseDaoClass(Collections.singletonMap("t_user_info","com.nonexist.class.DAOs"))
 //                .setDefaultAssemblerClass("com.nonexist.clasews.Assemble")
 //                .setBaseAssembleClass(Collections.singletonMap("t_user_info","com.nonexist.class.Assembles"))
-                .setDb("ent_portal")
+                .setDb("new_main_schema")
                 .setIgnoreTbPattern(CollectionHelper.<String>setBuilder().add("ent_.*").add(".*\\d+$").getSet()));
         DBConnectionHelper connection = modelBuilderContext.buildConnection("ent_portal_slave",
 //               "jdbc:mysql://127.0.0.1:4000/ent_portal?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true",
@@ -586,14 +589,9 @@ public class ModelBuilderTest {
         );
         modelBuilderContext.addDb(connection, new DbModelConf().setSlave(true)
                 .setIncludingPattern(
-                        CollectionHelper.<String>setBuilder()
-                                .add("mlink_match_result")
-                                .add("t_mlink_url_info")
-                                .add("t_wechat_info")
-                                .add("t_user_info")
-                                .getSet()
+                        set
                 )
-                .setDb("ent_portal")
+                .setDb("new_main_schema")
                 .setIgnoreTbPattern(CollectionHelper.<String>setBuilder().add("ent_.*").add(".*\\d+$").getSet()));
         DBConnectionHelper wikiconnection = modelBuilderContext.buildConnection("wiki_master",
 //               "jdbc:mysql://127.0.0.1:4000/ent_knownleag_base?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true",
@@ -605,18 +603,19 @@ public class ModelBuilderTest {
         modelBuilderContext.addDb(wikiconnection, new DbModelConf().setSlave(false)
                         .setIncludingPattern(
                                 CollectionHelper.<String>setBuilder()
-                                        .add("wiki_index")
-                                        .add("wiki_page")
-                                        .add("wiki_structure_info_key_item")
-                                        .add("wiki_index_infos")
+                                        .add("t_device")
+                                        .add("t_event")
+                                        .add("t_task")
+                                        .add("t_mall_area")
 //                       .add("t_wechat_info")
 //                       .add("t_user_info")
                                         .getSet()
-                        ).setDb("ent_knownleag_base")
+                        ).setDb("robot_control_system")
                         .setIgnoreTbPattern(
                                 CollectionHelper.<String>setBuilder().add("ent_.*").add(".*\\d+$").getSet()
                         )
         );
+        modelBuilderContext.initBaseClazz();
         modelBuilderContext.buildBaseModelAndDao();
 //        ModelMulDaoDaoConf wikiConf = new ModelMulDaoDaoConf("wikiConf").setMainTableDef(
 //                new ModelRelatedTableDef().setFieldName("wikiIndex").setName("ent_knownleag_base.wiki_index")

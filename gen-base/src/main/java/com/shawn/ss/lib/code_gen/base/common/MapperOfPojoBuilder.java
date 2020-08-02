@@ -87,7 +87,11 @@ public class MapperOfPojoBuilder implements CodeBuilderInterface {
     private void buildNewInstance() {
         _BaseConstantDef constant = modelDef.getConstant();
 
-        constant.getConstantClz().field(CodeConstants.MODE_PUBLIC_STATIC_FINAL,definedClass.narrow(modelClass), CodeConstants.getFieldNameOfCommonMapperForModel(modelDef.getName()),JExpr._new(definedClass).narrow(modelClass));
+        constant.getConstantClz().field(
+                CodeConstants.MODE_PUBLIC_STATIC_FINAL,definedClass.narrow(modelClass),
+                CodeConstants.getFieldNameOfCommonMapperForModel(modelDef.getName()),
+                JExpr._new(definedClass).narrow(modelClass)
+        );
     }
 
     private void buildToPo() {

@@ -100,7 +100,7 @@ public class PoModelBuilder implements CodeBuilderInterface {
 
     private void buildStaticFields() {
         FieldInfoInterface priField = modelDef.getPriField();
-        String priKey = priField.getAliasField();
+        String priKey = priField.getFieldName();
         if (priKey != null) {
             definedClass.field(CodeConstants.MODE_PUBLIC_STATIC_FINAL, String.class, CodeConstants.FIELD_PRIMARY_KEY_NAME, JExpr.lit(priKey));
         }

@@ -6,7 +6,7 @@ import com.shawn.ss.gen.api.model.data_source_conf.ModelDbConfig;
 
 import java.util.List;
 
-public interface _BaseDataSourceDef extends _BaseConstantDef {
+public interface _BaseDataSourceDef  {
     String getDataSourceBaseName();
 
 //    List<String> getSlaveDataSourceName();

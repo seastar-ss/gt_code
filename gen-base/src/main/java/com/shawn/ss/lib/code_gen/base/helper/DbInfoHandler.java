@@ -39,7 +39,6 @@ public class DbInfoHandler {
     DbInfoInterface dbInfo;
 
 
-
     private final long uuid;
 
     {
@@ -81,19 +80,19 @@ public class DbInfoHandler {
 ////        this.dataSourceId=connection.getDataSourceId();
 //    }
 
-    public DbInfoHandler(DBConnectionHelper connection, boolean isSlave,ModelBuilderContext context) {
-        this(connection, new DbModelConf().setSlave(isSlave),context);
+    public DbInfoHandler(DBConnectionHelper connection, boolean isSlave, ModelBuilderContext context) {
+        this(connection, new DbModelConf().setSlave(isSlave), context);
 //        this.dataSourceId=connection.getDataSourceId();
     }
 
-    public DbInfoHandler(DBConnectionHelper connection, DbModelConf conf,ModelBuilderContext context) {
+    public DbInfoHandler(DBConnectionHelper connection, DbModelConf conf, ModelBuilderContext context) {
         this.context = context;
         tbMaps = CollectionHelper.newMap();
         this.connection = connection;
-        this.conf=conf;
+        this.conf = conf;
 //        this.isSlave = isSlave;
         if (conf.getDb() != null)
-            setDb(conf.getDb(),conf.getIncludingPattern(),conf.getIgnoreTbPattern());
+            setDb(conf.getDb(), conf.getIncludingPattern(), conf.getIgnoreTbPattern());
 //        this.dataSourceId=connection.getDataSourceId();
     }
 
@@ -125,7 +124,7 @@ public class DbInfoHandler {
     public DbInfoHandler setConf(DbModelConf conf) {
         this.conf = conf;
         if (conf.getDb() != null)
-            setDb(conf.getDb(),conf.getIgnoreTbPattern(),conf.getIncludingPattern());
+            setDb(conf.getDb(), conf.getIgnoreTbPattern(), conf.getIncludingPattern());
         return this;
     }
 
@@ -157,7 +156,7 @@ public class DbInfoHandler {
     }
 
     public boolean inited() {
-        return conf!=null && conf.getDb() != null && dbInfo != null;
+        return conf != null && conf.getDb() != null && dbInfo != null;
     }
 
     public Map<String, TableInfoInterface> getTbMaps() {
@@ -207,15 +206,22 @@ public class DbInfoHandler {
 //    }
 
     private DbInfo analyzeDb(Set<String> ignoreTbPattern, Set<String> includingPattern) {
-        this.conf.setIgnoreTbPattern( ignoreTbPattern);
-        this.conf.setIncludingPattern( includingPattern);
+        this.conf.setIgnoreTbPattern(ignoreTbPattern);
+        this.conf.setIncludingPattern(includingPattern);
         DbInfo dbInfo;
         final String db = conf.getDb();
         dbInfo = (DbInfo) DbDataTable.getDb(db);
         if (dbInfo == null) {
             dbInfo = new DbInfo(db);
         }
-        analyzer.buildModel(new DbAnalyzer.BuildModelParamHolder(connection.getConnection(), dbInfo, ignoreTbPattern, includingPattern));
+        analyzer.buildModel(
+                new DbAnalyzer.BuildModelParamHolder(
+                        connection.getConnection(),
+                        dbInfo,
+                        ignoreTbPattern,
+                        includingPattern
+                )
+        );
         return dbInfo;
     }
 
@@ -232,69 +238,68 @@ public class DbInfoHandler {
         }
         return tbMap;
     }
-
-    public CommonModelDaoDef getDefs(String table){
-        CommonModelDaoDef ret=null;
+/*
+    public CommonModelDaoDef getDefs(String table) {
+        CommonModelDaoDef ret = null;
         String dbName = getDb();
-        List<String> dataSources=DbDataTable.getAllSlaveSourceNameByName(dbName);
+        List<String> dataSources = DbDataTable.getAllSlaveSourceNameByName(dbName);
         final String defaultAssemblerClass = conf.getDefaultAssemblerClass();
         final String defaultBaseDaoClass = conf.getDefaultBaseDaoClass();
         final TableInfoInterface tableInfo = getTbMaps().get(table);
-        if(tableInfo!=null){
-            String baseDaoClass=defaultBaseDaoClass;
-            String assembleClass=defaultAssemblerClass;
-            if(conf.getBaseDaoClass(table)!=null){
-                baseDaoClass=conf.getBaseDaoClass(table);
+        if (tableInfo != null) {
+            String baseDaoClass = defaultBaseDaoClass;
+            String assembleClass = defaultAssemblerClass;
+            if (conf.getBaseDaoClass(table) != null) {
+                baseDaoClass = conf.getBaseDaoClass(table);
             }
-            if(conf.getAssembleClass(table)!=null){
-                assembleClass=conf.getAssembleClass(table);
+            if (conf.getAssembleClass(table) != null) {
+                assembleClass = conf.getAssembleClass(table);
             }
 //            String table = tableInfo.getTable();
 //            String modelSimpleName = CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(table);
-            final CommonModelDaoDef commonModelDaoDef = new CommonModelDaoDef(tableInfo,context)
+            final CommonModelDaoDef commonModelDaoDef = new CommonModelDaoDef(tableInfo, context)
 //                    .setDef(tableInfo)
                     .setBaseTable(null)
                     .setBuildMapper(true)
 //                    .setIgnoreField(null)
                     .setDataSourceName(getDataSourceId())
                     .setAssemblerExtendClzName(assembleClass)
-                    .setDaoExtendClzName(baseDaoClass)
-                    ;
+                    .setDaoExtendClzName(baseDaoClass);
 //            if (dataSources != null) {
 //                commonModelDaoDef.setDataSourceNames(dataSources);
 //            }
         }
         return ret;
     }
+*/
+    public List<CommonModelDaoDef> getDefs() {
 
-    public List<CommonModelDaoDef> getDefs(){
-
-        List<CommonModelDaoDef> defs=CollectionHelper.newList();
+        List<CommonModelDaoDef> defs = CollectionHelper.newList();
         String dbName = getDb();
-        List<String> dataSources=DbDataTable.getAllSlaveSourceNameByName(dbName);
+        List<String> dataSources = DbDataTable.getAllSlaveSourceNameByName(dbName);
         Collection<TableInfoInterface> tables = getTbMaps().values();
         final String defaultAssemblerClass = conf.getDefaultAssemblerClass();
         final String defaultBaseDaoClass = conf.getDefaultBaseDaoClass();
         for (TableInfoInterface tableInfo : tables) {
             final String table = tableInfo.getTable();
-            String baseDaoClass=defaultBaseDaoClass;
-            String assembleClass=defaultAssemblerClass;
-            if(conf.getBaseDaoClass(table)!=null){
-                baseDaoClass=conf.getBaseDaoClass(table);
+            String baseDaoClass = defaultBaseDaoClass;
+            String assembleClass = defaultAssemblerClass;
+            if (conf.getBaseDaoClass(table) != null) {
+                baseDaoClass = conf.getBaseDaoClass(table);
             }
-            if(conf.getAssembleClass(table)!=null){
-                assembleClass=conf.getAssembleClass(table);
+            if (conf.getAssembleClass(table) != null) {
+                assembleClass = conf.getAssembleClass(table);
             }
 //            String table = tableInfo.getTable();
 //            String modelSimpleName = CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(table);
-            final CommonModelDaoDef commonModelDaoDef = new CommonModelDaoDef(tableInfo,context)
+            final CommonModelDaoDef commonModelDaoDef = new CommonModelDaoDef(tableInfo, context)
 //                    .setDef(tableInfo)
                     .setBaseTable(null)
                     .setBuildMapper(true)
                     .setDataSourceName(getDataSourceId())
                     .setAssemblerExtendClzName(assembleClass)
                     .setDaoExtendClzName(baseDaoClass)
-                    ;
+                    .setMapperClzName(context.getRSMapperClassName(table));
             if (dataSources != null) {
                 commonModelDaoDef.setDataSourceNames(dataSources);
             }
