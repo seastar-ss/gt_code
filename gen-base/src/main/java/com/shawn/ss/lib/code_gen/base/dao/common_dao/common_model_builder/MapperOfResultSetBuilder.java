@@ -79,7 +79,12 @@ public class MapperOfResultSetBuilder implements CodeBuilderInterface {
     private void buildNewInstance() {
         _BaseConstantDef constant = model.getConstant();
 
-        constant.getConstantClz().field(CodeConstants.MODE_PUBLIC_STATIC_FINAL,definedClass.narrow(modelClass), CodeConstants.getFieldNameOfDbRsMapperForModel(model.getName()),JExpr._new(definedClass).narrow(modelClass));
+        constant.getConstantClz().field(
+                CodeConstants.MODE_PUBLIC_STATIC_FINAL,
+                definedClass.narrow(modelClass),
+                CodeConstants.getFieldNameOfDbRsMapperForModel(model.getName()),
+                JExpr._new(definedClass).narrow(modelClass)
+        );
     }
 
     private void buildMapRowMethod() {

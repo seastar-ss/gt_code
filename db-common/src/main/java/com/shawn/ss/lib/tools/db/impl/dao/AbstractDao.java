@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements DaoInterface<Ty, Tt> {
 
@@ -41,7 +42,7 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
         currentQueryTable = new NamedThreadLocal<>("current_operated_table");
         currentQueryDataSource = new NamedThreadLocal<>("current_operated_ds");
         currentQueryDb = new NamedThreadLocal<>("current_operated_db");
-        dataSourceMap = CollectionHelper.newMap();
+        dataSourceMap = new ConcurrentHashMap<>();
 
     }
 
@@ -51,7 +52,7 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
 
     private final Class<Ty> type;
 
-    private final DbResultSetMapper<Ty> defaultRSMapper;
+    private volatile DbResultSetMapper<Ty> defaultRSMapper;
 
     protected AbstractDao(Class<Ty> type, DbResultSetMapper<Ty> defaultRSMapper) {
         this.type = type;
@@ -59,20 +60,26 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
     }
 
     @Override
-    public AbstractDao setCurrentQueryTable(String table) {
-        this.currentQueryTable.set(table);
+    public AbstractDao<Ty, Tt> setCurrentQueryTable(String table) {
+        currentQueryTable.set(table);
         return this;
     }
 
     @Override
-    public AbstractDao setCurrentQueryDB(String db) {
-        this.currentQueryDb.set(db);
+    public AbstractDao<Ty, Tt> setCurrentQueryDB(String db) {
+        currentQueryDb.set(db);
         return this;
     }
 
     @Override
-    public AbstractDao setCurrentQueryDataSource(String ds) {
-        this.currentQueryDataSource.set(ds);
+    public AbstractDao<Ty, Tt> setCurrentQueryDataSource(String ds) {
+        currentQueryDataSource.set(ds);
+        return this;
+    }
+
+    @Override
+    public AbstractDao<Ty, Tt> setDefaultResultSetMapping(DbResultSetMapper<Ty> defaultRSMapper) {
+        this.defaultRSMapper = defaultRSMapper;
         return this;
     }
 
@@ -267,7 +274,7 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
         return null;
     }
 
-    protected Long insert( DaoAssembler assembler, SQL sqlBuilder, Map<String, Object> param) {
+    protected Long insert(DaoAssembler assembler, SQL sqlBuilder, Map<String, Object> param) {
         int status = 0;
         if (assembler != null)
             status = assembler.assembleSql(sqlBuilder, param, type);
@@ -302,13 +309,27 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
             throw new IllegalStateException("data source " + dbToUse + " are not found, check config ");
     }
 
-    private String handleDst(DataSourceAndSchemaAndTable dst, Map<String, Object> param, SQL sqlBuilder) {
-        String dbToUse = "defaultDs";
+    protected SimpleDbInterface selectDb(DaoAssembler assembler, SQL sqlBuilder, List<Map<String, Object>> param) {
+        String dbToUse = null;
+//        String tableName = null, dbName = null;
+        DataSourceAndSchemaAndTable dst = null;
+        if (assembler != null) {
+            dst = assembler.selectDb(sqlBuilder, param, type);
+        }
+        dbToUse = handleDst(dst, CollectionHelper.isCollectionEmpty(param) ? null : param.get(0), sqlBuilder);
+        if (dataSourceMap.containsKey(dbToUse))
+            return dataSourceMap.get(dbToUse);
+        else
+            throw new IllegalStateException("data source " + dbToUse + " are not found, check config ");
+    }
+
+    protected String handleDst(DataSourceAndSchemaAndTable dst, Map<String, Object> param, SQL sqlBuilder) {
+        String dsToUse = "defaultDs";
         String tableName = null, dbName = null;
         if (dst != null) {
             tableName = dst.getTableName();
             dbName = dst.getDbName();
-            dbToUse = dst.getDataSourceName();
+            dsToUse = dst.getDataSourceName();
         }
         if (!CollectionHelper.isCollectionEmpty(param)) {
             if (tableName == null && param.containsKey(KEY_WORD_TABLE_NAME_IN_PARAM)) {
@@ -317,8 +338,8 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
             if (dbName == null && param.containsKey(KEY_WORD_DB_NAME_IN_PARAM)) {
                 dbName = CollectionHelper.getString(param, KEY_WORD_DB_NAME_IN_PARAM);
             }
-            if (dbToUse == null && param.containsKey(KEY_WORD_DS_NAME_IN_PARAM)) {
-                dbToUse = CollectionHelper.getString(param, KEY_WORD_DS_NAME_IN_PARAM);
+            if (dsToUse == null && param.containsKey(KEY_WORD_DS_NAME_IN_PARAM)) {
+                dsToUse = CollectionHelper.getString(param, KEY_WORD_DS_NAME_IN_PARAM);
             }
         }
         if (tableName == null) {
@@ -333,10 +354,10 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
                 setCurrentQueryDB(null);
             }
         }
-        if (dbToUse == null) {
+        if (dsToUse == null) {
             final String currentQueryDb = getCurrentQueryDs();
             if (!StringHelper.isEmpty(currentQueryDb)) {
-                dbToUse = currentQueryDb;
+                dsToUse = currentQueryDb;
                 setCurrentQueryDB(null);
             }
         }
@@ -347,22 +368,10 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
                 sqlBuilder.table(dbName, tableName);
             }
         }
-        return dbToUse;
+        return dsToUse;
     }
 
-    protected SimpleDbInterface selectDb(DaoAssembler assembler, SQL sqlBuilder, List<Map<String, Object>> param) {
-        String dbToUse = null;
-//        String tableName = null, dbName = null;
-        DataSourceAndSchemaAndTable dst = null;
-        if (assembler != null) {
-            dst = assembler.selectDb(sqlBuilder, param, type);
-        }
-        dbToUse = handleDst(dst, CollectionHelper.isCollectionEmpty(param) ? null : param.get(0), sqlBuilder);
-        if (dataSourceMap.containsKey(dbToUse))
-            return dataSourceMap.get(dbToUse);
-        else
-            throw new IllegalStateException("data source " + dbToUse + " are not found, check config ");
-    }
+
 
     protected void buildRawInCluase(SQLSelect sqlBuilder, Map<String, Object> param, String inField, Object fieldClassObj, List indexes) {
         if (fieldClassObj instanceof Class) {
@@ -933,7 +942,7 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
         throw new UnsupportedOperationException("no implements");
     }
 
-    public Integer updateById(Tt id,Ty instance) {
+    public Integer updateById(Tt id, Ty instance) {
         throw new UnsupportedOperationException("no implements");
     }
 
@@ -1063,439 +1072,10 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
         throw new UnsupportedOperationException("no implements");
     }
 
-    protected void throwExceptionIf(boolean flag){
-        if(flag){
+    protected void throwExceptionIf(boolean flag) {
+        if (flag) {
             throw new IllegalStateException("param error , not allow to process");
         }
     }
 
-    /*@Override
-    public List<Ty> get(Set<String> selectFields, DaoAssembler assembler, Integer start, Integer count) {
-        throw new UnsupportedOperationException("no implements");
-//        return null;
-    }
-
-    @Override
-    public List<Ty> get() {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public List<Ty> get(Set<String> selectFields, Integer start, Integer count) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public List<Ty> get(Set<String> selectFields) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-//    @Override
-//    public List<Ty> getById(Set<String> selectFields, DaoAssembler assembler, Integer start, Integer count, List<Integer> id){throw new UnsupportedOperationException("no implements"); }
-//
-//    @Override
-//    public List<Ty> getById(Set<String> selectFields, Integer start, Integer count, List<Integer> id){throw new UnsupportedOperationException("no implements"); }
-//
-//    @Override
-//    public List<Ty> getById(Set<String> selectFields, List<Integer> id){throw new UnsupportedOperationException("no implements"); }
-
-    @Override
-    public List<Ty> getByIndex(Set<String> selectFields, DaoAssembler assembler, Integer start, Integer count, String inField, List indexes) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public List<Ty> getByIndex(Set<String> selectFields, Integer start, Integer count, String inField, List indexes) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public List<Ty> getByIndex(Set<String> selectFields, String inField, List indexes) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public List<Ty> getByCond(Set<String> selectFields, DaoAssembler assembler, Integer start, Integer count, Ty instance) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public List<Ty> getByCond(Set<String> selectFields, Integer start, Integer count, Ty instance) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public List<Ty> getByCond(Set<String> selectFields, Ty instance) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public List<Ty> getByWhere(Set<String> selectFields, DaoAssembler assembler, Integer start, Integer count, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public List<Ty> getByWhere(Set<String> selectFields, Integer start, Integer count, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public List<Ty> getByWhere(Set<String> selectFields, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public List<Ty> getByCondAndIndex(Set<String> selectFields, DaoAssembler assembler, Integer start, Integer count, Ty instance, String inField, List indexes) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public List<Ty> getByCondAndIndex(Set<String> selectFields, Integer start, Integer count, Ty instance, String inField, List indexes) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public List<Ty> getByCondAndIndex(Set<String> selectFields, Ty instance, String inField, List indexes) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public List<Ty> getByIdAndIndexAndWhere(Set<String> selectFields, DaoAssembler assembler, Integer start, Integer count, List<Integer> id, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public List<Ty> getByIdAndIndexAndWhere(Set<String> selectFields, Integer start, Integer count, List<Integer> id, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public List<Ty> getByIdAndIndexAndWhere(Set<String> selectFields, List<Integer> id, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public List<Ty> getByIndexAndWhere(Set<String> selectFields, DaoAssembler assembler, Integer start, Integer count, String inField, List indexes, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public List<Ty> getByIndexAndWhere(Set<String> selectFields, Integer start, Integer count, String inField, List indexes, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public List<Ty> getByIndexAndWhere(Set<String> selectFields, String inField, List indexes, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public List<Ty> getByCondAndWhere(Set<String> selectFields, DaoAssembler assembler, Integer start, Integer count, Ty instance, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public List<Ty> getByCondAndWhere(Set<String> selectFields, Integer start, Integer count, Ty instance, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public List<Ty> getByCondAndWhere(Set<String> selectFields, Ty instance, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public List<Ty> getByCondAndIndexAndWhere(Set<String> selectFields, DaoAssembler assembler, Integer start, Integer count, Ty instance, String inField, List indexes, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public List<Ty> getByCondAndIndexAndWhere(Set<String> selectFields, Integer start, Integer count, Ty instance, String inField, List indexes, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public List<Ty> getByCondAndIndexAndWhere(Set<String> selectFields, Ty instance, String inField, List indexes, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-//    @Override
-//    public Ty getOneById(Set<String> selectFields, DaoAssembler assembler, Integer id){throw new UnsupportedOperationException("no implements"); }
-//
-//    @Override
-//    public Ty getOneById(Set<String> selectFields, Integer id){throw new UnsupportedOperationException("no implements"); }
-
-    @Override
-    public Ty getOneByCond(Set<String> selectFields, DaoAssembler assembler, Ty instance) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public Ty getOneByCond(Set<String> selectFields, Ty instance) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public Ty getOneByWhere(Set<String> selectFields, DaoAssembler assembler, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public Ty getOneByWhere(Set<String> selectFields, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public Ty getOneByCondAndWhere(Set<String> selectFields, DaoAssembler assembler, Ty instance, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public Ty getOneByCondAndWhere(Set<String> selectFields, Ty instance, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public Long getCountByCond(DaoAssembler assembler, Ty instance) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public Long getCountByCond(Ty instance) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public Long getCountByCondAndIndex(DaoAssembler assembler, Ty instance, String inField, List indexes) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public Long getCountByCondAndIndex(Ty instance, String inField, List indexes) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public Long getCountByCondAndIndexAndWhere(DaoAssembler assembler, Ty instance, String inField, List indexes, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public Long getCountByCondAndIndexAndWhere(Ty instance, String inField, List indexes, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public <Tx> Tx getItemByIndex(DaoAssembler assembler, String inField, List indexes, Class<Tx> tClass, String rawItem) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public <Tx> Tx getItemByIndex(String inField, List indexes, Class<Tx> tClass, String rawItem) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public <Tx> Tx getItemByCond(DaoAssembler assembler, Ty instance, Class<Tx> tClass, String rawItem) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public <Tx> Tx getItemByCond(Ty instance, Class<Tx> tClass, String rawItem) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public <Tx> Tx getItemByCondAndIndex(DaoAssembler assembler, Ty instance, String inField, List indexes, Class<Tx> tClass, String rawItem) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public <Tx> Tx getItemByCondAndIndex(Ty instance, String inField, List indexes, Class<Tx> tClass, String rawItem) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public <Tx> Tx getItemByCondAndIndexAndWhere(DaoAssembler assembler, Ty instance, String inField, List indexes, Class<Tx> tClass, String rawItem, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public <Tx> Tx getItemByCondAndIndexAndWhere(Ty instance, String inField, List indexes, Class<Tx> tClass, String rawItem, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public Ty insert(Ty instance, DaoAssembler assembler) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public Ty insert(Ty instance) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public Integer insert(List<Ty> instances, Set<String> fields, DaoAssembler assembler) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public Integer insert(List<Ty> instances, Set<String> fields) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public Integer insert(List<Ty> instances) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public Integer update(Ty instance, Set<String> conditionField, DaoAssembler assembler) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public Integer update(Ty instance, Set<String> conditionField) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public Integer updateById(Ty instance, DaoAssembler assembler) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public Integer updateById(Ty instance) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public Integer updateByIds(Ty instance, Set<Integer> ids, DaoAssembler assembler) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public Integer updateByIds(Ty instance, Set<Integer> ids) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public Integer delete(Ty instance, Set<String> conditionField, DaoAssembler assembler) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public Integer delete(Ty instance, Set<String> conditionField) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public Integer deleteById(Integer id, DaoAssembler assembler) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public Integer deleteById(Integer id) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public Integer deleteByIds(Set<Integer> ids, DaoAssembler assembler) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public Integer deleteByIds(Set<Integer> ids) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public Ty updateOrInsert(Ty instance, Set<String> conditionField, AbstractMultipleDaoAssembler assembler) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public Ty updateOrInsert(Ty instance, Set<String> conditionField) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public Ty insertIfNoExist(Ty instance, Set<String> conditionField, AbstractMultipleDaoAssembler assembler) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public Ty insertIfNoExist(Ty instance, Set<String> conditionField) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public <Tx> Map<Tx, Ty> buildMap(List<Ty> list, String field) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public <Tx> Map<Tx, List<Ty>> buildListMap(List<Ty> list, String field) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public <Tx> List<Tx> extractItemAsList(List<Ty> list, String field) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-
-    @Override
-    public Ty getOneById(Set<String> selectFields, DaoAssembler assembler, TT id) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public Ty getOneById(Set<String> selectFields, TT id) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public Ty getOneById(TT id) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public List<Ty> getById(Set<String> selectFields, DaoAssembler assembler, Integer start, Integer count, List<TT> id) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public List<Ty> getById(Set<String> selectFields, Integer start, Integer count, List<TT> id) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public List<Ty> getById(Set<String> selectFields, List<TT> id) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public List<Ty> getById(List<TT> id) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public List<Ty> getByCond(Ty instance) { throw new UnsupportedOperationException("no implements"); }
-
-    @Override
-    public List<Ty> getByIndex(String inField, List indexes) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public <Tx> Tx getItemByWhere(DaoAssembler assembler, Class<Tx> tClass, String rawItem, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public <Tx> Tx getItemByWhere(Class<Tx> tClass, String rawItem, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
-    }*/
 }

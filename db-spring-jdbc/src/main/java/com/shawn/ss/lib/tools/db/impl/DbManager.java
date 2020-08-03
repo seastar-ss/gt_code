@@ -29,6 +29,8 @@ import java.sql.SQLTimeoutException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class DbManager extends NamedParameterJdbcTemplate implements SimpleDbInterface {
     Logger logger = LoggerFactory.getLogger("SQL-LOGS");
@@ -39,6 +41,7 @@ public class DbManager extends NamedParameterJdbcTemplate implements SimpleDbInt
     final static String KEY_WORD_UPDATE = "update";
     final static String KEY_WORD_DELETE = "delete";
     final static String KEY_WORD_WHERE = " where ";
+    final static Pattern SQL_MODIFY_PATTERN_KEY_WORD = Pattern.compile("\\s+where\\s+[0-9_a-z.]+\\s*([=><]+|(\\s+in\\s+)|(\\s+between\\s+))");
 
 
     public DbManager(DataSource dataSource) {
@@ -263,15 +266,13 @@ public class DbManager extends NamedParameterJdbcTemplate implements SimpleDbInt
 
     private void checkNoCondition(String sql) {
         final String lowerCase = sql.toLowerCase();
-        SQL base = null;
-        if (lowerCase.startsWith(KEY_WORD_DELETE) || lowerCase.startsWith(KEY_WORD_UPDATE)) {
-
-            base = SQLBuilder.parseSql(sql);
-            Expr wheres = base.wheres();
-            if (wheres != null && !wheres.isEmpty()) {
-                return;
+        if (lowerCase.startsWith(KEY_WORD_UPDATE) || lowerCase.startsWith(KEY_WORD_DELETE)) {
+            Matcher matcher = SQL_MODIFY_PATTERN_KEY_WORD.matcher(lowerCase);
+            if (!matcher.find()) {
+                throw new IllegalArgumentException("全表更新不被允许：" + sql);
+            } else {
+                logger.debug("condition find:{}-{}", matcher.regionStart(), matcher.regionEnd());
             }
-            throw new IllegalArgumentException("全表更新不被允许：" + sql);
         }
     }
 }

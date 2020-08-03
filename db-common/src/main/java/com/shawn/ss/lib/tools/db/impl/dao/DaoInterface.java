@@ -1,5 +1,6 @@
 package com.shawn.ss.lib.tools.db.impl.dao;
 
+import com.shawn.ss.lib.tools.db.api.interfaces.mappers.db.DbResultSetMapper;
 import com.shawn.ss.lib.tools.db.dto_base.model.AbstractBaseModel;
 import com.shawn.ss.lib.tools.service_assemble.AbstractMultipleDaoAssembler;
 import com.shawn.ss.lib.tools.service_assemble.DaoAssembler;
@@ -278,6 +279,8 @@ public interface DaoInterface<Ty extends AbstractBaseModel, Tt>
     DaoInterface setCurrentQueryDB(String db);
 
     DaoInterface setCurrentQueryDataSource(String ds);
+
+    AbstractDao<Ty, Tt> setDefaultResultSetMapping(DbResultSetMapper<Ty> defaultRSMapper);
 
     List<Ty> select(SelectParamHolder<Ty, Tt> holder);
 

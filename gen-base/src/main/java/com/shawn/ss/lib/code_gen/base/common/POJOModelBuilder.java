@@ -202,7 +202,12 @@ public class POJOModelBuilder implements CodeBuilderInterface {
             field.javadoc().append(comment);
             JMethod[] methods = CodeConstants.buildGetterAndSetter(definedClass, itemFieldName, jClass, field);
 
-            definedClass.field(CodeConstants.MODE_PUBLIC_STATIC_FINAL, String.class, CodeConstants.FIELD_CONST_NAME_PREFIX + colName.toUpperCase(), JExpr.lit(colName));
+            definedClass.field(
+                    CodeConstants.MODE_PUBLIC_STATIC_FINAL,
+                    String.class,
+                    CodeConstants.FIELD_CONST_NAME_PREFIX + colName.toUpperCase(),
+                    JExpr.lit(colName)
+            );
         }
     }
 
@@ -256,7 +261,7 @@ public class POJOModelBuilder implements CodeBuilderInterface {
         if (fields != null && fields.size() > 0) {
             JInvocation invocation = cm.ref(CollectionHelper.class).staticInvoke("mapBuilder").narrow(String.class).narrow(Object.class);
             for (FieldInfoInterface item : fields) {
-                String colName = item.getFieldName();
+                String colName = item.getAliasField();
                 if (!ignoreField.contains(colName)) {
                     final AbstractJClass type = CodeConstants.getFieldDefType(cm, modelDef, item, builderContext);
                     invocation = invocation.invoke("put").arg(referStaticField(colName)).arg(JExpr.dotclass(type.erasure()));

@@ -72,5 +72,16 @@ public class CodeTest {
         }
 
         System.out.println(ret);
+//        print(new Integer(1));
     }
+
+//    void print (Integer ... a){
+//
+//    }
+//    void print(Number a){
+//
+//    }
+//    void print(Object a){
+//
+//    }
 }

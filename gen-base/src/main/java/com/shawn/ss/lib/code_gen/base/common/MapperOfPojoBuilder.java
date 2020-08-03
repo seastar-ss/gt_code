@@ -88,9 +88,9 @@ public class MapperOfPojoBuilder implements CodeBuilderInterface {
         _BaseConstantDef constant = modelDef.getConstant();
 
         constant.getConstantClz().field(
-                CodeConstants.MODE_PUBLIC_STATIC_FINAL,definedClass.narrow(modelClass),
+                CodeConstants.MODE_PUBLIC_STATIC_FINAL,definedClass,
                 CodeConstants.getFieldNameOfCommonMapperForModel(modelDef.getName()),
-                JExpr._new(definedClass).narrow(modelClass)
+                JExpr._new(definedClass)
         );
     }
 
@@ -111,7 +111,7 @@ public class MapperOfPojoBuilder implements CodeBuilderInterface {
         List<FieldInfoInterface> columns = modelDef.getFields();
         JConditional equals = null;
         for (FieldInfoInterface col : columns) {
-            String colName = col.getFieldName();
+            String colName = col.getAliasField();
             FieldDataTypeInterface type = col.getType();
             JInvocation invocation = field.invoke("equals")
                     .arg(CodeConstants.getBaseModelColumnStaticRef(modelClass, colName));
@@ -139,7 +139,7 @@ public class MapperOfPojoBuilder implements CodeBuilderInterface {
         List<FieldInfoInterface> columns = modelDef.getFields();
         JConditional equals = null;
         for (FieldInfoInterface col : columns) {
-            String colName = col.getFieldName();
+            String colName = col.getAliasField();
             FieldDataTypeInterface type = col.getType();
             JInvocation invocation = field.invoke("equals")
                     .arg(CodeConstants.getBaseModelColumnStaticRef(modelClass, colName));
@@ -170,7 +170,7 @@ public class MapperOfPojoBuilder implements CodeBuilderInterface {
         List<FieldInfoInterface> columns = modelDef.getFields();
         JConditional equals = null;
         for (FieldInfoInterface col : columns) {
-            String colName = col.getFieldName();
+            String colName = col.getAliasField();
             FieldDataTypeInterface type = col.getType();
             JInvocation invocation = field.invoke("equals")
                     .arg(CodeConstants.getBaseModelColumnStaticRef(modelClass, colName));
@@ -197,7 +197,7 @@ public class MapperOfPojoBuilder implements CodeBuilderInterface {
         List<FieldInfoInterface> columns = modelDef.getFields();
         JConditional equals = null;
         for (FieldInfoInterface col : columns) {
-            String colName = col.getFieldName();
+            String colName = col.getAliasField();
             FieldDataTypeInterface type = col.getType();
             JFieldRef ref = CodeConstants.getBaseModelColumnStaticRef(modelClass, colName);
             final JVar objVar = body.decl(cm.ref(Object.class), "d" + CodeStyleTransformHelper.upperFirstCase(colName), JExpr.invoke(param, "get").arg(ref));
@@ -228,7 +228,7 @@ public class MapperOfPojoBuilder implements CodeBuilderInterface {
         List<FieldInfoInterface> columns = modelDef.getFields();
         JConditional equals = null;
         for (FieldInfoInterface col : columns) {
-            String colName = col.getFieldName();
+            String colName = col.getAliasField();
             FieldDataTypeInterface type = col.getType();
             JFieldRef ref = CodeConstants.getBaseModelColumnStaticRef(modelClass, colName);
             IJExpression invoke = instance.invoke(CodeConstants.getMethodNameOfModelGet(colName));
@@ -255,7 +255,7 @@ public class MapperOfPojoBuilder implements CodeBuilderInterface {
         List<FieldInfoInterface> columns = modelDef.getFields();
         JConditional equals = null;
         for (FieldInfoInterface col : columns) {
-            String colName = col.getFieldName();
+            String colName = col.getAliasField();
             FieldDataTypeInterface type = col.getType();
             JMethod m = buildMapFieldToBin(col);
             JVar value = body.decl(cm.ref(byte[].class), "value" + CodeStyleTransformHelper.upperFirstCase(colName),
@@ -284,7 +284,7 @@ public class MapperOfPojoBuilder implements CodeBuilderInterface {
         JConditional equals = null;
         for (FieldInfoInterface col : columns) {
             JMethod fieldMapMethod = buildMapBinToField(col);
-            String colName = col.getFieldName();
+            String colName = col.getAliasField();
             JInvocation condition = varField.invoke("equals").arg(CodeConstants.getBaseModelColumnStaticRef(modelClass, colName));
             if (equals == null)
                 equals = forBody._if(condition);

@@ -33,13 +33,13 @@ public abstract class AbstractDaoBuilder implements CodeBuilderInterface {
     protected JDefinedClass definedClass;
     protected AbstractJClass modelClass;
     protected JFieldVar dbField;
-//    protected Map<String, JFieldVar> dbFields;
+    //    protected Map<String, JFieldVar> dbFields;
     protected TableInfoInterface info;
     protected final String table;
     protected final _BaseDaoConf modelDef;
     protected JFieldVar loggerField;
     protected JMethod afterPropertiesSet;
-//    protected JFieldVar dbMapField;
+    //    protected JFieldVar dbMapField;
     protected final String name;
 
     public AbstractDaoBuilder(_BaseDaoConf def) {
@@ -138,7 +138,11 @@ public abstract class AbstractDaoBuilder implements CodeBuilderInterface {
     protected void buildCommonDbFieldInjection() {
         definedClass.constructor(JMod.PUBLIC).body().invoke("super")
                 .arg(JExpr.dotclass(modelClass))
-                .arg(constantClz.staticRef(CodeConstants.getMethodNameOfResultSetMapField(name)))
+                .arg(
+                        constantClz.staticRef(
+                                CodeConstants.getFieldNameOfDbRsMapperForModel(modelDef.getName())
+                        )
+                )
         ;
 
 //        String dataSourceName = modelDef.getDataSourceName();
