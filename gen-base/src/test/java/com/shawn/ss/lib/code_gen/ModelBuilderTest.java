@@ -570,6 +570,7 @@ public class ModelBuilderTest {
                 .add("b_user")
                 .add("b_role")
                 .add("b_material")
+                .add("b_orgnization_user")
                 .getSet();
         modelBuilderContext.addDb(connectionMaster, new DbModelConf().setSlave(false)
                 .setIncludingPattern(

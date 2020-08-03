@@ -325,7 +325,9 @@ public class DbAnalyzer {
                         final ColumnInfo row = new ColumnInfo();
                         row.setTable(tb);
                         row.setDb(input.dbName);
-                        row.setFieldName(handleWord(columnName));
+                        final String colName = handleWord(columnName);
+                        row.setAliasFieldName(colName);
+                        row.setFieldName(CodeConstants.getFieldNameFromTbColumn(colName));
                         row.setType(ColumnDataType.getType(rs.getString("DATA_TYPE").toUpperCase()));
                         row.setExtra(rs.getString("EXTRA"));
                         row.setNullable(rs.getString("IS_NULLABLE").equals("YES"));

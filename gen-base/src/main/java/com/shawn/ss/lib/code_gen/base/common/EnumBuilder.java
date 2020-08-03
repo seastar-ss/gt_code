@@ -41,7 +41,7 @@ public class EnumBuilder implements CodeBuilderInterface {
     @Override
     public void buildModel() {
 
-        String cname = typeDef.getClazzName();//builderContext.getEnumClzName(typeDef.getClazzName());
+        String cname = def.getClazzName();//builderContext.getEnumClzName(typeDef.getClazzName());
         definedClass = null;
         try {
             definedClass = cm._class(cname, EClassType.ENUM);

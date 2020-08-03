@@ -74,7 +74,9 @@ public class CommonModelDaoDef<T extends CommonModelDaoDef> extends _BaseDaoConf
         for (ColumnInfoInterface col : columns) {
             String fname = CodeConstants.getFieldNameFromTbColumn(col.getFieldName());
             FieldDataTypeInterface type = col.getType();
-            addField(new FieldInfo().setFieldName(fname).setType(type).setAliasFieldName(col.getFieldName()));
+            addField(
+                    col
+            );
         }
 
         setPojoClzName(builderContext.getReallyModelClassName(def.getTable(), baseTable));

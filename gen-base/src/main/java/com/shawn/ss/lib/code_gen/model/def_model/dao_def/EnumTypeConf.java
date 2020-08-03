@@ -11,12 +11,12 @@ import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.model.EnumTypeD
  */
 public class EnumTypeConf extends AbstractConf implements _BaseEnumTypeConf {
     final EnumTypeDef def;
-    protected transient ModelBuilderContext builderContext;
-    String name;
+    //    protected transient ModelBuilderContext builderContext;
+//    String name;
     String clzName;
 
-    public EnumTypeConf(EnumTypeDef def,ModelBuilderContext context) {
-        super(CodeConstants.getConfNameOfEnum(def),context);
+    public EnumTypeConf(EnumTypeDef def, ModelBuilderContext context) {
+        super(CodeConstants.getConfNameOfEnum(def), context);
         this.def = def;
     }
 
@@ -41,13 +41,17 @@ public class EnumTypeConf extends AbstractConf implements _BaseEnumTypeConf {
         return name;
     }
 
-    public EnumTypeConf setName(String name) {
-        this.name = name;
-        return this;
-    }
+//    public EnumTypeConf setName(String name) {
+//        this.name = name;
+//        return this;
+//    }
 
     public ModelBuilderContext getBuilderContext() {
         return builderContext;
+    }
+
+    public String getClazzName() {
+        return builderContext.getEnumClzName(def.getClazzName());
     }
 
 //    @Override

@@ -124,7 +124,7 @@ public class MapperOfResultSetBuilder implements CodeBuilderInterface {
     }
 
     private void buildFields(ColumnInfoInterface item, JVar instance, JVar rs, JVar rowNum, JVar columnNames, JBlock body) {
-        String colName = item.getFieldName();
+        String colName = item.getAliasField();
 //        String comment = item.getComment();
 //        FieldDataTypeInterface type = item.getType();
         JMethod mapFieldMethod = definedClass.method(JMod.PROTECTED, void.class,

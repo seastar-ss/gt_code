@@ -207,7 +207,6 @@ public class CodeConstants {
     public static final String LIB_ASSERT_METHOD = "throwExceptionIf";
 
 
-
     //    public CommonDaoBuilder(ModelBuilder parentBuilder,ModelBuilderContext builderContext) {
 //        super(parentBuilder, builderContext);
 //    }
@@ -515,7 +514,7 @@ public class CodeConstants {
     }
 
     public static void buildCatchPrintStatement(JCodeModel cm, JTryBlock jTryBlock, Class<Exception> exceptionClass) {
-        JCatchBlock catchBlock = jTryBlock._catch(cm.ref(exceptionClass==null?Exception.class:exceptionClass));
+        JCatchBlock catchBlock = jTryBlock._catch(cm.ref(exceptionClass == null ? Exception.class : exceptionClass));
         JVar param = catchBlock.param("ex");
         catchBlock.body().invoke(param, "printStackTrace");
     }
@@ -748,7 +747,7 @@ public class CodeConstants {
     }
 
     public static String getFieldNameOfDbRsMapperForModel(String name) {
-        return name.toUpperCase() +  CodeConstants.FIELD_RESULT_SET_MAPPER_INSTANCE_APPENDIX;
+        return name.toUpperCase() + CodeConstants.FIELD_RESULT_SET_MAPPER_INSTANCE_APPENDIX;
     }
 
     public static String getFieldNameOfCommonMapperForModel(String name) {
@@ -756,12 +755,12 @@ public class CodeConstants {
     }
 
     public static String getConfNameOfEnum(EnumTypeDef def) {
-        return def.getCol().getFieldName()+"Enum";
+        return def.getCol().getFieldName() + "Enum";
     }
 
     public static String getDsConfigClzName(String name) {
 
-        return CLASS_NAME_DB_SOURCE_CONFIG_PREFIX +CodeStyleTransformHelper.upperFirstCase(name);
+        return CLASS_NAME_DB_SOURCE_CONFIG_PREFIX + CodeStyleTransformHelper.upperFirstCase(name);
     }
 
 
@@ -814,7 +813,7 @@ public class CodeConstants {
 //                }
 //                    }
 //                }else{
-            jClass = cm.ref(typeDef.getClazzName());
+            jClass = cm.ref(bc.getEnumClzName(typeDef.getClazzName()));
 //                }
         }
         if (type.isArray()) {
