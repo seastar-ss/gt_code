@@ -71,7 +71,7 @@ public class TestUtils {
     public static String buildSqlString(final String originalSql, boolean laxDeparsingCheck) {
         String sql = SQL_COMMENT_PATTERN.matcher(originalSql).replaceAll("");
         if (laxDeparsingCheck) {
-            return sql.replaceAll("\\s", " ").replaceAll("\\s+", " ").
+            return sql.replaceAll("\\s+", " ").
                     replaceAll("\\s*([!/,()=+\\-*|\\]<>])\\s*", "$1").toLowerCase().trim();
         } else {
             return sql;

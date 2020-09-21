@@ -21,28 +21,28 @@ import java.util.Set;
 public class CommonPOJOConf extends AbstractConf implements _BaseModelConf, _BaseModelClassNameConf {
 
 
-//    public static class FieldDef{
-//        String name;
-//        String tClass;
-//
-//        public String getName() {
-//            return name;
-//        }
-//
-//        public FieldDef setName(String name) {
-//            this.name = name;
-//            return this;
-//        }
-//
-//        public String gettClass() {
-//            return tClass;
-//        }
-//
-//        public FieldDef settClass(String tClass) {
-//            this.tClass = tClass;
-//            return this;
-//        }
-//    }
+    //    public static class FieldDef{
+    //        String name;
+    //        String tClass;
+    //
+    //        public String getName() {
+    //            return name;
+    //        }
+    //
+    //        public FieldDef setName(String name) {
+    //            this.name = name;
+    //            return this;
+    //        }
+    //
+    //        public String gettClass() {
+    //            return tClass;
+    //        }
+    //
+    //        public FieldDef settClass(String tClass) {
+    //            this.tClass = tClass;
+    //            return this;
+    //        }
+    //    }
 
     protected final List<FieldInfoInterface> fields;
     Map<String, FieldInfoInterface> staticFields;
@@ -51,39 +51,41 @@ public class CommonPOJOConf extends AbstractConf implements _BaseModelConf, _Bas
     protected String pojoExtendsClzName;
     protected String comment;
 
-    protected  final Set<String> ignoreField;
-//    protected final String name;
+    protected String pojoMapperClzName;
 
-//    protected transient final ModelBuilderContext builderContext;
+    protected final Set<String> ignoreField;
+    //    protected final String name;
+
+    //    protected transient final ModelBuilderContext builderContext;
 
     private JDefinedClass definedClz;
 
     public CommonPOJOConf(String name, ModelBuilderContext builderContext) {
-        super(name,builderContext);
-//        super(name);
+        super(name, builderContext);
+        //        super(name);
         fields = CollectionHelper.newList();
         fieldIndex = CollectionHelper.newMap();
         staticFields = CollectionHelper.newMap();
-        ignoreField=CollectionHelper.newSet();
+        ignoreField = CollectionHelper.newSet();
     }
 
-//    @Override
-//    public String getDb() {
-//        return null;
-//    }
+    //    @Override
+    //    public String getDb() {
+    //        return null;
+    //    }
 
     @Override
     public List<FieldInfoInterface> getFields() {
         return fields;
     }
 
-//    public void setFields(List<FieldInfoInterface> fields) {
-////        this.fields = fields;
-//        for (int i = 0, n = fields.size(); i < n; ++i) {
-//            fieldIndex.put(fields.get(i).getFieldName(), i);
-//        }
-////        return this;
-//    }
+    //    public void setFields(List<FieldInfoInterface> fields) {
+    ////        this.fields = fields;
+    //        for (int i = 0, n = fields.size(); i < n; ++i) {
+    //            fieldIndex.put(fields.get(i).getFieldName(), i);
+    //        }
+    ////        return this;
+    //    }
 
     @Override
     public int sizeOfField() {
@@ -109,8 +111,8 @@ public class CommonPOJOConf extends AbstractConf implements _BaseModelConf, _Bas
         return ignoreField;
     }
 
-    public boolean addIgnoreField(String field){
-        if(fieldIndex.containsKey(field)){
+    public boolean addIgnoreField(String field) {
+        if (fieldIndex.containsKey(field)) {
             ignoreField.add(field);
             return true;
         }
@@ -144,7 +146,7 @@ public class CommonPOJOConf extends AbstractConf implements _BaseModelConf, _Bas
         return pojoClzName;
     }
 
-//    @Override
+    //    @Override
     public void setPojoClzName(String pojoClzName) {
         this.pojoClzName = pojoClzName;
 
@@ -155,7 +157,7 @@ public class CommonPOJOConf extends AbstractConf implements _BaseModelConf, _Bas
         return pojoExtendsClzName;
     }
 
-//    @Override
+    //    @Override
     public void setPojoExtendsClzName(String pojoExtendsClzName) {
         this.pojoExtendsClzName = pojoExtendsClzName;
 
@@ -199,15 +201,24 @@ public class CommonPOJOConf extends AbstractConf implements _BaseModelConf, _Bas
         return name;
     }
 
-//    @Override
-//    public _BaseConstantConf getConstant() {
-//        return null;
-//    }
+    @Override
+    public String getPojoMapperClzName() {
+        return pojoMapperClzName;
+    }
 
-//    public CommonPOJOConf setBuilderContext(ModelBuilderContext builderContext) {
-//        this.builderContext = builderContext;
-//        return this;
-//    }
+    public void setPojoMapperClzName(String pojoMapperClzName) {
+        this.pojoMapperClzName = pojoMapperClzName;
+    }
+
+    //    @Override
+    //    public _BaseConstantConf getConstant() {
+    //        return null;
+    //    }
+
+    //    public CommonPOJOConf setBuilderContext(ModelBuilderContext builderContext) {
+    //        this.builderContext = builderContext;
+    //        return this;
+    //    }
 
 
 }

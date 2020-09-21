@@ -23,9 +23,9 @@ public class DbInfoHandler {
     private final ModelBuilderContext context;
 
     //    private Set<String> ignoreTbPattern;
-//    private Set<String> includingPattern;
-//    boolean isSlave;
-//    String masterDbName;
+    //    private Set<String> includingPattern;
+    //    boolean isSlave;
+    //    String masterDbName;
     DbModelConf conf;
 
     public static DbAnalyzer getAnalyzer() {
@@ -45,44 +45,44 @@ public class DbInfoHandler {
         uuid = UUID.randomUUID().getMostSignificantBits();
     }
 
-//    public DbInfoHandler(Properties p) {
-//        this(CodeConstants.KEY_WORD_DEFAULT_DATA_SOURCE_ID, p, false);
-//    }
-//
-//
-//    public DbInfoHandler(String dataSourceId, Properties p) {
-//        this(dataSourceId, p, false);
-////        this.dataSourceId=dataSourceId;
-//    }
-//
-//    public DbInfoHandler(String dataSourceId, Properties p, boolean isSlave) {
-//        tbMaps = CollectionHelper.newMap();
-//        this.connection = new DBConnectionHelper(dataSourceId, p);
-//        this.isSlave = isSlave;
-////        this.dataSourceId=dataSourceId;
-//    }
-//
-//    public DbInfoHandler(String dataSourceId, Properties p, boolean isSlave, String data_store) {
-//        tbMaps = CollectionHelper.newMap();
-//        this.connection = new DBConnectionHelper(dataSourceId, p);
-//        this.isSlave = isSlave;
-//        setDb(data_store);
-////        this.ddataSourceId=dataSourceId;
-//    }
+    //    public DbInfoHandler(Properties p) {
+    //        this(CodeConstants.KEY_WORD_DEFAULT_DATA_SOURCE_ID, p, false);
+    //    }
+    //
+    //
+    //    public DbInfoHandler(String dataSourceId, Properties p) {
+    //        this(dataSourceId, p, false);
+    ////        this.dataSourceId=dataSourceId;
+    //    }
+    //
+    //    public DbInfoHandler(String dataSourceId, Properties p, boolean isSlave) {
+    //        tbMaps = CollectionHelper.newMap();
+    //        this.connection = new DBConnectionHelper(dataSourceId, p);
+    //        this.isSlave = isSlave;
+    ////        this.dataSourceId=dataSourceId;
+    //    }
+    //
+    //    public DbInfoHandler(String dataSourceId, Properties p, boolean isSlave, String data_store) {
+    //        tbMaps = CollectionHelper.newMap();
+    //        this.connection = new DBConnectionHelper(dataSourceId, p);
+    //        this.isSlave = isSlave;
+    //        setDb(data_store);
+    ////        this.ddataSourceId=dataSourceId;
+    //    }
 
-//    public DbInfoHandler(DBConnectionHelper connection) {
-//        this(connection, null, false, null);
-////        this.dataSourceId=connection.getDataSourceId();
-//    }
+    //    public DbInfoHandler(DBConnectionHelper connection) {
+    //        this(connection, null, false, null);
+    ////        this.dataSourceId=connection.getDataSourceId();
+    //    }
 
-//    public DbInfoHandler(DBConnectionHelper connection) {
-//        this(connection, false, null);
-////        this.dataSourceId=connection.getDataSourceId();
-//    }
+    //    public DbInfoHandler(DBConnectionHelper connection) {
+    //        this(connection, false, null);
+    ////        this.dataSourceId=connection.getDataSourceId();
+    //    }
 
     public DbInfoHandler(DBConnectionHelper connection, boolean isSlave, ModelBuilderContext context) {
         this(connection, new DbModelConf().setSlave(isSlave), context);
-//        this.dataSourceId=connection.getDataSourceId();
+        //        this.dataSourceId=connection.getDataSourceId();
     }
 
     public DbInfoHandler(DBConnectionHelper connection, DbModelConf conf, ModelBuilderContext context) {
@@ -90,10 +90,10 @@ public class DbInfoHandler {
         tbMaps = CollectionHelper.newMap();
         this.connection = connection;
         this.conf = conf;
-//        this.isSlave = isSlave;
+        //        this.isSlave = isSlave;
         if (conf.getDb() != null)
             setDb(conf.getDb(), conf.getIncludingPattern(), conf.getIgnoreTbPattern());
-//        this.dataSourceId=connection.getDataSourceId();
+        //        this.dataSourceId=connection.getDataSourceId();
     }
 
     public DBConnectionHelper getConnection() {
@@ -104,21 +104,21 @@ public class DbInfoHandler {
         return conf.getDb();
     }
 
-//    public DbInfoHandler setDb() {
-//        setDb(null, null, null);
-//        return this;
-//    }
+    //    public DbInfoHandler setDb() {
+    //        setDb(null, null, null);
+    //        return this;
+    //    }
 
-//    public DbInfoHandler setDb(String db) {
-//
-//        setDb(db, null, null);
-//        return this;
-//    }
+    //    public DbInfoHandler setDb(String db) {
+    //
+    //        setDb(db, null, null);
+    //        return this;
+    //    }
 
-//    public DbInfoHandler setDb(String db, Set<String> excluding) {
-//        setDb(db, null, excluding);
-//        return this;
-//    }
+    //    public DbInfoHandler setDb(String db, Set<String> excluding) {
+    //        setDb(db, null, excluding);
+    //        return this;
+    //    }
 
 
     public DbInfoHandler setConf(DbModelConf conf) {
@@ -137,15 +137,15 @@ public class DbInfoHandler {
             dataSourceId = CodeConstants.KEY_WORD_DEFAULT_DATA_SOURCE_ID;
         }
         this.conf.setDb(db);
-//        if (!dataSourceId.startsWith(data_store)) {
-//            if (StringHelper.isEmpty(dataSourceId)) {
-////                dataSourceId=data_store;
-//                dataSourceId = CodeConstants.KEY_WORD_DEFAULT_DATA_SOURCE_ID;
-//            } else if (!dataSourceId.equals(CodeConstants.KEY_WORD_DEFAULT_DATA_SOURCE_ID)) {
-//                throw new IllegalStateException("数据库和数据库库datasourceId不匹配，请检查是否配置有误，dataSourceId应以数据库名开头");
-//            }
-//        }
-//        this.db = db;
+        //        if (!dataSourceId.startsWith(data_store)) {
+        //            if (StringHelper.isEmpty(dataSourceId)) {
+        ////                dataSourceId=data_store;
+        //                dataSourceId = CodeConstants.KEY_WORD_DEFAULT_DATA_SOURCE_ID;
+        //            } else if (!dataSourceId.equals(CodeConstants.KEY_WORD_DEFAULT_DATA_SOURCE_ID)) {
+        //                throw new IllegalStateException("数据库和数据库库datasourceId不匹配，请检查是否配置有误，dataSourceId应以数据库名开头");
+        //            }
+        //        }
+        //        this.db = db;
         if (this.conf.isSlave()) {
 
         } else {
@@ -163,10 +163,10 @@ public class DbInfoHandler {
         return new HashMap<>(tbMaps);
     }
 
-//    public DbInfoHandler setTbMaps(Map<String, TableInfoInterface> tbMaps) {
-//        this.tbMaps = tbMaps;
-//        return this;
-//    }
+    //    public DbInfoHandler setTbMaps(Map<String, TableInfoInterface> tbMaps) {
+    //        this.tbMaps = tbMaps;
+    //        return this;
+    //    }
 
     public DbInfoInterface getDbInfo() {
         return dbInfo;
@@ -177,9 +177,9 @@ public class DbInfoHandler {
     }
 
     //    public DbInfoHandler setDbInfo(DbInfoInterface dbInfo) {
-//        this.dbInfo = dbInfo;
-//        return this;
-//    }
+    //        this.dbInfo = dbInfo;
+    //        return this;
+    //    }
 
     public int tbSize() {
         return tbMaps.size();
@@ -202,8 +202,8 @@ public class DbInfoHandler {
     }
 
     //    public TableInfoInterface putTb(String key, TableInfoInterface value) {
-//        return tbMaps.put(key, value);
-//    }
+    //        return tbMaps.put(key, value);
+    //    }
 
     private DbInfo analyzeDb(Set<String> ignoreTbPattern, Set<String> includingPattern) {
         this.conf.setIgnoreTbPattern(ignoreTbPattern);
@@ -238,40 +238,41 @@ public class DbInfoHandler {
         }
         return tbMap;
     }
-/*
-    public CommonModelDaoDef getDefs(String table) {
-        CommonModelDaoDef ret = null;
-        String dbName = getDb();
-        List<String> dataSources = DbDataTable.getAllSlaveSourceNameByName(dbName);
-        final String defaultAssemblerClass = conf.getDefaultAssemblerClass();
-        final String defaultBaseDaoClass = conf.getDefaultBaseDaoClass();
-        final TableInfoInterface tableInfo = getTbMaps().get(table);
-        if (tableInfo != null) {
-            String baseDaoClass = defaultBaseDaoClass;
-            String assembleClass = defaultAssemblerClass;
-            if (conf.getBaseDaoClass(table) != null) {
-                baseDaoClass = conf.getBaseDaoClass(table);
+
+    /*
+        public CommonModelDaoDef getDefs(String table) {
+            CommonModelDaoDef ret = null;
+            String dbName = getDb();
+            List<String> dataSources = DbDataTable.getAllSlaveSourceNameByName(dbName);
+            final String defaultAssemblerClass = conf.getDefaultAssemblerClass();
+            final String defaultBaseDaoClass = conf.getDefaultBaseDaoClass();
+            final TableInfoInterface tableInfo = getTbMaps().get(table);
+            if (tableInfo != null) {
+                String baseDaoClass = defaultBaseDaoClass;
+                String assembleClass = defaultAssemblerClass;
+                if (conf.getBaseDaoClass(table) != null) {
+                    baseDaoClass = conf.getBaseDaoClass(table);
+                }
+                if (conf.getAssembleClass(table) != null) {
+                    assembleClass = conf.getAssembleClass(table);
+                }
+    //            String table = tableInfo.getTable();
+    //            String modelSimpleName = CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(table);
+                final CommonModelDaoDef commonModelDaoDef = new CommonModelDaoDef(tableInfo, context)
+    //                    .setDef(tableInfo)
+                        .setBaseTable(null)
+                        .setBuildMapper(true)
+    //                    .setIgnoreField(null)
+                        .setDataSourceName(getDataSourceId())
+                        .setAssemblerExtendClzName(assembleClass)
+                        .setDaoExtendClzName(baseDaoClass);
+    //            if (dataSources != null) {
+    //                commonModelDaoDef.setDataSourceNames(dataSources);
+    //            }
             }
-            if (conf.getAssembleClass(table) != null) {
-                assembleClass = conf.getAssembleClass(table);
-            }
-//            String table = tableInfo.getTable();
-//            String modelSimpleName = CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(table);
-            final CommonModelDaoDef commonModelDaoDef = new CommonModelDaoDef(tableInfo, context)
-//                    .setDef(tableInfo)
-                    .setBaseTable(null)
-                    .setBuildMapper(true)
-//                    .setIgnoreField(null)
-                    .setDataSourceName(getDataSourceId())
-                    .setAssemblerExtendClzName(assembleClass)
-                    .setDaoExtendClzName(baseDaoClass);
-//            if (dataSources != null) {
-//                commonModelDaoDef.setDataSourceNames(dataSources);
-//            }
+            return ret;
         }
-        return ret;
-    }
-*/
+    */
     public List<CommonModelDaoDef> getDefs() {
 
         List<CommonModelDaoDef> defs = CollectionHelper.newList();
@@ -290,16 +291,17 @@ public class DbInfoHandler {
             if (conf.getAssembleClass(table) != null) {
                 assembleClass = conf.getAssembleClass(table);
             }
-//            String table = tableInfo.getTable();
-//            String modelSimpleName = CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(table);
-            final CommonModelDaoDef commonModelDaoDef = new CommonModelDaoDef(tableInfo, context)
-//                    .setDef(tableInfo)
-                    .setBaseTable(null)
-                    .setBuildMapper(true)
-                    .setDataSourceName(getDataSourceId())
-                    .setAssemblerExtendClzName(assembleClass)
-                    .setDaoExtendClzName(baseDaoClass)
-                    .setMapperClzName(context.getRSMapperClassName(table));
+            //            String table = tableInfo.getTable();
+            //            String modelSimpleName = CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(table);
+            final CommonModelDaoDef commonModelDaoDef = new CommonModelDaoDef(tableInfo, context);
+            //                    .setDef(tableInfo)
+            commonModelDaoDef.setBaseTable(null);
+            commonModelDaoDef.setBuildMapper(true);
+            commonModelDaoDef.setDataSourceName(getDataSourceId());
+            commonModelDaoDef.setAssemblerExtendClzName(assembleClass);
+            commonModelDaoDef.setDaoExtendClzName(baseDaoClass);
+            commonModelDaoDef.setMapperClzName(context.getRSMapperClassName(table));
+            commonModelDaoDef.setPojoMapperClzName(context.getMapMapperClassName(table));
             if (dataSources != null) {
                 commonModelDaoDef.setDataSourceNames(dataSources);
             }
@@ -317,18 +319,18 @@ public class DbInfoHandler {
     }
 
     //    public DbInfoHandler setSlave(boolean slave) {
-//        isSlave = slave;
-//        return this;
-//    }
-//
-//    public String getMasterDbName() {
-//        return masterDbName;
-//    }
-//
-//    public DbInfoHandler setMasterDbName(String masterDbName) {
-//        this.masterDbName = masterDbName;
-//        return this;
-//    }
+    //        isSlave = slave;
+    //        return this;
+    //    }
+    //
+    //    public String getMasterDbName() {
+    //        return masterDbName;
+    //    }
+    //
+    //    public DbInfoHandler setMasterDbName(String masterDbName) {
+    //        this.masterDbName = masterDbName;
+    //        return this;
+    //    }
 
     @Override
     public String toString() {

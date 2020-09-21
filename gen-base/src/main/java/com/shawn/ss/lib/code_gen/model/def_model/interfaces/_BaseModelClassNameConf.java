@@ -5,5 +5,5 @@ public interface _BaseModelClassNameConf extends _BaseContextConf {
 
     String getPojoExtendsClzName();
 
-
+    String getPojoMapperClzName();
 }

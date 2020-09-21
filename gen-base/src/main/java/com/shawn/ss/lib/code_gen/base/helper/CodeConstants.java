@@ -27,6 +27,7 @@ public class CodeConstants {
     public static final int MODE_PUBLIC_STATIC_FINAL = JMod.PUBLIC + JMod.STATIC + JMod.FINAL;
     public static final int MODE_PUBLIC_STATIC = JMod.PUBLIC + JMod.STATIC;
     public static final int MODE_PRIVATE_STATIC = JMod.PRIVATE + JMod.STATIC;
+    public static final int MODE_PRIVATE_STATIC_VOLATILE = JMod.PRIVATE + JMod.STATIC + JMod.VOLATILE;
 
     public static final String FIELD_CONST_NAME_PREFIX = "FI_";
     public static final String FIELD_TABLE_NAME = "DTO_TABLE_NAME";
@@ -178,12 +179,12 @@ public class CodeConstants {
     public static final String CLASS_NAME_DB_SOURCE_CONFIG_PREFIX = "DSConfig";
     //    public static final String CLASS_NAME_ENUM_PREFIX = "Enum";
     public static final String CLASS_NAME_RESULT_SET_MAPPER_PREFIX = "ResultSetMapper";
-    public static final String CLASS_NAME_REDIS_BYTE_MAPPER_PREFIX = "ByteMapMapper";
-    public static final String CLASS_NAME_POJO_MAPPER_PREFIX = "PojoMapper";
+    public static final String CLASS_NAME_REDIS_BYTE_MAPPER_PREFIX = "PojoMapMapper";
+    public static final String CLASS_NAME_POJO_MAPPER_PREFIX = "PojoRsMapper";
     public static final String CLASS_NAME_ALL_SPECIAL_DAO_TABLE_NAME = "SqlSpecialDao";
     public static final String CLASS_NAME_ALL_SQL_CONTANT_CLASS = ".constants.SqlConstants";
     public static final String CLASS_NAME_CONSTANTS = "Constants";
-//    public static final String CLASS_NAME_COMMON_DB_DAO_PREFIX="DAO";
+    //    public static final String CLASS_NAME_COMMON_DB_DAO_PREFIX="DAO";
 
     public static final String KEY_WORD_GET = "get";
     public static final String KEY_WORD_SET = "set";
@@ -208,87 +209,87 @@ public class CodeConstants {
 
 
     //    public CommonDaoBuilder(ModelBuilder parentBuilder,ModelBuilderContext builderContext) {
-//        super(parentBuilder, builderContext);
-//    }
+    //        super(parentBuilder, builderContext);
+    //    }
     public static Set<SelectMethod> allSelectMethod = CollectionHelper.<SelectMethod>setBuilder(true)
             .addAll(SelectMethodEnum.getAllSelectMethod().values())
             .getSet();
 
 
-//    public static boolean isDaoMethodMulti(String methodName) {
-//        return (
-//                methodName.equals(METHOD_DAO_GET_BY_IDS)
-//                        || methodName.equals(METHOD_DAO_GET_BY_INDEXES)
-//                        || methodName.equals(METHOD_DAO_GET_ALL)
-//                        || methodName.equals(METHOD_DAO_GET_BY_CONDITION)
-//                        || methodName.equals(METHOD_DAO_GET_BY_INDEXES_AND_CONDITION)
-//                        || methodName.equals(METHOD_DAO_CUSTOMER_GET_LIST_BY_CUSTOMER_CONDITION)
-//        );
-//
-//    }
-//
-//    public static boolean isDaoMethodHasRawItem(String methodName) {
-//        return (
-//                methodName.equals(METHOD_DAO_CUSTOMER_GET_ITEM_BY_INDEXES)
-//                        || methodName.equals(METHOD_DAO_CUSTOMER_GET_ITEM_BY_CONDITION)
-//                        || methodName.equals(METHOD_DAO_CUSTOMER_GET_ITEM_BY_INDEX_AND_CONDITION)
-////                        || methodName.equals(METHOD_DAO_GET_BY_CONDITION)
-////                        || methodName.equals(METHOD_DAO_GET_BY_INDEXES_AND_CONDITION)
-//        );
-//
-//    }
-//
-//    public static boolean isDaoMethodHasRawCondition(String methodName) {
-//        return (
-//                methodName.equals(METHOD_DAO_CUSTOMER_GET_ONE_BY_CUSTOMER_CONDITION)
-//                        || methodName.equals(METHOD_DAO_CUSTOMER_GET_LIST_BY_CUSTOMER_CONDITION)
-////                        || methodName.equals(METHOD_DAO_GET_ALL) || methodName.equals(METHOD_DAO_GET_BY_CONDITION)
-////                        || methodName.equals(METHOD_DAO_GET_BY_INDEXES_AND_CONDITION)
-//        );
-//
-//    }
-//
-//    public static boolean isDaoMethodCountResult(String methodName) {
-//        return (
-//                methodName.equals(CodeConstants.METHOD_DAO_GET_COUNT_BY_CONDITION)
-//                        || methodName.equals(CodeConstants.METHOD_DAO_GET_COUNT_BY_INDEX_AND_CONDITION)
-//
-//        );
-//    }
-//
-//    public static boolean isDaoMethodSingleResult(String methodName) {
-//        return methodName.equals(CodeConstants.METHOD_DAO_CUSTOMER_GET_ITEM_BY_CONDITION)
-//                || methodName.equals(CodeConstants.METHOD_DAO_CUSTOMER_GET_ITEM_BY_INDEXES)
-//                || methodName.equals(CodeConstants.METHOD_DAO_CUSTOMER_GET_ITEM_BY_INDEX_AND_CONDITION);
-//    }
-//
-//    public static boolean isDaoMethodNeedConditionList(String methodName) {
-//        return (
-//                methodName.equals(CodeConstants.METHOD_DAO_GET_BY_IDS)
-//                        || methodName.equals(CodeConstants.METHOD_DAO_GET_BY_INDEXES)
-//                        || methodName.equals(CodeConstants.METHOD_DAO_GET_BY_INDEXES_AND_CONDITION)
-//                        || methodName.equals(CodeConstants.METHOD_DAO_GET_COUNT_BY_INDEX_AND_CONDITION)
-//                        || methodName.equals(CodeConstants.METHOD_DAO_CUSTOMER_GET_ITEM_BY_INDEXES)
-//                        || methodName.equals(CodeConstants.METHOD_DAO_CUSTOMER_GET_ITEM_BY_INDEX_AND_CONDITION)
-//        );
-//    }
-//
-//
-//    public static boolean isDaoMethodNeedConditionSet(String methodName) {
-//        return (
-//                methodName.equals(CodeConstants.METHOD_DAO_GET_ONE_BY_CONDITION)
-//                        || methodName.equals(CodeConstants.METHOD_DAO_GET_BY_CONDITION)
-//                        || methodName.equals(CodeConstants.METHOD_DAO_GET_COUNT_BY_CONDITION)
-//                        || methodName.equals(CodeConstants.METHOD_DAO_GET_BY_INDEXES_AND_CONDITION)
-//                        || methodName.equals(CodeConstants.METHOD_DAO_GET_COUNT_BY_INDEX_AND_CONDITION)
-//                        || methodName.equals(CodeConstants.METHOD_DAO_CUSTOMER_GET_ITEM_BY_CONDITION)
-//                        || methodName.equals(CodeConstants.METHOD_DAO_CUSTOMER_GET_ITEM_BY_INDEX_AND_CONDITION)
-//        );
-//    }
-//
-//    public static boolean isDaoMethodNeedIdCondtion(String methodName) {
-//        return methodName.equals(CodeConstants.METHOD_DAO_GET_BY_ID) || methodName.equals(CodeConstants.METHOD_DAO_GET_BY_IDS);
-//    }
+    //    public static boolean isDaoMethodMulti(String methodName) {
+    //        return (
+    //                methodName.equals(METHOD_DAO_GET_BY_IDS)
+    //                        || methodName.equals(METHOD_DAO_GET_BY_INDEXES)
+    //                        || methodName.equals(METHOD_DAO_GET_ALL)
+    //                        || methodName.equals(METHOD_DAO_GET_BY_CONDITION)
+    //                        || methodName.equals(METHOD_DAO_GET_BY_INDEXES_AND_CONDITION)
+    //                        || methodName.equals(METHOD_DAO_CUSTOMER_GET_LIST_BY_CUSTOMER_CONDITION)
+    //        );
+    //
+    //    }
+    //
+    //    public static boolean isDaoMethodHasRawItem(String methodName) {
+    //        return (
+    //                methodName.equals(METHOD_DAO_CUSTOMER_GET_ITEM_BY_INDEXES)
+    //                        || methodName.equals(METHOD_DAO_CUSTOMER_GET_ITEM_BY_CONDITION)
+    //                        || methodName.equals(METHOD_DAO_CUSTOMER_GET_ITEM_BY_INDEX_AND_CONDITION)
+    ////                        || methodName.equals(METHOD_DAO_GET_BY_CONDITION)
+    ////                        || methodName.equals(METHOD_DAO_GET_BY_INDEXES_AND_CONDITION)
+    //        );
+    //
+    //    }
+    //
+    //    public static boolean isDaoMethodHasRawCondition(String methodName) {
+    //        return (
+    //                methodName.equals(METHOD_DAO_CUSTOMER_GET_ONE_BY_CUSTOMER_CONDITION)
+    //                        || methodName.equals(METHOD_DAO_CUSTOMER_GET_LIST_BY_CUSTOMER_CONDITION)
+    ////                        || methodName.equals(METHOD_DAO_GET_ALL) || methodName.equals(METHOD_DAO_GET_BY_CONDITION)
+    ////                        || methodName.equals(METHOD_DAO_GET_BY_INDEXES_AND_CONDITION)
+    //        );
+    //
+    //    }
+    //
+    //    public static boolean isDaoMethodCountResult(String methodName) {
+    //        return (
+    //                methodName.equals(CodeConstants.METHOD_DAO_GET_COUNT_BY_CONDITION)
+    //                        || methodName.equals(CodeConstants.METHOD_DAO_GET_COUNT_BY_INDEX_AND_CONDITION)
+    //
+    //        );
+    //    }
+    //
+    //    public static boolean isDaoMethodSingleResult(String methodName) {
+    //        return methodName.equals(CodeConstants.METHOD_DAO_CUSTOMER_GET_ITEM_BY_CONDITION)
+    //                || methodName.equals(CodeConstants.METHOD_DAO_CUSTOMER_GET_ITEM_BY_INDEXES)
+    //                || methodName.equals(CodeConstants.METHOD_DAO_CUSTOMER_GET_ITEM_BY_INDEX_AND_CONDITION);
+    //    }
+    //
+    //    public static boolean isDaoMethodNeedConditionList(String methodName) {
+    //        return (
+    //                methodName.equals(CodeConstants.METHOD_DAO_GET_BY_IDS)
+    //                        || methodName.equals(CodeConstants.METHOD_DAO_GET_BY_INDEXES)
+    //                        || methodName.equals(CodeConstants.METHOD_DAO_GET_BY_INDEXES_AND_CONDITION)
+    //                        || methodName.equals(CodeConstants.METHOD_DAO_GET_COUNT_BY_INDEX_AND_CONDITION)
+    //                        || methodName.equals(CodeConstants.METHOD_DAO_CUSTOMER_GET_ITEM_BY_INDEXES)
+    //                        || methodName.equals(CodeConstants.METHOD_DAO_CUSTOMER_GET_ITEM_BY_INDEX_AND_CONDITION)
+    //        );
+    //    }
+    //
+    //
+    //    public static boolean isDaoMethodNeedConditionSet(String methodName) {
+    //        return (
+    //                methodName.equals(CodeConstants.METHOD_DAO_GET_ONE_BY_CONDITION)
+    //                        || methodName.equals(CodeConstants.METHOD_DAO_GET_BY_CONDITION)
+    //                        || methodName.equals(CodeConstants.METHOD_DAO_GET_COUNT_BY_CONDITION)
+    //                        || methodName.equals(CodeConstants.METHOD_DAO_GET_BY_INDEXES_AND_CONDITION)
+    //                        || methodName.equals(CodeConstants.METHOD_DAO_GET_COUNT_BY_INDEX_AND_CONDITION)
+    //                        || methodName.equals(CodeConstants.METHOD_DAO_CUSTOMER_GET_ITEM_BY_CONDITION)
+    //                        || methodName.equals(CodeConstants.METHOD_DAO_CUSTOMER_GET_ITEM_BY_INDEX_AND_CONDITION)
+    //        );
+    //    }
+    //
+    //    public static boolean isDaoMethodNeedIdCondtion(String methodName) {
+    //        return methodName.equals(CodeConstants.METHOD_DAO_GET_BY_ID) || methodName.equals(CodeConstants.METHOD_DAO_GET_BY_IDS);
+    //    }
 
     public static IJExpression litObject(Class contentType, Object obj) {
         if (obj != null && contentType != null) {
@@ -322,9 +323,9 @@ public class CodeConstants {
     }
 
 
-//    public static AbstractJClass buildNarrowedClass(JCodeModel cm,Class base,Object[] narrowedClass){
-//
-//    }
+    //    public static AbstractJClass buildNarrowedClass(JCodeModel cm,Class base,Object[] narrowedClass){
+    //
+    //    }
 
     public static IJExpression litObject(Object obj) {
         if (obj != null) {
@@ -359,23 +360,23 @@ public class CodeConstants {
     }
 
     //    public  static  AbstractJClass buildType(JCodeModel cm, FieldDataTypeInterface tp) {
-//        if (tp==FieldDataTypeInterface.intData || tp==FieldDataTypeInterface.shortData || tp==FieldDataTypeInterface. || tp==FieldDataTypeInterface.intData) {
-//            return cm.ref(Integer.class);
-//        } else if (tp==FieldDataTypeInterface.intData) {
-//            return cm.ref(Long.class);
-//        } else if (tp==FieldDataTypeInterface.intData || tp==FieldDataTypeInterface.intData || tp==FieldDataTypeInterface.intData) {
-//            return cm.ref(Double.class);
-//        } else if (tp==FieldDataTypeInterface.intData || tp==FieldDataTypeInterface.intData) {
-//            return cm.ref(Date.class);
-//        } else if (tp==FieldDataTypeInterface.intData || tp==FieldDataTypeInterface.intData) {
-//            return cm.ref(String.class);
-//        } else if (tp==FieldDataTypeInterface.intData || tp==FieldDataTypeInterface.intData) {
-//            return cm.ref(byte[].class);
-//        } else if (tp==FieldDataTypeInterface.intData) {
-//            return cm.ref(Boolean.class);
-//        }
-//        return null;
-//    }
+    //        if (tp==FieldDataTypeInterface.intData || tp==FieldDataTypeInterface.shortData || tp==FieldDataTypeInterface. || tp==FieldDataTypeInterface.intData) {
+    //            return cm.ref(Integer.class);
+    //        } else if (tp==FieldDataTypeInterface.intData) {
+    //            return cm.ref(Long.class);
+    //        } else if (tp==FieldDataTypeInterface.intData || tp==FieldDataTypeInterface.intData || tp==FieldDataTypeInterface.intData) {
+    //            return cm.ref(Double.class);
+    //        } else if (tp==FieldDataTypeInterface.intData || tp==FieldDataTypeInterface.intData) {
+    //            return cm.ref(Date.class);
+    //        } else if (tp==FieldDataTypeInterface.intData || tp==FieldDataTypeInterface.intData) {
+    //            return cm.ref(String.class);
+    //        } else if (tp==FieldDataTypeInterface.intData || tp==FieldDataTypeInterface.intData) {
+    //            return cm.ref(byte[].class);
+    //        } else if (tp==FieldDataTypeInterface.intData) {
+    //            return cm.ref(Boolean.class);
+    //        }
+    //        return null;
+    //    }
     public static AbstractJClass buildType(JCodeModel cm, String tp) {
 
         tp = tp.toUpperCase();
@@ -445,26 +446,41 @@ public class CodeConstants {
         return new JMethod[]{getter, setter};
     }
 
+    private static int getMod(JMods mode, boolean write) {
+        int syncFlag = write ? ((mode.getValue() & JMod.VOLATILE) == 0 ? 0 : JMod.SYNCHRONIZED) : 0;
+        int staticFlag = mode.isStatic() ? JMod.STATIC : 0;
+        return staticFlag
+                + JMod.PUBLIC
+                + syncFlag;
+    }
+
     public static JMethod buildGetter(JDefinedClass _class, String fd, AbstractJClass type, JFieldVar field) {
-        int mods = JMod.PUBLIC;
-//        JCodeModel cm=_class.owner();
+        JMods mods1 = field.mods();
+        int mods = getMod(mods1, false);
         JMethod method = _class.method(mods, type, getModelGetMethodName(fd));
         method.body()._return(field);
         return method;
     }
+
 
     public static String getModelGetMethodName(String fd) {
         return KEY_WORD_GET + CodeStyleTransformHelper.upperFirstCase(fd);
     }
 
     public static JMethod buildSetter(JDefinedClass _class, String fd, AbstractJClass type, JFieldVar field) {
-        int mods = JMod.PUBLIC;
-//        JCodeModel cm=_class.owner();
-        JMethod method = _class.method(mods, _class, getModelSetMethodName(fd));
+        JMods mods1 = field.mods();
+        int mods = getMod(mods1, true);
+        //        JCodeModel cm=_class.owner();
+
+        String modelSetMethodName = getModelSetMethodName(fd);
+        JMethod method = mods1.isStatic() ?
+                _class.method(mods, void.class, modelSetMethodName) :
+                _class.method(mods, _class, modelSetMethodName);
         JVar varParam = method.param(type, "l" + CodeStyleTransformHelper.upperFirstCase(fd));
         JBlock body = method.body();
         body.assign(field, varParam);
-        body._return(JExpr._this());
+        if (!mods1.isStatic())
+            body._return(JExpr._this());
         return method;
     }
 
@@ -474,27 +490,27 @@ public class CodeConstants {
 
     public static IJExpressionStatement castToType(JCodeModel cm, IJExpressionStatement expr, String tp) {
         tp = tp.toUpperCase();
-//        cm.ref("").staticInvoke()
+        //        cm.ref("").staticInvoke()
         if (tp.startsWith("TINYINT") || tp.startsWith("SMALLINT") || tp.startsWith("INT") || tp.startsWith("MEDIUMINT")) {
-//            return cm.ref(CollectionBuilder.class).staticInvoke("getInt").arg(expr);
+            //            return cm.ref(CollectionBuilder.class).staticInvoke("getInt").arg(expr);
         } else if (tp.startsWith("BIGINT")) {
-//            return cm.ref(CollectionBuilder.class).staticInvoke("getLong").arg(expr);
+            //            return cm.ref(CollectionBuilder.class).staticInvoke("getLong").arg(expr);
         } else if (tp.startsWith("DECIMAL") || tp.startsWith("FLOAT") || tp.startsWith("DOUBLE")) {
-//            return cm.ref(CollectionBuilder.class).staticInvoke("getDouble").arg(expr);
+            //            return cm.ref(CollectionBuilder.class).staticInvoke("getDouble").arg(expr);
         } else if (tp.startsWith("DATE") || tp.startsWith("TIME")) {
-//            return cm.ref(CollectionBuilder.class).staticInvoke("getDate").arg(expr);
+            //            return cm.ref(CollectionBuilder.class).staticInvoke("getDate").arg(expr);
         } else if (tp.contains("CHAR") || tp.contains("TEXT")) {
-//            return cm.ref(CollectionBuilder.class).staticInvoke("getString").arg(expr);
+            //            return cm.ref(CollectionBuilder.class).staticInvoke("getString").arg(expr);
         } else if (tp.contains("BLOB") || tp.contains("BINARY")) {
-//            return cm.ref(CollectionBuilder.class).staticInvoke("getString").arg(expr);
+            //            return cm.ref(CollectionBuilder.class).staticInvoke("getString").arg(expr);
         } else if (tp.contains("BOOL")) {
-//            return cm.ref(CollectionBuilder.class).staticInvoke("getInt").arg(expr);
+            //            return cm.ref(CollectionBuilder.class).staticInvoke("getInt").arg(expr);
         }
         return null;
     }
 
     public static void buildPutMapExpression(JBlock body, JFieldRef constField, IJExpressionStatement param, IJExpressionStatement paramContainer, int i) {
-//        JExpression constField = JExpr.ref(limitCount);
+        //        JExpression constField = JExpr.ref(limitCount);
         JConditional countIf = body._if(param.invoke("containsKey").arg(constField).not());
         JBlock blockCount = countIf._then();
         blockCount.add(paramContainer.invoke("put").arg(constField).arg(JExpr.lit(i)));
@@ -548,7 +564,7 @@ public class CodeConstants {
         if (constructor) {
             return;
         }
-//        AbstractJType returnType = fromMethod.type();
+        //        AbstractJType returnType = fromMethod.type();
         Collection<AbstractJClass> aThrows = fromMethod.getThrows();
         List<JVar> jVars = fromMethod.params();
         for (int i = 0, n = jVars.size(); i < n; ++i) {
@@ -582,8 +598,8 @@ public class CodeConstants {
             for (JTypeVar var : jTypeVars) {
                 reloadMethod.generify(var.name(), var._extends());
             }
-//        List<JVar> allVars=CollectionHelper.newLinkedList();
-//        final int assemblerIndex;
+            //        List<JVar> allVars=CollectionHelper.newLinkedList();
+            //        final int assemblerIndex;
             JBlock body = reloadMethod.body();
             JInvocation invoke = JExpr.invoke(method);
 
@@ -783,9 +799,9 @@ public class CodeConstants {
         if (typeDef == null) {
             jClass = cm.ref(item.getType().gettClass());
         } else {
-//                if(type==null && enumTypeDef !=null) {
+            //                if(type==null && enumTypeDef !=null) {
             jClass = cm.ref(typeDef.getClazzName());
-//                }
+            //                }
         }
         return jClass;
     }
@@ -796,25 +812,25 @@ public class CodeConstants {
 
     public static AbstractJClass getFieldDefType(JCodeModel cm, _BaseModelConf odef, FieldInfoInterface item, ModelBuilderContext bc) {
         AbstractJClass jClass = null;
-//        if (odef instanceof CommonModelDaoDef) {
-//            CommonModelDaoDef def = (CommonModelDaoDef) odef;
+        //        if (odef instanceof CommonModelDaoDef) {
+        //            CommonModelDaoDef def = (CommonModelDaoDef) odef;
         FieldDataTypeInterface type = item.getType();
         EnumTypeDef typeDef = item.getEnumTypeDef();
         if (typeDef == null) {
             jClass = cm.ref(type.gettClass());
         } else {
-//                FieldInfoInterface field = def.getField(item.getFieldName());
-//                EnumTypeDef enumTypeDef = field.getEnumTypeDef();
-//                if(enumTypeDef!=null) {
-//                    jClass = cm.ref(enumTypeDef.getClazzName());//def.getEnumClz(item.getFieldName());
-//                    if (jClass == null) {
-//                if(type==null && enumTypeDef !=null) {
+            //                FieldInfoInterface field = def.getField(item.getFieldName());
+            //                EnumTypeDef enumTypeDef = field.getEnumTypeDef();
+            //                if(enumTypeDef!=null) {
+            //                    jClass = cm.ref(enumTypeDef.getClazzName());//def.getEnumClz(item.getFieldName());
+            //                    if (jClass == null) {
+            //                if(type==null && enumTypeDef !=null) {
 
-//                }
-//                    }
-//                }else{
+            //                }
+            //                    }
+            //                }else{
             jClass = cm.ref(bc.getEnumClzName(typeDef.getClazzName()));
-//                }
+            //                }
         }
         if (type.isArray()) {
             jClass = jClass.array();
@@ -823,9 +839,9 @@ public class CodeConstants {
         } else if (type.isMap()) {
             jClass = CodeConstants.buildNarrowedClass(cm, Map.class, cm.ref(type.getKeyClass()), jClass);
         }
-//        } else {
-//            jClass = cm.ref(item.getType().gettClass());
-//        }
+        //        } else {
+        //            jClass = cm.ref(item.getType().gettClass());
+        //        }
         return jClass;
     }
 
@@ -838,7 +854,7 @@ public class CodeConstants {
                 including.add(pattern);
             }
         }
-//        else {
+        //        else {
         if (ignoreTbPattern != null && ignoreTbPattern.size() > 0) {
             for (String p : ignoreTbPattern) {
                 Pattern pattern = Pattern.compile(p);

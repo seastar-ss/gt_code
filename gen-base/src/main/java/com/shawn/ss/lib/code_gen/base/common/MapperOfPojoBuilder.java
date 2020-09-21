@@ -14,7 +14,7 @@ import com.shawn.ss.lib.tools.TypeConstantHelper;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.FieldInfoInterface;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.model.EnumTypeDef;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.model.FieldDataTypeInterface;
-import com.shawn.ss.lib.tools.db.api.interfaces.mappers.db.RedisMapMapper;
+import com.shawn.ss.lib.tools.db.api.interfaces.mappers.db.CommonMapMapper;
 
 import java.util.List;
 import java.util.Map;
@@ -22,52 +22,36 @@ import java.util.Set;
 
 public class MapperOfPojoBuilder implements CodeBuilderInterface {
 
-//    final PoModelBuilder poModelBuilder;
-//    final POJOModelBuilder parentModelBuilder;
     final JCodeModel cm;
     final String mapperClassName;
     JDefinedClass definedClass;
     JDefinedClass modelClass;
     final _BaseModelConf modelDef;
-//    final CommonModelDef poModelDef;
     ModelBuilderContext builderContext;
-//    Map<String,FieldInfoInterface> fieldsBothHave;
 
 
-//    public MapperOfPojoBuilder(POJOModelBuilder parentModelBuilder) {
-//        this(null, parentModelBuilder);
-//    }
-
-    public MapperOfPojoBuilder(_BaseModelConf modelDef){
-//        this.parentModelBuilder = parentModelBuilder;
+    public MapperOfPojoBuilder(_BaseModelConf modelDef) {
         String modelClassName = modelDef.getPojoClzName();
-        mapperClassName = CodeConstants.CLASS_NAME_POJO_MAPPER_PREFIX + CodeConstants.getClassNameFromFullName(modelClassName);
+        mapperClassName = modelDef.getPojoMapperClzName();
         builderContext = modelDef.getBuilderContext();
-        cm=builderContext.getCm();
-        modelClass=modelDef.getDeclaredModel();
-        this.modelDef=modelDef;
-       // buildInterception(poModelDef,modelDef);
-//        this.poModelBuilder = poModelBuilder;
-//        if (poModelBuilder != null)
-//            poModelDef = poModelBuilder.getModelDef();
-//        else
-//            poModelDef = null;
+        cm = builderContext.getCm();
+        modelClass = modelDef.getDeclaredModel();
+        this.modelDef = modelDef;
+
     }
 
     private void buildInterception(CommonModelDaoDef poModelDef, CommonPOJOConf modelDef) {
-        if(poModelDef!=null){
+        if (poModelDef != null) {
 
         }
     }
 
     @Override
     public void buildModel() {
-        //modelClass = parentModelBuilder.getDefinedClass();
         try {
-            this.definedClass = modelClass._class(CodeConstants.MODE_PUBLIC_STATIC, mapperClassName);
-            JNarrowedClass interfaceClass = cm.ref(RedisMapMapper.class).narrow(modelClass);
+            this.definedClass = cm._class(modelDef.getPojoMapperClzName());//modelClass._class(CodeConstants.MODE_PUBLIC_STATIC, mapperClassName);
+            JNarrowedClass interfaceClass = cm.ref(CommonMapMapper.class).narrow(modelClass);
             definedClass._implements(interfaceClass);
-
             buildMethodFromMapByte();
             buildMethodToMapByte();
             buildMethodToCommonMap();
@@ -75,9 +59,6 @@ public class MapperOfPojoBuilder implements CodeBuilderInterface {
             buildMethodGetField();
             buildMethodSetField();
             buildMethodSetFieldByte();
-//            modelClass.field(CodeConstants.MODE_PUBLIC_STATIC_FINAL, definedClass, CodeConstants.FIELD_REDIS_MAP_MAPPER_INSTANCE, JExpr._new(definedClass));
-//            JNarrowedClass baseClass = cm.ref(BaseDbMapper.class).narrow(modelClass);
-//            definedClass._extends(baseClass);
             buildNewInstance();
         } catch (JClassAlreadyExistsException e) {
             e.printStackTrace();
@@ -87,11 +68,14 @@ public class MapperOfPojoBuilder implements CodeBuilderInterface {
     private void buildNewInstance() {
         _BaseConstantDef constant = modelDef.getConstant();
 
-        constant.getConstantClz().field(
-                CodeConstants.MODE_PUBLIC_STATIC_FINAL,definedClass,
-                CodeConstants.getFieldNameOfCommonMapperForModel(modelDef.getName()),
+        String fieldNameOfCommonMapperForModel = CodeConstants.getFieldNameOfCommonMapperForModel(modelDef.getName());
+        JFieldVar field = constant.getConstantClz().field(
+                CodeConstants.MODE_PRIVATE_STATIC_VOLATILE,
+                definedClass,
+                fieldNameOfCommonMapperForModel,
                 JExpr._new(definedClass)
         );
+        CodeConstants.buildGetterAndSetter(constant.getConstantClz(), fieldNameOfCommonMapperForModel, definedClass, field);
     }
 
     private void buildToPo() {
@@ -159,7 +143,7 @@ public class MapperOfPojoBuilder implements CodeBuilderInterface {
 
     private void buildMethodGetField() {
         JDirectClass genericType = cm.directClass("TT");
-//        AbstractJType declarable =
+        //        AbstractJType declarable =
         JMethod method = definedClass.method(JMod.PUBLIC, genericType, CodeConstants.METHOD_JEDIS_MAPPER_GET_FIELD);
         method.generify("TT");
         JVar field = method.param(String.class, "field");
@@ -202,17 +186,15 @@ public class MapperOfPojoBuilder implements CodeBuilderInterface {
             JFieldRef ref = CodeConstants.getBaseModelColumnStaticRef(modelClass, colName);
             final JVar objVar = body.decl(cm.ref(Object.class), "d" + CodeStyleTransformHelper.upperFirstCase(colName), JExpr.invoke(param, "get").arg(ref));
             final JBlock thenBlock = body._if(objVar.ne(JExpr._null()))._then();
-//            EnumTypeDef enumTypeDef = col.getEnumTypeDef();
+            //            EnumTypeDef enumTypeDef = col.getEnumTypeDef();
             buildMapObjToField(col);
             thenBlock.invoke(JExpr._this(), CodeConstants.METHOD_JEDIS_MAPPER_SET_FIELD)
                     .arg(ref).arg(ret).arg(objVar);
-//            if(enumTypeDef!=null){
-//                invoke=invoke.ref(CodeConstants.FIELD_ENUM_VAL_FIELD);
-//            }
-
-
-//            body._if(jVar.ne(JExpr._null()))._then().invoke(ret,"put").arg(ref)
-//                    .arg(enumTypeDef==null?jVar:jVar.ref(CodeConstants.FIELD_ENUM_VAL_FIELD));
+            //            if(enumTypeDef!=null){
+            //                invoke=invoke.ref(CodeConstants.FIELD_ENUM_VAL_FIELD);
+            //            }
+            //            body._if(jVar.ne(JExpr._null()))._then().invoke(ret,"put").arg(ref)
+            //                    .arg(enumTypeDef==null?jVar:jVar.ref(CodeConstants.FIELD_ENUM_VAL_FIELD));
         }
         body._return(ret);
     }
@@ -233,9 +215,9 @@ public class MapperOfPojoBuilder implements CodeBuilderInterface {
             JFieldRef ref = CodeConstants.getBaseModelColumnStaticRef(modelClass, colName);
             IJExpression invoke = instance.invoke(CodeConstants.getMethodNameOfModelGet(colName));
             EnumTypeDef enumTypeDef = col.getEnumTypeDef();
-//            if(enumTypeDef!=null){
-//                invoke=invoke.ref(CodeConstants.FIELD_ENUM_VAL_FIELD);
-//            }
+            //            if(enumTypeDef!=null){
+            //                invoke=invoke.ref(CodeConstants.FIELD_ENUM_VAL_FIELD);
+            //            }
 
             JVar jVar = body.decl(CodeConstants.getFieldDefType(cm, modelDef, col, builderContext), "d" + CodeStyleTransformHelper.upperFirstCase(colName)
                     , invoke);

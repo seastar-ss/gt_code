@@ -47,7 +47,6 @@ public class ModelBuilderTest {
 
     //    @Test
     public void testGen16BitDbModel() {
-
 //        ModelBuilderContext modelBuilderContext = ModelBuilderContext.builderHelper("data_store-16bit.properties",
 //                "com.sundland.thor.new_dao",
 //                "C:\\projects\\newWorkSpace\\sunland-thor\\src\\main\\java", "sunland");

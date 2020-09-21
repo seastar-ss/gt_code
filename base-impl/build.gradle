@@ -2,8 +2,8 @@ apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'application'
 
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 //String[] targetJarsPosition = ['D:\\personal\\documents\\project\\workings\\42.96.139.10\\common_libs\\CodeGenerator\\libs',
 //                               'D:\\personal\\documents\\project\\workings\\42.96.139.10\\common_libs\\GenTestModule\\libs',
