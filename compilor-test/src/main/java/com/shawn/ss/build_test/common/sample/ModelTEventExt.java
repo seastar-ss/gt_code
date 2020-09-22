@@ -1,4 +1,4 @@
-package com.shangde.test.sample;
+package com.shawn.ss.build_test.common.sample;
 
 import com.shangde.ent_portal.logical.dto.basepo.ModelTEvent;
 

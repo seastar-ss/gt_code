@@ -170,22 +170,6 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
                 .arg(fieldClassObj)
                 .arg(indexesVar);
 
-        //buildRawInCluase(sqlBuilder,param,inField,fieldClassObj,indexes);
-
-        //        JConditional anIfV2 = fblock._if(fieldClassObj._instanceof(cm.ref(Class.class)));
-        //        anIfV2._else().invoke(loggerField, "warn").arg("unknown error occured");
-        //        JBlock block = anIfV2._then();
-        //        JVar fieldClass = block.decl(cm.ref(Class.class), "fieldClass", JExpr.cast(cm.ref(Class.class), fieldClassObj));
-        //        block.invoke(paramVar, "put").arg(JExpr.lit(indexStr)).arg(indexesVar);
-        ////            JFieldRef indexStaticRef = modelClazzRef.staticRef(CodeConstants.FIELD_CONST_NAME_PREFIX + field.toUpperCase());
-        //        block.invoke(sqlBuilderVar, CodeConstants.LIB_SQL_SET_WHERE)
-        //                .arg(cm.ref(LogicalRelationshipType.class).staticRef("and"))
-        //                .arg(cm.ref(LogicalOpType.class).staticRef("in"))
-        //                .arg(JExpr._null())
-        //                .arg(fieldVar)
-        //                .arg(indexStr)
-        //                .arg(cm.ref(FieldDataTypeInterface.class).staticInvoke(CodeConstants.LIB_COLUMN_TYPE_GET_TYPE).arg(fieldClass));
-        //        block._return();
         JBlock jBlock = containsKeyIf._else();
         jBlock.invoke(loggerField, "error").arg("field parameter error");
         jBlock._throw(JExpr._new(cm.ref(IllegalArgumentException.class))
@@ -198,161 +182,14 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
         );
     }
 
-    /**
-     * private void buildGetResultsMethod(boolean multiSelect) {
-     * AbstractJClass jClass;
-     * if (multiSelect) {
-     * jClass = CodeConstants.buildNarrowedClass(cm, List.class, modelClazzRef);
-     * } else {
-     * //            if (single) {
-     * //                jClass = cm.ref(Long.class);
-     * //            } else {
-     * jClass = modelClazzRef;
-     * //            }
-     * }
-     * JMethod method = definedClass.method(JMod.PROTECTED, jClass, multiSelect ? CodeConstants.METHOD_DAO_GET_RESULT_LIST : CodeConstants.METHOD_DAO_GET_RESULT);
-     * JVar assemblerVar = method.param(cm.ref(DaoAssembler.class), CodeConstants.PARAM_DAO_ASSEMBLER);
-     * //      FIXME:  JVar sqlBuilderVar = method.param(CodeConstants.buildNarrowedClass(cm, SQL.class, SQLSelect.class), "sqlBuilder");
-     * JVar sqlBuilderVar = method.param( SQLSelect.class, "sqlBuilder");
-     * JVar paramVar = method.param(CodeConstants.buildNarrowedClass(cm, Map.class, String.class, Object.class), "param");
-     * JBlock body = method.body();
-     * JVar status = body.decl(cm.INT, "status", JExpr.lit(0));
-     * body._if(assemblerVar.ne(JExpr._null()))._then().assign(status,JExpr.invoke(assemblerVar, CodeConstants.LIB_SQL_ASSEMBLE_SQL).arg(sqlBuilderVar).arg(paramVar).arg(JExpr.dotclass(modelClazzRef)));
-     * //        body.invoke(sqlBuilder,CodeConstants.LIB_SQL_GET_SQL).arg(JExpr._null());
-     * JVar dbToUseVar = body.decl(cm.ref(SimpleDbInterface.class), "dbInstance", dbField);
-     * if (dbMapField != null) {
-     * //            JVar dbToUseValue = body.decl(cm.ref(String.class),
-     * //                    "dbToUse", JExpr._null());
-     * //            JBlock then = body._if(assemblerVar.ne(JExpr._null()))._then();
-     * //            then.assign(
-     * //                    dbToUseValue,
-     * //                    JExpr.invoke(assemblerVar, CodeConstants.LIB_SQL_ASSEMBLE_SELECT_DB)
-     * //                            .arg(sqlBuilderVar)
-     * //                            .arg(paramVar)
-     * //                            .arg(JExpr.dotclass(modelClazzRef))
-     * //            );
-     * //            body._if(dbToUseValue.ne(JExpr._null()).cand(dbMapField.invoke("containsKey").arg(dbToUseValue)))
-     * //                    ._then().assign(dbToUseVar, dbMapField.invoke("get").arg(dbToUseValue));
-     * buildDbSelectClause(body,assemblerVar,sqlBuilderVar,paramVar,dbToUseVar);
-     * }
-     * //        JVar sql = body.decl(cm.ref(String.class), "sql");
-     * JConditional retCondition = body._if(status.eq(JExpr.lit(0)));
-     * <p>
-     * JBlock jBlock = retCondition._then();
-     * //        jBlock.assign(sql, sqlBuilderVar.invoke(CodeConstants.LIB_SQL_GET_SQL).arg(JExpr._null()));
-     * //        addLogs(jBlock, sql, paramVar);
-     * <p>
-     * String fullMapperClassName = builderContext.getRSMapperClassName(table);
-     * JInvocation rsBuildInvocation = JExpr.invoke(assemblerVar, CodeConstants.LIB_SQL_ASSEMBLE_RESULT_SET).narrow(modelClazzRef).arg(paramVar).arg(JExpr.dotclass(modelClazzRef));
-     * JNarrowedClass mapperClazz = cm.ref(fullMapperClassName).narrow(modelClazzRef);
-     * JVar rsMapper = jBlock.decl(mapperClazz, "rsMapper",  modelClazzRef.staticRef(CodeConstants.FIELD_RESULT_SET_MAPPER_INSTANCE_APPENDIX));
-     * JBlock buildMapperIf = jBlock._if(assemblerVar.ne(JExpr._null()))._then();//.assign(rsMapper, JExpr.cast(mapperClazz, rsBuildInvocation));
-     * JVar rsMapperTmp = buildMapperIf.decl(mapperClazz, "rsMapperTmp", JExpr.cast(mapperClazz, rsBuildInvocation));
-     * buildMapperIf._if(rsMapperTmp.ne(JExpr._null()))._then().assign(rsMapper,rsMapperTmp);
-     * <p>
-     * JInvocation arg = JExpr._super()
-     * .invoke(multiSelect ? CodeConstants.METHOD_DAO_GET_RESULT_LIST : CodeConstants.METHOD_DAO_GET_RESULT)
-     * .arg(dbToUseVar)
-     * .arg(assemblerVar)
-     * .arg(sqlBuilderVar)
-     * .arg(paramVar)
-     * .arg(rsMapper);
-     * JTryBlock aTry = jBlock._try();
-     * aTry.body()._return(arg);
-     * JCatchBlock catchBlock1 = aTry._catch(cm.ref(Exception.class));
-     * JBlock catchBlock = catchBlock1.body();
-     * JVar exVar = catchBlock1.param("ex");
-     * catchBlock.invoke(loggerField, "error").arg("sql execption").arg(exVar);
-     * catchBlock._return(JExpr._null());
-     * retCondition._else()._return(JExpr._null());
-     * }
-     * <p>
-     * private void buildGetResultMethod(boolean multiSelect) {
-     * //        AbstractJClass jClass=null;
-     * JDirectClass genericType = cm.directClass("TT");
-     * AbstractJType retClz = multiSelect ? CodeConstants.buildNarrowedClass(cm, List.class, genericType) : genericType;
-     * JMethod method = definedClass.method(
-     * JMod.PROTECTED,
-     * retClz,
-     * multiSelect ? CodeConstants.METHOD_DAO_GET_RESULT_ITEM_LIST : CodeConstants.METHOD_DAO_GET_RESULT_SCALAR
-     * );
-     * method.generify("TT");
-     * JVar assemblerVar = method.param(cm.ref(DaoAssembler.class), CodeConstants.PARAM_DAO_ASSEMBLER);
-     * //      FIXME:  JVar sqlBuilderVar = method.param(CodeConstants.buildNarrowedClass(cm, SQL.class, SQLSelect.class), "sqlBuilder");
-     * JVar sqlBuilderVar = method.param(SQLSelect.class, "sqlBuilder");
-     * JVar paramVar = method.param(CodeConstants.buildNarrowedClass(cm, Map.class, String.class, Object.class), "param");
-     * JVar tClassVar = method.param(CodeConstants.buildNarrowedClass(cm, Class.class, genericType), "tClass");
-     * JBlock body = method.body();
-     * //        JVar status = body.decl(
-     * //                cm.INT, "status",
-     * //                JExpr.invoke(assemblerVar, CodeConstants.LIB_SQL_ASSEMBLE_SQL)
-     * //                        .arg(sqlBuilderVar)
-     * //                        .arg(paramVar)
-     * //                        .arg(JExpr.dotclass(modelClazzRef))
-     * //        );
-     * JVar dbToUseVar = body.decl(cm.ref(SimpleDbInterface.class), "dbInstance", dbField);
-     * if (dbMapField != null) {
-     * //            JVar dbToUseValue = body.decl(cm.ref(String.class),
-     * //                    "dbToUse", JExpr._null());
-     * //            JBlock then = body._if(assemblerVar.ne(JExpr._null()))._then();
-     * //            then.assign(
-     * //                    dbToUseValue,
-     * //                    JExpr.invoke(assemblerVar, CodeConstants.LIB_SQL_ASSEMBLE_SELECT_DB)
-     * //                            .arg(sqlBuilderVar)
-     * //                            .arg(paramVar)
-     * //                            .arg(JExpr.dotclass(modelClazzRef))
-     * //            );
-     * //            body._if(dbToUseValue.ne(JExpr._null()).cand(dbMapField.invoke("containsKey").arg(dbToUseValue)))
-     * //                    ._then().assign(dbToUseVar, dbMapField.invoke("get").arg(dbToUseValue));
-     * buildDbSelectClause(body,assemblerVar,sqlBuilderVar,paramVar,dbToUseVar);
-     * }
-     * body._return(
-     * JExpr.invoke(JExpr._super(), multiSelect ? CodeConstants.METHOD_DAO_GET_RESULT_ITEM_LIST : CodeConstants.METHOD_DAO_GET_RESULT_SCALAR)
-     * .arg(dbToUseVar)
-     * .arg(assemblerVar)
-     * .arg(sqlBuilderVar)
-     * .arg(paramVar)
-     * .arg(tClassVar)
-     * );
-     * //        body.invoke(sqlBuilder,CodeConstants.LIB_SQL_GET_SQL).arg(JExpr._null());
-     * //        JVar sql = body.decl(cm.ref(String.class), "sql");
-     * //        JConditional retCondition = body._if(status.eq(JExpr.lit(0)));
-     * //        JBlock jBlock = retCondition._then();
-     * //        jBlock.assign(sql, sqlBuilderVar.invoke(CodeConstants.LIB_SQL_GET_SQL).arg(JExpr._null()));
-     * //        addLogs(jBlock, sql, paramVar);
-     * //        JInvocation arg = dbToUseVar.invoke(CodeConstants.LIB_DB_QUERY_ONE).arg(sql).arg(paramVar).arg(tClassVar);
-     * //        JTryBlock aTry = jBlock._try();
-     * //        aTry.body()._return(arg);
-     * //        JCatchBlock catchBlock1 = aTry._catch(cm.ref(Exception.class));
-     * //        JBlock catchBlock = catchBlock1.body();
-     * //        JVar exVar = catchBlock1.param("ex");
-     * //        catchBlock.invoke(loggerField, "error").arg("sql execption").arg(exVar);
-     * //        catchBlock._return(JExpr._null());
-     * //        retCondition._else()._return(JExpr._null());
-     * }
-     **/
     private JVar buildDbSelectClause(JBlock body, JVar assemblerVar, JVar sqlBuilderVar, JVar paramVar, JVar dbToUseVar) {
-        //        JVar dbToUseValue = body.decl(
-        //                cm.ref(String.class),
-        //                "dbToUse",
-        //                JExpr._super().invoke("selectDb").arg(assemblerVar).arg(sqlBuilderVar).arg(paramVar)
-        //        );
-        ////        JBlock then = body._if(assemblerVar.ne(JExpr._null()))._then();
-        ////        then.assign(
-        ////                dbToUseValue,
-        ////                JExpr.invoke(assemblerVar, CodeConstants.LIB_SQL_ASSEMBLE_SELECT_DB)
-        ////                        .arg(sqlBuilderVar)
-        ////                        .arg(paramVar)
-        ////                        .arg(JExpr.dotclass(modelClazzRef))
-        ////        );
-        //        body._if(dbToUseValue.ne(JExpr._null()).cand(dbMapField.invoke("containsKey").arg(dbToUseValue)))
-        //                ._then().assign(dbToUseVar, dbMapField.invoke("get").arg(dbToUseValue));
+
         return null;
     }
 
 
     private void buildReloadSelectMethod(JMethod method) {
-        //JMethod reloadMethod = definedClass.method(JMod.PUBLIC, method.type(), method.name());
+
     }
 
     private void buildListify() {
@@ -378,18 +215,6 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
         body._return(ret);
     }
 
-
-    /**
-     * <T> Map<T,ModelStrategy> buildMap(String field,List<ModelStrategy> list){
-     * Map<T,ModelStrategy> ret=CollectionHelper.newMap();
-     * for(ModelStrategy item:list){
-     * ret.put(ModelStrategy.MAP_OBJ_MAPPER.<T>getField(field,item),item);
-     * }
-     * return ret;
-     * }
-     *
-     * @param isItemList
-     */
 
     private void buildMapify(boolean isItemList) {
         JDirectClass genericType = cm.directClass("TT");
@@ -462,11 +287,15 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
                     selectInstance);
             body.invoke(assemblerVar, CodeConstants.METHOD_ASSEMBLER_INCREASE_INDEX);
             JConditional anIf = body._if(selected.eq(JExpr._null()));
-            anIf._then()._return(JExpr.invoke(CodeConstants.METHOD_DAO_INSERT).arg(instance).arg(assemblerVar));
+            final JBlock block = anIf._then();
+            final JVar jVar = block.decl(modelClass, "newInstance", JExpr.invoke(CodeConstants.METHOD_DAO_INSERT).arg(instance).arg(assemblerVar));
+            block.invoke(jVar, "setInserted").arg(JExpr.lit(true));
+            block._return(
+                    jVar
+            );
             //            anIf._else()._return(JExpr._null());
             JBlock jBlock = anIf._else();
-            //            jBlock.invoke(instance, CodeConstants.getMethodNameOfModelSet(priKey)).arg(JExpr.invoke(selected, CodeConstants.getMethodNameOfModelGet(priKey)));
-            //            jBlock.invoke(CodeConstants.METHOD_DAO_UPDATE).arg(instance).arg(fields).arg(assemblerVar);
+            jBlock.invoke(selected, "setInserted").arg(JExpr.lit(false));
             jBlock._return(selected);
             return method;
         }
@@ -502,14 +331,25 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
             body.invoke(assemblerVar, CodeConstants.METHOD_ASSEMBLER_INCREASE_INDEX);
             JConditional anIf = body._if(selected.eq(JExpr._null()));
 
-            JBlock block = anIf._then();
-
-            block._return(JExpr.invoke(CodeConstants.METHOD_DAO_INSERT).arg(instance).arg(assemblerVar));
+            //            JBlock block = anIf._then();
+            //
+            //            block._return(JExpr.invoke(CodeConstants.METHOD_DAO_INSERT).arg(instance).arg(assemblerVar));
+            final JBlock block = anIf._then();
+            final JVar jVar = block.decl(
+                    modelClass,
+                    "newInstance",
+                    JExpr.invoke(CodeConstants.METHOD_DAO_INSERT).arg(instance).arg(assemblerVar)
+            );
+            block.invoke(jVar, "setInserted").arg(JExpr.lit(true));
+            block._return(
+                    jVar
+            );
             JBlock jBlock = anIf._else();
             jBlock.invoke(instance, CodeConstants.getMethodNameOfModelSet(priKey)).arg(JExpr.invoke(selected, CodeConstants.getMethodNameOfModelGet(priKey)));
-            jBlock.invoke(CodeConstants.METHOD_DAO_UPDATE_BY_ID).arg(instance).arg(assemblerVar);
+            JInvocation invocation = JExpr.invoke(CodeConstants.METHOD_DAO_UPDATE_BY_ID).arg(instance).arg(assemblerVar);
+            jBlock.invoke(instance, "setInserted").arg(JExpr.lit(false));
+            jBlock.invoke(instance, "setUpdateCount").arg(invocation);
             jBlock._return(instance);
-            //            Collections.singleton()
             return method;
         }
         return null;
@@ -573,8 +413,6 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
         assemblerVar = method.param(cm.ref(DaoAssembler.class), CodeConstants.PARAM_DAO_ASSEMBLER);
         JBlock body = method.body();
 
-        //        body._if(assemblerVar.eq(JExpr._null()))._then().assign(assemblerVar, JExpr._new(cm.ref(BaseDaoAssembler.class)));
-        //        JVar sql = body.decl(cm.ref(String.class), "sql");
         JVar sqlBuilderVar = body.decl(
                 delete ? cm.ref(SQLDelete.class) : cm.ref(SQLUpdate.class),
                 "sqlBuilder",
@@ -585,16 +423,6 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
         List<ColumnInfoInterface> columns = info.getColumns();
 
 
-     /*           Map<String, ColumnInfoInterface> map = CollectionHelper.newMap();
-                for (ColumnInfoInterface col : columns) {
-        //            map.put()
-                    if(col.getFieldName().equals(priKey)){
-                        useId=true;
-                    }
-                }
-                if (useId && !multiple && !delete) {
-                    body._if(idVar.eq(JExpr._null()))._then().assign(idsVar, instanceVar.invoke(CodeConstants.getMethodNameOfModelGet(priKey)));
-                }*/
         if (delete) {
             if (multiple) {
                 body.invoke(CodeConstants.LIB_ASSERT_METHOD).arg(idsVar.ne(JExpr._null()).cand(idsVar.invoke("size").gt(JExpr.lit(0))));
@@ -713,20 +541,7 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
             );
 
         }
-    /*            JVar dbToUseVar = body.decl(cm.ref(SimpleDbInterface.class), "dbInstance", dbField);
-                if (dbMapField != null) {
-                    JVar dbToUseValue = body.decl(
-                            cm.ref(String.class),
-                            "dbToUse",
-                            JExpr.invoke(assemblerVar, CodeConstants.LIB_SQL_ASSEMBLE_SELECT_DB)
-                                    .arg(sqlBuilderVar)
-                                    .arg(paramVar)
-                                    .arg(JExpr.dotclass(modelClazzRef))
-                    );
-                    body._if(dbToUseValue.ne(JExpr._null()).cand(dbMapField.invoke("containsKey").arg(dbToUseValue)))
-                            ._then().assign(dbToUseVar, dbMapField.invoke("get").arg(dbToUseValue));
-                    buildDbSelectClause(body,assemblerVar,sqlBuilderVar,paramVar,dbToUseVar);
-                }*/
+
         body._return(
                 JExpr.invoke(JExpr._super(), CodeConstants.METHOD_DAO_PARENT_UPDATE)
                         //                        .arg(dbToUseVar)
@@ -734,117 +549,9 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
                         .arg(sqlBuilderVar)
                         .arg(paramVar)
         );
-/*                JVar status = body.decl(cm.INT, "status", JExpr.invoke(assemblerVar, CodeConstants.LIB_SQL_ASSEMBLE_SQL).arg(sqlBuilder).arg(param).arg(JExpr.dotclass(modelClazzRef)));
-                JConditional anIf = body._if(status.eq(JExpr.lit(0)));
-                JBlock block = anIf._then();
-                addLogs(block, sql, param);
-                JVar ret = block.decl(cm.ref(Integer.class), "ret", dbField.invoke(CodeConstants.LIB_DB_UPDATE).arg(sql).arg(param));
-                block._return(ret);
-                anIf._else()._return(JExpr._null());*/
         return method;
     }
 
-    /**
-     * private JMethod buildUpdate(boolean delete) {
-     * JMethod method = definedClass.method(JMod.PUBLIC, Integer.class, delete ? CodeConstants.METHOD_DAO_DELETE : CodeConstants.METHOD_DAO_UPDATE);
-     * JVar instance = null;
-     * JVar fields = null;
-     * instance = method.param(modelClazzRef, CodeConstants.PARAM_DAO_INSTANCE);
-     * <p>
-     * fields = method.param(CodeConstants.buildNarrowedClass(cm, Set.class, String.class), "conditionField");
-     * <p>
-     * JVar assemblerVar = null;
-     * assemblerVar = method.param(cm.ref(DaoAssembler.class), CodeConstants.PARAM_DAO_ASSEMBLER);
-     * String assemblerExtendClzName = modelDef.getAssemblerExtendClzName();
-     * <p>
-     * JBlock body = method.body();
-     * if (!StringHelper.isEmpty(assemblerExtendClzName)) {
-     * body._if(assemblerVar.eq(JExpr._null()))
-     * ._then()
-     * .assign(assemblerVar, JExpr._new(cm.ref(assemblerExtendClzName)));
-     * }
-     * //        body._if(assemblerVar.eq(JExpr._null()))._then().assign(assemblerVar, JExpr._new(cm.ref(BaseDaoAssembler.class)));
-     * //        JVar sql = body.decl(cm.ref(String.class), "sql");
-     * JVar sqlBuilderVar;
-     * sqlBuilderVar = body.decl(
-     * delete ? cm.ref(SQLDelete.class) : cm.ref(SQLUpdate.class),
-     * "sqlBuilder",
-     * cm.ref(SQLBuilder.class).staticInvoke(delete ? CodeConstants.LIB_SQL_BUILD_DELETE : CodeConstants.LIB_SQL_BUILD_UPDATE)
-     * );
-     * body.invoke(sqlBuilderVar, CodeConstants.LIB_SQL_BUILD_SET_TABLE).arg(modelClazzRef.staticRef(CodeConstants.FIELD_TABLE_NAME));
-     * List<ColumnInfoInterface> columns = info.getColumns();
-     * boolean useId = false;
-     * String priKey = info.getPriKey();
-     * Map<String, ColumnInfoInterface> map = CollectionHelper.newMap();
-     * //        for (ColumnInfoInterface col : columns) {
-     * ////            map.put()
-     * //            if(col.getFieldName().equals(priKey)){
-     * //                useId=true;
-     * //            }
-     * //        }
-     * for (ColumnInfoInterface col : columns) {
-     * String colName = col.getFieldName();
-     * FieldDataTypeInterface type = col.getType();
-     * JFieldRef staticRef = CodeConstants.getBaseModelColumnStaticRef(modelClazzRef, colName);
-     * JVar jVar = null;
-     * jVar = body.decl(
-     * CodeConstants.getFieldDefType(cm, modelDef, col, builderContext),
-     * "d" + CodeStyleTransformHelper.upperFirstCase(colName),
-     * instance.invoke(CodeConstants.getMethodNameOfModelGet(colName))
-     * );
-     * JConditional anIf = body._if(fields.invoke("contains").arg(staticRef));
-     * JBlock anIfBlock = anIf._then();
-     * anIfBlock.invoke(CodeConstants.LIB_ASSERT_METHOD).arg(jVar.ne(JExpr._null()));
-     * anIfBlock.invoke(sqlBuilderVar, CodeConstants.LIB_SQL_SET_WHERE).arg(staticRef).arg(cm.ref(ColumnDataType.class).staticRef(type.name()));
-     * if (!delete) {
-     * //                JConditional anIf = fiBlock._if(fields.invoke("contains").arg(staticRef));
-     * JBlock jBlock = anIf._else();
-     * JBlock fiBlock = jBlock._if(jVar.ne(JExpr._null()))._then();
-     * fiBlock.invoke(sqlBuilderVar, CodeConstants.LIB_SQL_ADD_ITEM).arg(staticRef);
-     * <p>
-     * } else {
-     * <p>
-     * }
-     * }
-     * <p>
-     * JVar paramVar = body.decl(CodeConstants.buildNarrowedClass(cm, Map.class, String.class, Object.class), "param",
-     * constantClz.staticRef(CodeConstants.getFieldNameOfCommonMapperForModel(name)).invoke(CodeConstants.METHOD_JEDIS_MAPPER_TO_COMMON_MAP).arg(instance));
-     * <p>
-     * //        JVar dbToUseVar = body.decl(cm.ref(SimpleDbInterface.class), "dbInstance", dbField);
-     * //        if (dbMapField != null) {
-     * //            JVar dbToUseValue = body.decl(
-     * //                    cm.ref(String.class),
-     * //                    "dbToUse",
-     * //                    JExpr.invoke(assemblerVar, CodeConstants.LIB_SQL_ASSEMBLE_SELECT_DB)
-     * //                            .arg(sqlBuilderVar)
-     * //                            .arg(paramVar)
-     * //                            .arg(JExpr.dotclass(modelClazzRef))
-     * //            );
-     * //            body._if(dbToUseValue.ne(JExpr._null()).cand(dbMapField.invoke("containsKey").arg(dbToUseValue)))
-     * //                    ._then().assign(dbToUseVar, dbMapField.invoke("get").arg(dbToUseValue));
-     * //            buildDbSelectClause(body,assemblerVar,sqlBuilderVar,paramVar,dbToUseVar);
-     * //        }
-     * body._return(
-     * JExpr.invoke(JExpr._super(), CodeConstants.METHOD_DAO_PARENT_UPDATE)
-     * //                        .arg(dbToUseVar)
-     * .arg(assemblerVar)
-     * .arg(sqlBuilderVar)
-     * .arg(paramVar)
-     * );
-     * //        JVar status = body.decl(cm.INT, "status", JExpr.invoke(assemblerVar, CodeConstants.LIB_SQL_ASSEMBLE_SQL)
-     * //                .arg(sqlBuilder)
-     * //                .arg(param)
-     * //                .arg(JExpr.dotclass(modelClazzRef)));
-     * //        body.assign(sql, sqlBuilder.invoke(CodeConstants.LIB_SQL_GET_SQL).arg(JExpr._null()));
-     * //        JConditional anIf = body._if(status.eq(JExpr.lit(0)));
-     * //        JBlock block = anIf._then();
-     * //        addLogs(block, sql, param);
-     * //        JVar ret = block.decl(cm.ref(Integer.class), "ret", dbField.invoke(CodeConstants.LIB_DB_UPDATE).arg(sql).arg(param));
-     * //        block._return(ret);
-     * //        anIf._else()._return(JExpr._null());
-     * return method;
-     * }
-     **/
     private JMethod buildBatchInsert() {
         JMethod method = definedClass.method(JMod.PUBLIC, cm.ref(Integer.class), CodeConstants.METHOD_DAO_INSERT);
         final AbstractJClass instancesClz = CodeConstants.buildNarrowedClass(cm, List.class, typeVar);
@@ -890,20 +597,7 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
         final JVar instanceMap = foreachInstancesLoop.decl(narrowedMapClass, "paramMap",
                 fieldCommonMapper.invoke(CodeConstants.METHOD_JEDIS_MAPPER_TO_COMMON_MAP).arg(instance));
         foreachInstancesLoop.invoke(paramVar, "add").arg(instanceMap);
-        //        JVar dbToUseVar = body.decl(cm.ref(SimpleDbInterface.class), "dbInstance", dbField);
-        //        if (dbMapField != null) {
-        //            JVar dbToUseValue = body.decl(
-        //                    cm.ref(String.class),
-        //                    "dbToUse",
-        //                    JExpr.invoke(assemblerVar, CodeConstants.LIB_SQL_ASSEMBLE_SELECT_DB)
-        //                            .arg(sqlBuilderVar)
-        //                            .arg(paramVar)
-        //                            .arg(JExpr.dotclass(modelClazzRef))
-        //            );
-        //            body._if(dbToUseValue.ne(JExpr._null()).cand(dbMapField.invoke("containsKey").arg(dbToUseValue)))
-        //                    ._then().assign(dbToUseVar, dbMapField.invoke("get").arg(dbToUseValue));
-        //            buildDbSelectClause(body,assemblerVar,sqlBuilderVar,paramVar,dbToUseVar);
-        //        }
+
         body._return(
                 JExpr.invoke(JExpr._super(), CodeConstants.METHOD_DAO_PARENT_BATCH_INSERT)
                         //                        .arg(dbToUseVar)
@@ -911,14 +605,7 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
                         .arg(sqlBuilderVar)
                         .arg(paramVar)
         );
-        //        JVar status = body.decl(cm.INT, "status", JExpr.invoke(assemblerVar, CodeConstants.LIB_SQL_ASSEMBLE_SQL).arg(sqlBuilder).arg(param).arg(JExpr.dotclass(modelClazzRef)));
-        //        JConditional anIf = body._if(status.eq(JExpr.lit(0)));
-        //        JBlock block = anIf._then();
-        //        block.assign(sql, sqlBuilder.invoke(CodeConstants.LIB_SQL_GET_SQL).arg(JExpr._null()));
-        //        addLogs(block, sql, param);
-        //        JVar ret = block.decl(cm.ref(Integer.class), "ret", dbField.invoke(CodeConstants.LIB_DB_BATCH_INSERT).arg(sql).arg(param));
-        //        block._return(ret);
-        //        anIf._else()._return(JExpr._null());
+
         return method;
     }
 
@@ -956,25 +643,7 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
                 //                constantClz.staticRef(CodeConstants.getFieldNameOfCommonMapperForModel(name))
                 fieldCommonMapper
                         .invoke(CodeConstants.METHOD_JEDIS_MAPPER_TO_COMMON_MAP).arg(instance));
-        //        JVar status = body.decl(cm.INT, "status", JExpr.invoke(assemblerVar, CodeConstants.LIB_SQL_ASSEMBLE_SQL).arg(sqlBuilderVar).arg(paramVar).arg(JExpr.dotclass(modelClazzRef)));
-        //        JConditional retCondition = body._if(status.eq(JExpr.lit(0)));
-        //        JBlock block = retCondition._then();
-        //        block.assign(sql, sqlBuilderVar.invoke(CodeConstants.LIB_SQL_GET_SQL).arg(JExpr._null()));
-        //        addLogs(block, sql, paramVar);
-        //        JVar dbToUseVar = body.decl(cm.ref(SimpleDbInterface.class), "dbInstance", dbField);
-        //        if (dbMapField != null) {
-        //            JVar dbToUseValue = body.decl(
-        //                    cm.ref(String.class),
-        //                    "dbToUse",
-        //                    JExpr.invoke(assemblerVar, CodeConstants.LIB_SQL_ASSEMBLE_SELECT_DB)
-        //                            .arg(sqlBuilderVar)
-        //                            .arg(paramVar)
-        //                            .arg(JExpr.dotclass(modelClazzRef))
-        //            );
-        //            body._if(dbToUseValue.ne(JExpr._null()).cand(dbMapField.invoke("containsKey").arg(dbToUseValue)))
-        //                    ._then().assign(dbToUseVar, dbMapField.invoke("get").arg(dbToUseValue));
-        //        buildDbSelectClause(body, assemblerVar, sqlBuilderVar, paramVar, dbToUseVar);
-        //        }
+
         JVar ret = body.decl(cm.ref(Long.class), "ret",
                 JExpr.invoke(JExpr._super(), CodeConstants.METHOD_DAO_PARENT_INSERT)
                         //                        .arg(dbToUseVar)
@@ -1199,16 +868,7 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
         body.invoke(paramVar, "put").arg(cm.ref(DaoInterface.class).staticRef("KEY_WORD_LIMIT_COUNT")).arg(countVar);
         //        body.decl(String.class,"cTableName",)
         if (hasRawCondition) {
-            //            body._if(
-            //                    cm.ref(CollectionHelper.class).staticInvoke("isCollectionEmpty").arg(additionParamVar).not(),
-            //                    JExpr.invoke(paramVar, "putAll").arg(additionParamVar)
-            //            );
-            //            JConditional conditionIf = body._if(
-            //                    cm.ref(CollectionHelper.class).staticInvoke("isCollectionEmpty").arg(additionConditionVar).not()
-            //            );
-            ////            CodeConstants.handleSetTravel(cm,additionConditionVar,conditionIf._then(),JExpr.invoke(sqlBuilder,CodeConstants.LIB_SQL_SET_RAW_WHERE).arg())
-            //            JForEach jForE = conditionIf._then().forEach(cm.ref(String.class), "var", additionConditionVar);
-            //            jForE.body().invoke(sqlBuilder, CodeConstants.LIB_SQL_SET_RAW_WHERE).arg(jForE.var());
+
             body.invoke(JExpr._super(), CodeConstants.METHOD_DAO_BUILD_RAW_WHERE)
                     .arg(sqlBuilder)
                     .arg(paramVar)
@@ -1238,25 +898,7 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
         if (!isCount && !isSingle) {
             body.invoke(CodeConstants.METHOD_DAO_BUILD_SELECT_FIELD_CLUASE).arg(sqlBuilder).arg(fieldsVar);
         }
-        //        for (ColumnInfoInterface col : columns) {
-        //            String colName = col.getFieldName();
-        //            FieldDataTypeInterface type = col.getType();
-        //            JFieldRef staticRef = CodeConstants.getBaseModelColumnStaticRef(modelClazzRef, colName);
-        //            if (!isCount && !isSingle) {
-        //                body._if(fieldsVar.invoke("contains").arg(staticRef))._then().invoke(sqlBuilder, CodeConstants.LIB_SQL_ADD_ITEM)
-        //                        .arg(staticRef);
-        //            }
-        //            if (conditionSet) {
-        //                IJExpression invoke = instanceVar.invoke(CodeConstants.getMethodNameOfModelGet(colName));
-        //                EnumTypeDef enumTypeDef = col.getEnumTypeDef();
-        //                AbstractJClass jvarType = CodeConstants.getFieldDefType(cm, modelDef, col, builderContext);
-        //                JVar jVar = body.decl(jvarType, "d" + CodeStyleTransformHelper.upperFirstCase(colName)
-        //                        , invoke);
-        //                JBlock jBlock = body._if(jVar.ne(JExpr._null()))._then();
-        //                jBlock.invoke(sqlBuilder, CodeConstants.LIB_SQL_SET_WHERE).arg(staticRef).arg(cm.ref(FieldDataTypeInterface.class).staticRef(type.name()));
-        //                jBlock.invoke(paramVar, "put").arg(staticRef).arg(enumTypeDef == null ? jVar : jVar.ref(CodeConstants.FIELD_ENUM_VAL_FIELD));
-        //            }
-        //        }
+
         if (useIn && !useId) {
             body.invoke(CodeConstants.METHOD_DAO_BUILD_IN_CLUASE)
                     .arg(sqlBuilder)
@@ -1264,42 +906,12 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
                     .arg(paramVar)
                     .arg(indexesVar)
             ;
-            //            JConditional containsKeyIf = body._if(fieldMapStaticRefer.invoke("containsKey").arg(fieldVar));
-            //            JBlock fblock = containsKeyIf._then();
-            //            JVar fieldClassObj = fblock.decl(cm.ref(Object.class), "fieldClassObj", fieldMapStaticRefer.invoke("get").arg(fieldVar));
-            //            JConditional anIfV2 = fblock._if(fieldClassObj._instanceof(cm.ref(Class.class)));
-            //            anIfV2._else()._return(JExpr._null());
-            //            JBlock block = anIfV2._then();
-            //            JVar fieldClass = block.decl(cm.ref(Class.class), "fieldClass", JExpr.cast(cm.ref(Class.class), fieldClassObj));
-            //            block.invoke(paramVar, "put").arg(JExpr.lit(indexStr)).arg(indexesVar);
-            ////            JFieldRef indexStaticRef = modelClazzRef.staticRef(CodeConstants.FIELD_CONST_NAME_PREFIX + field.toUpperCase());
-            //            block.invoke(sqlBuilder, CodeConstants.LIB_SQL_SET_WHERE)
-            //                    .arg(cm.ref(LogicalRelationshipType.class).staticRef("and"))
-            //                    .arg(cm.ref(LogicalOpType.class).staticRef("in"))
-            //                    .arg(JExpr._null())
-            //                    .arg(fieldVar)
-            //                    .arg(indexStr)
-            //                    .arg(cm.ref(FieldDataTypeInterface.class).staticInvoke(CodeConstants.LIB_COLUMN_TYPE_GET_TYPE).arg(fieldClass));
-            //            containsKeyIf._else()._return(JExpr._null());
+
         }
         JFieldRef priStaticRef = null;
         if (useId && priKey != null) {
             priStaticRef = CodeConstants.getBaseModelColumnStaticRef(modelClass, priKey);
-            //            if (!multiSelect) {
-            //                body._if(idVar.ne(JExpr._null()))._then().invoke(sqlBuilder, CodeConstants.LIB_SQL_SET_WHERE)
-            //                        .arg(priStaticRef)
-            //                        .arg(cm.ref(ColumnDataType.class).staticRef(priKeyType.name()));
-            //            } else {
-            //                //(LogicalRelationshipType type, LogicalOpType logicalOpType, String tableAlis, String item, String paramName, FieldDataTypeInterface dataType)
-            //                body._if(idVar.ne(JExpr._null()))._then().invoke(sqlBuilder, CodeConstants.LIB_SQL_SET_WHERE)
-            //                        .arg(cm.ref(LogicalRelationshipType.class).staticRef("and"))
-            //                        .arg(cm.ref(LogicalOpType.class).staticRef("in"))
-            //                        .arg(JExpr._null())
-            //                        .arg(priStaticRef)
-            //                        .arg(priStaticRef)
-            //                        .arg(cm.ref(ColumnDataType.class).staticRef(priKeyType.name()))
-            //                ;
-            //            }
+
             final JBlock idThenBlock = body._if(idVar.ne(JExpr._null()))._then();
             if (!multiSelect) {
                 idThenBlock.invoke(sqlBuilder, CodeConstants.LIB_SQL_SET_WHERE)
@@ -1327,23 +939,7 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
                     JExpr.invoke(CodeConstants.METHOD_DAO_GET_RESULT_SCALAR)
                             .arg(assemblerVar).arg(sqlBuilder).arg(paramVar).arg(JExpr.dotclass(cm.ref(Long.class)))
             );
-            //            JVar status = body.decl(cm.INT, "status", JExpr.invoke(assemblerVar, CodeConstants.LIB_SQL_ASSEMBLE_SQL).arg(sqlBuilder).arg(param).arg(JExpr.dotclass(modelClazzRef)));
-            ////        body.invoke(sqlBuilder,CodeConstants.LIB_SQL_GET_SQL).arg(JExpr._null());
-            //            JVar sql = body.decl(cm.ref(String.class), "sql");
-            //            JConditional retCondition = body._if(status.eq(JExpr.lit(0)));
-            //            JBlock jBlock = retCondition._then();
-            //            jBlock.assign(sql, sqlBuilder.invoke(CodeConstants.LIB_SQL_GET_SQL).arg(JExpr._null()));
-            //            addLogs(jBlock,sql,param);
-            //            JInvocation arg = dbField.invoke(CodeConstants.LIB_DB_QUERY_ONE).arg(sql).arg(param).arg(JExpr.dotclass(cm.ref(Long.class)));
-            //            JTryBlock aTry = jBlock._try();
-            //            aTry.body()._return(arg);
-            //            JCatchBlock catchBlock1 = aTry._catch(cm.ref(Exception.class));
-            //            JBlock catchBlock = catchBlock1.body();
-            //            JVar exVar = catchBlock1.param("ex");
-            //            catchBlock.invoke(loggerField,"error").arg("sql execption").arg(exVar);
-            //            catchBlock._return(JExpr._null());
-            //            retCondition._else()._return(JExpr._null());
-            //            body._return();
+
         } else if (isSingle) {
             //            if(multiSelect){
             //
@@ -1358,36 +954,10 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
                     JExpr.invoke(multiSelect ? CodeConstants.METHOD_DAO_GET_RESULT_LIST : CodeConstants.METHOD_DAO_GET_RESULT)
                             .arg(assemblerVar).arg(sqlBuilder).arg(paramVar)
             );
-            //            String fullMapperClassName = builderContext.getRSMapperClassName(table);
-            //            JInvocation rsBuildInvocation = JExpr.invoke(assemblerVar, CodeConstants.LIB_SQL_ASSEMBLE_RESULT_SET).narrow(modelClazzRef).arg(param).arg(JExpr.dotclass(modelClazzRef));
-            //            JNarrowedClass mapperClazz = cm.ref(fullMapperClassName).narrow(modelClazzRef);
-            //            JVar rsMapper = jBlock.decl(mapperClazz, "rsMapper", JExpr.cast(mapperClazz, rsBuildInvocation));
-            //            jBlock._if(rsMapper.eq(JExpr._null()))._then().assign(rsMapper, modelClazzRef.staticRef(CodeConstants.FIELD_RESULT_SET_MAPPER_INSTANCE_APPENDIX));
-            //
-            //            JInvocation arg = dbField.invoke(multiSelect ? CodeConstants.LIB_DB_QUERY : CodeConstants.LIB_DB_QUERY_ONE).arg(sql).arg(param).arg(rsMapper);
-            //            JTryBlock aTry = jBlock._try();
-            //            aTry.body()._return(arg);
-            //            JCatchBlock catchBlock1 = aTry._catch(cm.ref(Exception.class));
-            //            JBlock catchBlock = catchBlock1.body();
-            //            JVar exVar = catchBlock1.param("ex");
-            //            catchBlock.invoke(loggerField,"error").arg("sql execption").arg(exVar);
-            //            catchBlock._return(JExpr._null());
+
         }
 
         return method;
     }
 
-    //    private void addOtherMethodParam(JMethod method, JBlock body, String methodName, Map<String, JVar> jVarMap, JInvocation invoke) {
-    //        if (methodName.equals(CodeConstants.METHOD_DAO_GET_BY_ID)) {
-    //            String priKey = info.getPriKey();
-    //            FieldDataTypeInterface priKeyType = info.getPriKeyType();
-    //            if (priKey != null && priKeyType != null) {
-    //                JVar id = method.param(cm.ref(priKeyType.gettClass()), ID_STR);
-    //                jVarMap.put(ID_STR, id);
-    //            }
-    //        } else if (methodName.equals(CodeConstants.METHOD_DAO_GET_BY_CONDITION) || methodName.equals(CodeConstants.METHOD_DAO_GET_ONE_BY_CONDITION)) {
-    //
-    //
-    //        }
-    //    }
 }

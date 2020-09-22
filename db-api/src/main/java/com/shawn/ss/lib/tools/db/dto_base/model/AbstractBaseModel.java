@@ -14,13 +14,12 @@ import java.util.Map;
 /**
  * @author ss
  */
-public abstract class AbstractBaseModel implements Serializable,_APIObj {
-//    protected static int modelFieldCount;
+public abstract class AbstractBaseModel implements Serializable, _APIObj {
+    //    protected static int modelFieldCount;
+    //    public final static long serialVersionUID ;
 
+    public static final int DEFAULT_START = 0, DEFUALT_COUNT = 1000;
 
-//    public final static long serialVersionUID ;
-
-    public static final int DEFAULT_START=0,DEFUALT_COUNT=1000;
     static {
 
     }
@@ -28,6 +27,10 @@ public abstract class AbstractBaseModel implements Serializable,_APIObj {
     protected transient int index;
 
     protected transient String currentTableName;
+
+    protected transient Boolean inserted;
+
+    protected transient Integer updateCount;
 
     public void setIndex(int index) {
         this.index = index;
@@ -51,35 +54,35 @@ public abstract class AbstractBaseModel implements Serializable,_APIObj {
         return null;
     }
 
-    public static String compressStr(int length, String str){
-        if(str==null){
-            return null;
-        }
-        String compressString = "";
-        if(StringUtils.isEmpty(str)){
-            return str;
-        }
-        if(length > str.length() || length < 1){
-            return str;
-        }else {
-            compressString  = str.substring(0, length);
-        }
-        return compressString;
-    }
-
-    public Map<String,Object> getFieldConfig(){
+    public Map<String, Object> getFieldConfig() {
         return null;
     }
 
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         return true;
     }
 
+    public Boolean getInserted() {
+        return inserted;
+    }
+
+    public void setInserted(Boolean inserted) {
+        this.inserted = inserted;
+    }
+
+    public Integer getUpdateCount() {
+        return updateCount;
+    }
+
+    public void setUpdateCount(Integer updateCount) {
+        this.updateCount = updateCount;
+    }
+
     //    @Override
-//    public String toString() {
-//        final StringBuilder sb = new StringBuilder("AbstractBaseModel{");
-////        sb.append(L.p(this,this.getClass()));
-//        sb.append('}');
-//        return sb.toString();
-//    }
+    //    public String toString() {
+    //        final StringBuilder sb = new StringBuilder("AbstractBaseModel{");
+    ////        sb.append(L.p(this,this.getClass()));
+    //        sb.append('}');
+    //        return sb.toString();
+    //    }
 }

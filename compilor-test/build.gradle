@@ -26,7 +26,8 @@ plugins {
     id 'io.spring.dependency-management' version "1.0.6.RELEASE"
 }
 
-//apply plugin: 'application'
+apply plugin: 'application'
+apply plugin: 'java'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8

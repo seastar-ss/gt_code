@@ -910,11 +910,11 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
         throw new UnsupportedOperationException("no implements");
     }
 
-    public Ty insert(Ty instance, DaoAssembler assembler) {
+    public AbstractBaseModel insert(Ty instance, DaoAssembler assembler) {
         throw new UnsupportedOperationException("no implements");
     }
 
-    public Ty insert(Ty instance) {
+    public AbstractBaseModel insert(Ty instance) {
         throw new UnsupportedOperationException("no implements");
     }
 
@@ -983,20 +983,20 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
     }
 
     @Transactional
-    public Ty updateOrInsert(Ty instance, Set<String> conditionField, AbstractMultipleDaoAssembler assembler) {
+    public AbstractBaseModel updateOrInsert(Ty instance, Set<String> conditionField, AbstractMultipleDaoAssembler assembler) {
         throw new UnsupportedOperationException("no implements");
     }
 
-    public Ty updateOrInsert(Ty instance, Set<String> conditionField) {
+    public AbstractBaseModel updateOrInsert(Ty instance, Set<String> conditionField) {
         throw new UnsupportedOperationException("no implements");
     }
 
     @Transactional
-    public Ty insertIfNoExist(Ty instance, Set<String> conditionField, AbstractMultipleDaoAssembler assembler) {
+    public AbstractBaseModel insertIfNoExist(Ty instance, Set<String> conditionField, AbstractMultipleDaoAssembler assembler) {
         throw new UnsupportedOperationException("no implements");
     }
 
-    public Ty insertIfNoExist(Ty instance, Set<String> conditionField) {
+    public AbstractBaseModel insertIfNoExist(Ty instance, Set<String> conditionField) {
         throw new UnsupportedOperationException("no implements");
     }
 

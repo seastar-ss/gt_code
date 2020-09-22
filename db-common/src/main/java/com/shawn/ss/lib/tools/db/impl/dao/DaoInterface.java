@@ -222,9 +222,9 @@ public interface DaoInterface<Ty extends AbstractBaseModel, Tt>
 
     <TT extends Object> List<TT> getItemListByIdAndCondAndWhere(Ty instance, List<Tt> id, Class<TT> tClass, String rawItem, Map<String, Object> extParam, Set<String> extCondition);
 
-    Ty insert(Ty instance, DaoAssembler assembler);
+    AbstractBaseModel insert(Ty instance, DaoAssembler assembler);
 
-    Ty insert(Ty instance);
+    AbstractBaseModel insert(Ty instance);
 
     Integer insert(List<Ty> instances, Set<String> fields, DaoAssembler assembler);
 
@@ -259,14 +259,14 @@ public interface DaoInterface<Ty extends AbstractBaseModel, Tt>
     Integer deleteByIds(Set<Integer> ids);
 
     @Transactional
-    Ty updateOrInsert(Ty instance, Set<String> conditionField, AbstractMultipleDaoAssembler assembler);
+    AbstractBaseModel updateOrInsert(Ty instance, Set<String> conditionField, AbstractMultipleDaoAssembler assembler);
 
-    Ty updateOrInsert(Ty instance, Set<String> conditionField);
+    AbstractBaseModel updateOrInsert(Ty instance, Set<String> conditionField);
 
     @Transactional
-    Ty insertIfNoExist(Ty instance, Set<String> conditionField, AbstractMultipleDaoAssembler assembler);
+    AbstractBaseModel insertIfNoExist(Ty instance, Set<String> conditionField, AbstractMultipleDaoAssembler assembler);
 
-    Ty insertIfNoExist(Ty instance, Set<String> conditionField);
+    AbstractBaseModel insertIfNoExist(Ty instance, Set<String> conditionField);
 
     <TT> Map<TT, Ty> buildMap(List<Ty> list, String field);
 
