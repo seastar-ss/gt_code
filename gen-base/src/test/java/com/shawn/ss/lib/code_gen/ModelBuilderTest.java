@@ -11,20 +11,15 @@ import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
 //import com.shawn.ss.lib.code_gen.model.def_model.dao_def.ModelRelatedTableDef;
 import com.shawn.ss.lib.code_gen.model.gen_param_model.db_def.DbModelConf;
 import com.shawn.ss.lib.tools.CollectionHelper;
-import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.ColumnInfoInterface;
-import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.TableInfoInterface;
-import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.model.*;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class ModelBuilderTest {
     static final Logger L = LoggerFactory.getLogger(ModelBuilderTest.class.getSimpleName());
@@ -539,7 +534,7 @@ public class ModelBuilderTest {
 
     @Test
     public void testGenSqlDbModel() throws IOException {
-        ModelBuilderContext modelBuilderContext = ModelBuilderContext.builderHelper("com.shangde.ent_portal.logical", TEST_POS_DEV);
+        ModelBuilderContext modelBuilderContext = ModelBuilderContext.newInstance("com.shangde.ent_portal.logical", TEST_POS_DEV);
         Properties p = new Properties();
         p.load(new FileReader("db-ny.properties"));
         //        p.load(new FileReader("data_store-ny.properties"));
@@ -609,7 +604,7 @@ public class ModelBuilderTest {
                 )
         );
         modelBuilderContext.initBaseClazz();
-        modelBuilderContext.buildBaseModelAndDao();
+        modelBuilderContext.executeBaseModelAndDaoBuild();
         //        ModelMulDaoDaoConf wikiConf = new ModelMulDaoDaoConf("wikiConf").setMainTableDef(
         //                new ModelRelatedTableDef().setFieldName("wikiIndex").setName("ent_knownleag_base.wiki_index")
         //        )
@@ -685,7 +680,7 @@ public class ModelBuilderTest {
         //                        "AND TO_DAYS(NOW()) - TO_DAYS(mar.create_time) = 1\n" +
         //                        "GROUP BY\n" +
         //                        "\tmar.user_id"));
-        modelBuilderContext.writeModel();
+        modelBuilderContext.executeWriteModel();
     }
 
     //    @Test

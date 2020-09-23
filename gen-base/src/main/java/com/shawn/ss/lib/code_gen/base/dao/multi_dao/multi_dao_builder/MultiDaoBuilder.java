@@ -141,8 +141,8 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
         this.mainTable = modelMulDaoConf.getTable();
         this.relatedTables = modelMulDaoConf.getRelation();
         this.buildNotAbstract = modelMulDaoConf.buildAbstractDao();
-        //        this.builderContext = modelMulDaoConf.getBuilderContext();
-        this.serviceClassName = builderContext.getServiceClassName(modelMulDaoConf.getTable());
+//                this.builderContext = modelMulDaoConf.getBuilderContext();
+        this.serviceClassName = CodeConstants.getMulSelectDaoClassName(builderContext.getBasePackage(),modelMulDaoConf.getTable());
         //        this.tbMap = this.builderContext.getTbMap();
         //        this.listResult = modelMulDaoConf.isListResult();
 
@@ -345,14 +345,14 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
         JFieldVar daoField = daoFields.get(table);
         JFieldRef mainBaseModelColumnStaticRef = CodeConstants.getBaseModelColumnStaticRef(mainModelClass, fieldInMainTable);
         JFieldRef subBaseModelColumnStaticRef = CodeConstants.getBaseModelColumnStaticRef(subModelClass, fieldInThisTable);
-        FieldDataTypeInterface fieldType = builderContext.getFieldType(db, table, fieldInThisTable);
+        FieldDataTypeInterface fieldType = CodeConstants.getFieldType(db, table, fieldInThisTable);
         if (fieldType == null) {
             L.warn("not get type of {}.{}.{}", db, table, fieldInMainTable);
             L.warn("config is {}", modelMulDaoConf);
             throw new IllegalArgumentException(table + "数据表中字段" + fieldInThisTable + "不存在");
         }
         //        System.out.println("get ");
-        FieldDataTypeInterface mainFieldType = builderContext.getFieldType(mainDb, mainTable, fieldInMainTable);
+        FieldDataTypeInterface mainFieldType = CodeConstants.getFieldType(mainDb, mainTable, fieldInMainTable);
         Class fieldTClass = fieldType.gettClass();
         if (!fieldTClass.equals(mainFieldType.gettClass())) {
             throw new IllegalArgumentException(mainTable + "数据表字段" + fieldInMainTable + "与" + table + "数据表中字段" + fieldInThisTable + "类型不匹配");
@@ -503,10 +503,10 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
         AbstractJType retType = holder.getRetType(holder.listResult);
         JFieldVar daoField = daoFields.get(table);
         AbstractJClass subModelClass = models.get(table);
-        FieldDataTypeInterface mainFieldType = builderContext.getFieldType(mainDb, mainTable, fieldInMainTable);
+        FieldDataTypeInterface mainFieldType = CodeConstants.getFieldType(mainDb, mainTable, fieldInMainTable);
         JFieldRef mainBaseModelColumnStaticRef = CodeConstants.getBaseModelColumnStaticRef(mainModelClass, fieldInMainTable);
         JFieldRef subBaseModelColumnStaticRef = CodeConstants.getBaseModelColumnStaticRef(subModelClass, fieldInThisTable);
-        FieldDataTypeInterface fieldType = builderContext.getFieldType(db, table, fieldInThisTable);
+        FieldDataTypeInterface fieldType = CodeConstants.getFieldType(db, table, fieldInThisTable);
         String modelSet = CodeConstants.getMethodNameOfModelSet(def.getFieldName());
         if (fieldType == null) {
             L.warn("not get type of {}.{}.{}", db, table, fieldInMainTable);
@@ -794,7 +794,7 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
                     cm.ref(LoggerFactory.class).staticInvoke("getLogger").arg(JExpr.dotclass(definedClass)));
 
             definedClass._implements(InitializingBean.class);
-            FieldDataTypeInterface idFieldType = builderContext.getIdFieldType(mainDb, mainTable);
+            FieldDataTypeInterface idFieldType = CodeConstants.getIdFieldType(mainDb, mainTable);
             AbstractJType idType = cm.ref(idFieldType.gettClass());
             definedClass._implements(CodeConstants.buildNarrowedClass(cm, DaoInterface.class, wrapperCls, idType));
             if (modelMulDaoConf.getAssemblerExtendClzName() != null && !buildNotAbstract) {
@@ -813,8 +813,8 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
                 JAnnotationUse annotate = definedClass.annotate(Repository.class);
                 annotate.param("value", CodeConstants.getClassNameFromFullName(serviceClassName));
             }
-            mainDaoClass = cm.ref(builderContext.getDaoClassName(mainTable));
-            mainModelClass = cm.ref(builderContext.getReallyModelClassName(mainTable, null));
+            mainDaoClass = cm.ref(CodeConstants.getDaoClassName(builderContext.getBasePackage(),mainTable));
+            mainModelClass = cm.ref(CodeConstants.getReallyModelClassName(builderContext.getBasePackage(),mainTable, null));
             String tbMName = CodeConstants.getClazzNameFromTableName(mainTable);
 
             mainDaoField = definedClass.field(JMod.PROTECTED, mainDaoClass, "dao" + tbMName);

@@ -53,7 +53,7 @@ public class CommonModelDaoDef<T extends CommonModelDaoDef> extends _BaseDaoConf
         params = CollectionHelper.newList();
         relationDao = CollectionHelper.newList();
         initDef();
-//        enumClzz= CollectionHelper.newMap();
+        //        enumClzz= CollectionHelper.newMap();
         this.dataSourceName = CodeConstants.KEY_WORD_DEFAULT_DATA_SOURCE_ID;
     }
 
@@ -63,7 +63,7 @@ public class CommonModelDaoDef<T extends CommonModelDaoDef> extends _BaseDaoConf
         params = CollectionHelper.newList();
         relationDao = CollectionHelper.newList();
         initDef();
-//        enumClzz= CollectionHelper.newMap();
+        //        enumClzz= CollectionHelper.newMap();
         this.dataSourceName = CodeConstants.KEY_WORD_DEFAULT_DATA_SOURCE_ID;
     }
 
@@ -79,9 +79,9 @@ public class CommonModelDaoDef<T extends CommonModelDaoDef> extends _BaseDaoConf
             );
         }
 
-        setPojoClzName(builderContext.getReallyModelClassName(def.getTable(), baseTable));
+        setPojoClzName(CodeConstants.getReallyModelClassName(builderContext.getBasePackage(), def.getTable(), baseTable));
         dataAttrType = _BaseDaoSqlConf.DataAttrType.LIST_OBJ;
-//        setPojoClzName(builderContext.getModelVoClassName(def.getTable()));
+        //        setPojoClzName(builderContext.getModelVoClassName(def.getTable()));
     }
 
     public String getBaseTable() {
@@ -90,7 +90,7 @@ public class CommonModelDaoDef<T extends CommonModelDaoDef> extends _BaseDaoConf
 
     public T setBaseTable(String baseTable) {
         this.baseTable = baseTable;
-        setPojoClzName(builderContext.getReallyModelClassName(def.getTable(), baseTable));
+        setPojoClzName(CodeConstants.getReallyModelClassName(builderContext.getBasePackage(), def.getTable(), baseTable));
         return (T) this;
     }
 
@@ -284,64 +284,64 @@ public class CommonModelDaoDef<T extends CommonModelDaoDef> extends _BaseDaoConf
         return null;
     }
 
-//    @Override
-//    public List<FieldInfoInterface> getFields() {
-//        return null;
-//    }
-//
-//    @Override
-//    public int sizeOfField() {
-//        return 0;
-//    }
-//
-//    @Override
-//    public boolean addField(FieldInfoInterface fieldDef) {
-//        return false;
-//    }
-//
-//    @Override
-//    public FieldInfoInterface getField(int index) {
-//        return null;
-//    }
+    //    @Override
+    //    public List<FieldInfoInterface> getFields() {
+    //        return null;
+    //    }
+    //
+    //    @Override
+    //    public int sizeOfField() {
+    //        return 0;
+    //    }
+    //
+    //    @Override
+    //    public boolean addField(FieldInfoInterface fieldDef) {
+    //        return false;
+    //    }
+    //
+    //    @Override
+    //    public FieldInfoInterface getField(int index) {
+    //        return null;
+    //    }
 
-//    @Override
-//    public String getPojoClzName() {
-//        return null;
-//    }
-//
-//    @Override
-//    public T setPojoClzName(String pojoClzName) {
-//        return (T)this;
-//    }
-//
-//    @Override
-//    public String getPojoExtendsClzName() {
-//        return null;
-//    }
-//
-//    @Override
-//    public T setPojoExtendsClzName(String pojoExtendsClzName) {
-//        return (T)this;
-//    }
+    //    @Override
+    //    public String getPojoClzName() {
+    //        return null;
+    //    }
+    //
+    //    @Override
+    //    public T setPojoClzName(String pojoClzName) {
+    //        return (T)this;
+    //    }
+    //
+    //    @Override
+    //    public String getPojoExtendsClzName() {
+    //        return null;
+    //    }
+    //
+    //    @Override
+    //    public T setPojoExtendsClzName(String pojoExtendsClzName) {
+    //        return (T)this;
+    //    }
 
 
     //    public String getBaseModelTable() {
-//        return baseModelTable;
-//    }
-//
-//    public SpecialModelConf setBaseModelTable(String baseModelTable) {
-//        this.baseModelTable = baseModelTable;
-//        return (T)this;
-//    }
+    //        return baseModelTable;
+    //    }
+    //
+    //    public SpecialModelConf setBaseModelTable(String baseModelTable) {
+    //        this.baseModelTable = baseModelTable;
+    //        return (T)this;
+    //    }
 
-//        public Set<String> getIgnoreField() {
-//        return ignoreField;
-//    }
-//
-//    public T setIgnoreField(Set<String> ignoreField) {
-//        this.ignoreField = ignoreField;
-//        return (T) this;
-//    }
+    //        public Set<String> getIgnoreField() {
+    //        return ignoreField;
+    //    }
+    //
+    //    public T setIgnoreField(Set<String> ignoreField) {
+    //        this.ignoreField = ignoreField;
+    //        return (T) this;
+    //    }
 
     public String getDataSourceName() {
         return dataSourceName;
@@ -352,26 +352,26 @@ public class CommonModelDaoDef<T extends CommonModelDaoDef> extends _BaseDaoConf
         return (T) this;
     }
 
-//    public Map<String, JDefinedClass> getEnumClzz() {
-//        return enumClzz;
-//    }
-//
-//    public CommonModelDaoDef setEnumClzz(Map<String, JDefinedClass> enumClzz) {
-//        this.enumClzz = enumClzz;
-//        return this;
-//    }
+    //    public Map<String, JDefinedClass> getEnumClzz() {
+    //        return enumClzz;
+    //    }
+    //
+    //    public CommonModelDaoDef setEnumClzz(Map<String, JDefinedClass> enumClzz) {
+    //        this.enumClzz = enumClzz;
+    //        return this;
+    //    }
 
-//    public int sizeOfEnumClz() {
-//        return getEnumClzz().size();
-//    }
-//
-//    public JDefinedClass getEnumClz(Object key) {
-//        return getEnumClzz().get(key);
-//    }
-//
-//    public JDefinedClass putEnumClz(String key, JDefinedClass value) {
-//        return getEnumClzz().put(key, value);
-//    }
+    //    public int sizeOfEnumClz() {
+    //        return getEnumClzz().size();
+    //    }
+    //
+    //    public JDefinedClass getEnumClz(Object key) {
+    //        return getEnumClzz().get(key);
+    //    }
+    //
+    //    public JDefinedClass putEnumClz(String key, JDefinedClass value) {
+    //        return getEnumClzz().put(key, value);
+    //    }
 
     public List<String> getDataSourceNames() {
         return dataSourceNames;
@@ -388,7 +388,7 @@ public class CommonModelDaoDef<T extends CommonModelDaoDef> extends _BaseDaoConf
                             .setDefaultValue(name)
             );
         }
-//        this.dataSourceNames = dataSourceNames;
+        //        this.dataSourceNames = dataSourceNames;
         return this;
     }
 
@@ -398,10 +398,10 @@ public class CommonModelDaoDef<T extends CommonModelDaoDef> extends _BaseDaoConf
     }
 
     //    public String getTable() {
-//        return def.getTable();
-//    }
-//
-//    public String getDb() {
-//        return def.getDb() == null ? DbDataTable.getCurrentDb() : def.getDb();
-//    }
+    //        return def.getTable();
+    //    }
+    //
+    //    public String getDb() {
+    //        return def.getDb() == null ? DbDataTable.getCurrentDb() : def.getDb();
+    //    }
 }

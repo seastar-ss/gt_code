@@ -12,7 +12,7 @@ import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.model.EnumTypeD
 public class EnumTypeConf extends AbstractConf implements _BaseEnumTypeConf {
     final EnumTypeDef def;
     //    protected transient ModelBuilderContext builderContext;
-//    String name;
+    //    String name;
     String clzName;
 
     public EnumTypeConf(EnumTypeDef def, ModelBuilderContext context) {
@@ -31,36 +31,36 @@ public class EnumTypeConf extends AbstractConf implements _BaseEnumTypeConf {
     }
 
 
-//    public EnumTypeDef setDef(EnumTypeDef def) {
-//
-//        this.def = def;
-//        return this;
-//    }
+    //    public EnumTypeDef setDef(EnumTypeDef def) {
+    //
+    //        this.def = def;
+    //        return this;
+    //    }
 
     public String getName() {
         return name;
     }
 
-//    public EnumTypeConf setName(String name) {
-//        this.name = name;
-//        return this;
-//    }
+    //    public EnumTypeConf setName(String name) {
+    //        this.name = name;
+    //        return this;
+    //    }
 
     public ModelBuilderContext getBuilderContext() {
         return builderContext;
     }
 
     public String getClazzName() {
-        return builderContext.getEnumClzName(def.getClazzName());
+        return CodeConstants.getEnumClzName(builderContext.getBasePackage(), def.getClazzName());
     }
 
-//    @Override
-//    public String getName() {
-//        return null;
-//    }
+    //    @Override
+    //    public String getName() {
+    //        return null;
+    //    }
 
-//    public EnumTypeConf setBuilderContext(ModelBuilderContext builderContext) {
-//        this.builderContext = builderContext;
-//        return this;
-//    }
+    //    public EnumTypeConf setBuilderContext(ModelBuilderContext builderContext) {
+    //        this.builderContext = builderContext;
+    //        return this;
+    //    }
 }

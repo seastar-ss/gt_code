@@ -55,7 +55,7 @@ public class MapperOfResultSetBuilder implements CodeBuilderInterface {
             if (baseTable == null) {
                 ref = cm.ref(BaseDbMapper.class);
             } else {
-                ref = cm.ref(builderContext.getRSMapperClassName(baseTable));
+                ref = cm.ref(CodeConstants.getRSMapperClassName(builderContext.getBasePackage(),baseTable));
             }
             JNarrowedClass baseClass = ref.narrow(typeVar);
             definedClass._extends(baseClass);

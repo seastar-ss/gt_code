@@ -67,7 +67,7 @@ public class ModelGenConf extends AbstractGenConf {
             throw new IllegalStateException("生成代码应该在" + Constants.KEY_GEN_FILE_POSITION + "属性配置的包内：" + basePack);
         }
 //            ModelBuilderContext context = ModelBuilderContext.builderHelper(conn, cm, conf.getPackagePos(), pos);
-        context = ModelBuilderContext.builderHelper(cm, basePackPos, pos);
+        context = ModelBuilderContext.newInstance(cm, basePackPos, pos);
         AbstractCodeGenerator.setContext(context, basePackPos);
         helpers.println("put context in :" + basePackPos + "->" + context);
         packagePos = el.getQualifiedName().toString();

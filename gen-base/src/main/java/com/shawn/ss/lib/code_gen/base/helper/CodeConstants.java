@@ -22,8 +22,6 @@ import java.util.regex.Pattern;
 public class CodeConstants {
 
 
-
-
     final static Pattern PATTERN_NUMBER_START = Pattern.compile("^\\d+.*");
 
     public static final int MODE_PUBLIC_STATIC_FINAL = JMod.PUBLIC + JMod.STATIC + JMod.FINAL;
@@ -794,6 +792,98 @@ public class CodeConstants {
         return fieldCommonMapper;
     }
 
+    public static FieldDataTypeInterface getFieldType(String db, String table, String colName) {
+        final DbInfoInterface holder = DbDataTable.getDb(db);
+        TableInfoInterface tableInfoInterface = holder.getTable(table);
+        if (tableInfoInterface == null) {
+            return null;
+        } else {
+            return tableInfoInterface.getColumnDataType(colName);
+        }
+    }
+
+    public static FieldDataTypeInterface getIdFieldType(String db, String table) {
+        final DbInfoInterface holder = DbDataTable.getDb(db);
+        TableInfoInterface tableInfoInterface = holder.getTable(table);
+        if (tableInfoInterface == null) {
+            return null;
+        } else {
+            return tableInfoInterface.getPriKeyType();
+        }
+    }
+
+    public static String getIdFieldName(String db, String table) {
+        final DbInfoInterface holder = DbDataTable.getDb(db);
+        TableInfoInterface tableInfoInterface = holder.getTable(table);
+        if (tableInfoInterface == null) {
+            return null;
+        } else {
+            return tableInfoInterface.getPriKey();
+        }
+    }
+
+    public static String getEnumClzName(String basePackage, String clazzName) {
+        return basePackage + ".dto.enums." + CLASS_NAME_ENUM_PREFIX + CodeStyleTransformHelper.upperFirstCase(clazzName);
+    }
+
+    public static String getModelVoClassName(String basePackage, String tb) {
+        return basePackage + ".vo." + CLASS_NAME_MODEL_PREFIX + CodeStyleTransformHelper.upperFirstCase(CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(tb));
+    }
+
+    public static String getConstantClzName(String basePackage) {
+        return basePackage + ".contants." + CLASS_NAME_CONSTANTS;
+    }
+
+    public static String getRSMapperClassName(String basePackage, String table) {
+        String modelSimpleName = CodeStyleTransformHelper.upperFirstCase(CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(table));
+        return basePackage + ".dto." + "mappers." + CLASS_NAME_RESULT_SET_MAPPER_PREFIX + modelSimpleName;
+    }
+
+    public static String getMapMapperClassName(String basePackage, String table) {
+        String modelSimpleName = CodeStyleTransformHelper.upperFirstCase(CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(table));
+        return basePackage + ".dto." + "mappers." + CLASS_NAME_REDIS_BYTE_MAPPER_PREFIX + modelSimpleName;
+    }
+
+    public static String getDaoClassName(String basePackage, String table, String baseTable, int type) {
+        String tb = (baseTable == null ? table : baseTable);
+        String modelSimpleName = CodeStyleTransformHelper.upperFirstCase(CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(tb));
+        if (type == 2 && baseTable == null) {
+            return basePackage + ".dao.spdao." + CLASS_NAME_DAO_PREFIX + modelSimpleName;
+        } else {
+            return basePackage + ".dao.basedao." + CLASS_NAME_DAO_PREFIX + modelSimpleName;
+        }
+    }
+
+    public static String getDaoClassName(String basePackage, String table) {
+        //        String modelSimpleName = CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(table);
+        return getDaoClassName(basePackage, table, null, 0);
+        //                basePackage + ".dao." + CodeConstants.CLASS_NAME_DAO_PREFIX + CodeStyleTransformHelper.upperFirstCase(modelSimpleName);
+    }
+
+    public static String getMulSelectDaoClassName(String basePackage, String table) {
+        String modelSimpleName = CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(table);
+        return basePackage + ".dao.multi_dao." + CLASS_NAME_MULTI_DAO_PREFIX + CodeStyleTransformHelper.upperFirstCase(modelSimpleName);
+    }
+
+    public static String getServiceAssemblerClassName(String basePackage, String serviceClassName) {
+        String modelSimpleName = CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(serviceClassName);
+        return basePackage + ".dao.multi_dao." + CLASS_NAME_MULTI_DAO_PREFIX + CodeStyleTransformHelper.upperFirstCase(modelSimpleName) + CLASS_NAME_MULTI_DAO_ASSEMBLER_APPENDIX;
+    }
+
+    public static String getClassNameOfSpecialQueryDto(String basePackage, String clzName) {
+        return basePackage + ".dto.input." + CLASS_NAME_MODEL_PREFIX + CodeStyleTransformHelper.upperFirstCase(clzName);
+    }
+
+    public static String getReallyModelClassName(String basePackage, String table, String baseTable) {
+        return getReallyModelClassName(basePackage, table, baseTable, true);
+    }
+
+    public static String getReallyModelClassName(String basePackage, String table, String baseTable, boolean isBase) {
+        String modelSimpleName = CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(table);
+        String prefix = basePackage + ".dto." + (isBase ? "basepo." : "composedpo.") + CLASS_NAME_MODEL_PREFIX;
+        return (prefix + CodeStyleTransformHelper.upperFirstCase(modelSimpleName)) + (baseTable == null ? "" : "Ext");
+    }
+
 
     public static interface StringParamFilter {
         boolean accept(JVar var, int i);
@@ -844,7 +934,7 @@ public class CodeConstants {
             //                }
             //                    }
             //                }else{
-            jClass = cm.ref(bc.getEnumClzName(typeDef.getClazzName()));
+            jClass = cm.ref(getEnumClzName(bc.getBasePackage(), typeDef.getClazzName()));
             //                }
         }
         if (type.isArray()) {
