@@ -2,7 +2,7 @@ package com.shawn.ss.gen.code_build_handlers.sql_dao;
 
 import com.shawn.ss.gen.code_build_handlers.AbstractCodeGenerator;
 import com.shawn.ss.lib.code_gen.base.helper.DBConnectionHelper;
-import com.shawn.ss.lib.code_gen.base.helper.DbInfoHandler;
+import com.shawn.ss.lib.code_gen.base.helper.CommonModelFactory;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
 import com.shawn.ss.lib.code_gen.base.helper.data_store.DbDataTable;
 import com.shawn.ss.lib.code_gen.base.helper.db_analyzer.DbAnalyzer;
@@ -48,7 +48,7 @@ public class SqlDaoGen extends AbstractCodeGenerator {
             }
             final String dataSourceName = ct.getDataSourceId();
             final DBConnectionHelper dbInfoHolder = DbDataTable.getDataSource(dataSourceName);
-            final DbAnalyzer analyzer = DbInfoHandler.getAnalyzer();
+            final DbAnalyzer analyzer = CommonModelFactory.getAnalyzer();
 
             String baseModelTable = ct.getBaseModel();
 //        String baseModel = null;

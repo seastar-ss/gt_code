@@ -18,7 +18,6 @@ import com.shawn.ss.lib.tools.service_assemble.AbstractMultipleDaoAssembler;
 import com.shawn.ss.lib.tools.service_assemble.BaseMultipleDaoAssembler;
 import com.shawn.ss.lib.tools.service_assemble.DaoAssembler;
 import com.shawn.ss.lib.tools.sql_code_gen.api.*;
-import net.sf.jsqlparser.expression.JsonExpression;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
@@ -206,7 +205,7 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
         JBlock then = body._if(modelClass.staticRef(CodeConstants.FIELD_FIELDS_CLASS_CONSTANT_MAP).invoke("containsKey").arg(field))._then();
         JForEach forEach = then.forEach(typeVar, "item", list);
         JVar var = forEach.var();
-        JInvocation fieldCommonMapper = getCommonFieldMapper(name, constantClz);
+        JInvocation fieldCommonMapper = CodeConstants.getCommonFieldMapper(name, constantClz);
         //        CodeConstants.buildGetter()
         forEach.body().invoke(ret, "add").arg(
                 fieldCommonMapper
@@ -240,7 +239,7 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
         JForEach forEach = body.forEach(typeVar, "item", list);
         JVar var = forEach.var();
         JBlock block = forEach.body();
-        JInvocation fieldCommonMapper = getCommonFieldMapper(name, constantClz);
+        JInvocation fieldCommonMapper = CodeConstants.getCommonFieldMapper(name, constantClz);
         JInvocation arg = fieldCommonMapper.invoke(CodeConstants.METHOD_JEDIS_MAPPER_GET_FIELD).narrow(genericType).arg(field).arg(var);
         if (!isItemList) {
             block.invoke(ret, "put")
@@ -507,7 +506,7 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
         }
         //        body.assign(sql, sqlBuilder.invoke(CodeConstants.LIB_SQL_GET_SQL).arg(JExpr._null()));
         JVar paramVar = null;
-        JInvocation fieldCommonMapper = getCommonFieldMapper(name, constantClz);
+        JInvocation fieldCommonMapper = CodeConstants.getCommonFieldMapper(name, constantClz);
         if (useId) {
             paramVar = body.decl(CodeConstants.buildNarrowedClass(cm, Map.class, String.class, Object.class), "param");
 
@@ -593,7 +592,7 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
         final JForEach forEach = body.forEach(modelClass, CodeConstants.PARAM_DAO_INSTANCE, instances);
         final JVar instance = forEach.var();
         final JBlock foreachInstancesLoop = forEach.body();
-        JInvocation fieldCommonMapper = getCommonFieldMapper(name, constantClz);
+        JInvocation fieldCommonMapper = CodeConstants.getCommonFieldMapper(name, constantClz);
         final JVar instanceMap = foreachInstancesLoop.decl(narrowedMapClass, "paramMap",
                 fieldCommonMapper.invoke(CodeConstants.METHOD_JEDIS_MAPPER_TO_COMMON_MAP).arg(instance));
         foreachInstancesLoop.invoke(paramVar, "add").arg(instanceMap);
@@ -638,7 +637,7 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
             jBlock.invoke(sqlBuilderVar, CodeConstants.LIB_SQL_ADD_ITEM)
                     .arg(staticRef);
         }
-        JInvocation fieldCommonMapper = getCommonFieldMapper(name, constantClz);
+        JInvocation fieldCommonMapper = CodeConstants.getCommonFieldMapper(name, constantClz);
         JVar paramVar = body.decl(CodeConstants.buildNarrowedClass(cm, Map.class, String.class, Object.class), "param",
                 //                constantClz.staticRef(CodeConstants.getFieldNameOfCommonMapperForModel(name))
                 fieldCommonMapper
@@ -939,7 +938,6 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
                     JExpr.invoke(CodeConstants.METHOD_DAO_GET_RESULT_SCALAR)
                             .arg(assemblerVar).arg(sqlBuilder).arg(paramVar).arg(JExpr.dotclass(cm.ref(Long.class)))
             );
-
         } else if (isSingle) {
             //            if(multiSelect){
             //
@@ -954,9 +952,7 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
                     JExpr.invoke(multiSelect ? CodeConstants.METHOD_DAO_GET_RESULT_LIST : CodeConstants.METHOD_DAO_GET_RESULT)
                             .arg(assemblerVar).arg(sqlBuilder).arg(paramVar)
             );
-
         }
-
         return method;
     }
 

@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * @author ss
  */
-public abstract class AbstractBaseModel implements Serializable, _ObjMapper {
+public abstract class AbstractBaseModel implements Serializable, _APIObj {
 //    protected static int modelFieldCount;
 
 
@@ -60,11 +60,11 @@ public abstract class AbstractBaseModel implements Serializable, _ObjMapper {
     }
 
     @Override
-    public <T extends _ObjMapper> T getFeature(Class<T> clazz) {
+    public <FT extends _APIObj> FT getFeature(Class<FT> clazz) {
         return null;
     }
 
-    public static String compressStr(int length, String str) {
+   /* public static String compressStr(int length, String str) {
         if (str == null) {
             return null;
         }
@@ -78,7 +78,7 @@ public abstract class AbstractBaseModel implements Serializable, _ObjMapper {
             compressString = str.substring(0, length);
         }
         return compressString;
-    }
+    }*/
 
     public Map<String, Object> getFieldConfig() {
         return null;

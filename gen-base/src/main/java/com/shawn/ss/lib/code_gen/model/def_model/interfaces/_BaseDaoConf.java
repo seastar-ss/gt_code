@@ -55,7 +55,7 @@ public interface _BaseDaoConf extends _BaseModelConf, _BaseDaoClassNameConf, _Ba
 
     void setDeclaredAssembler(JDefinedClass tclazz);
 
-    JDefinedClass getDeclaredMapper();
+    JDefinedClass getDeclaredRsMapper();
 
-    void setDeclaredMapper(JDefinedClass tclazz);
+    void setDeclaredRsMapper(JDefinedClass tclazz);
 }

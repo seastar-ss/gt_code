@@ -2,7 +2,6 @@ package com.shawn.ss.lib.code_gen.base.dao;
 
 import com.helger.jcodemodel.*;
 import com.shawn.ss.lib.code_gen.CodeBuilderInterface;
-import com.shawn.ss.lib.code_gen.base.dao.common_dao.common_model_builder.MapperOfResultSetBuilder;
 import com.shawn.ss.lib.code_gen.base.helper.CodeConstants;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
 import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseConstantDef;
@@ -11,7 +10,6 @@ import com.shawn.ss.lib.tools.StringHelper;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.SimpleDbInterface;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.TableInfoInterface;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.model.FieldDataTypeInterface;
-import com.shawn.ss.lib.tools.db.api.interfaces.mappers.dao_mapper.ResultSetToModelMapper;
 import com.shawn.ss.lib.tools.db.api.interfaces.mappers.db.DbResultSetMapper;
 import com.shawn.ss.lib.tools.db.impl.dao.AbstractDao;
 import com.shawn.ss.lib.tools.db.impl.dao.DaoInterface;
@@ -128,6 +126,7 @@ public abstract class AbstractDaoBuilder implements CodeBuilderInterface {
             buildAfterPropertiesSet();
 
             buildConstructors();
+            modelDef.setDeclaredDao(definedClass);
             //            info = parentBuilder.getInfo();
         } catch (JClassAlreadyExistsException e) {
             e.printStackTrace();
@@ -148,7 +147,7 @@ public abstract class AbstractDaoBuilder implements CodeBuilderInterface {
                         //                        constantClz.staticRef(
                         //                                CodeConstants.getFieldNameOfDbRsMapperForModel(modelDef.getName())
                         //                        )
-                        getDbRsFieldMapper(modelDef.getName(), constantClz)
+                        CodeConstants.getDbRsFieldMapper(modelDef.getName(), constantClz)
                 )
         ;
 
@@ -202,15 +201,4 @@ public abstract class AbstractDaoBuilder implements CodeBuilderInterface {
         return definedClass;
     }
 
-    protected JInvocation getCommonFieldMapper(String name1, JDefinedClass constantClz1) {
-        String fieldGetterNameOfCommonMapper = CodeConstants.getModelGetMethodName(CodeConstants.getFieldNameOfCommonMapperForModel(name1));
-        JInvocation fieldCommonMapper = constantClz1.staticInvoke(fieldGetterNameOfCommonMapper);
-        return fieldCommonMapper;
-    }
-
-    protected JInvocation getDbRsFieldMapper(String name1, JDefinedClass constantClz1) {
-        String fieldGetterNameOfCommonMapper = CodeConstants.getModelGetMethodName(CodeConstants.getFieldNameOfDbRsMapperForModel(name1));
-        JInvocation fieldCommonMapper = constantClz1.staticInvoke(fieldGetterNameOfCommonMapper);
-        return fieldCommonMapper;
-    }
 }

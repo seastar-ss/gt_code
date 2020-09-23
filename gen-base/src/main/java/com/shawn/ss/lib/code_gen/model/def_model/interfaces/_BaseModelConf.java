@@ -25,7 +25,7 @@ public interface _BaseModelConf extends _BaseModelClassNameConf, _BaseContextCon
 
     String getComment();
 
-    Map<String,FieldInfoInterface> getStaticConstFields();
+    Map<String, FieldInfoInterface> getStaticConstFields();
 
     boolean addStaticField(FieldInfoInterface fieldDef);
 
@@ -40,4 +40,8 @@ public interface _BaseModelConf extends _BaseModelClassNameConf, _BaseContextCon
     JDefinedClass getDeclaredModel();
 
     void setDeclaredModel(JDefinedClass tclazz);
+
+    JDefinedClass getDeclaredCommonMapper();
+
+    void setDeclaredCommonMapper(JDefinedClass tclazz);
 }

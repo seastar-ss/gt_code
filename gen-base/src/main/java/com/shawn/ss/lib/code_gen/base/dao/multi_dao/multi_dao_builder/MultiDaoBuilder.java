@@ -8,7 +8,6 @@ import com.shawn.ss.lib.code_gen.base.helper.CodeConstants;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
 import com.shawn.ss.lib.code_gen.base.helper.data_store.ClassDataTable;
 import com.shawn.ss.lib.code_gen.model.MethodTypeEnum;
-import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseDaoCombineConf;
 import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseDaoConf;
 import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseRelationDef;
 import com.shawn.ss.lib.tools.CodeStyleTransformHelper;
@@ -201,7 +200,6 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
         //            );
         //            staticRoundFieldVar[findex] = fieldVar;
         //        }
-
         JMethod assembleMainList = buildAssembleMainToRet(true, holder);
         JMethod assembleMain = buildAssembleMainToRet(false, holder);
         for (SelectMethodEnum modelSelectMethod : mainModelSelectMethods) {
@@ -864,7 +862,7 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
         JVar var = forEach.var();
         JBlock block = forEach.body();
         JVar mainVar = block.decl(mainModelClass, "mainVar", JExpr.invoke(var, CodeConstants.getMethodNameOfModelGet(mainModelFieldName)));
-        JInvocation fieldCommonMapper = getCommonFieldMapper(name, constantClz);
+        JInvocation fieldCommonMapper = CodeConstants.getCommonFieldMapper(name, constantClz);
         block.invoke(ret, "add").arg(
                 //                constantClz.staticRef(CodeConstants.getFieldNameOfCommonMapperForModel(name))
                 fieldCommonMapper
@@ -909,7 +907,7 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
 
         JBlock block = forEach.body();
         JVar mainVar = block.decl(mainModelClass, "mainVar", JExpr.invoke(var, CodeConstants.getMethodNameOfModelGet(mainModelFieldName)));
-        JInvocation fieldCommonMapper = getCommonFieldMapper(name, constantClz);
+        JInvocation fieldCommonMapper = CodeConstants.getCommonFieldMapper(name, constantClz);
         JInvocation arg = /*constantClz.staticRef(CodeConstants.getFieldNameOfCommonMapperForModel(name))*/
                 fieldCommonMapper
                         .invoke(CodeConstants.METHOD_JEDIS_MAPPER_GET_FIELD).narrow(genericType).arg(field).arg(mainVar);

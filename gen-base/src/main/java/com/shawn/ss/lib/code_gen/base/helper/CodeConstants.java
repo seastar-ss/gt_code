@@ -22,6 +22,8 @@ import java.util.regex.Pattern;
 public class CodeConstants {
 
 
+
+
     final static Pattern PATTERN_NUMBER_START = Pattern.compile("^\\d+.*");
 
     public static final int MODE_PUBLIC_STATIC_FINAL = JMod.PUBLIC + JMod.STATIC + JMod.FINAL;
@@ -42,6 +44,7 @@ public class CodeConstants {
     public static final String FIELD_MODEL_FIELD_COUNT = "FIELD_COUNT";
     public static final String FIELD_REDIS_MAP_MAPPER = "MAP_MAPPER";
     public static final String FIELD_REDIS_MAP_MAPPER_INSTANCE_APPENDIX = "_MAP_OBJ_MAPPER";
+    public static final String FIELD_COMMON_CONF_CLAZZ = "ALL_DTO_CLAZZ_CONF";
 
     public static final String FIELD_FIELDS_CLASS_CONSTANT_MAP = "FIELD_CLASS";
     public static final String FIELD_DAO_DB_FIELD = "data_store";
@@ -777,6 +780,18 @@ public class CodeConstants {
     public static String getDsConfigClzName(String name) {
 
         return CLASS_NAME_DB_SOURCE_CONFIG_PREFIX + CodeStyleTransformHelper.upperFirstCase(name);
+    }
+
+    public static JInvocation getCommonFieldMapper(String name1, JDefinedClass constantClz1) {
+        String fieldGetterNameOfCommonMapper = getModelGetMethodName(getFieldNameOfCommonMapperForModel(name1));
+        JInvocation fieldCommonMapper = constantClz1.staticInvoke(fieldGetterNameOfCommonMapper);
+        return fieldCommonMapper;
+    }
+
+    public static JInvocation getDbRsFieldMapper(String name1, JDefinedClass constantClz1) {
+        String fieldGetterNameOfCommonMapper = getModelGetMethodName(getFieldNameOfDbRsMapperForModel(name1));
+        JInvocation fieldCommonMapper = constantClz1.staticInvoke(fieldGetterNameOfCommonMapper);
+        return fieldCommonMapper;
     }
 
 

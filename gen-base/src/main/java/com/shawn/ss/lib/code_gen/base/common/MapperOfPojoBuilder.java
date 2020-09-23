@@ -60,6 +60,7 @@ public class MapperOfPojoBuilder implements CodeBuilderInterface {
             buildMethodSetField();
             buildMethodSetFieldByte();
             buildNewInstance();
+            modelDef.setDeclaredCommonMapper(definedClass);
         } catch (JClassAlreadyExistsException e) {
             e.printStackTrace();
         }

@@ -12,7 +12,7 @@ import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.model.DbInfo;
 
 import java.util.*;
 
-public class DbInfoHandler {
+public class CommonModelFactory {
 
     static final DbAnalyzer analyzer;
 
@@ -22,10 +22,6 @@ public class DbInfoHandler {
 
     private final ModelBuilderContext context;
 
-    //    private Set<String> ignoreTbPattern;
-    //    private Set<String> includingPattern;
-    //    boolean isSlave;
-    //    String masterDbName;
     DbModelConf conf;
 
     public static DbAnalyzer getAnalyzer() {
@@ -45,47 +41,12 @@ public class DbInfoHandler {
         uuid = UUID.randomUUID().getMostSignificantBits();
     }
 
-    //    public DbInfoHandler(Properties p) {
-    //        this(CodeConstants.KEY_WORD_DEFAULT_DATA_SOURCE_ID, p, false);
-    //    }
-    //
-    //
-    //    public DbInfoHandler(String dataSourceId, Properties p) {
-    //        this(dataSourceId, p, false);
-    ////        this.dataSourceId=dataSourceId;
-    //    }
-    //
-    //    public DbInfoHandler(String dataSourceId, Properties p, boolean isSlave) {
-    //        tbMaps = CollectionHelper.newMap();
-    //        this.connection = new DBConnectionHelper(dataSourceId, p);
-    //        this.isSlave = isSlave;
-    ////        this.dataSourceId=dataSourceId;
-    //    }
-    //
-    //    public DbInfoHandler(String dataSourceId, Properties p, boolean isSlave, String data_store) {
-    //        tbMaps = CollectionHelper.newMap();
-    //        this.connection = new DBConnectionHelper(dataSourceId, p);
-    //        this.isSlave = isSlave;
-    //        setDb(data_store);
-    ////        this.ddataSourceId=dataSourceId;
-    //    }
-
-    //    public DbInfoHandler(DBConnectionHelper connection) {
-    //        this(connection, null, false, null);
-    ////        this.dataSourceId=connection.getDataSourceId();
-    //    }
-
-    //    public DbInfoHandler(DBConnectionHelper connection) {
-    //        this(connection, false, null);
-    ////        this.dataSourceId=connection.getDataSourceId();
-    //    }
-
-    public DbInfoHandler(DBConnectionHelper connection, boolean isSlave, ModelBuilderContext context) {
+    public CommonModelFactory(DBConnectionHelper connection, boolean isSlave, ModelBuilderContext context) {
         this(connection, new DbModelConf().setSlave(isSlave), context);
         //        this.dataSourceId=connection.getDataSourceId();
     }
 
-    public DbInfoHandler(DBConnectionHelper connection, DbModelConf conf, ModelBuilderContext context) {
+    public CommonModelFactory(DBConnectionHelper connection, DbModelConf conf, ModelBuilderContext context) {
         this.context = context;
         tbMaps = CollectionHelper.newMap();
         this.connection = connection;
@@ -121,14 +82,14 @@ public class DbInfoHandler {
     //    }
 
 
-    public DbInfoHandler setConf(DbModelConf conf) {
+    public CommonModelFactory setConf(DbModelConf conf) {
         this.conf = conf;
         if (conf.getDb() != null)
             setDb(conf.getDb(), conf.getIgnoreTbPattern(), conf.getIncludingPattern());
         return this;
     }
 
-    protected DbInfoHandler setDb(String db, Set<String> including, Set<String> excluding) {
+    protected CommonModelFactory setDb(String db, Set<String> including, Set<String> excluding) {
         if (inited()) {
             throw new IllegalStateException("已经初始化此实例：" + db);
         }
@@ -273,7 +234,7 @@ public class DbInfoHandler {
             return ret;
         }
     */
-    public List<CommonModelDaoDef> getDefs() {
+    public List<CommonModelDaoDef> buildDefs() {
 
         List<CommonModelDaoDef> defs = CollectionHelper.newList();
         String dbName = getDb();

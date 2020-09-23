@@ -191,12 +191,12 @@ public class CommonModelDaoDef<T extends CommonModelDaoDef> extends _BaseDaoConf
     }
 
     @Override
-    public JDefinedClass getDeclaredMapper() {
+    public JDefinedClass getDeclaredRsMapper() {
         return declaredMapper;
     }
 
     @Override
-    public void setDeclaredMapper(JDefinedClass tclazz) {
+    public void setDeclaredRsMapper(JDefinedClass tclazz) {
         declaredMapper = tclazz;
     }
 

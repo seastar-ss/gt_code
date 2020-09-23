@@ -63,6 +63,7 @@ public class MapperOfResultSetBuilder implements CodeBuilderInterface {
             buildMapRowMethodWithoutInstanceParam();
             buildMapRowMethod();
             buildNewInstance();
+            model.setDeclaredRsMapper(definedClass);
         } catch (JClassAlreadyExistsException e) {
             e.printStackTrace();
         }

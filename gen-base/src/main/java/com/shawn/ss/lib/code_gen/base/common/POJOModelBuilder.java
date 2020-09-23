@@ -5,12 +5,15 @@ import com.shawn.ss.lib.code_gen.CodeBuilderInterface;
 import com.shawn.ss.lib.code_gen.base.helper.CodeConstants;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
 import com.shawn.ss.lib.code_gen.base.helper.data_store.ClassDataTable;
+import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseDaoConf;
 import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseModelConf;
 import com.shawn.ss.lib.code_gen.model.def_model.dao_def.EnumTypeConf;
 import com.shawn.ss.lib.tools.CodeStyleTransformHelper;
 import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.FieldInfoInterface;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.model.EnumTypeDef;
+import com.shawn.ss.lib.tools.db.api.interfaces.mappers.db.CommonMapMapper;
+import com.shawn.ss.lib.tools.db.api.interfaces.mappers.db.DbResultSetMapper;
 import com.shawn.ss.lib.tools.db.dto_base.model.AbstractBaseModel;
 import com.shawn.ss.lib.tools.db.dto_base.model._APIObj;
 import org.slf4j.Logger;
@@ -95,7 +98,7 @@ public class POJOModelBuilder implements CodeBuilderInterface {
             if (extendedClazz != null)
                 definedClass._extends(extendedClazz);
 
-            definedClass.constructor(JMod.PUBLIC);
+            buildConstructor();
             buildComments();
             //            if(!selectModel) {
             //            buildStaticFields();
@@ -115,11 +118,35 @@ public class POJOModelBuilder implements CodeBuilderInterface {
             //            }
             ClassDataTable.putModelClz(modelClassName, definedClass);
             modelDef.setDeclaredModel(definedClass);
+            registerClzToConstants();
             //            ClassDataTable.putModelClz(modelClassName,definedClass);
         } catch (JClassAlreadyExistsException e) {
             e.printStackTrace();
             throw new IllegalStateException("model state abnormal for " + modelClassName);
         }
+    }
+
+    private void buildConstructor() {
+        definedClass.constructor(JMod.PUBLIC);
+        if (fields != null && fields.size() > 0) {
+            JMethod constructorCopyModel = definedClass.constructor(JMod.PUBLIC);
+            JVar instance = constructorCopyModel.param(definedClass, "instance");
+            JBlock body = constructorCopyModel.body();
+            for (FieldInfoInterface item : fields) {
+                String fieldName = item.getFieldName();
+                body.invoke(CodeConstants.getMethodNameOfModelSet(fieldName))
+                        .arg(instance.invoke(CodeConstants.getMethodNameOfModelGet(fieldName)));
+            }
+        }
+    }
+
+    private void registerClzToConstants() {
+        JDefinedClass constantClz = modelDef.getConstant().getConstantClz();
+        JFieldRef confClazzClz = constantClz.staticRef(CodeConstants.FIELD_COMMON_CONF_CLAZZ);
+        constantClz.init()
+                .invoke(confClazzClz, "put")
+                .arg(modelClassName)
+                .arg(JExpr.dotclass(this.definedClass));
     }
 
     private void buildStaticFields() {
@@ -209,15 +236,15 @@ public class POJOModelBuilder implements CodeBuilderInterface {
     }
 
 
-    //    private void buildStaticFields() {
-    //        String priKey = info.getPriKey();
-    //        if (priKey != null) {
-    //            definedClass.field(CodeConstants.MODE_PUBLIC_STATIC_FINAL, String.class, CodeConstants.FIELD_PRIMARY_KEY_NAME, JExpr.lit(priKey));
-    //        }
-    //        definedClass.field(CodeConstants.MODE_PUBLIC_STATIC_FINAL, String.class, CodeConstants.FIELD_TABLE_NAME, table == null ? JExpr._null() : JExpr.lit(table));
-    //        definedClass.field(CodeConstants.MODE_PUBLIC_STATIC_FINAL, String.class, CodeConstants.FIELD_DB_NAME, db == null ? JExpr._null() : JExpr.lit(db));
-    //        definedClass.field(CodeConstants.MODE_PUBLIC_STATIC_FINAL, Integer.class, CodeConstants.FIELD_MODEL_TYPE, JExpr.lit(info.getTableType()));
-    //    }
+   /*     private void buildStaticFields() {
+            String priKey = info.getPriKey();
+            if (priKey != null) {
+                definedClass.field(CodeConstants.MODE_PUBLIC_STATIC_FINAL, String.class, CodeConstants.FIELD_PRIMARY_KEY_NAME, JExpr.lit(priKey));
+            }
+            definedClass.field(CodeConstants.MODE_PUBLIC_STATIC_FINAL, String.class, CodeConstants.FIELD_TABLE_NAME, table == null ? JExpr._null() : JExpr.lit(table));
+            definedClass.field(CodeConstants.MODE_PUBLIC_STATIC_FINAL, String.class, CodeConstants.FIELD_DB_NAME, db == null ? JExpr._null() : JExpr.lit(db));
+            definedClass.field(CodeConstants.MODE_PUBLIC_STATIC_FINAL, Integer.class, CodeConstants.FIELD_MODEL_TYPE, JExpr.lit(info.getTableType()));
+        }*/
 
 
     private void buildFeatureMethod() {
@@ -228,8 +255,14 @@ public class POJOModelBuilder implements CodeBuilderInterface {
         method.generify("FT", cm.ref(_APIObj.class));
         JVar clazz = method.param(cm.ref(Class.class).narrow(ft), "clazz");
         JBlock body = method.body();
-        //        body._if(JExpr.dotclass(cm.ref(RedisMapMapper.class)).invoke("isAssignableFrom").arg(clazz))._then()._return(JExpr.cast(ft, definedClass.staticRef(CodeConstants.FIELD_REDIS_MAP_MAPPER_INSTANCE)));
-        //        body._if(JExpr.dotclass(cm.ref(DbResultSetMapper.class)).invoke("isAssignableFrom").arg(clazz))._then()._return(JExpr.cast(ft, definedClass.staticRef(CodeConstants.FIELD_RESULT_SET_MAPPER_INSTANCE_APPENDIX)));
+        JDefinedClass constantClz = modelDef.getConstant().getConstantClz();
+        body._if(JExpr.dotclass(cm.ref(CommonMapMapper.class)).invoke("isAssignableFrom").arg(clazz))
+                ._then()._return(JExpr.cast(ft, CodeConstants.getCommonFieldMapper(modelDef.getName(), constantClz)));
+        if (modelDef instanceof _BaseDaoConf) {
+            _BaseDaoConf modelDef1 = (_BaseDaoConf) this.modelDef;
+            body._if(JExpr.dotclass(cm.ref(DbResultSetMapper.class)).invoke("isAssignableFrom").arg(clazz))
+                    ._then()._return(JExpr.cast(ft, CodeConstants.getCommonFieldMapper(modelDef1.getTable(), constantClz)));
+        }
         body._return(JExpr._null());
     }
 

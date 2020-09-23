@@ -19,7 +19,6 @@ import com.shawn.ss.lib.code_gen.model.MethodTypeEnum;
 import com.shawn.ss.lib.code_gen.model.def_model._base.AbstractConf;
 import com.shawn.ss.lib.code_gen.model.def_model.dao_def.CommonModelDaoDef;
 
-import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseConstantDef;
 import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseDaoConf;
 import com.shawn.ss.lib.code_gen.model.gen_param_model.db_def.DbModelConf;
 import com.shawn.ss.lib.tools.CodeStyleTransformHelper;
@@ -47,7 +46,7 @@ public class ModelBuilderContext {
     volatile String basePackage;
     JCodeModel cm;
     private String filePath;
-    private Map<Long, DbInfoHandler> relatedDbs;
+    private Map<Long, CommonModelFactory> relatedDbs;
     //    private Map<String,List<Long>> dbNameToIndex;
 
     //    private String dbName;
@@ -241,7 +240,7 @@ public class ModelBuilderContext {
     //    }
 
     public long addDb(DBConnectionHelper conn, DbModelConf conf) {
-        final DbInfoHandler infoHolder = new DbInfoHandler(conn, conf, this);
+        final CommonModelFactory infoHolder = new CommonModelFactory(conn, conf, this);
         final long uuid = DbDataTable.putDbInfo(infoHolder);
         relatedDbs.put(uuid, infoHolder);
         //        List<Long> list = dbNameToIndex.get(data_store);
@@ -383,22 +382,22 @@ public class ModelBuilderContext {
     public String getRSMapperClassName(String table) {
         //        String modelClass = getModelClassName(table);
         String modelSimpleName = CodeStyleTransformHelper.upperFirstCase(CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(table));
-        return basePackage + ".dto." + "basepo." + CodeConstants.CLASS_NAME_RESULT_SET_MAPPER_PREFIX + modelSimpleName;
+        return basePackage + ".dto." + "mappers." + CodeConstants.CLASS_NAME_RESULT_SET_MAPPER_PREFIX + modelSimpleName;
     }
 
     public String getMapMapperClassName(String table) {
         //        String modelClass = getModelClassName(table);
         String modelSimpleName = CodeStyleTransformHelper.upperFirstCase(CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(table));
-        return basePackage + ".dto." + "basepo." + CodeConstants.CLASS_NAME_REDIS_BYTE_MAPPER_PREFIX + modelSimpleName;
+        return basePackage + ".dto." + "mappers." + CodeConstants.CLASS_NAME_REDIS_BYTE_MAPPER_PREFIX + modelSimpleName;
     }
 
     public void buildBaseModelAndDao() {
         //        CollectionHelper.travelMap(, new CollectionHelper.Traveler<String, DbInfoHandler>() {
         //            @Override
         //            public boolean travel(String s, DbInfoHandler dbInfoHolder, int i) {
-        final Collection<DbInfoHandler> dbInfoHandlers = relatedDbs.values();
-        for (DbInfoHandler dbInfoHandler : dbInfoHandlers) {
-            buildBaseModelAndDao(dbInfoHandler);
+        final Collection<CommonModelFactory> commonModelFactories = relatedDbs.values();
+        for (CommonModelFactory commonModelFactory : commonModelFactories) {
+            buildBaseModelAndDao(commonModelFactory);
         }
         //                return true;
         //            }
@@ -409,16 +408,16 @@ public class ModelBuilderContext {
         if (!relatedDbs.containsKey(uuid)) {
             throw new IllegalStateException("错误的uuid，此context不包含此uuid：" + uuid + " context:" + relatedDbs.toString());
         }
-        final DbInfoHandler dbInfoHandler = DbDataTable.getHolder(uuid);
-        buildBaseModelAndDao(dbInfoHandler);
+        final CommonModelFactory commonModelFactory = DbDataTable.getHolder(uuid);
+        buildBaseModelAndDao(commonModelFactory);
     }
 
 
-    public void buildBaseModelAndDao(DbInfoHandler db) {
+    public void buildBaseModelAndDao(CommonModelFactory db) {
         //        String dbName = data_store.getDb();
         //        List<String> dataSources=getDataSource(dbName);
         //        Collection<TableInfoInterface> tables = data_store.getTbMaps().values();
-        List<CommonModelDaoDef> defs = db.getDefs();
+        List<CommonModelDaoDef> defs = db.buildDefs();
         for (CommonModelDaoDef def : defs) {
             //            String table = tableInfo.getTable();
             //            String modelSimpleName = CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(table);
@@ -491,14 +490,16 @@ public class ModelBuilderContext {
             //            }
             PoModelBuilder builder = new PoModelBuilder(def);
             builder.buildModel();
+
+            MapperOfPojoBuilder redisMapperBuilder = new MapperOfPojoBuilder(def);
+            redisMapperBuilder.buildModel();
             //            if (def()) {
             MapperOfResultSetBuilder rsMapperBuilder = new MapperOfResultSetBuilder(def);
             rsMapperBuilder.buildModel();
             //                MapperOfMapBuilder redisMapperBuilder = new MapperOfMapBuilder(builder);
             //                redisMapperBuilder.buildModel();
 
-            MapperOfPojoBuilder redisMapperBuilder = new MapperOfPojoBuilder(def);
-            redisMapperBuilder.buildModel();
+
             //            }
 
         } catch (Exception ex) {

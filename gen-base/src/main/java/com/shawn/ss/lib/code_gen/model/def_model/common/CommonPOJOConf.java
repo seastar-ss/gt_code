@@ -59,6 +59,7 @@ public class CommonPOJOConf extends AbstractConf implements _BaseModelConf, _Bas
     //    protected transient final ModelBuilderContext builderContext;
 
     private JDefinedClass definedClz;
+    private JDefinedClass definedCommonMapperClz;
 
     public CommonPOJOConf(String name, ModelBuilderContext builderContext) {
         super(name, builderContext);
@@ -138,7 +139,16 @@ public class CommonPOJOConf extends AbstractConf implements _BaseModelConf, _Bas
     @Override
     public void setDeclaredModel(JDefinedClass tclazz) {
         this.definedClz = tclazz;
+    }
 
+    @Override
+    public JDefinedClass getDeclaredCommonMapper() {
+        return definedCommonMapperClz;
+    }
+
+    @Override
+    public void setDeclaredCommonMapper(JDefinedClass tclazz) {
+        this.definedCommonMapperClz = tclazz;
     }
 
     @Override

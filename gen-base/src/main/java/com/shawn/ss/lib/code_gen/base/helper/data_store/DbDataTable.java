@@ -1,7 +1,7 @@
 package com.shawn.ss.lib.code_gen.base.helper.data_store;
 
 import com.shawn.ss.lib.code_gen.base.helper.DBConnectionHelper;
-import com.shawn.ss.lib.code_gen.base.helper.DbInfoHandler;
+import com.shawn.ss.lib.code_gen.base.helper.CommonModelFactory;
 import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.DbInfoInterface;
 
@@ -13,8 +13,8 @@ public class DbDataTable {
     //    public static final Map<String,DataSourceInfoHolder> ALL_DATA_SOURCE= CollectionHelper.newMap(8);
     private static final Map<String, DBConnectionHelper> ALL_DATASOURCES = CollectionHelper.newMap(32);
     private static final Map<String, DbInfoInterface> ALL_DBS = CollectionHelper.newMap(32);
-    private static final Map<Long, DbInfoHandler> ALL_HOLDERS = CollectionHelper.newMap(64);
-    private static Map<String, List<DbInfoHandler>> DB_NAME_INDEXES = CollectionHelper.newMap(32);
+    private static final Map<Long, CommonModelFactory> ALL_HOLDERS = CollectionHelper.newMap(64);
+    private static Map<String, List<CommonModelFactory>> DB_NAME_INDEXES = CollectionHelper.newMap(32);
 
     private static volatile String currentDb;
 
@@ -34,11 +34,11 @@ public class DbDataTable {
         return ALL_HOLDERS.containsKey(key);
     }
 
-    public static DbInfoHandler getHolder(Long key) {
+    public static CommonModelFactory getHolder(Long key) {
         return ALL_HOLDERS.get(key);
     }
 
-    public static Collection<DbInfoHandler> holderValues() {
+    public static Collection<CommonModelFactory> holderValues() {
         return ALL_HOLDERS.values();
     }
 
@@ -47,14 +47,14 @@ public class DbDataTable {
 
 //    }
 
-    public static List<DbInfoHandler> getAllSlaveHandlerByName(String dbName) {
-        List<DbInfoHandler> list = DB_NAME_INDEXES.get(dbName);
+    public static List<CommonModelFactory> getAllSlaveHandlerByName(String dbName) {
+        List<CommonModelFactory> list = DB_NAME_INDEXES.get(dbName);
         if (list != null && list.size() > 1) {
-            List<DbInfoHandler> ret = CollectionHelper.newList(list.size());
-            for (DbInfoHandler dbInfoHandler : list) {
+            List<CommonModelFactory> ret = CollectionHelper.newList(list.size());
+            for (CommonModelFactory commonModelFactory : list) {
 //                DbInfoHandler dbInfoHandler = ALL_HOLDERS.get(i);
-                if (dbInfoHandler != null && dbInfoHandler.isSlave()) {
-                    ret.add(dbInfoHandler);
+                if (commonModelFactory != null && commonModelFactory.isSlave()) {
+                    ret.add(commonModelFactory);
                 }
             }
             return ret;
@@ -63,15 +63,15 @@ public class DbDataTable {
     }
 
     public static List<String> getAllSlaveSourceNameByName(String dbName) {
-        List<DbInfoHandler> list = getAllSlaveHandlerByName(dbName);
+        List<CommonModelFactory> list = getAllSlaveHandlerByName(dbName);
         if (list == null) {
             return null;
         }
         List<String> ret = CollectionHelper.newList(list.size());
-        for (DbInfoHandler dbInfoHandler : list) {
+        for (CommonModelFactory commonModelFactory : list) {
 //                DbInfoHandler dbInfoHandler = ALL_HOLDERS.get(i);
 //                if(dbInfoHandler !=null && dbInfoHandler.isSlave()){
-            ret.add(dbInfoHandler.getDataSourceId());
+            ret.add(commonModelFactory.getDataSourceId());
 //                }
         }
         return ret;
@@ -106,13 +106,13 @@ public class DbDataTable {
         return ALL_DATASOURCES.values();
     }
 
-    public synchronized static long putDbInfo(DbInfoHandler value) {
+    public synchronized static long putDbInfo(CommonModelFactory value) {
         final long uuid = value.getUuid();
         final String dbName = value.getDb();
         ALL_DATASOURCES.put(value.getDataSourceId(), value.getConnection());
         ALL_DBS.put(dbName, value.getDbInfo());
         ALL_HOLDERS.put(uuid, value);
-        List<DbInfoHandler> list = DB_NAME_INDEXES.get(dbName);
+        List<CommonModelFactory> list = DB_NAME_INDEXES.get(dbName);
         if (list == null) {
             list = CollectionHelper.newList();
         }
