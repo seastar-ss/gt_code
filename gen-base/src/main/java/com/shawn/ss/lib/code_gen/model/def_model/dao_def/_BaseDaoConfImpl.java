@@ -1,5 +1,6 @@
 package com.shawn.ss.lib.code_gen.model.def_model.dao_def;
 
+import com.shawn.ss.gen.api.conf.SelectMethod;
 import com.shawn.ss.gen.api.conf.SelectMethodEnum;
 import com.shawn.ss.lib.code_gen.base.helper.CodeConstants;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
@@ -9,6 +10,7 @@ import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseDataSourceDef;
 import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.TableInfoInterface;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -16,20 +18,20 @@ import java.util.List;
  */
 public abstract class _BaseDaoConfImpl<T extends _BaseDaoConfImpl> extends CommonPOJOConf {
     //    protected Set<String> ignoreField;
-     static final List<_BaseDataSourceDef> dsDefList;
+    static final List<_BaseDataSourceDef> dsDefList;
     //    protected transient final ModelBuilderContext builderContext;
-    List<SelectMethodEnum> mainModelSelectMethod;
+    Collection<SelectMethod> mainModelSelectMethod;
     private String table;
     private String db;
 
     static {
-        dsDefList= CollectionHelper.newList();
+        dsDefList = CollectionHelper.newList();
     }
 
     public _BaseDaoConfImpl(String name, ModelBuilderContext builderContext) {
         super(name, builderContext);
 
-//        this.builderContext = builderContext;
+        //        this.builderContext = builderContext;
 
 
     }
@@ -37,13 +39,13 @@ public abstract class _BaseDaoConfImpl<T extends _BaseDaoConfImpl> extends Commo
 
     public _BaseDaoConfImpl(TableInfoInterface def, ModelBuilderContext builderContext) {
         super(CodeConstants.buildConfNameFromDbAndTable(def.getDb(), def.getTable()), builderContext);
-//        this.builderContext = builderContext;
+        //        this.builderContext = builderContext;
         table = def.getTable();
         db = def.getDb();
         if (db == null) {
             db = DbDataTable.getCurrentDb();
         }
-//        init();
+        //        init();
 
     }
 
@@ -51,18 +53,18 @@ public abstract class _BaseDaoConfImpl<T extends _BaseDaoConfImpl> extends Commo
         return builderContext;
     }
 
-//    public _BaseDaoConfImpl setBuilderContext(ModelBuilderContext builderContext) {
-//        this.builderContext = builderContext;
-//        return this;
-//    }
+    //    public _BaseDaoConfImpl setBuilderContext(ModelBuilderContext builderContext) {
+    //        this.builderContext = builderContext;
+    //        return this;
+    //    }
 
-    public List<SelectMethodEnum> getMainModelSelectMethod() {
+    public Collection<SelectMethod> getMainModelSelectMethod() {
         return mainModelSelectMethod;
     }
 
-    public T setMainModelSelectMethod(List<SelectMethodEnum> mainModelSelectMethod) {
+    public T setMainModelSelectMethod(Collection<SelectMethod> mainModelSelectMethod) {
         this.mainModelSelectMethod = mainModelSelectMethod;
-//        this.listResult= mainModelSelectMethod.isMultipleResult();
+        //        this.listResult= mainModelSelectMethod.isMultipleResult();
         return (T) this;
     }
 
@@ -86,8 +88,8 @@ public abstract class _BaseDaoConfImpl<T extends _BaseDaoConfImpl> extends Commo
         return dsDefList;
     }
 
-//    public _BaseConfImpl setName(String name) {
-//        this.name = name;
-//        return this;
-//    }
+    //    public _BaseConfImpl setName(String name) {
+    //        this.name = name;
+    //        return this;
+    //    }
 }

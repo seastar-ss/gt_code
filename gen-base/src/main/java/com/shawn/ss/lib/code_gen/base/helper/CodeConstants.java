@@ -208,89 +208,13 @@ public class CodeConstants {
     public static final String PARAM_DAO_T_CLASS = "tClass";
     public static final String LIB_ASSERT_METHOD = "throwExceptionIf";
 
+    public static final int TYPE_TABLE_SQL_TYPE = 2;
+    public static final int TYPE_TABLE_MUL_TYPE = 1;
+    public static final int TYPE_TABLE_COMMON_TYPE = 0;
 
-    //    public CommonDaoBuilder(ModelBuilder parentBuilder,ModelBuilderContext builderContext) {
-    //        super(parentBuilder, builderContext);
-    //    }
     public static Set<SelectMethod> allSelectMethod = CollectionHelper.<SelectMethod>setBuilder(true)
             .addAll(SelectMethodEnum.getAllSelectMethod().values())
             .getSet();
-
-
-    //    public static boolean isDaoMethodMulti(String methodName) {
-    //        return (
-    //                methodName.equals(METHOD_DAO_GET_BY_IDS)
-    //                        || methodName.equals(METHOD_DAO_GET_BY_INDEXES)
-    //                        || methodName.equals(METHOD_DAO_GET_ALL)
-    //                        || methodName.equals(METHOD_DAO_GET_BY_CONDITION)
-    //                        || methodName.equals(METHOD_DAO_GET_BY_INDEXES_AND_CONDITION)
-    //                        || methodName.equals(METHOD_DAO_CUSTOMER_GET_LIST_BY_CUSTOMER_CONDITION)
-    //        );
-    //
-    //    }
-    //
-    //    public static boolean isDaoMethodHasRawItem(String methodName) {
-    //        return (
-    //                methodName.equals(METHOD_DAO_CUSTOMER_GET_ITEM_BY_INDEXES)
-    //                        || methodName.equals(METHOD_DAO_CUSTOMER_GET_ITEM_BY_CONDITION)
-    //                        || methodName.equals(METHOD_DAO_CUSTOMER_GET_ITEM_BY_INDEX_AND_CONDITION)
-    ////                        || methodName.equals(METHOD_DAO_GET_BY_CONDITION)
-    ////                        || methodName.equals(METHOD_DAO_GET_BY_INDEXES_AND_CONDITION)
-    //        );
-    //
-    //    }
-    //
-    //    public static boolean isDaoMethodHasRawCondition(String methodName) {
-    //        return (
-    //                methodName.equals(METHOD_DAO_CUSTOMER_GET_ONE_BY_CUSTOMER_CONDITION)
-    //                        || methodName.equals(METHOD_DAO_CUSTOMER_GET_LIST_BY_CUSTOMER_CONDITION)
-    ////                        || methodName.equals(METHOD_DAO_GET_ALL) || methodName.equals(METHOD_DAO_GET_BY_CONDITION)
-    ////                        || methodName.equals(METHOD_DAO_GET_BY_INDEXES_AND_CONDITION)
-    //        );
-    //
-    //    }
-    //
-    //    public static boolean isDaoMethodCountResult(String methodName) {
-    //        return (
-    //                methodName.equals(CodeConstants.METHOD_DAO_GET_COUNT_BY_CONDITION)
-    //                        || methodName.equals(CodeConstants.METHOD_DAO_GET_COUNT_BY_INDEX_AND_CONDITION)
-    //
-    //        );
-    //    }
-    //
-    //    public static boolean isDaoMethodSingleResult(String methodName) {
-    //        return methodName.equals(CodeConstants.METHOD_DAO_CUSTOMER_GET_ITEM_BY_CONDITION)
-    //                || methodName.equals(CodeConstants.METHOD_DAO_CUSTOMER_GET_ITEM_BY_INDEXES)
-    //                || methodName.equals(CodeConstants.METHOD_DAO_CUSTOMER_GET_ITEM_BY_INDEX_AND_CONDITION);
-    //    }
-    //
-    //    public static boolean isDaoMethodNeedConditionList(String methodName) {
-    //        return (
-    //                methodName.equals(CodeConstants.METHOD_DAO_GET_BY_IDS)
-    //                        || methodName.equals(CodeConstants.METHOD_DAO_GET_BY_INDEXES)
-    //                        || methodName.equals(CodeConstants.METHOD_DAO_GET_BY_INDEXES_AND_CONDITION)
-    //                        || methodName.equals(CodeConstants.METHOD_DAO_GET_COUNT_BY_INDEX_AND_CONDITION)
-    //                        || methodName.equals(CodeConstants.METHOD_DAO_CUSTOMER_GET_ITEM_BY_INDEXES)
-    //                        || methodName.equals(CodeConstants.METHOD_DAO_CUSTOMER_GET_ITEM_BY_INDEX_AND_CONDITION)
-    //        );
-    //    }
-    //
-    //
-    //    public static boolean isDaoMethodNeedConditionSet(String methodName) {
-    //        return (
-    //                methodName.equals(CodeConstants.METHOD_DAO_GET_ONE_BY_CONDITION)
-    //                        || methodName.equals(CodeConstants.METHOD_DAO_GET_BY_CONDITION)
-    //                        || methodName.equals(CodeConstants.METHOD_DAO_GET_COUNT_BY_CONDITION)
-    //                        || methodName.equals(CodeConstants.METHOD_DAO_GET_BY_INDEXES_AND_CONDITION)
-    //                        || methodName.equals(CodeConstants.METHOD_DAO_GET_COUNT_BY_INDEX_AND_CONDITION)
-    //                        || methodName.equals(CodeConstants.METHOD_DAO_CUSTOMER_GET_ITEM_BY_CONDITION)
-    //                        || methodName.equals(CodeConstants.METHOD_DAO_CUSTOMER_GET_ITEM_BY_INDEX_AND_CONDITION)
-    //        );
-    //    }
-    //
-    //    public static boolean isDaoMethodNeedIdCondtion(String methodName) {
-    //        return methodName.equals(CodeConstants.METHOD_DAO_GET_BY_ID) || methodName.equals(CodeConstants.METHOD_DAO_GET_BY_IDS);
-    //    }
 
     public static IJExpression litObject(Class contentType, Object obj) {
         if (obj != null && contentType != null) {
@@ -847,7 +771,7 @@ public class CodeConstants {
     public static String getDaoClassName(String basePackage, String table, String baseTable, int type) {
         String tb = (baseTable == null ? table : baseTable);
         String modelSimpleName = CodeStyleTransformHelper.upperFirstCase(CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(tb));
-        if (type == 2 && baseTable == null) {
+        if (type == TYPE_TABLE_SQL_TYPE && baseTable == null) {
             return basePackage + ".dao.spdao." + CLASS_NAME_DAO_PREFIX + modelSimpleName;
         } else {
             return basePackage + ".dao.basedao." + CLASS_NAME_DAO_PREFIX + modelSimpleName;
@@ -865,7 +789,7 @@ public class CodeConstants {
         return basePackage + ".dao.multi_dao." + CLASS_NAME_MULTI_DAO_PREFIX + CodeStyleTransformHelper.upperFirstCase(modelSimpleName);
     }
 
-    public static String getServiceAssemblerClassName(String basePackage, String serviceClassName) {
+    public static String getMulDaoAssemblerClassName(String basePackage, String serviceClassName) {
         String modelSimpleName = CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(serviceClassName);
         return basePackage + ".dao.multi_dao." + CLASS_NAME_MULTI_DAO_PREFIX + CodeStyleTransformHelper.upperFirstCase(modelSimpleName) + CLASS_NAME_MULTI_DAO_ASSEMBLER_APPENDIX;
     }
@@ -874,11 +798,15 @@ public class CodeConstants {
         return basePackage + ".dto.input." + CLASS_NAME_MODEL_PREFIX + CodeStyleTransformHelper.upperFirstCase(clzName);
     }
 
-    public static String getReallyModelClassName(String basePackage, String table, String baseTable) {
-        return getReallyModelClassName(basePackage, table, baseTable, true);
+    public static String getModelClassName(String basePackage, String table, String baseTable) {
+        return getModelClassName(basePackage, table, baseTable, true);
     }
 
-    public static String getReallyModelClassName(String basePackage, String table, String baseTable, boolean isBase) {
+    public static String getModelClassName(String basePackage, String table, boolean base) {
+        return getModelClassName(basePackage, table, null, base);
+    }
+
+    public static String getModelClassName(String basePackage, String table, String baseTable, boolean isBase) {
         String modelSimpleName = CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(table);
         String prefix = basePackage + ".dto." + (isBase ? "basepo." : "composedpo.") + CLASS_NAME_MODEL_PREFIX;
         return (prefix + CodeStyleTransformHelper.upperFirstCase(modelSimpleName)) + (baseTable == null ? "" : "Ext");
@@ -922,7 +850,10 @@ public class CodeConstants {
         FieldDataTypeInterface type = item.getType();
         EnumTypeDef typeDef = item.getEnumTypeDef();
         if (typeDef == null) {
-            jClass = cm.ref(type.gettClass());
+            if (type.gettClass() != null)
+                jClass = cm.ref(type.gettClass());
+            else if (type.getKeyClassName() != null)
+                jClass = cm.ref(type.getKeyClassName());
         } else {
             //                FieldInfoInterface field = def.getField(item.getFieldName());
             //                EnumTypeDef enumTypeDef = field.getEnumTypeDef();

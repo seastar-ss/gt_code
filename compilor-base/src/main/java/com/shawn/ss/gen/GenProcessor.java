@@ -6,7 +6,7 @@ import com.shawn.ss.gen.api.interfaces.base_resp.DefaultResp;
 import com.shawn.ss.gen.api.interfaces.doc.EntryPoint;
 import com.shawn.ss.gen.clz_analyze_handlers.TypeAnalyzer;
 import com.shawn.ss.gen.code_build_handlers.common_respository.CommonRespositoryHandler;
-import com.shawn.ss.gen.code_build_handlers.mul_dao_conf.SqlMultiDaoHandler;
+//import com.shawn.ss.gen.code_build_handlers.mul_dao_conf.SqlMultiDaoHandler;
 import com.shawn.ss.gen.code_build_handlers.sql_dao.SqlDaoHandler;
 import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.StringHelper;
@@ -34,7 +34,7 @@ public class GenProcessor extends AbstractProcessor {
     final static Map<String, ClassHandler> handlers = CollectionHelper.<String, ClassHandler>mapBuilder()
             .put(DefaultResp.class.getName(), new CommonRespositoryHandler(DefaultResp.class))
             .put(SqlResp.class.getName(), new SqlDaoHandler(SqlResp.class))
-            .put(SqlMultipleResp.class.getName(), new SqlMultiDaoHandler(SqlMultipleResp.class))
+//            .put(SqlMultipleResp.class.getName(), new SqlMultiDaoHandler(SqlMultipleResp.class))
             .put(EntryPoint.class.getName(), new TypeAnalyzer(EntryPoint.class))
 //            .put(RestController.class.getName(), new CommonControllerHandler(RestController.class))
 //            .put(ClzElAnalyzeTest.class.getName(),new TypeAnalyzer(ClzElAnalyzeTest.class))

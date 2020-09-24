@@ -2,11 +2,11 @@ package com.shawn.ss.gen.code_build_handlers.sql_dao;
 
 import com.shawn.ss.gen.code_build_handlers.AbstractCodeGenerator;
 import com.shawn.ss.lib.code_gen.base.helper.DBConnectionHelper;
-import com.shawn.ss.lib.code_gen.base.helper.CommonModelFactory;
+import com.shawn.ss.lib.code_gen.base.helper.conf_factory.CommonModelConfFactory;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
 import com.shawn.ss.lib.code_gen.base.helper.data_store.DbDataTable;
 import com.shawn.ss.lib.code_gen.base.helper.db_analyzer.DbAnalyzer;
-import com.shawn.ss.lib.code_gen.model.def_model.dao_def.SpecialModelDaoConf;
+//import com.shawn.ss.lib.code_gen.model.def_model.dao_def.SpecialModelDaoConf;
 
 import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.TypeConstantHelper;
@@ -48,7 +48,7 @@ public class SqlDaoGen extends AbstractCodeGenerator {
             }
             final String dataSourceName = ct.getDataSourceId();
             final DBConnectionHelper dbInfoHolder = DbDataTable.getDataSource(dataSourceName);
-            final DbAnalyzer analyzer = CommonModelFactory.getAnalyzer();
+            final DbAnalyzer analyzer = CommonModelConfFactory.getAnalyzer();
 
             String baseModelTable = ct.getBaseModel();
 //        String baseModel = null;
@@ -80,22 +80,22 @@ public class SqlDaoGen extends AbstractCodeGenerator {
 //            POJOModelBuilder builder=new POJOModelBuilder(commonPOJOConf);
 //            builder.buildModel();
 //        }
-            SpecialModelDaoConf ret=new SpecialModelDaoConf(def.getDefName(),def.getInfo())
-                    .setClzName(ct.getClassName())
-                    .setMethodName(ct.getMethodName())
-//                    .setDefualtParam(ct.getDefualtParam())
-                    .setSql(ct.getSql())
-                    .setComment(ct.getComment())
-                    .setDataSourceName(ct.getDataSourceId())
-                    .setInterfaceClzName(ct.getInterfaceClassName())
-                    .setParams(ct.getParams())
-                    .setIgnoreField(ignoreField)
-                    .setBuildMapper(true);
-
-            context.buildSpecialModalAndDao(
-                    ret
-//                    .setDataSourceName(context.get)
-            );
+//            SpecialModelDaoConf ret=new SpecialModelDaoConf(def.getDefName(),def.getInfo())
+//                    .setClzName(ct.getClassName())
+//                    .setMethodName(ct.getMethodName())
+////                    .setDefualtParam(ct.getDefualtParam())
+//                    .setSql(ct.getSql())
+//                    .setComment(ct.getComment())
+//                    .setDataSourceName(ct.getDataSourceId())
+//                    .setInterfaceClzName(ct.getInterfaceClassName())
+//                    .setParams(ct.getParams())
+//                    .setIgnoreField(ignoreField)
+//                    .setBuildMapper(true);
+//
+//            context.buildSpecialModalAndDao(
+//                    ret
+////                    .setDataSourceName(context.get)
+//            );
 
         }
     }

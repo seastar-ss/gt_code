@@ -1,6 +1,5 @@
 package com.shawn.ss.lib.code_gen.model.def_model.dao_def;
 
-import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseDaoConf;
 import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseRelationDef;
 import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.FieldInfoInterface;
@@ -12,14 +11,15 @@ public class MulDaoRelationDef implements _BaseRelationDef {
     final Map<String, String> additionalCondition;
     FieldInfoInterface relatedField;
     String additionalWhere;
-//    _BaseDaoConf relatedDaoConf;
     String fieldName;
     boolean isSingle;
     String fieldInThisTable;
-    String fieldInMainTable;
+    String fieldInRelatedTable;
+    Integer batchSize;
+    boolean isMain;
 
     public MulDaoRelationDef() {
-        additionalCondition= CollectionHelper.newMap();
+        additionalCondition = CollectionHelper.newMap();
     }
 
     public String getAdditionalCondition(Object key) {
@@ -38,6 +38,16 @@ public class MulDaoRelationDef implements _BaseRelationDef {
     @Override
     public FieldInfoInterface getRelatedField() {
         return relatedField;
+    }
+
+    @Override
+    public Integer getBatchSize() {
+        return batchSize;
+    }
+
+    public MulDaoRelationDef setBatchSize(Integer batchSize) {
+        this.batchSize = batchSize;
+        return this;
     }
 
     public MulDaoRelationDef setRelatedField(FieldInfoInterface relatedField) {
@@ -86,12 +96,22 @@ public class MulDaoRelationDef implements _BaseRelationDef {
     }
 
     @Override
-    public String getFieldInMainTable() {
-        return fieldInMainTable;
+    public String getFieldInRelatedTable() {
+        return fieldInRelatedTable;
     }
 
-    public MulDaoRelationDef setFieldInMainTable(String fieldInMainTable) {
-        this.fieldInMainTable = fieldInMainTable;
+    public MulDaoRelationDef setFieldInRelatedTable(String fieldInRelatedTable) {
+        this.fieldInRelatedTable = fieldInRelatedTable;
+        return this;
+    }
+
+    @Override
+    public boolean isMain() {
+        return isMain;
+    }
+
+    public MulDaoRelationDef setMain(boolean main) {
+        isMain = main;
         return this;
     }
 }

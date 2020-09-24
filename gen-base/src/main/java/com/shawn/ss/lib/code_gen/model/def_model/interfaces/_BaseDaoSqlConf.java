@@ -4,12 +4,15 @@ import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.FieldInfoInterf
 
 import java.util.List;
 
-public interface _BaseDaoSqlConf extends _BaseDaoConf{
+public interface _BaseDaoSqlConf extends _BaseDaoConf {
     public static enum DataAttrType {
         SINGLE, OBJ, LIST, LIST_OBJ
     }
 
     String getSql();
+
     List<FieldInfoInterface> getParams();
+
     DataAttrType getSqlType();
+
 }

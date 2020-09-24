@@ -10,12 +10,22 @@ import java.util.Map;
 public interface _BaseRelationDef extends _BaseDef {
 
     String getFieldInThisTable();
-    String getFieldInMainTable();
-    boolean isSingle();
-    String getFieldName();
-    String getAdditionalWhere();
-    Map<String,String> getAdditionalCondition();
-    FieldInfoInterface getRelatedField();
-//    _BaseDaoConf getRelatedDaoConf();
 
+    String getFieldInRelatedTable();
+
+    boolean isSingle();
+
+    String getFieldName();
+
+    String getAdditionalWhere();
+
+    Map<String, String> getAdditionalCondition();
+
+    FieldInfoInterface getRelatedField();
+
+    Integer getBatchSize();
+
+//    String getFieldInMainTable();
+
+    boolean isMain();
 }

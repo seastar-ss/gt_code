@@ -12,6 +12,8 @@ import com.shawn.ss.lib.code_gen.base.dao.common_dao.common_model_builder.PoMode
 import com.shawn.ss.lib.code_gen.base.dao.multi_dao.composed_model_builder.ComposedPoModelBuilder;
 import com.shawn.ss.lib.code_gen.base.dao.multi_dao.multi_assemble_builder.ComposedAssemblerBuilder;
 import com.shawn.ss.lib.code_gen.base.dao.multi_dao.multi_dao_builder.MultiDaoBuilder;
+import com.shawn.ss.lib.code_gen.base.helper.conf_factory.CommonModelConfFactory;
+import com.shawn.ss.lib.code_gen.base.helper.conf_factory.MultiModelConfFactory;
 import com.shawn.ss.lib.code_gen.base.helper.data_store.ClassDataTable;
 import com.shawn.ss.lib.code_gen.base.helper.data_store.DbDataTable;
 
@@ -21,9 +23,7 @@ import com.shawn.ss.lib.code_gen.model.def_model.dao_def.CommonModelDaoDef;
 
 import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseDaoConf;
 import com.shawn.ss.lib.code_gen.model.gen_param_model.db_def.DbModelConf;
-import com.shawn.ss.lib.tools.CodeStyleTransformHelper;
 import com.shawn.ss.lib.tools.CollectionHelper;
-import com.shawn.ss.lib.tools.StringHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +41,7 @@ public class ModelBuilderContext {
     volatile String basePackage;
     JCodeModel cm;
     private String filePath;
-    private Map<Long, CommonModelFactory> relatedDbs;
+    private Map<Long, CommonModelConfFactory> relatedDbs;
 
     private ModelBuilderContext() {
         relatedDbs = CollectionHelper.newMap(32);
@@ -66,7 +66,7 @@ public class ModelBuilderContext {
     }
 
     public long addDb(DBConnectionHelper conn, DbModelConf conf) {
-        final CommonModelFactory infoHolder = new CommonModelFactory(conn, conf, this);
+        final CommonModelConfFactory infoHolder = new CommonModelConfFactory(conn, conf, this);
         final long uuid = DbDataTable.putDbInfo(infoHolder);
         relatedDbs.put(uuid, infoHolder);
         return uuid;
@@ -98,9 +98,9 @@ public class ModelBuilderContext {
 
     public void executeBaseModelAndDaoBuild() {
 
-        final Collection<CommonModelFactory> commonModelFactories = relatedDbs.values();
-        for (CommonModelFactory commonModelFactory : commonModelFactories) {
-            executeBaseModelAndDaoBuild(commonModelFactory);
+        final Collection<CommonModelConfFactory> commonModelFactories = relatedDbs.values();
+        for (CommonModelConfFactory commonModelConfFactory : commonModelFactories) {
+            executeBaseModelAndDaoBuild(commonModelConfFactory);
         }
     }
 
@@ -108,12 +108,12 @@ public class ModelBuilderContext {
         if (!relatedDbs.containsKey(uuid)) {
             throw new IllegalStateException("错误的uuid，此context不包含此uuid：" + uuid + " context:" + relatedDbs.toString());
         }
-        final CommonModelFactory commonModelFactory = DbDataTable.getHolder(uuid);
-        executeBaseModelAndDaoBuild(commonModelFactory);
+        final CommonModelConfFactory commonModelConfFactory = DbDataTable.getHolder(uuid);
+        executeBaseModelAndDaoBuild(commonModelConfFactory);
     }
 
 
-    public void executeBaseModelAndDaoBuild(CommonModelFactory db) {
+    public void executeBaseModelAndDaoBuild(CommonModelConfFactory db) {
         List<CommonModelDaoDef> defs = db.buildDefs();
         for (CommonModelDaoDef def : defs) {
 
@@ -127,7 +127,25 @@ public class ModelBuilderContext {
         }
     }
 
-    private void buildBaseModel(_BaseDaoConf def) {
+    public void executeMultiModelAndDaoBuild(MultiModelConfFactory factory){
+
+    }
+
+    public void executeWriteModel() {
+        try {
+            File file = new File(filePath);
+            if (file.exists() || file.mkdirs()) {
+                L.info("code will in folder:{}", file.getAbsolutePath());
+                cm.build(file);
+            } else {
+                L.info("can't buildBaseModelAndDao folder:{}", file.getAbsolutePath());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void buildBaseModel(_BaseDaoConf def) {
         try {
 
             PoModelBuilder builder = new PoModelBuilder(def);
@@ -146,7 +164,6 @@ public class ModelBuilderContext {
     }
 
     public void buildMultiSelectDao(_BaseDaoConf conf) {
-        //        serviceName = getServiceClassName(serviceName);
         if (conf == null) {
             return;
         }
@@ -165,18 +182,8 @@ public class ModelBuilderContext {
 
     }
 
-    public void executeWriteModel() {
-        try {
-            File file = new File(filePath);
-            if (file.exists() || file.mkdirs()) {
-                L.info("code will in folder:{}", file.getAbsolutePath());
-                cm.build(file);
-            } else {
-                L.info("can't buildBaseModelAndDao folder:{}", file.getAbsolutePath());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void buildSpecialSelectDao(_BaseDaoConf conf) {
+
     }
 
     public static void registerMethod(JMethod method) {

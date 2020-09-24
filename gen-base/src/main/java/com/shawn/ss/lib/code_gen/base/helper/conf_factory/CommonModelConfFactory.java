@@ -1,5 +1,8 @@
-package com.shawn.ss.lib.code_gen.base.helper;
+package com.shawn.ss.lib.code_gen.base.helper.conf_factory;
 
+import com.shawn.ss.lib.code_gen.base.helper.CodeConstants;
+import com.shawn.ss.lib.code_gen.base.helper.DBConnectionHelper;
+import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
 import com.shawn.ss.lib.code_gen.base.helper.db_analyzer.DbAnalyzer;
 import com.shawn.ss.lib.code_gen.base.helper.data_store.DbDataTable;
 import com.shawn.ss.lib.code_gen.model.def_model.dao_def.CommonModelDaoDef;
@@ -12,7 +15,7 @@ import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.model.DbInfo;
 
 import java.util.*;
 
-public class CommonModelFactory {
+public class CommonModelConfFactory {
 
     static final DbAnalyzer analyzer;
 
@@ -41,12 +44,12 @@ public class CommonModelFactory {
         uuid = UUID.randomUUID().getMostSignificantBits();
     }
 
-    public CommonModelFactory(DBConnectionHelper connection, boolean isSlave, ModelBuilderContext context) {
+    public CommonModelConfFactory(DBConnectionHelper connection, boolean isSlave, ModelBuilderContext context) {
         this(connection, new DbModelConf().setSlave(isSlave), context);
         //        this.dataSourceId=connection.getDataSourceId();
     }
 
-    public CommonModelFactory(DBConnectionHelper connection, DbModelConf conf, ModelBuilderContext context) {
+    public CommonModelConfFactory(DBConnectionHelper connection, DbModelConf conf, ModelBuilderContext context) {
         this.context = context;
         tbMaps = CollectionHelper.newMap();
         this.connection = connection;
@@ -82,14 +85,14 @@ public class CommonModelFactory {
     //    }
 
 
-    public CommonModelFactory setConf(DbModelConf conf) {
+    public CommonModelConfFactory setConf(DbModelConf conf) {
         this.conf = conf;
         if (conf.getDb() != null)
             setDb(conf.getDb(), conf.getIgnoreTbPattern(), conf.getIncludingPattern());
         return this;
     }
 
-    protected CommonModelFactory setDb(String db, Set<String> including, Set<String> excluding) {
+    protected CommonModelConfFactory setDb(String db, Set<String> including, Set<String> excluding) {
         if (inited()) {
             throw new IllegalStateException("已经初始化此实例：" + db);
         }

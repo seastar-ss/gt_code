@@ -1,10 +1,12 @@
 package com.shawn.ss.lib.code_gen.model.def_model.interfaces;
 
 import com.helger.jcodemodel.JDefinedClass;
+import com.shawn.ss.gen.api.conf.SelectMethod;
 import com.shawn.ss.gen.api.conf.SelectMethodEnum;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.FieldInfoInterface;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.TableInfoInterface;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -13,15 +15,14 @@ import java.util.List;
 public interface _BaseDaoConf extends _BaseModelConf, _BaseDaoClassNameConf, _BaseDataSourceConf {
 
     public enum EnumFieldDataSrcType {
-        commonDao, specialDao, mulDao
+        commonDao, specialDao, mulDao, customerDao
     }
 
     public static enum DataAttrType {
         SINGLE, OBJ, LIST, LIST_OBJ
     }
 
-
-    List<SelectMethodEnum> getMainModelSelectMethod();
+    Collection<SelectMethod> getMainModelSelectMethod();
 
     String getTable();
 
@@ -36,11 +37,11 @@ public interface _BaseDaoConf extends _BaseModelConf, _BaseDaoClassNameConf, _Ba
 
     List<_BaseDaoConf> getRelation();
 
-    _BaseRelationDef getRelatedDef();
+    _BaseRelationDef getRelatedDef(String configName);
 
     EnumFieldDataSrcType getDaoType();
 
-    String getSql();
+    //    String getSql();
 
     List<FieldInfoInterface> getParams();
 

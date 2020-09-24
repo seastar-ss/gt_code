@@ -2,7 +2,7 @@ package com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.model;
 
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.FieldInfoInterface;
 
-public class FieldInfo implements FieldInfoInterface {
+public class FieldInfo<T extends FieldInfo> implements FieldInfoInterface {
     String fieldName;
     FieldDataTypeInterface type;
     String comment;
@@ -15,27 +15,27 @@ public class FieldInfo implements FieldInfoInterface {
         return fieldName;
     }
 
-    public FieldInfo setFieldName(String fieldName) {
+    public T setFieldName(String fieldName) {
         this.fieldName = fieldName;
-        return this;
+        return (T)this;
     }
 
     public FieldDataTypeInterface getType() {
         return type;
     }
 
-    public FieldInfo setType(FieldDataTypeInterface type) {
+    public T setType(FieldDataTypeInterface type) {
         this.type = type;
-        return this;
+        return (T)this;
     }
 
     public String getComment() {
         return comment;
     }
 
-    public FieldInfo setComment(String comment) {
+    public T setComment(String comment) {
         this.comment = comment;
-        return this;
+        return (T)this;
     }
 
     public Object getDefaultValue() {
@@ -52,31 +52,31 @@ public class FieldInfo implements FieldInfoInterface {
         return isStatic;
     }
 
-    public FieldInfo setDefaultValue(Object defaultValue) {
+    public T setDefaultValue(Object defaultValue) {
         this.defaultValue = defaultValue;
-        return this;
+        return (T)this;
     }
 
     public EnumTypeDef getEnumTypeDef() {
         return enumTypeDef;
     }
 
-    public FieldInfo setEnumTypeDef(EnumTypeDef enumTypeDef) {
+    public T setEnumTypeDef(EnumTypeDef enumTypeDef) {
         this.enumTypeDef = enumTypeDef;
-        return this;
+        return (T)this;
     }
 
-    public FieldInfo setStatic(boolean aStatic) {
+    public T setStatic(boolean aStatic) {
         isStatic = aStatic;
-        return this;
+        return (T)this;
     }
 
 //    public String getAliasFieldName() {
 //        return aliasFieldName;
 //    }
 
-    public FieldInfo setAliasFieldName(String aliasFieldName) {
+    public T setAliasFieldName(String aliasFieldName) {
         this.aliasFieldName = aliasFieldName;
-        return this;
+        return (T)this;
     }
 }

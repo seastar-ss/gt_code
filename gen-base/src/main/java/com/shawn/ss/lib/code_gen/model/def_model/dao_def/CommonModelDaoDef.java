@@ -15,11 +15,12 @@ import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.model.FieldData
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.model.FieldInfo;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by ss on 2018/3/3.
  */
-public class CommonModelDaoDef<T extends CommonModelDaoDef> extends _BaseDaoConfImpl<T> implements _BaseDaoConf {
+public class CommonModelDaoDef<T extends CommonModelDaoDef> extends _BaseDaoConfImpl<T> implements _BaseDaoConf, _BaseDaoSqlConf {
 
     protected final transient TableInfoInterface def;
 
@@ -37,7 +38,7 @@ public class CommonModelDaoDef<T extends CommonModelDaoDef> extends _BaseDaoConf
 
     protected final List<_BaseDaoConf> relationDao;
 
-    protected _BaseRelationDef relationDef;
+    protected final Map<String, _BaseRelationDef> relationDef;
 
     protected String sql;
 
@@ -45,7 +46,7 @@ public class CommonModelDaoDef<T extends CommonModelDaoDef> extends _BaseDaoConf
     protected String dataSourceName;
     protected List<String> dataSourceNames;
 
-    protected JDefinedClass declaredDao, declaredAssembler, declaredMapper, declaredDsConfig;
+    protected volatile JDefinedClass declaredDao, declaredAssembler, declaredMapper, declaredDsConfig;
 
     public CommonModelDaoDef(TableInfoInterface def, ModelBuilderContext builderContext) {
         super(def, builderContext);
@@ -55,6 +56,7 @@ public class CommonModelDaoDef<T extends CommonModelDaoDef> extends _BaseDaoConf
         initDef();
         //        enumClzz= CollectionHelper.newMap();
         this.dataSourceName = CodeConstants.KEY_WORD_DEFAULT_DATA_SOURCE_ID;
+        relationDef = CollectionHelper.newMap();
     }
 
     public CommonModelDaoDef(String name, TableInfoInterface def, ModelBuilderContext builderContext) {
@@ -65,6 +67,7 @@ public class CommonModelDaoDef<T extends CommonModelDaoDef> extends _BaseDaoConf
         initDef();
         //        enumClzz= CollectionHelper.newMap();
         this.dataSourceName = CodeConstants.KEY_WORD_DEFAULT_DATA_SOURCE_ID;
+        relationDef = CollectionHelper.newMap();
     }
 
     public void initDef() {
@@ -74,13 +77,12 @@ public class CommonModelDaoDef<T extends CommonModelDaoDef> extends _BaseDaoConf
         for (ColumnInfoInterface col : columns) {
             String fname = CodeConstants.getFieldNameFromTbColumn(col.getFieldName());
             FieldDataTypeInterface type = col.getType();
-            addField(
-                    col
-            );
+            addField(col);
         }
-
-        setPojoClzName(CodeConstants.getReallyModelClassName(builderContext.getBasePackage(), def.getTable(), baseTable));
+        if (this.getPojoClzName() == null)
+            setPojoClzName(CodeConstants.getModelClassName(builderContext.getBasePackage(), def.getTable(), baseTable));
         dataAttrType = _BaseDaoSqlConf.DataAttrType.LIST_OBJ;
+        setComment(tbInfo.getTableComment());
         //        setPojoClzName(builderContext.getModelVoClassName(def.getTable()));
     }
 
@@ -90,7 +92,7 @@ public class CommonModelDaoDef<T extends CommonModelDaoDef> extends _BaseDaoConf
 
     public T setBaseTable(String baseTable) {
         this.baseTable = baseTable;
-        setPojoClzName(CodeConstants.getReallyModelClassName(builderContext.getBasePackage(), def.getTable(), baseTable));
+        setPojoClzName(CodeConstants.getModelClassName(builderContext.getBasePackage(), def.getTable(), baseTable));
         return (T) this;
     }
 
@@ -118,14 +120,30 @@ public class CommonModelDaoDef<T extends CommonModelDaoDef> extends _BaseDaoConf
     }
 
     @Override
-    public _BaseRelationDef getRelatedDef() {
-        return relationDef;
+    public _BaseRelationDef getRelatedDef(String configName) {
+        return relationDef.get(configName);
     }
 
-    public CommonModelDaoDef setRelationDef(_BaseRelationDef relationDef) {
-        this.relationDef = relationDef;
-        return this;
+    public int sizeOfDef() {
+        return relationDef.size();
     }
+
+    public boolean containsDefKey(Object key) {
+        return relationDef.containsKey(key);
+    }
+
+    public _BaseRelationDef putDef(String key, _BaseRelationDef value) {
+        return relationDef.put(key, value);
+    }
+
+    public void putAllDef(Map<? extends String, ? extends _BaseRelationDef> m) {
+        relationDef.putAll(m);
+    }
+
+    //    public CommonModelDaoDef setRelationDef(_BaseRelationDef relationDef) {
+    //        this.relationDef = relationDef;
+    //        return this;
+    //    }
 
     @Override
     public EnumFieldDataSrcType getDaoType() {

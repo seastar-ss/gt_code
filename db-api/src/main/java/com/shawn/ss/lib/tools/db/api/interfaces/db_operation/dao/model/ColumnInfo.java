@@ -7,7 +7,7 @@ import java.util.Properties;
 /**
  * Created by ss on 2017/10/11.
  */
-public class ColumnInfo extends FieldInfo implements ColumnInfoInterface {
+public class ColumnInfo extends FieldInfo<ColumnInfo> implements ColumnInfoInterface {
     String extra;
     boolean nullable, prime, unique, referer, indexed, autoIncreament;
     String charSet;
