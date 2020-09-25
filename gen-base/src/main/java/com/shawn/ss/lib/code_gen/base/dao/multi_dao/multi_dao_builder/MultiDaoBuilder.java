@@ -1,6 +1,7 @@
 package com.shawn.ss.lib.code_gen.base.dao.multi_dao.multi_dao_builder;
 
 import com.helger.jcodemodel.*;
+import com.shawn.ss.gen.api.conf.SelectMethod;
 import com.shawn.ss.gen.api.conf.SelectMethodEnum;
 import com.shawn.ss.lib.code_gen.CodeBuilderInterface;
 import com.shawn.ss.lib.code_gen.base.dao.AbstractDaoBuilder;
@@ -60,7 +61,7 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
     private AbstractJClass multiAsemmblerClz;
 
     private class BuildMethodParamHodler {
-        SelectMethodEnum modelSelectMethod;
+        SelectMethod modelSelectMethod;
         List<JVar> allVar;
         Map<String, JVar> mapVars;
         JVar otherTableAssembler, selectFields;
@@ -110,7 +111,7 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
     //    final boolean multiFieldFromSameTable;
     final String mainDb;
     //    private ComposedAssemblerBuilder assemblerBuilder;
-    private final List<SelectMethodEnum> mainModelSelectMethods;
+    private final Collection<SelectMethod> mainModelSelectMethods;
 
 
     //    MultiDaoSelectServiceBuilder(
@@ -189,6 +190,9 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
 
     @Override
     public void buildModel() {
+        if (modelMulDaoConf.getDeclaredDao() != null) {
+            return;
+        }
         L.info("build multidao : {} conf:{}", this.serviceClassName, modelMulDaoConf);
         int size = relatedTables.size();
         if (size == 0) {
@@ -231,7 +235,7 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
         //        }
         JMethod assembleMainList = buildAssembleMainToRet(true, holder);
         JMethod assembleMain = buildAssembleMainToRet(false, holder);
-        for (SelectMethodEnum modelSelectMethod : mainModelSelectMethods) {
+        for (SelectMethod modelSelectMethod : mainModelSelectMethods) {
             if (!modelSelectMethod.isCount() && !modelSelectMethod.isSingleResult()) {
                 holder.modelSelectMethod = modelSelectMethod;
                 holder.listResult = modelSelectMethod.isMultipleResult();
@@ -269,6 +273,7 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
         buildListify();
         buildMapify(false);
         buildMapify(true);
+        modelMulDaoConf.setDeclaredDao(definedClass);
     }
 
     private JMethod buildInsertOrUpdate(BuildMethodParamHodler holder) {

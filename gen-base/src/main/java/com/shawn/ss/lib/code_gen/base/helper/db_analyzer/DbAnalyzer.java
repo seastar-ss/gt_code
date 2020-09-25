@@ -29,10 +29,10 @@ public class DbAnalyzer {
     public final static org.slf4j.Logger L = LoggerFactory.getLogger(DbAnalyzer.class);
 
     public static void main(String[] args) {
-//        DBConnection c = new DBConnection("data_store.properties");
-////        Map<String, TableDef> defss=CollectionBuilder.newHashMap();
-//        DbAnalyzer anl = new DbAnalyzer();
-//        anl.buildModel(c.conn,  new DbInfo("hackathon"));
+        //        DBConnection c = new DBConnection("data_store.properties");
+        ////        Map<String, TableDef> defss=CollectionBuilder.newHashMap();
+        //        DbAnalyzer anl = new DbAnalyzer();
+        //        anl.buildModel(c.conn,  new DbInfo("hackathon"));
     }
 
     CommentAnalyzer commentAnalyzer;
@@ -42,8 +42,8 @@ public class DbAnalyzer {
     }
 
     //    static class ColumnUsage{
-//        String TABLE_SCHEMA,TABLE_NAME,COLUMN_NAME,REFERENCED_TABLE_NAME,REFERENCED_COLUMN_NAME,CONSTRAINT_NAME;
-//    }
+    //        String TABLE_SCHEMA,TABLE_NAME,COLUMN_NAME,REFERENCED_TABLE_NAME,REFERENCED_COLUMN_NAME,CONSTRAINT_NAME;
+    //    }
 
     public void buildModel(final BuildSQLModelParamHolder def) {
         DBConnectionHelper helper = def.getHelper();
@@ -63,23 +63,23 @@ public class DbAnalyzer {
         }
         Boolean succ = false;
         final TableInfoInterface tableInfo = tbInfo;
-//        SpecialModelDef.DataAttrType type = modelDef.getDataType();
-//        switch (type) {
-//            case SQL:
+        //        SpecialModelDef.DataAttrType type = modelDef.getDataType();
+        //        switch (type) {
+        //            case SQL:
         if (sql != null) {
             succ = template.query(sql, defualtParam, new DBInfoResultSetExtractor(tableInfo, defName));
         }
-//                break;
-//            case COUNT_WITH_SAME_CONDITION:
-//                break;
-//            case FIXED_VALUE:
-//                break;
-//        }
+        //                break;
+        //            case COUNT_WITH_SAME_CONDITION:
+        //                break;
+        //            case FIXED_VALUE:
+        //                break;
+        //        }
         if (!succ) {
             throw new IllegalArgumentException("sql :" + sql + " query for:" + defualtParam.toString() + " can't be executed");
         } else {
-//            String baseModelTable = modelDef.getBaseModelTable();
-//            def.setDef(tableInfo);
+            //            String baseModelTable = modelDef.getBaseModelTable();
+            //            def.setDef(tableInfo);
         }
     }
 
@@ -90,7 +90,7 @@ public class DbAnalyzer {
             def.setDefualtParam(defualtParam);
         }
         List<FieldInfoInterface> params = def.getParams();
-//        L.warn("get params :"+params);
+        //        L.warn("get params :"+params);
         for (FieldInfoInterface item : params) {
             FieldDataTypeInterface type = item.getType();
             String clzName = type.getTClassName();
@@ -99,7 +99,7 @@ public class DbAnalyzer {
                 if (TypeConstantHelper.BASIC_DATA_CLASS_NAMES.contains(clzName)) {
                     Object o = TypeConstantHelper.testAndUppackPrimitiveType(null, clzName);
                     if (!type.isArray() && !type.isCollection()) {
-//                        Object o = TypeConstantHelper.testAndUppackPrimitiveType(null, clzName);
+                        //                        Object o = TypeConstantHelper.testAndUppackPrimitiveType(null, clzName);
                         defualtParam.put(paramName, o);
                     } else {
                         defualtParam.put(paramName, Collections.singleton(o));
@@ -113,7 +113,7 @@ public class DbAnalyzer {
         return defualtParam;
     }
 
-    public static class BuildSQLModelParamHolder{
+    public static class BuildSQLModelParamHolder {
         DBConnectionHelper helper;
         String sql;
         Map<String, Object> defualtParam;
@@ -253,31 +253,31 @@ public class DbAnalyzer {
 
     public void buildModel(BuildModelParamHolder input) {
 
-//        }
-//        String data_store=dbInfo.getDbName();
-//        Map<String, List<TableRowExt>> tbCols = CollectionBuilder.newHashMap();
-//        List<ColumnInfo> allCols = CollectionHelper.newList();
-//        Map<String, TableInfo> tables = CollectionHelper.newMap();
-//        try {
+        //        }
+        //        String data_store=dbInfo.getDbName();
+        //        Map<String, List<TableRowExt>> tbCols = CollectionBuilder.newHashMap();
+        //        List<ColumnInfo> allCols = CollectionHelper.newList();
+        //        Map<String, TableInfo> tables = CollectionHelper.newMap();
+        //        try {
         anaylyzeTables(input);
         anaylyzeColumns(input);
         input.dbInfo.addAll(input.tables.values());
-//        } catch (SQLException ex) {
-//            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
-//        } finally {
-//            if (rs != null) {
-//                try {
-//                    rs.close();
-//                } catch (SQLException ex) {
-//                    Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
-//                }
-//            }
-//        }
+        //        } catch (SQLException ex) {
+        //            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
+        //        } finally {
+        //            if (rs != null) {
+        //                try {
+        //                    rs.close();
+        //                } catch (SQLException ex) {
+        //                    Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
+        //                }
+        //            }
+        //        }
         L.warn("get table size:" + input.dbInfo.getTables().size());
     }
 
     private void anaylyzeTables(BuildModelParamHolder input) {
-//        Map<String, TableInfo> tables, String dbName, Connection conn, Collection<String> allIgnorePattern, Collection<String> includingTable
+        //        Map<String, TableInfo> tables, String dbName, Connection conn, Collection<String> allIgnorePattern, Collection<String> includingTable
         ResultSet rs = null;
         try {
             Statement st = input.conn.createStatement();
@@ -288,10 +288,11 @@ public class DbAnalyzer {
                 String tableName = rs.getString("TABLE_NAME");
                 if (!CodeConstants.testIgnore(tableName, input.ignoreTbPattern, input.includingTable)) {
                     tb.setTableName(tableName);
+                    tb.setDbName(input.dbName);
                     tb.setCharset(rs.getString("TABLE_COLLATION"));
                     tb.setTableComment(rs.getString("TABLE_COMMENT"));
                     String tableType = rs.getString("TABLE_TYPE");
-                    tb.setTableType(tableType.equals("BASE TABLE") ? 0 : 1);
+                    tb.setTableType(tableType.equals("BASE TABLE") ? CodeConstants.TYPE_TABLE_COMMON_TYPE : CodeConstants.TYPE_TABLE_SQL_TYPE);
                     input.tables.put(tableName, tb);
                 }
 
@@ -315,7 +316,7 @@ public class DbAnalyzer {
         ResultSet rs = null;
         try {
             Statement st = input.conn.createStatement();
-//            String data_store = dbInfo.getDbName();
+            //            String data_store = dbInfo.getDbName();
             rs = st.executeQuery(StringHelper.concat("select * from information_schema.COLUMNS where TABLE_SCHEMA='", input.dbName, "'"));
             while (rs.next()) {
                 String tb = rs.getString("TABLE_NAME");
@@ -335,10 +336,10 @@ public class DbAnalyzer {
                         if (!StringHelper.isEmpty(key)) {
                             row.setPrime(key.equals("PRI"));
                             row.setUnique(key.equals("UNI"));
-//                    row.set = key.equals("MUL");
+                            //                    row.set = key.equals("MUL");
                         }
                         row.setDefaultValue(rs.getString("COLUMN_DEFAULT"));
-//                        row.setComment(rs.getString("COLUMN_COMMENT").trim());
+                        //                        row.setComment(rs.getString("COLUMN_COMMENT").trim());
                         String comment = rs.getString("COLUMN_COMMENT");
                         if (!StringHelper.isEmpty(comment)) {
                             commentAnalyzer.analyzeComment(comment.trim(), new CommentInfoHandlerImpl(row));
@@ -347,7 +348,7 @@ public class DbAnalyzer {
 
                         input.allCols.add(row);
                     }
-//                    rs.getBlob(1).getBytes(0,)
+                    //                    rs.getBlob(1).getBytes(0,)
                 }
             }
 
@@ -383,10 +384,10 @@ public class DbAnalyzer {
 
     private void anaylyzeColumnForEnum(ColumnInfo row) {
         String comment = row.getComment();
-//        if (comment.trim().startsWith(ENUM_PREFIX)) {
+        //        if (comment.trim().startsWith(ENUM_PREFIX)) {
         StringBuilder fieldComment = new StringBuilder(), itemComment = new StringBuilder();
         Scanner scanner = new Scanner(comment).useDelimiter("\r?\n");
-//            scanner.skip(ENUM_PREFIX);
+        //            scanner.skip(ENUM_PREFIX);
         String header = scanner.next();
         Matcher headerMatcher = CommentAnalyzer.EnumHandler.PATTERN_ENUM_HEADER.matcher(header);
         if (headerMatcher.matches()) {
@@ -402,7 +403,7 @@ public class DbAnalyzer {
                     String name = matcher.group(1);
                     String showName = matcher.group(2);
                     String index = matcher.group(3);
-//                    int i = etf.sizeOfItems();
+                    //                    int i = etf.sizeOfItems();
                     if (fieldCommentIndex > 0) {
                         EnumTypeDef.EnumDef item = etf.getItem(fieldCommentIndex - 1);
                         int length = itemComment.length();
@@ -435,7 +436,7 @@ public class DbAnalyzer {
             etf.setCol(row);
             row.setEnumTypeDef(etf);
         }
-//        }
+        //        }
 
     }
 
@@ -476,13 +477,13 @@ public class DbAnalyzer {
             if (handler instanceof CommentAnalyzer.DefaultHandler && obj != null && obj instanceof CharSequence) {
                 String data = obj.toString();
                 String originComment = row.getComment();
-                if(originComment!=null) {
+                if (originComment != null) {
                     row.setComment(originComment.concat(data));
-                }else {
+                } else {
                     row.setComment(data);
                 }
-            }else if(handler instanceof CommentAnalyzer.EnumHandler && obj!=null && obj instanceof CommentAnalyzer.EnumTypeDefInternal){
-                CommentAnalyzer.EnumTypeDefInternal dt= (CommentAnalyzer.EnumTypeDefInternal) obj;
+            } else if (handler instanceof CommentAnalyzer.EnumHandler && obj != null && obj instanceof CommentAnalyzer.EnumTypeDefInternal) {
+                CommentAnalyzer.EnumTypeDefInternal dt = (CommentAnalyzer.EnumTypeDefInternal) obj;
                 dt.setCol(row);
                 row.setEnumTypeDef(dt);
             }

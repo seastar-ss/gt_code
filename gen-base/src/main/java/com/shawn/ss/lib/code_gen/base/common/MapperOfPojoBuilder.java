@@ -48,6 +48,9 @@ public class MapperOfPojoBuilder implements CodeBuilderInterface {
 
     @Override
     public void buildModel() {
+        if (modelDef.getDeclaredCommonMapper() != null) {
+            return;
+        }
         try {
             this.definedClass = cm._class(modelDef.getPojoMapperClzName());//modelClass._class(CodeConstants.MODE_PUBLIC_STATIC, mapperClassName);
             JNarrowedClass interfaceClass = cm.ref(CommonMapMapper.class).narrow(modelClass);

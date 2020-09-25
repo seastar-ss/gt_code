@@ -1,0 +1,100 @@
+package com.shawn.ss.lib.code_gen.function_confirm;
+
+//import com.shawn.ss.lib.code_gen.base.dao.common_dao.common_model_builder.ModelBuilder;
+
+//import com.shawn.ss.lib.code_gen.base.dao.conf.SelectMethodEnum;
+
+import com.shawn.ss.gen.api.conf.SelectMethod;
+import com.shawn.ss.gen.api.conf.SelectMethodEnum;
+import com.shawn.ss.lib.code_gen.base.helper.DBConnectionHelper;
+import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
+import com.shawn.ss.lib.code_gen.base.helper.conf_factory.MultiModelConfFactory;
+import com.shawn.ss.lib.code_gen.model.gen_param_model.db_def.DbModelConf;
+import com.shawn.ss.lib.tools.CollectionHelper;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
+import java.util.Properties;
+import java.util.Set;
+
+public class ModelBuilderTest {
+    static final Logger L = LoggerFactory.getLogger(ModelBuilderTest.class.getSimpleName());
+
+    static Collection<SelectMethod> list = CollectionHelper.<SelectMethod>listBuilder()
+            .add(SelectMethodEnum.getAll)
+            .add(SelectMethodEnum.getByCondition)
+            .add(SelectMethodEnum.getByIndex)
+            .add(SelectMethodEnum.getOneById)
+            .add(SelectMethodEnum.getByIndexAndCondition)
+            .getList();
+
+    @Test
+    public void testGenSqlDbModel() throws IOException {
+        Properties p = new Properties();
+        p.load(new FileReader("db-ny.properties"));
+        final String TEST_POS_DEV = "D:\\docs\\work_doc\\project\\own_project\\gt_code\\compilor-test\\src\\main\\gen_code\\java";
+        ModelBuilderContext modelBuilderContext = ModelBuilderContext.newInstance("com.shawn.gen_lib.test", TEST_POS_DEV);
+        DBConnectionHelper connectionMaster = modelBuilderContext.buildConnection("main_schema",
+                p.getProperty("jdbc.url"), p.getProperty("jdbc.username"), p.getProperty("jdbc.password"),
+                p.getProperty("jdbc.driverClassName")
+        );
+
+        final Set<String> set = CollectionHelper.<String>setBuilder()
+                .add("b_menu")
+                .add("b_user")
+                .add("b_role")
+                .add("b_material")
+                .add("b_organization")
+                .add("b_organization_user")
+                .getSet();
+        modelBuilderContext.addDb(connectionMaster, new DbModelConf().setSlave(false)
+                .setIncludingPattern(
+                        set
+                )
+                .setDb("main_data_schema")
+                .setIgnoreTbPattern(CollectionHelper.<String>setBuilder().add("ent_.*").add(".*\\d+$").getSet()));
+        DBConnectionHelper connection = modelBuilderContext.buildConnection("main_schema_slave",
+                p.getProperty("jdbc.url"), p.getProperty("jdbc.username"), p.getProperty("jdbc.password"),
+                p.getProperty("jdbc.driverClassName")
+        );
+        modelBuilderContext.addDb(connection, new DbModelConf().setSlave(true)
+                .setIncludingPattern(
+                        set
+                )
+                .setDb("main_schema")
+                .setIgnoreTbPattern(CollectionHelper.<String>setBuilder().add("ent_.*").add(".*\\d+$").getSet()));
+        DBConnectionHelper wikiconnection = modelBuilderContext.buildConnection("wiki_master",
+                p.getProperty("ent_activities.jdbc.url"), p.getProperty("ent_activities.jdbc.username"),
+                p.getProperty("ent_activities.jdbc.password"),
+                p.getProperty("jdbc.driverClassName")
+        );
+        modelBuilderContext.addDb(wikiconnection, new DbModelConf().setSlave(false)
+                .setIncludingPattern(
+                        CollectionHelper.<String>setBuilder()
+                                .add("t_device")
+                                .add("t_event")
+                                .add("t_task")
+                                .add("t_mall_area")
+                                .getSet()
+                ).setDb("robot_control_system")
+                .setIgnoreTbPattern(
+                        CollectionHelper.<String>setBuilder().add("ent_.*").add(".*\\d+$").getSet()
+                )
+        );
+        modelBuilderContext.executeInitBaseClazz();
+        modelBuilderContext.executeBaseModelAndDaoBuild();
+        MultiModelConfFactory test = MultiModelConfFactory.newInstance("UserAndOrg", "test", list);
+        test.addMainTable("orgUser", "main_data_schema", "b_organization_user");
+        test.addRelatedTable("user", "main_data_schema.b_user.id=main_data_schema.b_organization_user.user_id", true, 1000);
+        test.addRelatedTable("org", "main_data_schema.b_organization.id=main_data_schema.b_organization_user.org_id", true, 1000);
+
+        modelBuilderContext.executeMultiModelAndDaoBuild();
+
+        modelBuilderContext.executeWriteModel();
+    }
+}

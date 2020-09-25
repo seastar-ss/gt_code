@@ -603,7 +603,7 @@ public class ModelBuilderTest {
                         CollectionHelper.<String>setBuilder().add("ent_.*").add(".*\\d+$").getSet()
                 )
         );
-        modelBuilderContext.initBaseClazz();
+        modelBuilderContext.executeInitBaseClazz();
         modelBuilderContext.executeBaseModelAndDaoBuild();
         //        ModelMulDaoDaoConf wikiConf = new ModelMulDaoDaoConf("wikiConf").setMainTableDef(
         //                new ModelRelatedTableDef().setFieldName("wikiIndex").setName("ent_knownleag_base.wiki_index")

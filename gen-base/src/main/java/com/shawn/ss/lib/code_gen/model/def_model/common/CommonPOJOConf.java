@@ -207,9 +207,9 @@ public class CommonPOJOConf extends AbstractConf implements _BaseModelConf, _Bas
 
     }
 
-    public String getName() {
-        return name;
-    }
+    //    public String getName() {
+    //        return name;
+    //    }
 
     @Override
     public String getPojoMapperClzName() {

@@ -64,6 +64,9 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
 
     @Override
     public void buildModel() {
+        if (modelDef.getDeclaredDao() != null) {
+            return;
+        }
         super.buildModel();
         priKey = info.getPriKey();
         priKeyType = info.getPriKeyType();

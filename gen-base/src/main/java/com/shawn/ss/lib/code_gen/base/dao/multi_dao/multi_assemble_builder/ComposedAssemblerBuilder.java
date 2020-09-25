@@ -46,6 +46,9 @@ public class ComposedAssemblerBuilder implements CodeBuilderInterface {
 
     @Override
     public void buildModel() {
+        if (modelMulDaoConf.getDeclaredAssembler() != null) {
+            return;
+        }
         try {
             definedClass = cm._class(JMod.PUBLIC + JMod.ABSTRACT, assemblerName);
             definedClass._extends(cm.ref(AbstractMultipleDaoAssembler.class));
@@ -56,13 +59,14 @@ public class ComposedAssemblerBuilder implements CodeBuilderInterface {
             CodeConstants.buildGetterAndSetter(definedClass, "rets", wrapperListCls, rets);
             buildClearMethod();
             buildMainMethod();
-
+            modelMulDaoConf.setDeclaredAssembler(definedClass);
         } catch (JClassAlreadyExistsException e) {
             e.printStackTrace();
         }
     }
 
     private void buildMainMethod() {
+
         String mainFieldName = mainField.getFieldName();
 
         JMethod method = definedClass.method(JMod.PUBLIC, cm.INT, CodeConstants.LIB_SQL_ASSEMBLE_SQL);

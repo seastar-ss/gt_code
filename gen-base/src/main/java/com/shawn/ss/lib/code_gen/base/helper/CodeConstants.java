@@ -659,7 +659,7 @@ public class CodeConstants {
         if (db == null) {
             name = table;
         } else {
-            name = db + "." + table;
+            name = db + "_" + table;
         }
         return name;
     }
@@ -688,10 +688,12 @@ public class CodeConstants {
     }
 
     public static String getFieldNameOfDbRsMapperForModel(String name) {
+
         return name.toUpperCase() + CodeConstants.FIELD_RESULT_SET_MAPPER_INSTANCE_APPENDIX;
     }
 
     public static String getFieldNameOfCommonMapperForModel(String name) {
+
         return name.toUpperCase() + CodeConstants.FIELD_REDIS_MAP_MAPPER_INSTANCE_APPENDIX;
     }
 
@@ -852,8 +854,8 @@ public class CodeConstants {
         if (typeDef == null) {
             if (type.gettClass() != null)
                 jClass = cm.ref(type.gettClass());
-            else if (type.getKeyClassName() != null)
-                jClass = cm.ref(type.getKeyClassName());
+            else if (type.getTClassName() != null)
+                jClass = cm.ref(type.getTClassName());
         } else {
             //                FieldInfoInterface field = def.getField(item.getFieldName());
             //                EnumTypeDef enumTypeDef = field.getEnumTypeDef();

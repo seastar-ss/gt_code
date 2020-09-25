@@ -77,6 +77,14 @@ public class MultiModelConfFactory {
         return ret;
     }
 
+    public static MultiModelConfFactory getFactory(Object key) {
+        return confMaps.get(key);
+    }
+
+    public static boolean containsFactory(Object value) {
+        return confMaps.containsValue(value);
+    }
+
     private MultiModelConfFactory(String name, String comment, Collection<SelectMethod> mainModelSelectMethod) {
         this.name = name;
         this.comment = comment;

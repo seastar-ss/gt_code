@@ -37,9 +37,9 @@ public class EnumTypeConf extends AbstractConf implements _BaseEnumTypeConf {
     //        return this;
     //    }
 
-    public String getName() {
-        return name;
-    }
+//    public String getName() {
+//        return name;
+//    }
 
     //    public EnumTypeConf setName(String name) {
     //        this.name = name;

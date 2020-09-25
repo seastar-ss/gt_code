@@ -33,8 +33,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-//import com.shawn.ss.lib.code_gen.base.dao.common_dao.common_model_builder.MapperOfMapBuilder;
-
 public class ModelBuilderContext {
     final Logger L = LoggerFactory.getLogger(ModelBuilderContext.class.getSimpleName());
 
@@ -87,15 +85,6 @@ public class ModelBuilderContext {
 
     }
 
-
-    /* private String getModelClassName(String table) {
-        return getModelClassName(table, true);
-    }*/
-
-    /* public String getMapperClass(String modelClassName) {
-        return basePackage + ".dto.mapper." + CodeConstants.CLASS_NAME_RESULT_SET_MAPPER_PREFIX + CodeConstants.getClassNameFromFullName(modelClassName);
-    }*/
-
     public void executeBaseModelAndDaoBuild() {
 
         final Collection<CommonModelConfFactory> commonModelFactories = relatedDbs.values();
@@ -116,7 +105,6 @@ public class ModelBuilderContext {
     public void executeBaseModelAndDaoBuild(CommonModelConfFactory db) {
         List<CommonModelDaoDef> defs = db.buildDefs();
         for (CommonModelDaoDef def : defs) {
-
             buildBaseModel(def);
             try {
                 CommonDaoBuilder daoBuilder = new CommonDaoBuilder(def);
@@ -127,8 +115,14 @@ public class ModelBuilderContext {
         }
     }
 
-    public void executeMultiModelAndDaoBuild(MultiModelConfFactory factory){
+    public void executeMultiModelAndDaoBuild() {
+        Map<String, _BaseDaoConf> confs = MultiModelConfFactory.buildConfs(this);
+        confs.forEach((k, v) -> buildMultiSelectDao(v));
+    }
 
+    public void executeMultiModelAndDaoBuild(String config) {
+        MultiModelConfFactory factory = MultiModelConfFactory.getFactory(config);
+        buildMultiSelectDao(factory.buildConf(this));
     }
 
     public void executeWriteModel() {
@@ -237,8 +231,8 @@ public class ModelBuilderContext {
     }
 
 
-    public void initBaseClazz() {
-        ConstantsBuilder builder = new ConstantsBuilder(new DefaultConf("init", this));
+    public void executeInitBaseClazz() {
+        ConstantsBuilder builder = new ConstantsBuilder(new DefaultConf(basePackage, this));
         builder.buildModel();
     }
 

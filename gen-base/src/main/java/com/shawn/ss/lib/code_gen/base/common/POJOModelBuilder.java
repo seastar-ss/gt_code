@@ -91,6 +91,9 @@ public class POJOModelBuilder implements CodeBuilderInterface {
 
     @Override
     public void buildModel() {
+        if (modelDef.getDeclaredModel() != null) {
+            return;
+        }
         try {
             L.info("build model:" + modelClassName);
             checkTableInfoForEnums();
@@ -261,7 +264,7 @@ public class POJOModelBuilder implements CodeBuilderInterface {
         if (modelDef instanceof _BaseDaoConf) {
             _BaseDaoConf modelDef1 = (_BaseDaoConf) this.modelDef;
             body._if(JExpr.dotclass(cm.ref(DbResultSetMapper.class)).invoke("isAssignableFrom").arg(clazz))
-                    ._then()._return(JExpr.cast(ft, CodeConstants.getCommonFieldMapper(modelDef1.getTable(), constantClz)));
+                    ._then()._return(JExpr.cast(ft, CodeConstants.getCommonFieldMapper(modelDef1.getName(), constantClz)));
         }
         body._return(JExpr._null());
     }
