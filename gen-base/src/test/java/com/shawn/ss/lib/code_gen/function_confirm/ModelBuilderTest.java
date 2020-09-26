@@ -30,6 +30,7 @@ public class ModelBuilderTest {
             .add(SelectMethodEnum.getByCondition)
             .add(SelectMethodEnum.getByIndex)
             .add(SelectMethodEnum.getOneById)
+            .add(SelectMethodEnum.getOneByCondtion)
             .add(SelectMethodEnum.getByIndexAndCondition)
             .getList();
 
@@ -79,6 +80,7 @@ public class ModelBuilderTest {
                                 .add("t_device")
                                 .add("t_event")
                                 .add("t_task")
+                                .add("t_device_task")
                                 .add("t_mall_area")
                                 .getSet()
                 ).setDb("robot_control_system")
@@ -91,7 +93,32 @@ public class ModelBuilderTest {
         MultiModelConfFactory test = MultiModelConfFactory.newInstance("UserAndOrg", "test", list);
         test.addMainTable("orgUser", "main_data_schema", "b_organization_user");
         test.addRelatedTable("user", "main_data_schema.b_user.id=main_data_schema.b_organization_user.user_id", true, 1000);
-        test.addRelatedTable("org", "main_data_schema.b_organization.id=main_data_schema.b_organization_user.org_id", true, 1000);
+        test.addRelatedTable(
+                "org",
+                "main_data_schema.b_organization.id=main_data_schema.b_organization_user.org_id",
+                true,
+                1000
+        );
+
+        MultiModelConfFactory testV2 = MultiModelConfFactory.newInstance("TaskAndEventOfDevice", "testV2", list);
+        testV2.addMainTable("device", "robot_control_system", "t_device");
+        testV2.addRelatedTable(
+                "tasks",
+                "robot_control_system.t_device.id=robot_control_system.t_device_task.device_id",
+                false,
+                10
+        );
+        testV2.addRelatedTable(
+                "events",
+                "robot_control_system.t_device.id=robot_control_system.t_event.event_device",
+                false,
+                10,
+                CollectionHelper.<String,String>mapBuilder()
+                        .put("device_type","event_device_type")
+                        .getMap(),
+                " id>0 "
+        );
+
 
         modelBuilderContext.executeMultiModelAndDaoBuild();
 

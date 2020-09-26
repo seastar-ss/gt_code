@@ -257,6 +257,7 @@ public class MultiModelConfFactory {
                         .setRelatedField(
                                 relatedConf.getField(tableCol.col)
                         )
+                        .putAllAdditionalCondition(additionalCondition)
         );
         fields.add(field);
 

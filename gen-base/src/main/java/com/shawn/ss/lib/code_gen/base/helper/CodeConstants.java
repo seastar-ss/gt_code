@@ -830,6 +830,9 @@ public class CodeConstants {
         final TableInfoInterface tableInfo = dbInfo.getTable(table);
         if (tableInfo == null)
             return null;
+        if (CodeStyleTransformHelper.testIsUnderlineStyle(field)) {
+            field = CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(field);
+        }
         final ColumnInfoInterface item = (ColumnInfoInterface) tableInfo.getColumnData(field);
         if (item == null)
             return null;

@@ -347,7 +347,8 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
         _BaseRelationDef def = conf.getRelatedDef(name);
         String fieldInMainTable = def.getFieldInRelatedTable();
         String fieldInThisTable = def.getFieldInThisTable();
-
+        JVar listVar = null;
+        JVar instanceVar = null;
         //        boolean isId = def.isFieldInThisTableIsId();
         boolean single = def.isSingle();
         AbstractJClass subModelClass = conf.getDeclaredModel();
@@ -388,7 +389,6 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
             L.warn("config is {}", modelMulDaoConf);
             throw new IllegalArgumentException(table + "数据表中字段" + fieldInThisTable + "不存在");
         }
-        //        System.out.println("get ");
         FieldDataTypeInterface mainFieldType = CodeConstants.getFieldType(mainDb, mainTable, fieldInMainTable);
         Class fieldTClass = fieldType.gettClass();
         if (!fieldTClass.equals(mainFieldType.gettClass())) {
@@ -399,6 +399,82 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
         AbstractJClass fieldClzRef = cm.ref(fieldTClass);
 
         buildIfMainModelEmptyTest(subBody, dataVar, holder.listResult);
+        /**
+         * 生成必要参数
+         *
+         */
+
+
+        if (subDaoSelectMethod.isCondition()) {
+            instanceVar = subBody.decl(subModelClass, "instance", JExpr._new(subModelClass));
+            if (single) {
+                JVar mainId = subBody.decl(fieldClzRef, "mainAttr",
+                        JExpr.invoke(dataVar, CodeConstants.getMethodNameOfModelGet(fieldInMainTable)));
+                subBody.invoke(instanceVar, CodeConstants.getMethodNameOfModelSet(fieldInThisTable)).arg(mainId);
+            }
+            Map<String, String> additionalCondition = def.getAdditionalCondition();
+            if (!CollectionHelper.isCollectionEmpty(additionalCondition)) {
+                JVar otherDataVar = dataVar;
+                if (holder.listResult) {
+                    otherDataVar = subBody.decl(
+                            mainModelClass,
+                            dataVar.name() + "First",
+                            JExpr.invoke(dataVar, "get").arg(JExpr.lit(0))
+                    );
+                }
+                Set<Map.Entry<String, String>> entries = additionalCondition.entrySet();
+                for (Map.Entry<String, String> cond : entries) {
+                    final String condKey = cond.getKey();
+                    final String value = cond.getValue();
+                    final AbstractJType typeOfField = CodeConstants.getTypeOfField(cm, builderContext, db, mainTable, condKey);
+                    if (typeOfField != null) {
+                        JVar mainId = subBody.decl(
+                                typeOfField, "mainAttr" + CodeStyleTransformHelper.upperFirstCase(condKey),
+                                JExpr.invoke(otherDataVar, CodeConstants.getMethodNameOfModelGet(condKey))
+                        );
+                        subBody.invoke(instanceVar, CodeConstants.getMethodNameOfModelSet(value)).arg(mainId);
+                    }
+                }
+            }
+        }
+
+        if (subDaoSelectMethod.isIndex()) {
+            JInvocation mainInvoke;
+            if (holder.listResult) {
+                mainInvoke = JExpr.invoke(mainDaoField, CodeConstants.METHOD_DAO_BUILD_LIST).narrow(fieldClzRef)
+                        .arg(dataVar).arg(mainBaseModelColumnStaticRef);
+            } else {
+                mainInvoke = JExpr.invoke(mainDaoField, CodeConstants.METHOD_DAO_BUILD_LIST).narrow(fieldClzRef)
+                        .arg(cm.ref(Collections.class).staticInvoke("singletonList").arg(dataVar))
+                        .arg(mainBaseModelColumnStaticRef);
+            }
+            // tricks : replace the subbody
+            AbstractJClass listType = CodeConstants.buildNarrowedClass(cm, List.class, fieldTClass);
+            Integer batchSize = def.getBatchSize();
+            if (batchSize > 0) {
+                JVar allList = subBody.decl(listType, "list", mainInvoke);
+                JVar sizeVar = subBody.decl(cm.ref(Integer.class), "size", JExpr.invoke(allList, "size"));
+                JVar startIdx = subBody.decl(cm.ref(Integer.class), "startIdx", JExpr.lit(0));
+                JWhileLoop jWhileLoop = subBody._while(startIdx.lt(sizeVar));
+                subBody = jWhileLoop.body();
+                JVar endIdx = subBody.decl(
+                        cm.ref(Integer.class),
+                        "endIdx",
+                        cm.ref(Math.class).staticInvoke("min").arg(startIdx.plus(JExpr.lit(batchSize))).arg(sizeVar.minus(1))
+                );
+                JInvocation expr = JExpr.invoke(allList, "subList").arg(startIdx).arg(endIdx);
+                listVar = subBody.decl(listType, "subList", expr);
+                subBody.assign(startIdx, endIdx.plus(1));
+            } else {
+                listVar = subBody.decl(listType, "list", mainInvoke);
+            }
+        }
+
+        /**
+         * 处理批次
+         */
+
+
         /**
          * 生成调用
          */
@@ -418,41 +494,9 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
             } else if (type.isAssignableFrom(selectedFieldVar.type()) && name.equals(CodeConstants.PARAM_DAO_SELECTED_FIELDS)) {
                 invoke.arg(selectedFieldVar);
             } else if (type.isAssignableFrom(CodeConstants.buildNarrowedClass(cm, List.class, fieldClzRef))) {
-                JInvocation mainInvoke;
-                if (holder.listResult) {
-                    mainInvoke = JExpr.invoke(mainDaoField, CodeConstants.METHOD_DAO_BUILD_LIST).narrow(fieldClzRef)
-                            .arg(dataVar).arg(mainBaseModelColumnStaticRef);
-                } else {
-                    mainInvoke = JExpr.invoke(mainDaoField, CodeConstants.METHOD_DAO_BUILD_LIST).narrow(fieldClzRef)
-                            .arg(cm.ref(Collections.class).staticInvoke("singletonList").arg(dataVar)).arg(mainBaseModelColumnStaticRef);
-                }
-                JVar list = subBody.decl(CodeConstants.buildNarrowedClass(cm, List.class, fieldTClass), "list", mainInvoke);
-                invoke.arg(list);
+                invoke.arg(listVar);
             } else if (type.name().equals(subModelClass.name()) && name.equals(CodeConstants.PARAM_DAO_INSTANCE)) {
-                JVar instance = subBody.decl(subModelClass, "instance", JExpr._new(subModelClass));
-                if (single) {
-                    JVar mainId = subBody.decl(fieldClzRef, "mainId",
-                            JExpr.invoke(dataVar, CodeConstants.getMethodNameOfModelGet(fieldInMainTable)));
-                    subBody.invoke(instance, CodeConstants.getMethodNameOfModelSet(fieldInThisTable)).arg(mainId);
-                }
-                Map<String, String> additionalCondition = def.getAdditionalCondition();
-                if (!CollectionHelper.isCollectionEmpty(additionalCondition)) {
-                    JVar otherDataVar = dataVar;
-                    if (holder.listResult) {
-                        otherDataVar = subBody.decl(mainModelClass, dataVar.name() + "First", JExpr.invoke(dataVar, "get").arg(JExpr.lit(0)));
-                    }
-                    Set<Map.Entry<String, String>> entries = additionalCondition.entrySet();
-                    for (Map.Entry<String, String> cond : entries) {
-                        final String condKey = cond.getKey();
-                        final AbstractJType typeOfField = CodeConstants.getTypeOfField(cm, builderContext, db, mainTable, condKey);
-                        if (typeOfField != null) {
-                            JVar mainId = subBody.decl(typeOfField, "mainId" + CodeStyleTransformHelper.upperFirstCase(condKey),
-                                    JExpr.invoke(otherDataVar, CodeConstants.getMethodNameOfModelGet(condKey)));
-                            subBody.invoke(instance, CodeConstants.getMethodNameOfModelSet(cond.getValue())).arg(mainId);
-                        }
-                    }
-                }
-                invoke.arg(instance);
+                invoke.arg(instanceVar);
             } else if (type.isAssignableFrom(cm.ref(String.class)) && name.equals(CodeConstants.PARAM_DAO_INDEX_IN_FIELD)) {
                 invoke.arg(subBaseModelColumnStaticRef);
             } else if (
@@ -460,7 +504,6 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
                             && name.equals(CodeConstants.PARAM_DAO_EXT_CONDITION)
                             && def.getAdditionalWhere() != null
             ) {
-                //                Collections.singleton()
                 invoke.arg(cm.ref(Collections.class).staticInvoke("singleton").arg(JExpr.lit(def.getAdditionalWhere())));
             } else {
                 invoke.arg(JExpr._null());

@@ -30,6 +30,13 @@ public class MulDaoRelationDef implements _BaseRelationDef {
         return additionalCondition.put(key, value);
     }
 
+    public MulDaoRelationDef putAllAdditionalCondition(Map<? extends String, ? extends String> m) {
+        if (!CollectionHelper.isCollectionEmpty(m)) {
+            additionalCondition.putAll(m);
+        }
+        return this;
+    }
+
     @Override
     public Map<String, String> getAdditionalCondition() {
         return additionalCondition;
