@@ -92,7 +92,7 @@ public abstract class AbstractDaoBuilder implements CodeBuilderInterface {
 
         //        String baseTable = parentBuilder.getBaseTable();
 
-        this.daoClassName = CodeConstants.getDaoClassName(builderContext.getBasePackage(),table, baseTable, tableType);
+        this.daoClassName = def.getDaoClzName();
         this.modelDef = def;
         _BaseConstantDef constant = def.getConstant();
         this.constantClz = constant.getConstantClz();

@@ -1,13 +1,17 @@
 package com.shawn.ss.lib.tools;
 
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 /**
  * Created by ss on 2017/10/3.
  */
 public class CodeStyleTransformHelper {
 
-    static final int SPAN_BETWEEN_CASE='A'-'a';
+    static final int SPAN_BETWEEN_CASE = 'A' - 'a';
+
+    static final Pattern HUMP_STYLE_PATTERN = Pattern.compile("[a-zA-Z0-9]+");
+    static final Pattern UNDERLINE_STYLE_PATTERN = Pattern.compile("[a-z0-9_]+");
 
     public static String lowerFirstCase(String str) {
         if (str != null) {
@@ -53,14 +57,14 @@ public class CodeStyleTransformHelper {
     }
 
     public static String humpStyleToUnderlineSplittedStyle(String s) {
-//        Scanner scanner=new Scanner(s);
+        //        Scanner scanner=new Scanner(s);
         StringBuilder ret = new StringBuilder();
         int i = 0, n = s.length();
         while (i < n) {
             char c = s.charAt(i);
-            if(i>0 && c>='A' && c<='Z'){
-                ret.append("_").append((char)(c-SPAN_BETWEEN_CASE));
-            }else {
+            if (i > 0 && c >= 'A' && c <= 'Z') {
+                ret.append("_").append((char) (c - SPAN_BETWEEN_CASE));
+            } else {
                 ret.append(c);
             }
             ++i;
@@ -68,14 +72,12 @@ public class CodeStyleTransformHelper {
         return ret.toString();
     }
 
-    public static String anonymousString(String real, String str) {
-        StringBuilder ret = new StringBuilder();
-        if (real.length() > 1) {
-            ret.append(real.substring(0, 1)).append(StringHelper.repeat(str, real.length() - 1));
-            return ret.toString();
-        } else {
-            return real;
-        }
+    public static boolean testIsHumpStyle(String str) {
+        return str != null && HUMP_STYLE_PATTERN.matcher(str).matches();
+    }
+
+    public static boolean testIsUnderlineStyle(String str) {
+        return str != null && UNDERLINE_STYLE_PATTERN.matcher(str).matches();
     }
 
 }

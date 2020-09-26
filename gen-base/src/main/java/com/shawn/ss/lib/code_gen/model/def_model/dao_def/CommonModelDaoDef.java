@@ -60,7 +60,7 @@ public class CommonModelDaoDef<T extends CommonModelDaoDef> extends _BaseDaoConf
     }
 
     public CommonModelDaoDef(String name, TableInfoInterface def, ModelBuilderContext builderContext) {
-        super(name, builderContext);
+        super(name, def, builderContext);
         this.def = def;
         params = CollectionHelper.newList();
         relationDao = CollectionHelper.newList();

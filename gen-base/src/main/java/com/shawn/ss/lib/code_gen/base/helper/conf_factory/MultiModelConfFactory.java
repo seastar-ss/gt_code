@@ -141,6 +141,9 @@ public class MultiModelConfFactory {
         ret.setBuildAbstractDao(buildAbstractDao);
         ret.setMainModelSelectMethod(mainModelSelectMethod);
 
+
+        ret.setModelType(CodeConstants.TYPE_MODEL_COMBINE_TYPE);
+
         for (String field : fields) {
             _BaseDaoConf baseDaoConf = confs.get(field);
             CommonModelDaoDef relatedConf = null;
@@ -172,13 +175,14 @@ public class MultiModelConfFactory {
             if (relation == null || baseDaoConf == null) {
                 throw new IllegalStateException("config or relation is null , data may not ready for field " + field);
             }
+            boolean isCollection = !relation.isMain() && !relation.isSingle();
             tableInfo.addCol(
                     new ColumnInfo()
                             .setInfo(tableInfo)
                             .setComment(baseDaoConf.getComment())
                             .setType(
                                     new CommonFieldTypeInfo()
-                                            .setCollection(relation.isSingle())
+                                            .setCollection(isCollection)
                                             .settClassName(baseDaoConf.getPojoClzName())
                             )
                             .setAliasFieldName(field)
@@ -202,8 +206,14 @@ public class MultiModelConfFactory {
         if (!(conf instanceof _BaseDaoConf)) {
             throw new IllegalStateException(key + " may not exist or not been inited, can't add mainTable for " + name);
         }
-        confs.put(mainField, (_BaseDaoConf) conf);
-        relationConfs.put(mainField, new MulDaoRelationDef().setMain(true));
+        _BaseDaoConf conf1 = (_BaseDaoConf) conf;
+        confs.put(mainField, conf1);
+        relationConfs.put(
+                mainField,
+                new MulDaoRelationDef()
+                        .setMain(true)
+                        .setFieldName(mainField)
+        );
         fields.add(mainField);
         return this;
     }

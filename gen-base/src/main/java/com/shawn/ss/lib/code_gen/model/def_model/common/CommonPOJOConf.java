@@ -2,6 +2,7 @@ package com.shawn.ss.lib.code_gen.model.def_model.common;
 
 import com.helger.jcodemodel.AbstractJType;
 import com.helger.jcodemodel.JDefinedClass;
+import com.shawn.ss.lib.code_gen.base.helper.CodeConstants;
 import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
 import com.shawn.ss.lib.code_gen.model.def_model._base.AbstractConf;
 import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseConstantDef;
@@ -58,8 +59,10 @@ public class CommonPOJOConf extends AbstractConf implements _BaseModelConf, _Bas
 
     //    protected transient final ModelBuilderContext builderContext;
 
-    private JDefinedClass definedClz;
-    private JDefinedClass definedCommonMapperClz;
+    protected JDefinedClass definedClz;
+    protected JDefinedClass definedCommonMapperClz;
+    protected int modelType;
+
 
     public CommonPOJOConf(String name, ModelBuilderContext builderContext) {
         super(name, builderContext);
@@ -68,6 +71,7 @@ public class CommonPOJOConf extends AbstractConf implements _BaseModelConf, _Bas
         fieldIndex = CollectionHelper.newMap();
         staticFields = CollectionHelper.newMap();
         ignoreField = CollectionHelper.newSet();
+        modelType = CodeConstants.TYPE_MODEL_COMMON_TYPE;
     }
 
     //    @Override
@@ -198,8 +202,17 @@ public class CommonPOJOConf extends AbstractConf implements _BaseModelConf, _Bas
 
     @Override
     public FieldInfoInterface getPriField() {
-
         return null;
+    }
+
+    @Override
+    public int getModelType() {
+        return modelType;
+    }
+
+    public CommonPOJOConf setModelType(int modelType) {
+        this.modelType = modelType;
+        return this;
     }
 
     public void setComment(String comment) {

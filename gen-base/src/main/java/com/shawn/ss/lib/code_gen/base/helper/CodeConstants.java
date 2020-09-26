@@ -141,8 +141,6 @@ public class CodeConstants {
     public static final String METHOD_ENUM_FROM_VALUE = "fromValue";
 
     public static final String METHOD_SPRING_BEAN_AFTER_PROPERTIES_SET = "afterPropertiesSet";
-
-
     /*
      * method end
      */
@@ -211,6 +209,9 @@ public class CodeConstants {
     public static final int TYPE_TABLE_SQL_TYPE = 2;
     public static final int TYPE_TABLE_MUL_TYPE = 1;
     public static final int TYPE_TABLE_COMMON_TYPE = 0;
+
+    public static final int TYPE_MODEL_COMMON_TYPE = 0;
+    public static final int TYPE_MODEL_COMBINE_TYPE = 1;
 
     public static Set<SelectMethod> allSelectMethod = CollectionHelper.<SelectMethod>setBuilder(true)
             .addAll(SelectMethodEnum.getAllSelectMethod().values())
@@ -724,6 +725,9 @@ public class CodeConstants {
         if (tableInfoInterface == null) {
             return null;
         } else {
+            if (CodeStyleTransformHelper.testIsUnderlineStyle(colName)) {
+                colName = CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(colName);
+            }
             return tableInfoInterface.getColumnDataType(colName);
         }
     }

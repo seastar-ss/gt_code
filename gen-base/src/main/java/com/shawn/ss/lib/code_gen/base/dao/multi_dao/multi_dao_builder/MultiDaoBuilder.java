@@ -59,6 +59,7 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
     //
     JFieldVar mainDaoField;
     private AbstractJClass multiAsemmblerClz;
+    private final _BaseDaoConf mainConf;
 
     private class BuildMethodParamHodler {
         SelectMethod modelSelectMethod;
@@ -139,6 +140,7 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
             }
         }
         //        this.modelSelectMethod = modelMulDaoConf.getMainModelSelectMethod();
+        this.mainDb = modelMulDaoConf.getDb();
         this.mainTable = modelMulDaoConf.getTable();
         this.relatedTables = modelMulDaoConf.getRelation();
         this.buildNotAbstract = modelMulDaoConf.buildAbstractDao();
@@ -157,11 +159,12 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
         //        this.daos = CollectionHelper.newMap();
         //        this.models = CollectionHelper.newMap();
         //        this.defs = modelMulDaoConf.getDefs();
-        this.mainDb = modelMulDaoConf.getDb();
+
         this.cm = builderContext.getCm();
         this.multiAsemmblerClz = modelMulDaoConf.getDeclaredAssembler();
         this.wrapperCls = modelMulDaoConf.getDeclaredModel();
         this.mainModelFieldName = modelMulDaoConf.getField(0).getFieldName();
+        this.mainConf = relatedTables.get(0);
         initAllDependentBuild();
         //        modelBuilder = new ComposedModelBuilder(modelMulDaoConf);
 
@@ -206,12 +209,12 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
 
         holder.initClz(cm, wrapperCls, mainModelClass);
 
-        String[] staticRoundFieldVar = new String[size + 1];//assemblerBuilder.getStaticRoundFieldVar();
-        staticRoundFieldVar[0] = CodeConstants.getFieldNameOfMulDaoRNDName(mainModelFieldName);
-        for (int i = 1; i < size; ++i) {
+        String[] staticRoundFieldVar = new String[size];//assemblerBuilder.getStaticRoundFieldVar();
+        //        staticRoundFieldVar[0] = CodeConstants.getFieldNameOfMulDaoRNDName(mainModelFieldName);
+        for (int i = 0; i < size; ++i) {
             _BaseDaoConf baseSubDaoConf = relatedTables.get(i);
             _BaseRelationDef relation = baseSubDaoConf.getRelatedDef(name);
-            staticRoundFieldVar[i] = CodeConstants.getFieldNameOfMulDaoRNDName(relation.getRelatedField().getFieldName());
+            staticRoundFieldVar[i] = CodeConstants.getFieldNameOfMulDaoRNDName(relation.getFieldName());
         }
         holder.staticRoundFieldVar = staticRoundFieldVar;
         //        int findex = 0;
@@ -741,12 +744,15 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
         holder.mainDataVar = allMainList;
 
         for (_BaseDaoConf def : relatedTables) {
+            _BaseRelationDef relatedDef = def.getRelatedDef(name);
+            if (!relatedDef.isMain()) {
+                body.invoke(holder.otherTableAssembler, CodeConstants.METHOD_ASSEMBLER_SET_INDEX)
+                        .arg(holder.assemblerCls.staticRef(holder.staticRoundFieldVar[index]));
+                holder.subIndex = index;
+                JMethod subMethod = buildGetSubModelUseInSelect(def, holder);
+                body.invoke(subMethod).arg(allMainList).arg(ret).arg(holder.selectFields).arg(holder.otherTableAssembler);
+            }
             ++index;
-
-            body.invoke(holder.otherTableAssembler, CodeConstants.METHOD_ASSEMBLER_SET_INDEX).arg(holder.assemblerCls.staticRef(holder.staticRoundFieldVar[index]));
-            holder.subIndex = index;
-            JMethod subMethod = buildGetSubModelUseInSelect(def, holder);
-            body.invoke(subMethod).arg(allMainList).arg(ret).arg(holder.selectFields).arg(holder.otherTableAssembler);
         }
         body._return(ret);
         return method;
@@ -844,18 +850,21 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
             afterPropertiesSet = definedClass.method(JMod.PUBLIC, cm.VOID, CodeConstants.METHOD_SPRING_BEAN_AFTER_PROPERTIES_SET);
             afterPropertiesSet.annotate(Override.class);
             afterPropertiesSet._throws(Exception.class);
-            definedClass.constructor(JMod.PUBLIC).body().invoke("super").arg(JExpr.dotclass(wrapperCls));
+            JMethod constructor = definedClass.constructor(JMod.PUBLIC);
+            constructor.annotate(Autowired.class);
+            JBlock constructorBody = constructor.body();
+            constructorBody.invoke("super").arg(JExpr.dotclass(wrapperCls)).arg(JExpr._null());
             if (buildNotAbstract) {
                 //                definedClass.annotate(Repository.class);
                 JAnnotationUse annotate = definedClass.annotate(Repository.class);
                 annotate.param("value", CodeConstants.getClassNameFromFullName(serviceClassName));
             }
-            mainDaoClass = cm.ref(CodeConstants.getDaoClassName(builderContext.getBasePackage(), mainTable));
-            mainModelClass = cm.ref(CodeConstants.getModelClassName(builderContext.getBasePackage(), mainTable, null));
-            String tbMName = CodeConstants.getClazzNameFromTableName(mainTable);
-
-            mainDaoField = definedClass.field(JMod.PROTECTED, mainDaoClass, "dao" + tbMName);
-            mainDaoField.annotate(Autowired.class);
+            //            mainDaoClass = cm.ref(CodeConstants.getDaoClassName(builderContext.getBasePackage(), mainTable));
+            //            mainModelClass = cm.ref(CodeConstants.getModelClassName(builderContext.getBasePackage(), mainTable, null));
+            //            String tbMName = CodeConstants.getClazzNameFromTableName(mainTable);
+            //
+            //            mainDaoField = definedClass.field(JMod.PROTECTED+JMod.FINAL, mainDaoClass, "dao" + tbMName);
+            //            mainDaoField.annotate(Autowired.class);
 
             daoFields = CollectionHelper.newMap();
             for (_BaseDaoConf def : relatedTables) {
@@ -869,14 +878,22 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
                 AbstractJClass daoClass = def.getDeclaredDao();
                 Map<String, JFieldVar> fields = definedClass.fields();
                 String daoName = "dao" + tbName;
+
                 JFieldVar fieldVar;
                 if (fields.containsKey(daoName)) {
                     fieldVar = fields.get(daoName);
                 } else {
                     fieldVar = definedClass.field(JMod.PROTECTED, daoClass, daoName);
-                    fieldVar.annotate(Autowired.class);
+                    //                    fieldVar.annotate(Autowired.class);
                 }
+                JVar param = constructor.param(daoClass, "l" + daoName);
+                constructorBody.assign(fieldVar, param);
                 daoFields.put(table, fieldVar);
+                if (table.equals(mainTable)) {
+                    mainDaoClass = daoClass;
+                    mainModelClass = def.getDeclaredModel();
+                    mainDaoField = fieldVar;
+                }
             }
         } catch (JClassAlreadyExistsException e) {
             e.printStackTrace();
@@ -898,8 +915,10 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
         JForEach forEach = then.forEach(wrapperCls, "item", list);
         JVar var = forEach.var();
         JBlock block = forEach.body();
-        JVar mainVar = block.decl(mainModelClass, "mainVar", JExpr.invoke(var, CodeConstants.getMethodNameOfModelGet(mainModelFieldName)));
-        JInvocation fieldCommonMapper = CodeConstants.getCommonFieldMapper(name, constantClz);
+        JVar mainVar = block.decl(mainModelClass, "mainVar",
+                JExpr.invoke(var, CodeConstants.getMethodNameOfModelGet(mainModelFieldName))
+        );
+        JInvocation fieldCommonMapper = CodeConstants.getCommonFieldMapper(mainConf.getName(), constantClz);
         block.invoke(ret, "add").arg(
                 //                constantClz.staticRef(CodeConstants.getFieldNameOfCommonMapperForModel(name))
                 fieldCommonMapper
@@ -930,7 +949,7 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
             retClass = CodeConstants.buildNarrowedClass(cm, Map.class, genericType, retListType);
         }
         JMethod method = definedClass.method(JMod.PUBLIC, retClass, isItemList ? CodeConstants.METHOD_DAO_BUILD_LIST_MAP : CodeConstants.METHOD_DAO_BUILD_MAP);
-        method.generify("TT");
+        JTypeVar tType = method.generify("TT");
         JVar list = method.param(retListType, "list");
         JVar field = method.param(cm.ref(String.class), "field");
         JBlock body = method.body();
@@ -944,20 +963,20 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
 
         JBlock block = forEach.body();
         JVar mainVar = block.decl(mainModelClass, "mainVar", JExpr.invoke(var, CodeConstants.getMethodNameOfModelGet(mainModelFieldName)));
-        JInvocation fieldCommonMapper = CodeConstants.getCommonFieldMapper(name, constantClz);
+        JInvocation fieldCommonMapper = CodeConstants.getCommonFieldMapper(mainConf.getName(), constantClz);
         JInvocation arg = /*constantClz.staticRef(CodeConstants.getFieldNameOfCommonMapperForModel(name))*/
-                fieldCommonMapper
-                        .invoke(CodeConstants.METHOD_JEDIS_MAPPER_GET_FIELD).narrow(genericType).arg(field).arg(mainVar);
+                JExpr.invoke(fieldCommonMapper, CodeConstants.METHOD_JEDIS_MAPPER_GET_FIELD).narrow(genericType).arg(field).arg(mainVar);
+        JVar jVar = block.decl(tType, "fd", arg);
         if (!isItemList) {
             block.invoke(ret, "put")
-                    .arg(arg)
+                    .arg(jVar)
                     .arg(var);
         } else {
-            JVar itemList = block.decl(retListType, "itemList", JExpr.invoke(ret, "get").arg(arg));
+            JVar itemList = block.decl(retListType, "itemList", JExpr.invoke(ret, "get").arg(jVar));
             block._if(itemList.eq(JExpr._null()))._then().assign(itemList, cm.ref(CollectionHelper.class).staticInvoke("newList"));
             block.invoke(itemList, "add").arg(var);
             block.invoke(ret, "put")
-                    .arg(arg)
+                    .arg(jVar)
                     .arg(itemList);
         }
         body._return(ret);

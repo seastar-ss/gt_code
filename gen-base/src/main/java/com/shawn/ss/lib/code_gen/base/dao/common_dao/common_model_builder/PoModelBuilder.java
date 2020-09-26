@@ -55,9 +55,7 @@ public class PoModelBuilder implements CodeBuilderInterface {
 
         if (builderContext == null)
             throw new IllegalArgumentException("code build context is null");
-        //        else
         this.cm = builderContext.getCm();
-
         //        this.modelClassName = def.getPojoClzName();
         //        extendedClazz = cm.ref(def.getPojoExtendsClzName());
         //        fields = modelDef.getFields();

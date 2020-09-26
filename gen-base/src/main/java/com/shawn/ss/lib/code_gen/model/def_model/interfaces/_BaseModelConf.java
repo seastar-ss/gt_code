@@ -11,6 +11,7 @@ import java.util.Set;
  * Created by ss on 2018/2/13.
  */
 public interface _BaseModelConf extends _BaseModelClassNameConf, _BaseContextConf {
+
     List<FieldInfoInterface> getFields();
 
     int sizeOfField();
@@ -32,6 +33,8 @@ public interface _BaseModelConf extends _BaseModelClassNameConf, _BaseContextCon
     FieldInfoInterface getStaticField(String key);
 
     FieldInfoInterface getPriField();
+
+    int getModelType();
 
     /*
      * data access interface

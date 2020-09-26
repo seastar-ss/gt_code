@@ -43,7 +43,6 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
         currentQueryDataSource = new NamedThreadLocal<>("current_operated_ds");
         currentQueryDb = new NamedThreadLocal<>("current_operated_db");
         dataSourceMap = new ConcurrentHashMap<>();
-
     }
 
     public static void registerDb(String name, SimpleDbInterface ds) {
@@ -107,11 +106,11 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
         SimpleDbInterface dbInstance = null;
         if (status == 0) {
             dbInstance = selectDb(assembler, sqlBuilder, param);
-//            setTableName(sqlBuilder, param, assembler);
-//        String dbToUse = super.selectDb(assembler, sqlBuilder, param);
-//        if ((dbToUse!= null)&&dbMap.containsKey(dbToUse)) {
-//            dbInstance = dbMap.get(dbToUse);
-//        }
+            //            setTableName(sqlBuilder, param, assembler);
+            //        String dbToUse = super.selectDb(assembler, sqlBuilder, param);
+            //        if ((dbToUse!= null)&&dbMap.containsKey(dbToUse)) {
+            //            dbInstance = dbMap.get(dbToUse);
+            //        }
             return getSingleResultImpl(dbInstance, assembler, sqlBuilder, param, tClass);
         } else {
             return null;
@@ -130,7 +129,7 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
 
         if (status == 0) {
             dbInstance = selectDb(assembler, sqlBuilder, param);
-//            setTableName(sqlBuilder, param, assembler);
+            //            setTableName(sqlBuilder, param, assembler);
 
             return getSingleResultsImpl(dbInstance, assembler, sqlBuilder, param, tClass);
         } else {
@@ -144,13 +143,13 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
             status = assembler.assembleSql(sqlBuilder, param, type);
         }
         SimpleDbInterface dbInstance = null;
-//        String dbToUse = super.selectDb(assembler, sqlBuilder, param);
-//        if ((dbToUse!= null)&&dbMap.containsKey(dbToUse)) {
-//            dbInstance = dbMap.get(dbToUse);
-//        }
+        //        String dbToUse = super.selectDb(assembler, sqlBuilder, param);
+        //        if ((dbToUse!= null)&&dbMap.containsKey(dbToUse)) {
+        //            dbInstance = dbMap.get(dbToUse);
+        //        }
         if (status == 0) {
             dbInstance = selectDb(assembler, sqlBuilder, param);
-//            setTableName(sqlBuilder, param, assembler);
+            //            setTableName(sqlBuilder, param, assembler);
             DbResultSetMapper<Ty> rsMapper = getRsMapper(assembler, sqlBuilder, param);
             try {
                 return getResultsImpl(dbInstance, assembler, sqlBuilder, param, rsMapper);
@@ -169,13 +168,13 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
             status = assembler.assembleSql(sqlBuilder, param, type);
         }
         SimpleDbInterface dbInstance = null;
-//        String dbToUse = super.selectDb(assembler, sqlBuilder, param);
-//        if ((dbToUse!= null)&&dbMap.containsKey(dbToUse)) {
-//            dbInstance = dbMap.get(dbToUse);
-//        }
+        //        String dbToUse = super.selectDb(assembler, sqlBuilder, param);
+        //        if ((dbToUse!= null)&&dbMap.containsKey(dbToUse)) {
+        //            dbInstance = dbMap.get(dbToUse);
+        //        }
         if (status == 0) {
             dbInstance = selectDb(assembler, sqlBuilder, param);
-//            setTableName(sqlBuilder, param, assembler);
+            //            setTableName(sqlBuilder, param, assembler);
             DbResultSetMapper<Ty> rsMapper = getRsMapper(assembler, sqlBuilder, param);
             try {
                 return getResultImpl(dbInstance, assembler, sqlBuilder, param, rsMapper);
@@ -255,8 +254,8 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
             status = assembler.assembleSql(sqlBuilder, param, type);
         if (param.size() > 0) {
 
-//            final Map<String, Object> map = param.get(0);
-//            if (map != null) {
+            //            final Map<String, Object> map = param.get(0);
+            //            if (map != null) {
             SimpleDbInterface db = selectDb(assembler, sqlBuilder, param);
             if (status == 0) {
                 String sql = sqlBuilder.getSql(null);
@@ -266,9 +265,9 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
                     logger.warn("batch insert has some error");
                 }
                 return ret;
-//                } else {
-//
-//                }
+                //                } else {
+                //
+                //                }
             }
         }
         return null;
@@ -295,9 +294,9 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
     }
 
     protected SimpleDbInterface selectDb(DaoAssembler assembler, SQL sqlBuilder, Map<String, Object> param) {
-//        SimpleDbInterface ret = null;
+        //        SimpleDbInterface ret = null;
         String dbToUse = null;
-//        String tableName = null, dbName = null;
+        //        String tableName = null, dbName = null;
         DataSourceAndSchemaAndTable dst = null;
         if (assembler != null) {
             dst = assembler.selectDb(sqlBuilder, param, type);
@@ -311,7 +310,7 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
 
     protected SimpleDbInterface selectDb(DaoAssembler assembler, SQL sqlBuilder, List<Map<String, Object>> param) {
         String dbToUse = null;
-//        String tableName = null, dbName = null;
+        //        String tableName = null, dbName = null;
         DataSourceAndSchemaAndTable dst = null;
         if (assembler != null) {
             dst = assembler.selectDb(sqlBuilder, param, type);
@@ -370,7 +369,6 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
         }
         return dsToUse;
     }
-
 
 
     protected void buildRawInCluase(SQLSelect sqlBuilder, Map<String, Object> param, String inField, Object fieldClassObj, List indexes) {
@@ -543,7 +541,7 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
                 holder.extParam,
                 holder.extCondition
         );
-//        throw new UnsupportedOperationException("no implements");
+        //        throw new UnsupportedOperationException("no implements");
     }
 
     public <TT extends Object, Tc> List<Tc> selectItemList(SelectParamHolder<Ty, Tt> holder, Class<Tc> tcClass) {
@@ -559,7 +557,7 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
                 holder.extCondition
 
         );
-//        throw new UnsupportedOperationException("no implements");
+        //        throw new UnsupportedOperationException("no implements");
     }
 
     public List<Ty> get(Set<String> selectFields, DaoAssembler assembler, Integer start, Integer count) {

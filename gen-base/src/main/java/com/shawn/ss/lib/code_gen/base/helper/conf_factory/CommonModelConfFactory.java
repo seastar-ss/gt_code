@@ -266,6 +266,7 @@ public class CommonModelConfFactory {
             commonModelDaoDef.setDaoExtendClzName(baseDaoClass);
             commonModelDaoDef.setMapperClzName(CodeConstants.getRSMapperClassName(context.getBasePackage(), table));
             commonModelDaoDef.setPojoMapperClzName(CodeConstants.getMapMapperClassName(context.getBasePackage(), table));
+            commonModelDaoDef.setDaoClzName(CodeConstants.getDaoClassName(context.getBasePackage(), table, null, CodeConstants.TYPE_TABLE_COMMON_TYPE));
             if (dataSources != null) {
                 commonModelDaoDef.setDataSourceNames(dataSources);
             }

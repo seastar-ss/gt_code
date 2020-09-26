@@ -7,6 +7,7 @@ import com.shawn.ss.lib.code_gen.base.helper.ModelBuilderContext;
 //import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseDaoCombineConf;
 import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseDaoConf;
 //import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseSubDaoConf;
+import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseRelationDef;
 import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.FieldInfoInterface;
 import com.shawn.ss.lib.tools.db.dto_base.model.AbstractBaseModel;
@@ -70,12 +71,12 @@ public class ComposedAssemblerBuilder implements CodeBuilderInterface {
         String mainFieldName = mainField.getFieldName();
 
         JMethod method = definedClass.method(JMod.PUBLIC, cm.INT, CodeConstants.LIB_SQL_ASSEMBLE_SQL);
+        addAssembleParam(method, true);
+        //        JMethod assembleMain = definedClass.method(JMod.PROTECTED, cm.INT, CodeConstants.getMethodNameOfMultiDaoAssemble(mainFieldName));
 
-        JMethod assembleMain = definedClass.method(JMod.PROTECTED, cm.INT, CodeConstants.getMethodNameOfMultiDaoAssemble(mainFieldName));
-
-        List<JVar> jVars = addAssembleParam(method, true);
-        addAssembleParam(assembleMain, true);
-        assembleMain.body()._return(JExpr.lit(0));
+        //        List<JVar> jVars = addAssembleParam(method, true);
+        //        addAssembleParam(assembleMain, true);
+        //        assembleMain.body()._return(JExpr.lit(0));
         JBlock body = method.body();
 
         List<_BaseDaoConf> relatedTables = modelMulDaoConf.getRelation();
@@ -90,7 +91,8 @@ public class ComposedAssemblerBuilder implements CodeBuilderInterface {
         //        JBlock jBlock = body._if(JExpr.invoke(CodeConstants.METHOD_ASSEMBLER_GET_INDEX).eq(staticRoundFieldVar[0]))._then();
         //        jBlock._return(CodeConstants.invokeMethodWithParam(assembleMain, jVars));
         for (_BaseDaoConf def : relatedTables) {
-            String fieldName = def.getRelatedDef(modelMulDaoConf.getName()).getFieldName();
+            _BaseRelationDef relatedDef = def.getRelatedDef(modelMulDaoConf.getName());
+            String fieldName = relatedDef.getFieldName();
             //String s = CodeStyleTransformHelper.humpStyleToUnderlineSplittedStyle(fieldName).toUpperCase();
             JFieldVar fieldVar = definedClass.field(
                     CodeConstants.MODE_PUBLIC_STATIC_FINAL,
@@ -100,7 +102,7 @@ public class ComposedAssemblerBuilder implements CodeBuilderInterface {
             );
             staticRoundFieldVar[findex] = fieldVar;
             JMethod subMethod = definedClass.method(JMod.PROTECTED, cm.INT, CodeConstants.getMethodNameOfMultiDaoAssemble(fieldName));
-            addAssembleParam(subMethod, false);
+            List<JVar> jVars = addAssembleParam(subMethod, false);
             subMethod.body()._return(JExpr.lit(0));
             String fieldVarName = CodeConstants.getFieldNameOfMulDaoRNDName(fieldName);
             jBlock = body._if(JExpr.invoke(CodeConstants.METHOD_ASSEMBLER_GET_INDEX).eq(fieldVar))._then();

@@ -49,6 +49,15 @@ public abstract class _BaseDaoConfImpl<T extends _BaseDaoConfImpl> extends Commo
 
     }
 
+    public _BaseDaoConfImpl(String name, TableInfoInterface def, ModelBuilderContext builderContext) {
+        super(name, builderContext);
+        table = def.getTable();
+        db = def.getDb();
+        if (db == null) {
+            db = DbDataTable.getCurrentDb();
+        }
+    }
+
     public ModelBuilderContext getBuilderContext() {
         return builderContext;
     }

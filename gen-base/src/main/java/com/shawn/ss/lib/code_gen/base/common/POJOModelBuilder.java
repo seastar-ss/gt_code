@@ -42,9 +42,7 @@ public class POJOModelBuilder implements CodeBuilderInterface {
     //    Map<String, JFieldVar> allModelFields;
     //    Map<String, JMethod> allGetFields;
     //    Map<String, JMethod> allSetFields;
-
     //    Map<String,JDefinedClass> enumClzz;
-
     //    final boolean selectModel;
     private _BaseModelConf modelDef;
     private final List<FieldInfoInterface> fields;
@@ -63,7 +61,6 @@ public class POJOModelBuilder implements CodeBuilderInterface {
         //        db = info.getDb();
         //        table = info.getTable();
         //        columns = info.getColumns();
-
         if (builderContext == null)
             throw new IllegalArgumentException("code build context is null");
         //        else
@@ -251,6 +248,7 @@ public class POJOModelBuilder implements CodeBuilderInterface {
 
 
     private void buildFeatureMethod() {
+
         AbstractJType ft = cm.directClass("FT");//._(cm.ref(_ObjMapper.class));
         //        JTypeWildcard ft = cm.ref(_ObjMapper.class).(EWildcardBoundMode.EXTENDS);
         //        wildcard.narrow(cm.ref(_ObjMapper.class));
@@ -259,12 +257,16 @@ public class POJOModelBuilder implements CodeBuilderInterface {
         JVar clazz = method.param(cm.ref(Class.class).narrow(ft), "clazz");
         JBlock body = method.body();
         JDefinedClass constantClz = modelDef.getConstant().getConstantClz();
-        body._if(JExpr.dotclass(cm.ref(CommonMapMapper.class)).invoke("isAssignableFrom").arg(clazz))
-                ._then()._return(JExpr.cast(ft, CodeConstants.getCommonFieldMapper(modelDef.getName(), constantClz)));
+        if (modelDef.getModelType() == CodeConstants.TYPE_MODEL_COMMON_TYPE) {
+            body._if(JExpr.dotclass(cm.ref(CommonMapMapper.class)).invoke("isAssignableFrom").arg(clazz))
+                    ._then()._return(JExpr.cast(ft, CodeConstants.getCommonFieldMapper(modelDef.getName(), constantClz)));
+        }
         if (modelDef instanceof _BaseDaoConf) {
             _BaseDaoConf modelDef1 = (_BaseDaoConf) this.modelDef;
-            body._if(JExpr.dotclass(cm.ref(DbResultSetMapper.class)).invoke("isAssignableFrom").arg(clazz))
-                    ._then()._return(JExpr.cast(ft, CodeConstants.getCommonFieldMapper(modelDef1.getName(), constantClz)));
+            if (modelDef1.getDaoType() != _BaseDaoConf.EnumFieldDataSrcType.mulDao) {
+                body._if(JExpr.dotclass(cm.ref(DbResultSetMapper.class)).invoke("isAssignableFrom").arg(clazz))
+                        ._then()._return(JExpr.cast(ft, CodeConstants.getCommonFieldMapper(modelDef1.getName(), constantClz)));
+            }
         }
         body._return(JExpr._null());
     }
