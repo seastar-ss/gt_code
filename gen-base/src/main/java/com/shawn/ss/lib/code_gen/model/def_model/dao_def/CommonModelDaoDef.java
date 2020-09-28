@@ -82,6 +82,7 @@ public class CommonModelDaoDef<T extends CommonModelDaoDef> extends _BaseDaoConf
         if (this.getPojoClzName() == null)
             setPojoClzName(CodeConstants.getModelClassName(builderContext.getBasePackage(), def.getTable(), baseTable));
         dataAttrType = _BaseDaoSqlConf.DataAttrType.LIST_OBJ;
+        dataSrcType = EnumFieldDataSrcType.commonDao;
         setComment(tbInfo.getTableComment());
         //        setPojoClzName(builderContext.getModelVoClassName(def.getTable()));
     }
@@ -109,6 +110,11 @@ public class CommonModelDaoDef<T extends CommonModelDaoDef> extends _BaseDaoConf
     @Override
     public List<_BaseDaoConf> getRelation() {
         return relationDao;
+    }
+
+    @Override
+    public _BaseDaoConf getRelation(int index) {
+        return relationDao == null ? null : relationDao.get(index);
     }
 
     public int sizeOfRelation() {

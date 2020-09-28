@@ -27,6 +27,7 @@ public class MultiModelConfFactory {
     static final Pattern itemPattern = Pattern.compile("([0-9A-Za-z_$]+)");
 
     static final ConcurrentHashMap<String, MultiModelConfFactory> confMaps = new ConcurrentHashMap<>();
+    static final ConcurrentHashMap<String, MultiModelConfFactory> tableConfs = new ConcurrentHashMap<>();
 
     private final String name;
     private final String comment;
@@ -35,11 +36,13 @@ public class MultiModelConfFactory {
     private final Map<String, _BaseDaoConf> confs;
     private final List<String> fields;
 
-    private String mainTable, mainDb, mainField;
+    private volatile String mainTable, mainDb, mainField;
 
-    private String baseAssemblerClass, baseDaoClass;
+    private volatile String baseAssemblerClass, baseDaoClass;
 
-    private boolean buildAbstractDao;
+    private volatile boolean buildAbstractDao;
+
+    private volatile _BaseDaoConf mainConf;
 
     private static class DbTableCol {
         String db, table, col;
@@ -81,6 +84,10 @@ public class MultiModelConfFactory {
         return confMaps.get(key);
     }
 
+    public static MultiModelConfFactory getFactoryByMainTable(Object key) {
+        return tableConfs.get(key);
+    }
+
     public static boolean containsFactory(Object value) {
         return confMaps.containsValue(value);
     }
@@ -90,7 +97,6 @@ public class MultiModelConfFactory {
         this.comment = comment;
         this.mainModelSelectMethod = mainModelSelectMethod;
         this.relationConfs = new ConcurrentHashMap<>(16);
-
         confs = new ConcurrentHashMap<>(16);
         fields = CollectionHelper.newList(16);
     }
@@ -126,6 +132,14 @@ public class MultiModelConfFactory {
     }
 
     public _BaseDaoConf buildConf(ModelBuilderContext context) {
+        return buildConf(context, false);
+    }
+
+    public _BaseDaoConf buildConf(ModelBuilderContext context, boolean flush) {
+        if (!flush && mainConf != null) return mainConf;
+        if (fields.size() <= 1) {
+            throw new IllegalStateException("need at least two fields to construct a multidao , wrong state for configuration:" + name);
+        }
         TableInfo tableInfo = buildTableInfo(context);
         CommonModelDaoDef ret = new CommonModelDaoDef(name, tableInfo, context);
 
@@ -160,6 +174,7 @@ public class MultiModelConfFactory {
             ret.addRelation(baseDaoConf);
         }
         //        ret.setComment(comment);
+        this.mainConf = ret;
         return ret;
     }
 
@@ -192,6 +207,34 @@ public class MultiModelConfFactory {
         return tableInfo;
     }
 
+    private void addMainRelation(String mainField) {
+        relationConfs.put(
+                mainField,
+                new MulDaoRelationDef()
+                        .setMain(true)
+                        .setFieldName(mainField)
+        );
+        tableConfs.put(CodeConstants.buildConfNameFromDbAndTable(mainDb, mainTable), this);
+    }
+
+    private void addSubRelation(String field, boolean isSingle, int batchSize, Map<String, String> additionalCondition, String additionalWhere, DbTableCol[] results, _BaseDaoConf conf) {
+        relationConfs.put(
+                field,
+                new MulDaoRelationDef()
+                        .setMain(false)
+                        .setAdditionalWhere(additionalWhere)
+                        .setSingle(isSingle)
+                        .setBatchSize(batchSize)
+                        .setFieldName(field)
+                        .setFieldInRelatedTable(results[0].col)
+                        .setFieldInThisTable(results[1].col)
+                        .setRelatedField(
+                                conf.getField(results[1].col)
+                        )
+                        .putAllAdditionalCondition(additionalCondition)
+        );
+    }
+
     public MultiModelConfFactory addMainTable(String mainField, String mainDb, String mainTable) {
         if (!fields.isEmpty()) {
             throw new IllegalStateException("add main configuration first for muldao" + name);
@@ -208,18 +251,71 @@ public class MultiModelConfFactory {
         }
         _BaseDaoConf conf1 = (_BaseDaoConf) conf;
         confs.put(mainField, conf1);
-        relationConfs.put(
-                mainField,
-                new MulDaoRelationDef()
-                        .setMain(true)
-                        .setFieldName(mainField)
-        );
+        addMainRelation(mainField);
         fields.add(mainField);
         return this;
     }
 
-    public MultiModelConfFactory addRelatedTable(String field, String condition, boolean isSingle, int batchSize) {
+    public MultiModelConfFactory addMainMultiDao(String name, String mainField) {
+        if (!fields.isEmpty()) {
+            throw new IllegalStateException("add main configuration first for muldao" + name);
+        }
+        MultiModelConfFactory multiModelConfFactory = confMaps.get(name);
+        if (multiModelConfFactory == null) {
+            throw new IllegalStateException("configuration not exist, wrong configuration name :" + name);
+        }
+        _BaseDaoConf baseDaoConf = multiModelConfFactory.mainConf;
+        if (baseDaoConf == null) {
+            throw new IllegalStateException("before use muldao, call buildConf() it first");
+        }
+        confs.put(mainField, baseDaoConf);
+        this.mainDb = multiModelConfFactory.mainDb;
+        this.mainTable = multiModelConfFactory.mainTable;
+        this.mainField = mainField;
+        addMainRelation(mainField);
+        fields.add(mainField);
+        return this;
+    }
 
+    public MultiModelConfFactory addRelatedMultiDao(String field, String condition, String muldaoName, boolean isSingle, int batchSize) {
+        return addRelatedMultiDao(field, condition, muldaoName, isSingle, batchSize, null, null);
+    }
+
+    public MultiModelConfFactory addRelatedMultiDao(
+            String field,
+            String condition,
+            String muldaoName,
+            boolean isSingle,
+            int batchSize,
+            Map<String, String> additionalCondition,
+            String additionalWhere
+    ) {
+        if (fields.isEmpty()) {
+            throw new IllegalStateException("add main configuration first for muldao" + name);
+        }
+        DbTableCol[] results = calRelation(condition, mainDb, mainTable);
+        String key = CodeConstants.buildConfNameFromDbAndTable(results[1].db, results[1].table);
+        MultiModelConfFactory relatedConfFactory = confMaps.get(muldaoName);
+        if (relatedConfFactory == null) {
+            throw new IllegalStateException("no multidao contains " + muldaoName + ", build the a multidao with " + results[1].db + "." + results[1].table + " as main table first");
+        }
+        _BaseDaoConf conf = relatedConfFactory.mainConf;
+
+        if (conf == null) {
+            throw new IllegalStateException("before use muldao, call buildConf() it first");
+        }
+        if (!results[1].table.equals(conf.getTable()) || !results[1].db.equals(conf.getDb())) {
+            throw new IllegalStateException("condition not match multidao main table: expectedd " + conf.getDb() + "." + conf.getTable() + " got " + key);
+        }
+        confs.put(field, conf);
+        addSubRelation(field, isSingle, batchSize, additionalCondition, additionalWhere, results, conf);
+        fields.add(field);
+        
+        return this;
+    }
+
+
+    public MultiModelConfFactory addRelatedTable(String field, String condition, boolean isSingle, int batchSize) {
         return addRelatedTable(field, condition, isSingle, batchSize, null, null);
     }
 
@@ -235,8 +331,7 @@ public class MultiModelConfFactory {
             throw new IllegalStateException("add main configuration first for muldao" + name);
         }
         DbTableCol[] results = calRelation(condition, mainDb, mainTable);
-        DbTableCol tableCol = results[1];
-        String key = CodeConstants.buildConfNameFromDbAndTable(tableCol.db, tableCol.table);
+        String key = CodeConstants.buildConfNameFromDbAndTable(results[1].db, results[1].table);
         _BaseContextConf conf = ConfDataTable.get(key);
         if (!(conf instanceof _BaseDaoConf)) {
             throw new IllegalStateException(key + " may not exist or not been inited, can't add mainTable for " + name);
@@ -244,21 +339,7 @@ public class MultiModelConfFactory {
         _BaseDaoConf relatedConf = (_BaseDaoConf) conf;
 
         confs.put(field, relatedConf);
-        relationConfs.put(
-                field,
-                new MulDaoRelationDef()
-                        .setMain(false)
-                        .setAdditionalWhere(additionalWhere)
-                        .setSingle(isSingle)
-                        .setBatchSize(batchSize)
-                        .setFieldName(field)
-                        .setFieldInRelatedTable(results[0].col)
-                        .setFieldInThisTable(tableCol.col)
-                        .setRelatedField(
-                                relatedConf.getField(tableCol.col)
-                        )
-                        .putAllAdditionalCondition(additionalCondition)
-        );
+        addSubRelation(field, isSingle, batchSize, additionalCondition, additionalWhere, results, relatedConf);
         fields.add(field);
 
         return this;

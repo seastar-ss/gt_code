@@ -327,13 +327,11 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
         buildIfMainModelEmptyTest(body, dataVar, listResult);
 
         if (listResult) {
-
             JForEach forEach = body.forEach(mainModelClass, "model", dataVar);
             JVar model = forEach.var();
             JBlock forEachBody = forEach.body();
             JVar wrapper = forEachBody.decl(wrapperCls, "wrapper", JExpr._new(wrapperCls));
             forEachBody.invoke(wrapper, CodeConstants.getMethodNameOfModelSet(mainModelFieldName)).arg(model);
-            //retVar.invoke("add").arg(wrapper);
             forEachBody.invoke(retVar, "add").arg(wrapper);
         } else {
             body.invoke(retVar, CodeConstants.getMethodNameOfModelSet(mainModelFieldName)).arg(dataVar);
@@ -381,8 +379,8 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
         JVar selectedFieldVar = method.param(holder.selectFields.type(), holder.selectFields.name());
         JVar assemberVar = method.param(holder.otherTableAssembler.type(), holder.otherTableAssembler.name());
         JFieldVar daoField = daoFields.get(table);
-        JFieldRef mainBaseModelColumnStaticRef = CodeConstants.getBaseModelColumnStaticRef(mainModelClass, fieldInMainTable);
-        JFieldRef subBaseModelColumnStaticRef = CodeConstants.getBaseModelColumnStaticRef(subModelClass, fieldInThisTable);
+        JFieldRef mainBaseModelColumnStaticRef = getModelColumnStaticRef(fieldInMainTable, mainConf);
+        JFieldRef subBaseModelColumnStaticRef = getModelColumnStaticRef(fieldInThisTable, conf);
         FieldDataTypeInterface fieldType = CodeConstants.getFieldType(db, table, fieldInThisTable);
         if (fieldType == null) {
             L.warn("not get type of {}.{}.{}", db, table, fieldInMainTable);
@@ -479,8 +477,9 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
          * 生成调用
          */
         JInvocation invoke = null;
+        MethodTypeEnum methodType = getSubSelectMethodType(conf);
         JMethod subDaoMethod = ClassDataTable.getMethod(
-                MethodTypeEnum.DAO_METHOD,
+                methodType,
                 daoField.type().name(),
                 subDaoSelectMethodName
         );
@@ -542,6 +541,28 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
 
     }
 
+    private JFieldRef getModelColumnStaticRef(String fieldInThisTable, _BaseDaoConf conf) {
+        AbstractJClass mclz = null;
+        _BaseDaoConf.EnumFieldDataSrcType daoType = conf.getDaoType();
+        if (daoType == _BaseDaoConf.EnumFieldDataSrcType.commonDao) {
+            mclz = conf.getDeclaredModel();
+            return CodeConstants.getBaseModelColumnStaticRef(mclz, fieldInThisTable);
+        } else {
+            if (daoType == _BaseDaoConf.EnumFieldDataSrcType.mulDao) {
+                _BaseDaoConf relation = conf.getRelation(0);
+                if (relation == null) {
+                    throw new IllegalStateException("muldao not contain main table?" + conf.getName());
+                }
+                return getModelColumnStaticRef(fieldInThisTable, relation);
+            }
+        }
+        throw new IllegalStateException("conf " + conf.getName() + " has no available info , error occured");
+    }
+
+    private MethodTypeEnum getSubSelectMethodType(_BaseDaoConf conf) {
+        return conf.getDaoType() == _BaseDaoConf.EnumFieldDataSrcType.mulDao ? MethodTypeEnum.MUL_DAO_METHOD : MethodTypeEnum.DAO_METHOD;
+    }
+
     private JMethod buildAssembleSubResultToRet(_BaseDaoConf conf, BuildMethodParamHodler holder) {
         _BaseRelationDef def = conf.getRelatedDef(name);
         boolean single = def.isSingle();
@@ -584,8 +605,9 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
         JFieldVar daoField = daoFields.get(table);
         AbstractJClass subModelClass = conf.getDeclaredModel();
         FieldDataTypeInterface mainFieldType = CodeConstants.getFieldType(mainDb, mainTable, fieldInMainTable);
-        JFieldRef mainBaseModelColumnStaticRef = CodeConstants.getBaseModelColumnStaticRef(mainModelClass, fieldInMainTable);
-        JFieldRef subBaseModelColumnStaticRef = CodeConstants.getBaseModelColumnStaticRef(subModelClass, fieldInThisTable);
+        JFieldRef mainBaseModelColumnStaticRef = getModelColumnStaticRef(fieldInMainTable, mainConf);
+        JFieldRef subBaseModelColumnStaticRef = getModelColumnStaticRef(fieldInThisTable, conf);
+
         FieldDataTypeInterface fieldType = CodeConstants.getFieldType(db, table, fieldInThisTable);
         String modelSet = CodeConstants.getMethodNameOfModelSet(def.getFieldName());
         if (fieldType == null) {

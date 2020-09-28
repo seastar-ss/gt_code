@@ -37,6 +37,8 @@ public interface _BaseDaoConf extends _BaseModelConf, _BaseDaoClassNameConf, _Ba
 
     List<_BaseDaoConf> getRelation();
 
+    _BaseDaoConf getRelation(int index);
+
     _BaseRelationDef getRelatedDef(String configName);
 
     EnumFieldDataSrcType getDaoType();

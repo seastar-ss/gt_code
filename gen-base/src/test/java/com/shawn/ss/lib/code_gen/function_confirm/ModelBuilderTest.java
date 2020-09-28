@@ -48,6 +48,7 @@ public class ModelBuilderTest {
         final Set<String> set = CollectionHelper.<String>setBuilder()
                 .add("b_menu")
                 .add("b_user")
+                .add("b_user_info")
                 .add("b_role")
                 .add("b_material")
                 .add("b_organization")
@@ -90,9 +91,10 @@ public class ModelBuilderTest {
         );
         modelBuilderContext.executeInitBaseClazz();
         modelBuilderContext.executeBaseModelAndDaoBuild();
+
         MultiModelConfFactory test = MultiModelConfFactory.newInstance("UserAndOrg", "test", list);
         test.addMainTable("orgUser", "main_data_schema", "b_organization_user");
-        test.addRelatedTable("user", "main_data_schema.b_user.id=main_data_schema.b_organization_user.user_id", true, 1000);
+        //        test.addRelatedTable("user", "main_data_schema.b_user.id=main_data_schema.b_organization_user.user_id", true, 1000);
         test.addRelatedTable(
                 "org",
                 "main_data_schema.b_organization.id=main_data_schema.b_organization_user.org_id",
@@ -113,12 +115,28 @@ public class ModelBuilderTest {
                 "robot_control_system.t_device.id=robot_control_system.t_event.event_device",
                 false,
                 10,
-                CollectionHelper.<String,String>mapBuilder()
-                        .put("device_type","event_device_type")
+                CollectionHelper.<String, String>mapBuilder()
+                        .put("device_type", "event_device_type")
                         .getMap(),
                 " id>0 "
         );
 
+        test.buildConf(modelBuilderContext);
+        MultiModelConfFactory testV3 = MultiModelConfFactory.newInstance("userRoleAndOrg", "testV3", list);
+        testV3.addMainTable("user", "main_data_schema", "b_user");
+        testV3.addRelatedMultiDao(
+                "userOrg",
+                "main_data_schema.b_user.id=main_data_schema.b_organization_user.user_id",
+                "UserAndOrg",
+                false,
+                -1
+        );
+        testV3.addRelatedTable(
+                "info",
+                "main_data_schema.b_user_info.user_id=main_data_schema.b_user.id",
+                false,
+                1000
+        );
 
         modelBuilderContext.executeMultiModelAndDaoBuild();
 
