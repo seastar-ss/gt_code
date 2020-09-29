@@ -164,7 +164,6 @@ public class ModelBuilderContext {
         try {
             ComposedPoModelBuilder modelBuilder = new ComposedPoModelBuilder(conf);
             modelBuilder.buildModel();
-
             ComposedAssemblerBuilder assemblerBuilder = new ComposedAssemblerBuilder(conf);
             assemblerBuilder.buildModel();
 

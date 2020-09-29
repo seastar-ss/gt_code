@@ -4,6 +4,7 @@ import com.helger.jcodemodel.*;
 import com.shawn.ss.gen.api.conf.SelectMethod;
 import com.shawn.ss.gen.api.conf.SelectMethodEnum;
 import com.shawn.ss.lib.code_gen.base.helper.data_store.DbDataTable;
+import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseDaoConf;
 import com.shawn.ss.lib.code_gen.model.def_model.interfaces._BaseModelConf;
 import com.shawn.ss.lib.tools.CodeStyleTransformHelper;
 import com.shawn.ss.lib.tools.CollectionHelper;
@@ -15,6 +16,7 @@ import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.TableInfoInterf
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.model.EnumTypeDef;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.model.FieldDataTypeInterface;
 import com.shawn.ss.lib.tools.db.dto_base.model.AbstractBaseModel;
+import com.shawn.ss.lib.tools.service_assemble.AbstractDaoAssembler;
 
 import java.util.*;
 import java.util.regex.Pattern;
@@ -76,6 +78,7 @@ public class CodeConstants {
     public static final String METHOD_MODEL_GET_FIELD_CONFIG = "getFieldConfig";
     public static final String METHOD_MODEL_IS_EMPTY = "isEmpty";
 
+
     public static final String METHOD_DAO_GET_BY_ID = "getOneById";
     public static final String METHOD_DAO_GET_BY_IDS = "getById";
     public static final String METHOD_DAO_GET_ALL = "get";
@@ -128,6 +131,10 @@ public class CodeConstants {
     public static final String METHOD_ASSEMBLER_INCREASE_INDEX = "increaseIndex";
     public static final String METHOD_ASSEMBLER_SET_INDEX = "setIndex";
     public static final String METHOD_ASSEMBLER_GET_INDEX = "getIndex";
+    public static final String METHOD_ASSEMBLER_CLEAR_DATA = "clearData";
+    public static final String METHOD_ASSEMBLER_REGISTER_ASSEMBLER_PREFIX = "registerAssembler";
+    public static final String METHOD_ASSEMBLER_OBTAIN_ASSEMBLER_PREFIX = "obtainAssembler";
+
 
     public static final String METHOD_SERVICE_GET_DATA = "getData";
     public static final String METHOD_SERVICE_GET_MAIN_DATA_PREFIX = "getMainDataVia";
@@ -816,6 +823,21 @@ public class CodeConstants {
         String modelSimpleName = CodeStyleTransformHelper.underlineSplittedStyleToHumpStyle(table);
         String prefix = basePackage + ".dto." + (isBase ? "basepo." : "composedpo.") + CLASS_NAME_MODEL_PREFIX;
         return (prefix + CodeStyleTransformHelper.upperFirstCase(modelSimpleName)) + (baseTable == null ? "" : "Ext");
+    }
+
+    public static AbstractJClass getAssemblerClzByConf(JCodeModel cm, _BaseDaoConf def) {
+        String assemblerClzName = def.getAssemblerClzName();
+        AbstractJClass assemblerClz = null;
+        if (assemblerClzName != null) {
+            assemblerClz = cm.ref(assemblerClzName);
+        } else {
+            assemblerClz = cm.ref(AbstractDaoAssembler.class);
+        }
+        return assemblerClz;
+    }
+
+    public static String getAssemblerInstanceMethodName(String name) {
+        return METHOD_ASSEMBLER_OBTAIN_ASSEMBLER_PREFIX + CodeStyleTransformHelper.upperFirstCase(name);
     }
 
 

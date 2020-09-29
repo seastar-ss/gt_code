@@ -1,7 +1,7 @@
 package com.shawn.ss.build_test.common.sample;
 
 import com.shangde.ent_portal.logical.dao.basedao.DAOTEvent;
-import com.shangde.ent_portal.logical.dto.basepo.ResultSetMapperTEvent;
+import com.shangde.ent_portal.logical.dto.mappers.ResultSetMapperTEvent;
 
 import java.util.List;
 

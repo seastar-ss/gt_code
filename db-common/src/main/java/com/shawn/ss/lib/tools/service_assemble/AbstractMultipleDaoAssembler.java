@@ -1,9 +1,9 @@
 package com.shawn.ss.lib.tools.service_assemble;
 
+import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.db.api.interfaces.mappers.db.DbResultSetMapper;
 import com.shawn.ss.lib.tools.db.dto_base.model.AbstractBaseModel;
 import com.shawn.ss.lib.tools.sql_code_gen.api.SQL;
-import com.shawn.ss.lib.tools.structure.FIFOList;
 
 import java.util.List;
 import java.util.Map;
@@ -12,15 +12,40 @@ import java.util.Set;
 /**
  * Created by ss on 2018/10/5.
  */
-public abstract class AbstractMultipleDaoAssembler extends AbstractDaoAssembler implements DaoAssembler,SQLLoopStatus {
+public abstract class AbstractMultipleDaoAssembler extends AbstractDaoAssembler implements DaoAssembler, SQLLoopStatus {
 
-//    final boolean isMultiple;
+    //    final boolean isMultiple;
 
     protected final BaseSQLLoopStatus status;
 
+    protected volatile Map<Integer, AbstractDaoAssembler> assemblers;
+
     protected AbstractMultipleDaoAssembler() {
         super(true);
-        status=new BaseSQLLoopStatus();
+        status = new BaseSQLLoopStatus();
+    }
+
+    private void testAndBuildParams() {
+        if (assemblers == null) {
+            synchronized (this) {
+                assemblers = CollectionHelper.newMap();
+            }
+        }
+    }
+
+    protected void registerAssembler(Integer key, AbstractDaoAssembler assembler) {
+        testAndBuildParams();
+        assemblers.put(key, assembler);
+    }
+
+    protected AbstractDaoAssembler obtainAssembler(Integer key) {
+        if (assemblers == null) return null;
+        AbstractDaoAssembler abstractDaoAssembler = assemblers.get(key);
+        if (abstractDaoAssembler instanceof AbstractMultipleDaoAssembler) {
+            AbstractMultipleDaoAssembler ma = (AbstractMultipleDaoAssembler) abstractDaoAssembler;
+            ma.putAllParam(this.getAdditionalParams());
+        }
+        return abstractDaoAssembler;
     }
 
     @Override
@@ -29,7 +54,7 @@ public abstract class AbstractMultipleDaoAssembler extends AbstractDaoAssembler 
     }
 
     @Override
-    public int  assembleSql(SQL sql, List<Map<String, Object>> params, Class<? extends AbstractBaseModel> tClazz) {
+    public int assembleSql(SQL sql, List<Map<String, Object>> params, Class<? extends AbstractBaseModel> tClazz) {
         return 0;
     }
 
@@ -87,5 +112,16 @@ public abstract class AbstractMultipleDaoAssembler extends AbstractDaoAssembler 
     @Override
     public boolean isMultiple() {
         return isMultiple;
+    }
+
+    protected void clearData() {
+        if (!CollectionHelper.isCollectionEmpty(assemblers)) {
+            assemblers.forEach((k, v) -> {
+                if (v instanceof AbstractMultipleDaoAssembler) {
+                    ((AbstractMultipleDaoAssembler) v).clearParam();
+                }
+            });
+        }
+        clearParam();
     }
 }

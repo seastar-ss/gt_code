@@ -345,18 +345,20 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
         _BaseRelationDef def = conf.getRelatedDef(name);
         String fieldInMainTable = def.getFieldInRelatedTable();
         String fieldInThisTable = def.getFieldInThisTable();
+        boolean single = def.isSingle();
+        String fieldName = def.getFieldName();
+        AbstractJClass subModelClass = conf.getDeclaredModel();
+
         JVar listVar = null;
         JVar instanceVar = null;
         //        boolean isId = def.isFieldInThisTableIsId();
-        boolean single = def.isSingle();
-        AbstractJClass subModelClass = conf.getDeclaredModel();
         SelectMethodEnum subDaoSelectMethod = getSubSelectMethod(def, holder);
         String subDaoSelectMethodName = subDaoSelectMethod.getMethodName();
         String mName;
 
         mName = StringHelper.concat(
                 CodeConstants.METHOD_SERVICE_GET_SUB_DATA_PREFIX,
-                CodeStyleTransformHelper.upperFirstCase(def.getFieldName()), (single ? "" : "s"), "Via",
+                CodeStyleTransformHelper.upperFirstCase(fieldName), (single ? "" : "s"), "Via",
                 CodeStyleTransformHelper.upperFirstCase(subDaoSelectMethodName)
         );
 
@@ -377,7 +379,8 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
         JVar dataVar = method.param(holder.mainTableRetCls, "mainData");
         JVar retVar = method.param(retType, "ret");
         JVar selectedFieldVar = method.param(holder.selectFields.type(), holder.selectFields.name());
-        JVar assemberVar = method.param(holder.otherTableAssembler.type(), holder.otherTableAssembler.name());
+        JVar assemberOriginVar = method.param(holder.otherTableAssembler.type(), holder.otherTableAssembler.name());
+        JVar assemberVar = null;
         JFieldVar daoField = daoFields.get(table);
         JFieldRef mainBaseModelColumnStaticRef = getModelColumnStaticRef(fieldInMainTable, mainConf);
         JFieldRef subBaseModelColumnStaticRef = getModelColumnStaticRef(fieldInThisTable, conf);
@@ -401,7 +404,17 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
          * 生成必要参数
          *
          */
+        {
+            AbstractJClass assemblerClz = CodeConstants.getAssemblerClzByConf(cm, conf);
+            JInvocation invoke = JExpr.invoke(assemberOriginVar, CodeConstants.getAssemblerInstanceMethodName(fieldName));
+            assemberVar = subBody.decl(assemblerClz, "am", invoke);
+            if (conf.getDaoType() == _BaseDaoConf.EnumFieldDataSrcType.mulDao) {
 
+                //                subBody.assign(assemberVar, JExpr.invoke(assemberOriginVar, CodeConstants.getAssemblerInstanceMethodName(fieldName)));
+            } else if (conf.getDaoType() == _BaseDaoConf.EnumFieldDataSrcType.commonDao) {
+                subBody._if(assemberVar.eq(JExpr._null()))._then().assign(assemberVar, assemberOriginVar);
+            }
+        }
 
         if (subDaoSelectMethod.isCondition()) {
             instanceVar = subBody.decl(subModelClass, "instance", JExpr._new(subModelClass));
@@ -492,9 +505,9 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
                 invoke.arg(assemberVar);
             } else if (type.isAssignableFrom(selectedFieldVar.type()) && name.equals(CodeConstants.PARAM_DAO_SELECTED_FIELDS)) {
                 invoke.arg(selectedFieldVar);
-            } else if (type.isAssignableFrom(CodeConstants.buildNarrowedClass(cm, List.class, fieldClzRef))) {
+            } else if (type.isAssignableFrom(CodeConstants.buildNarrowedClass(cm, List.class, fieldClzRef)) && listVar != null) {
                 invoke.arg(listVar);
-            } else if (type.name().equals(subModelClass.name()) && name.equals(CodeConstants.PARAM_DAO_INSTANCE)) {
+            } else if (type.name().equals(subModelClass.name()) && name.equals(CodeConstants.PARAM_DAO_INSTANCE) && instanceVar != null) {
                 invoke.arg(instanceVar);
             } else if (type.isAssignableFrom(cm.ref(String.class)) && name.equals(CodeConstants.PARAM_DAO_INDEX_IN_FIELD)) {
                 invoke.arg(subBaseModelColumnStaticRef);
@@ -934,7 +947,10 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
             daoFields = CollectionHelper.newMap();
             for (_BaseDaoConf def : relatedTables) {
                 String table = def.getTable();
-                String tbName = CodeConstants.getClazzNameFromTableName(table);
+                String tbName;
+                boolean b = def.getDaoType() == _BaseDaoConf.EnumFieldDataSrcType.commonDao;
+
+                tbName = b ? CodeConstants.getClazzNameFromTableName(table) : def.getName();
                 //                defs.put(table,modelDef);
                 //                AbstractJClass daoClass = cm.ref(builderContext.getDaoClassName(table));
                 //                daos.put(table, daoClass);
@@ -942,7 +958,7 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
                 //                models.put(table, modelClass);
                 AbstractJClass daoClass = def.getDeclaredDao();
                 Map<String, JFieldVar> fields = definedClass.fields();
-                String daoName = "dao" + tbName;
+                String daoName = (b ? "dao" : "mulDao") + tbName;
 
                 JFieldVar fieldVar;
                 if (fields.containsKey(daoName)) {
