@@ -11,18 +11,21 @@ import java.util.Map;
  */
 public interface CommonMapMapper<T extends AbstractBaseModel> extends _APIObj {
     T fromMap(Map<byte[], byte[]> map);
-    T fromCommonMap(Map<String,Object> obj);
+
+    T fromCommonMap(Map<String, Object> obj);
 
     Map<byte[], byte[]> toMap(T obj);
-    Map<String,Object> toCommonMap(T obj);
+
+    Map<String, Object> toCommonMap(T obj);
 
     <TT> TT getField(String field, T dto);
 
-    void setField(String field,T dto, byte[] bs);
-    public<TT> void setField(String field, T instance, TT value);
+    void setField(String field, T dto, byte[] bs);
+
+    <TT> void setField(String field, T instance, TT value);
 
     @Override
-    default <T extends _APIObj> T getFeature(Class<T> clazz){
+    default <T extends _APIObj> T buildFeatureInstance(Class<T> clazz) {
         return (T) this;
     }
 }

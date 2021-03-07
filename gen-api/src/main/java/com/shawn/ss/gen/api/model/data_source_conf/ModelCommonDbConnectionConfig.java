@@ -8,6 +8,7 @@ public class ModelCommonDbConnectionConfig {
     String user;
     String password;
     String name;
+    String driverClass;
     boolean master=true;
 
     public String getUrl() {
@@ -48,6 +49,15 @@ public class ModelCommonDbConnectionConfig {
 
     public void setMaster(boolean master) {
         this.master = master;
+    }
+
+    public String getDriverClass() {
+        return driverClass;
+    }
+
+    public ModelCommonDbConnectionConfig setDriverClass(String driverClass) {
+        this.driverClass = driverClass;
+        return this;
     }
 
     //    public String getUrl() {

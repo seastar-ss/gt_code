@@ -27,9 +27,12 @@ import java.io.IOException;
 import java.net.*;
 import java.nio.charset.Charset;
 import java.util.*;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.zip.ZipOutputStream;
 
 public class HttpHelper implements InitializingBean {
     public static final Logger L = LoggerFactory.getLogger(HttpHelper.class);
@@ -358,6 +361,8 @@ public class HttpHelper implements InitializingBean {
                 builder.addNetworkInterceptor(inc);
             }
         }
+//        final OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        builder.dispatcher(new Dispatcher(new ThreadPoolExecutor(2,2,1000,TimeUnit.MILLISECONDS,new ArrayBlockingQueue<>(2000))));
         final OkHttpClient build = builder
                 .build();
         interceptors = builder.interceptors();

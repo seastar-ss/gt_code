@@ -1,12 +1,10 @@
 package com.shawn.ss.lib.tools.db.impl;
 
 
+import com.shawn.ss.gen.api.common_constants.Constants;
 import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.StringHelper;
 import com.shawn.ss.lib.tools.db.api.interfaces.db_operation.dao.SimpleDbInterface;
-import com.shawn.ss.lib.tools.sql_code_gen.api.SQL;
-import com.shawn.ss.lib.tools.sql_code_gen.api.SQLBuilder;
-import com.shawn.ss.lib.tools.sql_code_gen.api.expressions.Expr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
@@ -42,10 +40,21 @@ public class DbManager extends NamedParameterJdbcTemplate implements SimpleDbInt
     final static String KEY_WORD_DELETE = "delete";
     final static String KEY_WORD_WHERE = " where ";
     final static Pattern SQL_MODIFY_PATTERN_KEY_WORD = Pattern.compile("\\s+where\\s+[0-9_a-z.]+\\s*([=><]+|(\\s+in\\s+)|(\\s+between\\s+))");
-
+    final String dsName;
 
     public DbManager(DataSource dataSource) {
         super(dataSource);
+        dsName = Constants.DEFAULT_DATASOURCE_KEY;
+    }
+
+    public DbManager(DataSource dataSource, String dsName) {
+        super(dataSource);
+        this.dsName = dsName;
+    }
+
+    @Override
+    public String getDsName() {
+        return dsName;
     }
 
     @Override
@@ -259,8 +268,8 @@ public class DbManager extends NamedParameterJdbcTemplate implements SimpleDbInt
     @Override
     protected ParsedSql getParsedSql(String sql) {
         String checkSql = sql.toLowerCase();
-        if (!checkSql.startsWith("select ") && !checkSql.startsWith(KEY_WORD_UPDATE) && !checkSql.startsWith(KEY_WORD_DELETE) && !checkSql.startsWith(KEY_WORD_INSERT))
-            logger.info("sql executed:" + sql);
+//        if (!checkSql.startsWith("select ") && !checkSql.startsWith(KEY_WORD_UPDATE) && !checkSql.startsWith(KEY_WORD_DELETE) && !checkSql.startsWith(KEY_WORD_INSERT))
+        logger.debug("sql executed:" + sql);
         return super.getParsedSql(sql);
     }
 

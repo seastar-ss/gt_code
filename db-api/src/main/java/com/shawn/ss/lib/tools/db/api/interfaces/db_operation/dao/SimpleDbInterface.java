@@ -30,6 +30,9 @@ public interface SimpleDbInterface extends NamedParameterJdbcOperations {
             return query;
         }
     }
+
+    String getDsName();
+
     Long insert(String sql, Map<String, Object> param);
     int batchInsert(String sql, List<Map<String, Object>> params);
 

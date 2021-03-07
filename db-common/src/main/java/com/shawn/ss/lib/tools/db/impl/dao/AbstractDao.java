@@ -1,5 +1,6 @@
 package com.shawn.ss.lib.tools.db.impl.dao;
 
+import com.shawn.ss.gen.api.common_constants.Constants;
 import com.shawn.ss.lib.tools.CollectionHelper;
 import com.shawn.ss.lib.tools.StringHelper;
 import com.shawn.ss.lib.tools.TypeConstantHelper;
@@ -16,17 +17,18 @@ import com.shawn.ss.lib.tools.sql_code_gen.api.SQL;
 import com.shawn.ss.lib.tools.sql_code_gen.api.SQLSelect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.NamedThreadLocal;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements DaoInterface<Ty, Tt> {
-
 
     static final Logger logger = LoggerFactory.getLogger(AbstractDao.class);
 
@@ -53,9 +55,25 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
 
     private volatile DbResultSetMapper<Ty> defaultRSMapper;
 
+    @Autowired
+    List<SimpleDbInterface> dbInterfaces;
+
     protected AbstractDao(Class<Ty> type, DbResultSetMapper<Ty> defaultRSMapper) {
         this.type = type;
         this.defaultRSMapper = defaultRSMapper;
+    }
+
+    @PostConstruct
+    public void init() {
+        if (dataSourceMap.isEmpty() && !CollectionHelper.isCollectionEmpty(dbInterfaces)) {
+            synchronized (AbstractDao.class) {
+                if (dataSourceMap.isEmpty()) {
+                    for (SimpleDbInterface dbInterface : dbInterfaces) {
+                        dataSourceMap.put(dbInterface.getDsName(), dbInterface);
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -106,11 +124,6 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
         SimpleDbInterface dbInstance = null;
         if (status == 0) {
             dbInstance = selectDb(assembler, sqlBuilder, param);
-            //            setTableName(sqlBuilder, param, assembler);
-            //        String dbToUse = super.selectDb(assembler, sqlBuilder, param);
-            //        if ((dbToUse!= null)&&dbMap.containsKey(dbToUse)) {
-            //            dbInstance = dbMap.get(dbToUse);
-            //        }
             return getSingleResultImpl(dbInstance, assembler, sqlBuilder, param, tClass);
         } else {
             return null;
@@ -265,9 +278,6 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
                     logger.warn("batch insert has some error");
                 }
                 return ret;
-                //                } else {
-                //
-                //                }
             }
         }
         return null;
@@ -357,7 +367,7 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
             final String currentQueryDb = getCurrentQueryDs();
             if (!StringHelper.isEmpty(currentQueryDb)) {
                 dsToUse = currentQueryDb;
-                setCurrentQueryDB(null);
+                setCurrentQueryDataSource(null);
             }
         }
         if (!StringHelper.isEmpty(tableName)) {
@@ -367,11 +377,11 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
                 sqlBuilder.table(dbName, tableName);
             }
         }
-        return dsToUse;
+        return dsToUse == null ? Constants.DEFAULT_DATASOURCE_KEY : dsToUse;
     }
 
 
-    protected void buildRawInCluase(SQLSelect sqlBuilder, Map<String, Object> param, String inField, Object fieldClassObj, List indexes) {
+    protected void buildRawInClause(SQLSelect sqlBuilder, Map<String, Object> param, String inField, Object fieldClassObj, List indexes) {
         if (fieldClassObj instanceof Class) {
             Class fieldClass = ((Class) fieldClassObj);
             param.put("fields", indexes);
@@ -956,12 +966,12 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
         throw new UnsupportedOperationException("no implements");
     }
 
-    public Integer delete(Ty instance, Set<String> conditionField, DaoAssembler assembler) {
+    public Integer delete(Ty instance, DaoAssembler assembler) {
         throw new UnsupportedOperationException("no implements");
     }
 
-    public Integer delete(Ty instance, Set<String> conditionField) {
-        throw new UnsupportedOperationException("no implements");
+    public Integer delete(Ty instance) {
+        return delete(instance, null);
     }
 
     public Integer deleteById(Tt id, DaoAssembler assembler) {

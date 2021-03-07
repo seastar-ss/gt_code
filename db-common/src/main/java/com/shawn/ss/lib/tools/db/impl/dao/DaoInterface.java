@@ -246,9 +246,9 @@ public interface DaoInterface<Ty extends AbstractBaseModel, Tt>
 
     Integer updateByIds(Ty instance, Set<Integer> ids);
 
-    Integer delete(Ty instance, Set<String> conditionField, DaoAssembler assembler);
+    Integer delete(Ty instance, DaoAssembler assembler);
 
-    Integer delete(Ty instance, Set<String> conditionField);
+    Integer delete(Ty instance);
 
     Integer deleteById(Tt id, DaoAssembler assembler);
 

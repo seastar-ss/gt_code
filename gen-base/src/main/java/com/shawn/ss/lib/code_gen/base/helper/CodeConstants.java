@@ -57,7 +57,7 @@ public class CodeConstants {
     public static final String FIELD_MULTIDAO_RND_PREFIX = "RND_OF_";
 
 
-    public static final String FIELD_DEFAULT_START = "DEFAULT_START", FIELD_DEFAULT_COUNT = "DEFUALT_COUNT";
+    public static final String FIELD_DEFAULT_START = "DEFAULT_START", FIELD_DEFAULT_COUNT = "DEFAULT_COUNT";
     public static final String KEY_WORD_FOR_DATA_SOURCE = "DATA_SOURCE_OF_";
 
     /*
@@ -120,9 +120,9 @@ public class CodeConstants {
     public static final String METHOD_DAO_GET_RESULT_SINGLE_LIST = "getSingleResults";
     public static final String METHOD_DAO_BUILD_IN_CLUASE = "buildInClause";
     public static final String METHOD_DAO_BUILD_RAW_WHERE = "buildRawWhere";
-    public static final String METHOD_DAO_BUILD_SELECT_FIELD_CLUASE = "buildSelectFieldCluase";
-    public static final String METHOD_DAO_BUILD_CONDITION_CLUASE = "buildConditionCluase";
-    public static final String METHOD_DAO_BUILD_RAW_IN_CLUASE = "buildRawInCluase";
+    public static final String METHOD_DAO_BUILD_SELECT_FIELD_CLUASE = "buildSelectFieldClause";
+    public static final String METHOD_DAO_BUILD_CONDITION_CLUASE = "buildConditionClause";
+    public static final String METHOD_DAO_BUILD_RAW_IN_CLUASE = "buildRawInClause";
 
     public static final String METHOD_DAO_PARENT_UPDATE = "update";
     public static final String METHOD_DAO_PARENT_INSERT = "insert";
@@ -425,19 +425,19 @@ public class CodeConstants {
         tp = tp.toUpperCase();
         //        cm.ref("").staticInvoke()
         if (tp.startsWith("TINYINT") || tp.startsWith("SMALLINT") || tp.startsWith("INT") || tp.startsWith("MEDIUMINT")) {
-            //            return cm.ref(CollectionBuilder.class).staticInvoke("getInt").arg(expr);
+            return cm.ref(CollectionHelper.class).staticInvoke("getInt").arg(expr);
         } else if (tp.startsWith("BIGINT")) {
-            //            return cm.ref(CollectionBuilder.class).staticInvoke("getLong").arg(expr);
+            return cm.ref(CollectionHelper.class).staticInvoke("getLong").arg(expr);
         } else if (tp.startsWith("DECIMAL") || tp.startsWith("FLOAT") || tp.startsWith("DOUBLE")) {
-            //            return cm.ref(CollectionBuilder.class).staticInvoke("getDouble").arg(expr);
+            return cm.ref(CollectionHelper.class).staticInvoke("getDouble").arg(expr);
         } else if (tp.startsWith("DATE") || tp.startsWith("TIME")) {
-            //            return cm.ref(CollectionBuilder.class).staticInvoke("getDate").arg(expr);
+            return cm.ref(CollectionHelper.class).staticInvoke("getDate").arg(expr);
         } else if (tp.contains("CHAR") || tp.contains("TEXT")) {
-            //            return cm.ref(CollectionBuilder.class).staticInvoke("getString").arg(expr);
+            return cm.ref(CollectionHelper.class).staticInvoke("getString").arg(expr);
         } else if (tp.contains("BLOB") || tp.contains("BINARY")) {
-            //            return cm.ref(CollectionBuilder.class).staticInvoke("getString").arg(expr);
+            return cm.ref(CollectionHelper.class).staticInvoke("getString").arg(expr);
         } else if (tp.contains("BOOL")) {
-            //            return cm.ref(CollectionBuilder.class).staticInvoke("getInt").arg(expr);
+            return cm.ref(CollectionHelper.class).staticInvoke("getInt").arg(expr);
         }
         return null;
     }

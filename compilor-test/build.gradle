@@ -168,6 +168,7 @@ tasks.withType(org.gradle.api.tasks.compile.JavaCompile).each {
             precp=item
         }
 }
+
 if(cp!=null && precp!=null)
     cp.dependsOn precp;
 

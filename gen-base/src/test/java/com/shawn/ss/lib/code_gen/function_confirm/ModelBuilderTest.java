@@ -35,6 +35,66 @@ public class ModelBuilderTest {
             .getList();
 
     @Test
+    public void testGenMigrationModel() throws IOException{
+        Properties p = new Properties();
+        p.load(new FileReader("db.properties"));
+        final String TEST_POS_DEV = "/Users/shishengb18701shishengcorp.netease.com/Documents/project/server_for_work/omap_migration_tool/src/main/java";
+        ModelBuilderContext modelBuilderContext = ModelBuilderContext.newInstance("com.netease.cowork.tools.ynote.omap_migration_tool", TEST_POS_DEV);
+        DBConnectionHelper connectionMaster = modelBuilderContext.buildConnection("main_schema",
+                p.getProperty("jdbc.url"), p.getProperty("jdbc.username"), p.getProperty("jdbc.password"),
+                p.getProperty("jdbc.driverClassName")
+        );
+
+//        final Set<String> set = CollectionHelper.<String>setBuilder()
+//                .add("b_menu")
+//                .add("b_user")
+//                .add("b_user_info")
+//                .add("b_role")
+//                .add("b_material")
+//                .add("b_organization")
+//                .add("b_organization_user")
+//                .getSet();
+        modelBuilderContext.addDb(connectionMaster, new DbModelConf().setSlave(false)
+//                .setIncludingPattern(
+//                        set
+//                )
+                .setDb("data_migration")
+                .setIgnoreTbPattern(CollectionHelper.<String>setBuilder().add("ent_.*").add(".*\\d+$").getSet()));
+//        DBConnectionHelper connection = modelBuilderContext.buildConnection("main_schema_slave",
+//                p.getProperty("jdbc.url"), p.getProperty("jdbc.username"), p.getProperty("jdbc.password"),
+//                p.getProperty("jdbc.driverClassName")
+//        );
+//        modelBuilderContext.addDb(
+//                connection,
+//                new DbModelConf().setSlave(true).setDb("main_schema")
+////                .setIgnoreTbPattern(CollectionHelper.<String>setBuilder().add("ent_.*").add(".*\\d+$").getSet())
+//                )
+//        ;
+//        DBConnectionHelper wikiconnection = modelBuilderContext.buildConnection("wiki_master",
+//                p.getProperty("ent_activities.jdbc.url"), p.getProperty("ent_activities.jdbc.username"),
+//                p.getProperty("ent_activities.jdbc.password"),
+//                p.getProperty("jdbc.driverClassName")
+//        );
+//        modelBuilderContext.addDb(wikiconnection, new DbModelConf().setSlave(false)
+//                .setIncludingPattern(
+//                        CollectionHelper.<String>setBuilder()
+//                                .add("t_device")
+//                                .add("t_event")
+//                                .add("t_task")
+//                                .add("t_device_task")
+//                                .add("t_mall_area")
+//                                .getSet()
+//                ).setDb("robot_control_system")
+//                .setIgnoreTbPattern(
+//                        CollectionHelper.<String>setBuilder().add("ent_.*").add(".*\\d+$").getSet()
+//                )
+//        );
+        modelBuilderContext.executeInitBaseClazz();
+        modelBuilderContext.executeBaseModelAndDaoBuild();
+        modelBuilderContext.executeWriteModel();
+    }
+
+    @Test
     public void testGenSqlDbModel() throws IOException {
         Properties p = new Properties();
         p.load(new FileReader("db-ny.properties"));

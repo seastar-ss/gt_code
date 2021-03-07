@@ -19,7 +19,7 @@ public abstract class AbstractBaseModel implements Serializable, _APIObj {
 
 //    public final static long serialVersionUID ;
 
-    public static final int DEFAULT_START = 0, DEFUALT_COUNT = 1000;
+    public static final int DEFAULT_START = 0, DEFAULT_COUNT = 1000;
 
     static {
 
@@ -60,7 +60,7 @@ public abstract class AbstractBaseModel implements Serializable, _APIObj {
     }
 
     @Override
-    public <FT extends _APIObj> FT getFeature(Class<FT> clazz) {
+    public <FT extends _APIObj> FT buildFeatureInstance(Class<FT> clazz) {
         return null;
     }
 

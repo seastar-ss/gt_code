@@ -484,8 +484,6 @@ public class MultiDaoBuilder extends AbstractDaoBuilder implements CodeBuilderIn
         /**
          * 处理批次
          */
-
-
         /**
          * 生成调用
          */

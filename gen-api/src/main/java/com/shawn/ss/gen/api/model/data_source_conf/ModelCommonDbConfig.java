@@ -41,7 +41,6 @@ public class ModelCommonDbConfig {
 
     public void setTimeout(long timeout) {
         this.timeout = timeout;
-//        return this;
     }
 
     public long getIdleTimeout() {
@@ -50,7 +49,6 @@ public class ModelCommonDbConfig {
 
     public void setIdleTimeout(long idleTimeout) {
         this.idleTimeout = idleTimeout;
-//        return this;
     }
 
     public long getMaxLifetime() {
