@@ -21,8 +21,7 @@
  */
  
 options{
-    IGNORE_CASE=true ;
-    IGNORE_CASE=true ;
+    IGNORE_CASE=true;
     STATIC=false;
     TOKEN_EXTENDS="net.sf.jsqlparser.AbstractToken";
 //  DEBUG_LOOKAHEAD= true ;
@@ -253,7 +252,7 @@ TOKEN: /* NAMED PARAM */
 }
 
 Statement Statement() :
-{ Statement stm;}
+{ Statement stm; }
 {
 	(
     stm = Select()
@@ -274,9 +273,10 @@ Statement Statement() :
     )
     [";"]
     <EOF>
-    { return stm; }
+    {
+        return stm;
+    }
 }
-
 
 Update Update():
 { 

@@ -3,13 +3,13 @@ package com.shawn.ss.gen.api.model.data_source_conf;
 
 import java.util.Properties;
 
-public class ModelCommonDbConnectionConfig {
+public class ModelCommonDbConnectionConfig extends ModelCommonDbConfig {
     String url;
     String user;
     String password;
     String name;
     String driverClass;
-    boolean master=true;
+    boolean master = true;
 
     public String getUrl() {
         return url;
@@ -105,12 +105,12 @@ public class ModelCommonDbConnectionConfig {
 //        return this;
 //    }
 
-    public Properties toProperties(){
-        Properties properties=new Properties();
+    public Properties toConnectionProperties() {
+        Properties properties = new Properties();
 
-        properties.setProperty("user",this.getUser());
-        properties.setProperty("url",this.getUrl());
-        properties.setProperty("password",this.getPassword());
+        properties.setProperty("user", this.getUser());
+        properties.setProperty("jdbcUrl", this.getUrl());
+        properties.setProperty("password", this.getPassword());
 //        properties.setProperty("user",this.getUser());
         return properties;
     }

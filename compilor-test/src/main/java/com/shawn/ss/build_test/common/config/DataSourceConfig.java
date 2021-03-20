@@ -42,7 +42,7 @@ public class DataSourceConfig {
     }
 
     public void init() {
-        Map<String, SimpleDbInterface> dbHandlers = HelperFactory.getDbHandler(config);
+        Map<String, SimpleDbInterface> dbHandlers = HelperFactory.getDbHandler("",config);
         Set<Map.Entry<String, SimpleDbInterface>> entries = dbHandlers.entrySet();
         for(Map.Entry<String, SimpleDbInterface> entry:entries){
             String key = entry.getKey();

@@ -1,12 +1,22 @@
 package com.shawn.ss.gen.api.model.data_source_conf;
 
 public class ModelCommonDbConfig {
-    long timeout;
-    long idleTimeout;
-    long maxLifetime;
+    long timeout = 120000;
+    long idleTimeout = 120000;
+    long maxLifetime = 12000;
     String connectionTestQuery;
-    int maximumPoolSize;
-    String dataSouceClassName;
+    int maximumPoolSize = Runtime.getRuntime().availableProcessors();
+    String dataSourceClassname;
+    String diverClassName;
+
+    public String getDiverClassName() {
+        return diverClassName;
+    }
+
+    public ModelCommonDbConfig setDiverClassName(String diverClassName) {
+        this.diverClassName = diverClassName;
+        return this;
+    }
 
     public String getConnectionTestQuery() {
         return connectionTestQuery;
@@ -26,12 +36,12 @@ public class ModelCommonDbConfig {
 //        return this;
     }
 
-    public String getDataSouceClassName() {
-        return dataSouceClassName;
+    public String getDataSourceClassname() {
+        return dataSourceClassname;
     }
 
-    public void setDataSouceClassName(String dataSouceClassName) {
-        this.dataSouceClassName = dataSouceClassName;
+    public void setDataSourceClassname(String dataSourceClassname) {
+        this.dataSourceClassname = dataSourceClassname;
 //        return this;
     }
 

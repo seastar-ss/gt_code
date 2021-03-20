@@ -575,15 +575,15 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
     }
 
     public List<Ty> get(Set<String> selectFields, Integer start, Integer count) {
-        throw new UnsupportedOperationException("no implements");
+        return get(selectFields, null, start, count);
     }
 
     public List<Ty> get(Integer start, Integer count) {
-        throw new UnsupportedOperationException("no implements");
+        return get(null, null, start, count);
     }
 
     public List<Ty> get() {
-        throw new UnsupportedOperationException("no implements");
+        return get(null, null, null, null);
     }
 
     public List<Ty> getById(Set<String> selectFields, DaoAssembler assembler, Integer start, Integer count, List<Tt> id) {
@@ -591,15 +591,15 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
     }
 
     public List<Ty> getById(Set<String> selectFields, Integer start, Integer count, List<Tt> id) {
-        throw new UnsupportedOperationException("no implements");
+        return getById(selectFields, null, start, count, id);
     }
 
     public List<Ty> getById(Integer start, Integer count, List<Tt> id) {
-        throw new UnsupportedOperationException("no implements");
+        return getById(null, null, start, count, id);
     }
 
     public List<Ty> getById(List<Tt> id) {
-        throw new UnsupportedOperationException("no implements");
+        return getById(null, null, null, null, id);
     }
 
     public List<Ty> getByIndex(Set<String> selectFields, DaoAssembler assembler, Integer start, Integer count, String inField, List indexes) {
@@ -607,15 +607,15 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
     }
 
     public List<Ty> getByIndex(Set<String> selectFields, Integer start, Integer count, String inField, List indexes) {
-        throw new UnsupportedOperationException("no implements");
+        return getByIndex(selectFields, null, start, count, inField, indexes);
     }
 
     public List<Ty> getByIndex(Integer start, Integer count, String inField, List indexes) {
-        throw new UnsupportedOperationException("no implements");
+        return getByIndex(null, null, start, count, inField, indexes);
     }
 
     public List<Ty> getByIndex(String inField, List indexes) {
-        throw new UnsupportedOperationException("no implements");
+        return getByIndex(null, null, null, null, inField, indexes);
     }
 
     public List<Ty> getByCond(Set<String> selectFields, DaoAssembler assembler, Integer start, Integer count, Ty instance) {
@@ -623,15 +623,15 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
     }
 
     public List<Ty> getByCond(Set<String> selectFields, Integer start, Integer count, Ty instance) {
-        throw new UnsupportedOperationException("no implements");
+        return getByCond(selectFields, null, start, count, instance);
     }
 
     public List<Ty> getByCond(Integer start, Integer count, Ty instance) {
-        throw new UnsupportedOperationException("no implements");
+        return getByCond(null, null, start, count, instance);
     }
 
     public List<Ty> getByCond(Ty instance) {
-        throw new UnsupportedOperationException("no implements");
+        return getByCond(null, null, null, null, instance);
     }
 
     public List<Ty> getByWhere(Set<String> selectFields, DaoAssembler assembler, Integer start, Integer count, Map<String, Object> extParam, Set<String> extCondition) {
@@ -639,15 +639,15 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
     }
 
     public List<Ty> getByWhere(Set<String> selectFields, Integer start, Integer count, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
+        return getByWhere(selectFields, null, start, count, extParam, extCondition);
     }
 
     public List<Ty> getByWhere(Integer start, Integer count, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
+        return getByWhere(null, null, start, count, extParam, extCondition);
     }
 
     public List<Ty> getByWhere(Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
+        return getByWhere(null, null, null, null, extParam, extCondition);
     }
 
     public List<Ty> getByCondAndIndex(Set<String> selectFields, DaoAssembler assembler, Integer start, Integer count, Ty instance, String inField, List indexes) {
@@ -655,15 +655,15 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
     }
 
     public List<Ty> getByCondAndIndex(Set<String> selectFields, Integer start, Integer count, Ty instance, String inField, List indexes) {
-        throw new UnsupportedOperationException("no implements");
+        return getByCondAndIndex(selectFields, null, start, count, instance, inField, indexes);
     }
 
     public List<Ty> getByCondAndIndex(Integer start, Integer count, Ty instance, String inField, List indexes) {
-        throw new UnsupportedOperationException("no implements");
+        return getByCondAndIndex(null, null, start, count, instance, inField, indexes);
     }
 
     public List<Ty> getByCondAndIndex(Ty instance, String inField, List indexes) {
-        throw new UnsupportedOperationException("no implements");
+        return getByCondAndIndex(null, null, null, null, instance, inField, indexes);
     }
 
     public List<Ty> getByIdAndWhere(Set<String> selectFields, DaoAssembler assembler, Integer start, Integer count, Tt id, Map<String, Object> extParam, Set<String> extCondition) {
@@ -671,15 +671,15 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
     }
 
     public List<Ty> getByIdAndWhere(Set<String> selectFields, Integer start, Integer count, Tt id, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
+        return getByIdAndWhere(selectFields, null, start, count, id, extParam, extCondition);
     }
 
     public List<Ty> getByIdAndWhere(Integer start, Integer count, Tt id, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
+        return getByIdAndWhere(null, null, start, count, id, extParam, extCondition);
     }
 
     public List<Ty> getByIdAndWhere(Tt id, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
+        return getByIdAndWhere(null, null, null, null, id, extParam, extCondition);
     }
 
     public List<Ty> getByIdAndCondAndWhere(Set<String> selectFields, DaoAssembler assembler, Integer start, Integer count, Ty instance, List<Tt> id, Map<String, Object> extParam, Set<String> extCondition) {
@@ -687,15 +687,15 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
     }
 
     public List<Ty> getByIdAndCondAndWhere(Set<String> selectFields, Integer start, Integer count, Ty instance, List<Tt> id, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
+        return getByIdAndCondAndWhere(selectFields, null, start, count, instance, id, extParam, extCondition);
     }
 
     public List<Ty> getByIdAndCondAndWhere(Integer start, Integer count, Ty instance, List<Tt> id, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
+        return getByIdAndCondAndWhere(null, null, start, count, instance, id, extParam, extCondition);
     }
 
     public List<Ty> getByIdAndCondAndWhere(Ty instance, List<Tt> id, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
+        return getByIdAndCondAndWhere(null, null, null, null, instance, id, extParam, extCondition);
     }
 
     public List<Ty> getByIndexAndWhere(Set<String> selectFields, DaoAssembler assembler, Integer start, Integer count, String inField, List indexes, Map<String, Object> extParam, Set<String> extCondition) {
@@ -703,15 +703,15 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
     }
 
     public List<Ty> getByIndexAndWhere(Set<String> selectFields, Integer start, Integer count, String inField, List indexes, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
+        return getByIndexAndWhere(selectFields, null, start, count, inField, indexes, extParam, extCondition);
     }
 
     public List<Ty> getByIndexAndWhere(Integer start, Integer count, String inField, List indexes, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
+        return getByIndexAndWhere(null, null, start, count, inField, indexes, extParam, extCondition);
     }
 
     public List<Ty> getByIndexAndWhere(String inField, List indexes, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
+        return getByIndexAndWhere(null, null, null, null, inField, indexes, extParam, extCondition);
     }
 
     public List<Ty> getByCondAndWhere(Set<String> selectFields, DaoAssembler assembler, Integer start, Integer count, Ty instance, Map<String, Object> extParam, Set<String> extCondition) {
@@ -719,15 +719,15 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
     }
 
     public List<Ty> getByCondAndWhere(Set<String> selectFields, Integer start, Integer count, Ty instance, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
+        return getByCondAndWhere(selectFields, null, start, count, instance, extParam, extCondition);
     }
 
     public List<Ty> getByCondAndWhere(Integer start, Integer count, Ty instance, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
+        return getByCondAndWhere(null, null, start, count, instance, extParam, extCondition);
     }
 
     public List<Ty> getByCondAndWhere(Ty instance, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
+        return getByCondAndWhere(null, null, null, null, instance, extParam, extCondition);
     }
 
     public List<Ty> getByCondAndIndexAndWhere(Set<String> selectFields, DaoAssembler assembler, Integer start, Integer count, Ty instance, String inField, List indexes, Map<String, Object> extParam, Set<String> extCondition) {
@@ -735,15 +735,15 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
     }
 
     public List<Ty> getByCondAndIndexAndWhere(Set<String> selectFields, Integer start, Integer count, Ty instance, String inField, List indexes, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
+        return getByCondAndIndexAndWhere(selectFields, null, start, count, instance, inField, indexes, extParam, extCondition);
     }
 
     public List<Ty> getByCondAndIndexAndWhere(Integer start, Integer count, Ty instance, String inField, List indexes, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
+        return getByCondAndIndexAndWhere(null, null, start, count, instance, inField, indexes, extParam, extCondition);
     }
 
     public List<Ty> getByCondAndIndexAndWhere(Ty instance, String inField, List indexes, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
+        return getByCondAndIndexAndWhere(null, null, null, null, instance, inField, indexes, extParam, extCondition);
     }
 
     public Ty getOneById(Set<String> selectFields, DaoAssembler assembler, Tt id) {
@@ -751,11 +751,11 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
     }
 
     public Ty getOneById(Set<String> selectFields, Tt id) {
-        throw new UnsupportedOperationException("no implements");
+        return getOneById(selectFields, null, id);
     }
 
     public Ty getOneById(Tt id) {
-        throw new UnsupportedOperationException("no implements");
+        return getOneById(null, null, id);
     }
 
     public Ty getOneByCond(Set<String> selectFields, DaoAssembler assembler, Ty instance) {
@@ -763,11 +763,11 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
     }
 
     public Ty getOneByCond(Set<String> selectFields, Ty instance) {
-        throw new UnsupportedOperationException("no implements");
+        return getOneByCond(selectFields, null, instance);
     }
 
     public Ty getOneByCond(Ty instance) {
-        throw new UnsupportedOperationException("no implements");
+        return getOneByCond(null, null, instance);
     }
 
     public Ty getOneByWhere(Set<String> selectFields, DaoAssembler assembler, Map<String, Object> extParam, Set<String> extCondition) {
@@ -775,11 +775,11 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
     }
 
     public Ty getOneByWhere(Set<String> selectFields, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
+        return getOneByWhere(selectFields, null, extParam, extCondition);
     }
 
     public Ty getOneByWhere(Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
+        return getOneByWhere(null, null, extParam, extCondition);
     }
 
     public Ty getOneByCondAndWhere(Set<String> selectFields, DaoAssembler assembler, Ty instance, Map<String, Object> extParam, Set<String> extCondition) {
@@ -787,11 +787,11 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
     }
 
     public Ty getOneByCondAndWhere(Set<String> selectFields, Ty instance, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
+        return getOneByCondAndWhere(selectFields, null, instance, extParam, extCondition);
     }
 
     public Ty getOneByCondAndWhere(Ty instance, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
+        return getOneByCondAndWhere(null, null, instance, extParam, extCondition);
     }
 
     public Ty getOneByIdAndCondAndWhere(Set<String> selectFields, DaoAssembler assembler, Ty instance, Tt id, Map<String, Object> extParam, Set<String> extCondition) {
@@ -799,11 +799,11 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
     }
 
     public Ty getOneByIdAndCondAndWhere(Set<String> selectFields, Ty instance, Tt id, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
+        return getOneByIdAndCondAndWhere(selectFields, null, instance, id, extParam, extCondition);
     }
 
     public Ty getOneByIdAndCondAndWhere(Ty instance, Tt id, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
+        return getOneByIdAndCondAndWhere(null, null, instance, id, extParam, extCondition);
     }
 
     public Long getCountByCond(DaoAssembler assembler, Ty instance) {
@@ -811,7 +811,7 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
     }
 
     public Long getCountByCond(Ty instance) {
-        throw new UnsupportedOperationException("no implements");
+        return getCountByCond(null, instance);
     }
 
     public Long getCountByCondAndIndex(DaoAssembler assembler, Ty instance, String inField, List indexes) {
@@ -819,7 +819,7 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
     }
 
     public Long getCountByCondAndIndex(Ty instance, String inField, List indexes) {
-        throw new UnsupportedOperationException("no implements");
+        return getCountByCondAndIndex(null, instance, inField, indexes);
     }
 
     public Long getCountByCondAndIndexAndWhere(DaoAssembler assembler, Ty instance, String inField, List indexes, Map<String, Object> extParam, Set<String> extCondition) {
@@ -827,7 +827,7 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
     }
 
     public Long getCountByCondAndIndexAndWhere(Ty instance, String inField, List indexes, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
+        return getCountByCondAndIndexAndWhere(null, instance, inField, indexes, extParam, extCondition);
     }
 
     public <TT> TT getItemByIndex(DaoAssembler assembler, String inField, List indexes, Class<TT> tClass, String rawItem) {
@@ -835,7 +835,7 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
     }
 
     public <TT extends Object> TT getItemByIndex(String inField, List indexes, Class<TT> tClass, String rawItem) {
-        throw new UnsupportedOperationException("no implements");
+        return getItemByIndex(null, inField, indexes, tClass, rawItem);
     }
 
     public <TT> TT getItemByWhere(DaoAssembler assembler, Class<TT> tClass, String rawItem, Map<String, Object> extParam, Set<String> extCondition) {
@@ -843,7 +843,7 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
     }
 
     public <TT extends Object> TT getItemByWhere(Class<TT> tClass, String rawItem, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
+        return getItemByWhere(null, tClass, rawItem, extParam, extCondition);
     }
 
     public <TT> TT getItemByCond(DaoAssembler assembler, Ty instance, Class<TT> tClass, String rawItem) {
@@ -851,7 +851,7 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
     }
 
     public <TT extends Object> TT getItemByCond(Ty instance, Class<TT> tClass, String rawItem) {
-        throw new UnsupportedOperationException("no implements");
+        return getItemByCond(null, instance, tClass, rawItem);
     }
 
     public <TT> TT getItemByCondAndIndex(DaoAssembler assembler, Ty instance, String inField, List indexes, Class<TT> tClass, String rawItem) {
@@ -859,7 +859,7 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
     }
 
     public <TT extends Object> TT getItemByCondAndIndex(Ty instance, String inField, List indexes, Class<TT> tClass, String rawItem) {
-        throw new UnsupportedOperationException("no implements");
+        return getItemByCondAndIndex(null, instance, inField, indexes, tClass, rawItem);
     }
 
     public <TT> TT getItemByCondAndIndexAndWhere(DaoAssembler assembler, Ty instance, String inField, List indexes, Class<TT> tClass, String rawItem, Map<String, Object> extParam, Set<String> extCondition) {
@@ -867,7 +867,7 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
     }
 
     public <TT extends Object> TT getItemByCondAndIndexAndWhere(Ty instance, String inField, List indexes, Class<TT> tClass, String rawItem, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
+        return getItemByCondAndIndexAndWhere(null, instance, inField, indexes, tClass, rawItem, extParam, extCondition);
     }
 
     public <TT> List<TT> getItemListByIndex(DaoAssembler assembler, Integer start, Integer count, String inField, List indexes, Class<TT> tClass, String rawItem) {
@@ -875,47 +875,107 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
     }
 
     public <TT extends Object> List<TT> getItemListByIndex(Integer start, Integer count, String inField, List indexes, Class<TT> tClass, String rawItem) {
-        throw new UnsupportedOperationException("no implements");
+        return getItemListByIndex(null, start, count, inField, indexes, tClass, rawItem);
     }
 
     public <TT extends Object> List<TT> getItemListByIndex(String inField, List indexes, Class<TT> tClass, String rawItem) {
-        throw new UnsupportedOperationException("no implements");
+        return getItemListByIndex(null, null, null, inField, indexes, tClass, rawItem);
     }
 
     public <TT> List<TT> getItemListByCond(DaoAssembler assembler, Integer start, Integer count, Ty instance, Class<TT> tClass, String rawItem) {
         throw new UnsupportedOperationException("no implements");
     }
 
-    public <TT extends Object> List<TT> getItemListByCond(Integer start, Integer count, Ty instance, Class<TT> tClass, String rawItem) {
-        throw new UnsupportedOperationException("no implements");
+    public <TT> List<TT> getItemListByCond(Integer start, Integer count, Ty instance, Class<TT> tClass, String rawItem) {
+        return getItemListByCond(null, start, start, instance, tClass, rawItem);
     }
 
-    public <TT extends Object> List<TT> getItemListByCond(Ty instance, Class<TT> tClass, String rawItem) {
-        throw new UnsupportedOperationException("no implements");
+    public <TT> List<TT> getItemListByCond(Ty instance, Class<TT> tClass, String rawItem) {
+        return getItemListByCond(null, null, null, instance, tClass, rawItem);
     }
 
     public <TT> List<TT> getItemListById(DaoAssembler assembler, Integer start, Integer count, Tt id, Class<TT> tClass, String rawItem) {
         throw new UnsupportedOperationException("no implements");
     }
 
-    public <TT extends Object> List<TT> getItemListById(Integer start, Integer count, Tt id, Class<TT> tClass, String rawItem) {
-        throw new UnsupportedOperationException("no implements");
+    public <TT> List<TT> getItemListById(Integer start, Integer count, Tt id, Class<TT> tClass, String rawItem) {
+        return this.getItemListById(null, start, count, id, tClass, rawItem);
     }
 
-    public <TT extends Object> List<TT> getItemListById(Tt id, Class<TT> tClass, String rawItem) {
-        throw new UnsupportedOperationException("no implements");
+    public <TT> List<TT> getItemListById(Tt id, Class<TT> tClass, String rawItem) {
+        return this.getItemListById(null, null, null, id, tClass, rawItem);
     }
 
     public <TT> List<TT> getItemListByWhere(DaoAssembler assembler, Integer start, Integer count, Class<TT> tClass, String rawItem, Map<String, Object> extParam, Set<String> extCondition) {
         throw new UnsupportedOperationException("no implements");
     }
 
-    public <TT extends Object> List<TT> getItemListByWhere(Integer start, Integer count, Class<TT> tClass, String rawItem, Map<String, Object> extParam, Set<String> extCondition) {
+    public <TT> List<TT> getItemListByWhere(Integer start, Integer count, Class<TT> tClass, String rawItem, Map<String, Object> extParam, Set<String> extCondition) {
+        return getItemListByWhere(null, start, count, tClass, rawItem, extParam, extCondition);
+    }
+
+    public <TT> List<TT> getItemListByWhere(Class<TT> tClass, String rawItem, Map<String, Object> extParam, Set<String> extCondition) {
+        return getItemListByWhere(null, null, null, tClass, rawItem, extParam, extCondition);
+    }
+
+    @Override
+    public <TT> List<TT> getItemListByIndexAndWhere(DaoAssembler assembler, Integer start, Integer count, String inField, List indexes, Class<TT> tClass, String rawItem, Map<String, Object> extParam, Set<String> extCondition) {
         throw new UnsupportedOperationException("no implements");
     }
 
-    public <TT extends Object> List<TT> getItemListByWhere(Class<TT> tClass, String rawItem, Map<String, Object> extParam, Set<String> extCondition) {
+    @Override
+    public <TT> List<TT> getItemListByIndexAndWhere(Integer start, Integer count, String inField, List indexes, Class<TT> tClass, String rawItem, Map<String, Object> extParam, Set<String> extCondition) {
+        return getItemListByIndexAndWhere(null, start, count, inField, indexes, tClass, rawItem, extParam, extCondition);
+    }
+
+    @Override
+    public <TT> List<TT> getItemListByIndexAndWhere(String inField, List indexes, Class<TT> tClass, String rawItem, Map<String, Object> extParam, Set<String> extCondition) {
+        return getItemListByIndexAndWhere(null, null, null, inField, indexes, tClass, rawItem, extParam, extCondition);
+    }
+
+    @Override
+    public <TT> List<TT> getItemListByCondAndWhere(DaoAssembler assembler, Integer start, Integer count, Ty instance, Class<TT> tClass, String rawItem, Map<String, Object> extParam, Set<String> extCondition) {
         throw new UnsupportedOperationException("no implements");
+    }
+
+    @Override
+    public <TT> List<TT> getItemListByCondAndWhere(Integer start, Integer count, Ty instance, Class<TT> tClass, String rawItem, Map<String, Object> extParam, Set<String> extCondition) {
+        return getItemListByCondAndWhere(null, start, count, instance, tClass, rawItem, extParam, extCondition);
+    }
+
+    @Override
+    public <TT> List<TT> getItemListByCondAndWhere(Ty instance, Class<TT> tClass, String rawItem, Map<String, Object> extParam, Set<String> extCondition) {
+        return getItemListByCondAndWhere(null, null, null, instance, tClass, rawItem, extParam, extCondition);
+    }
+
+    @Override
+    public <TT> List<TT> getItemListByCondAndIndex(DaoAssembler assembler, Integer start, Integer count, Ty instance, String inField, List indexes, Class<TT> tClass, String rawItem) {
+        throw new UnsupportedOperationException("no implements");
+    }
+
+    @Override
+    public <TT> List<TT> getItemListByCondAndIndex(Integer start, Integer count, Ty instance, String inField, List indexes, Class<TT> tClass, String rawItem) {
+        return getItemListByCondAndIndex(null, start, count, instance, inField, indexes, tClass, rawItem);
+    }
+
+    @Override
+    public <TT> List<TT> getItemListByCondAndIndex(Ty instance, String inField, List indexes, Class<TT> tClass, String rawItem) {
+        return getItemListByCondAndIndex(null, null, null, instance, inField, indexes, tClass, rawItem);
+    }
+
+    @Override
+    public <TT> List<TT> getItemListByIdAndCondAndWhere(DaoAssembler assembler, Integer start, Integer count, Ty instance, List<Tt> id, Class<TT> tClass, String rawItem, Map<String, Object> extParam, Set<String> extCondition) {
+        throw new UnsupportedOperationException("no implements");
+    }
+
+    @Override
+    public <TT> List<TT> getItemListByIdAndCondAndWhere(Integer start, Integer count, Ty instance, List<Tt> id, Class<TT> tClass, String rawItem, Map<String, Object> extParam, Set<String> extCondition) {
+        return getItemListByIdAndCondAndWhere(null, start, count, instance, id, tClass, rawItem, extParam, extCondition);
+    }
+
+    @Override
+    public <TT> List<TT> getItemListByIdAndCondAndWhere(Ty instance, List<Tt> id, Class<TT> tClass, String rawItem, Map<String, Object> extParam, Set<String> extCondition) {
+        return getItemListByIdAndCondAndWhere(null, null, null, instance, id, tClass, rawItem, extParam, extCondition);
     }
 
     public AbstractBaseModel insert(Ty instance, DaoAssembler assembler) {
@@ -923,7 +983,7 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
     }
 
     public AbstractBaseModel insert(Ty instance) {
-        throw new UnsupportedOperationException("no implements");
+        return insert(instance, null);
     }
 
     public Integer insert(List<Ty> instances, Set<String> fields, DaoAssembler assembler) {
@@ -931,11 +991,11 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
     }
 
     public Integer insert(List<Ty> instances, Set<String> fields) {
-        throw new UnsupportedOperationException("no implements");
+        return insert(instances, fields, null);
     }
 
     public Integer insert(List<Ty> instances) {
-        throw new UnsupportedOperationException("no implements");
+        return insert(instances, null, null);
     }
 
     public Integer update(Ty instance, Set<String> conditionField, DaoAssembler assembler) {
@@ -943,19 +1003,15 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
     }
 
     public Integer update(Ty instance, Set<String> conditionField) {
-        throw new UnsupportedOperationException("no implements");
+        return update(instance, conditionField, null);
     }
 
     public Integer updateById(Ty instance, DaoAssembler assembler) {
         throw new UnsupportedOperationException("no implements");
     }
 
-    public Integer updateById(Tt id, Ty instance) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
     public Integer updateById(Ty instance) {
-        throw new UnsupportedOperationException("no implements");
+        return updateById(instance, null);
     }
 
     public Integer updateByIds(Ty instance, Set<Integer> ids, DaoAssembler assembler) {
@@ -963,7 +1019,7 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
     }
 
     public Integer updateByIds(Ty instance, Set<Integer> ids) {
-        throw new UnsupportedOperationException("no implements");
+        return updateByIds(instance, ids, null);
     }
 
     public Integer delete(Ty instance, DaoAssembler assembler) {
@@ -979,7 +1035,7 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
     }
 
     public Integer deleteById(Tt id) {
-        throw new UnsupportedOperationException("no implements");
+        return deleteById(id, null);
     }
 
     public Integer deleteByIds(Set<Integer> ids, DaoAssembler assembler) {
@@ -987,7 +1043,7 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
     }
 
     public Integer deleteByIds(Set<Integer> ids) {
-        throw new UnsupportedOperationException("no implements");
+        return deleteByIds(ids, null);
     }
 
     @Transactional
@@ -996,7 +1052,7 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
     }
 
     public AbstractBaseModel updateOrInsert(Ty instance, Set<String> conditionField) {
-        throw new UnsupportedOperationException("no implements");
+        return updateOrInsert(instance, conditionField, null);
     }
 
     @Transactional
@@ -1005,7 +1061,7 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
     }
 
     public AbstractBaseModel insertIfNoExist(Ty instance, Set<String> conditionField) {
-        throw new UnsupportedOperationException("no implements");
+        return insertIfNoExist(instance, conditionField, null);
     }
 
     public <TT> Map<TT, Ty> buildMap(List<Ty> list, String field) {
@@ -1017,66 +1073,6 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
     }
 
     public <TT> List<TT> extractItemAsList(List<Ty> list, String field) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public <TT> List<TT> getItemListByIndexAndWhere(DaoAssembler assembler, Integer start, Integer count, String inField, List indexes, Class<TT> tClass, String rawItem, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public <TT> List<TT> getItemListByIndexAndWhere(Integer start, Integer count, String inField, List indexes, Class<TT> tClass, String rawItem, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public <TT> List<TT> getItemListByIndexAndWhere(String inField, List indexes, Class<TT> tClass, String rawItem, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public <TT> List<TT> getItemListByCondAndWhere(DaoAssembler assembler, Integer start, Integer count, Ty instance, Class<TT> tClass, String rawItem, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public <TT> List<TT> getItemListByCondAndWhere(Integer start, Integer count, Ty instance, Class<TT> tClass, String rawItem, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public <TT> List<TT> getItemListByCondAndWhere(Ty instance, Class<TT> tClass, String rawItem, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public <TT> List<TT> getItemListByCondAndIndex(DaoAssembler assembler, Integer start, Integer count, Ty instance, String inField, List indexes, Class<TT> tClass, String rawItem) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public <TT> List<TT> getItemListByCondAndIndex(Integer start, Integer count, Ty instance, String inField, List indexes, Class<TT> tClass, String rawItem) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public <TT> List<TT> getItemListByCondAndIndex(Ty instance, String inField, List indexes, Class<TT> tClass, String rawItem) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public <TT> List<TT> getItemListByIdAndCondAndWhere(DaoAssembler assembler, Integer start, Integer count, Ty instance, List<Tt> id, Class<TT> tClass, String rawItem, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public <TT> List<TT> getItemListByIdAndCondAndWhere(Integer start, Integer count, Ty instance, List<Tt> id, Class<TT> tClass, String rawItem, Map<String, Object> extParam, Set<String> extCondition) {
-        throw new UnsupportedOperationException("no implements");
-    }
-
-    @Override
-    public <TT> List<TT> getItemListByIdAndCondAndWhere(Ty instance, List<Tt> id, Class<TT> tClass, String rawItem, Map<String, Object> extParam, Set<String> extCondition) {
         throw new UnsupportedOperationException("no implements");
     }
 

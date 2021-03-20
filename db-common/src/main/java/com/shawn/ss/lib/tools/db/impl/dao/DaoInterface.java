@@ -238,8 +238,6 @@ public interface DaoInterface<Ty extends AbstractBaseModel, Tt>
 
     Integer updateById(Ty instance, DaoAssembler assembler);
 
-    Integer updateById(Tt id,Ty instance);
-
     Integer updateById(Ty instance);
 
     Integer updateByIds(Ty instance, Set<Integer> ids, DaoAssembler assembler);
