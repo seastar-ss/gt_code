@@ -245,7 +245,7 @@ public abstract class SQLImpl<T extends SQL> {
     }
 
     public T limit() {
-        return limit(false);
+        return limit(true);
     }
 
     public T limit(boolean hasStart) {
@@ -255,7 +255,7 @@ public abstract class SQLImpl<T extends SQL> {
             if (hasStart) {
                 limit.setOffset(new JdbcNamedParameter(KEY_START));
             }
-            limit.setOffset(new JdbcNamedParameter(KEY_COUNT));
+            limit.setRowCount(new JdbcNamedParameter(KEY_COUNT));
             limitHandler.setLimit(limit);
         }
         return (T) this;

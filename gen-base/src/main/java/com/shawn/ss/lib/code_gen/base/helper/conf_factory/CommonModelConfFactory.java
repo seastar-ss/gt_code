@@ -55,8 +55,9 @@ public class CommonModelConfFactory {
         this.connection = connection;
         this.conf = conf;
         //        this.isSlave = isSlave;
-        if (conf.getDb() != null)
+        if (conf.getDb() != null) {
             setDb(conf.getDb(), conf.getIncludingPattern(), conf.getIgnoreTbPattern());
+        }
         //        this.dataSourceId=connection.getDataSourceId();
     }
 
@@ -267,6 +268,8 @@ public class CommonModelConfFactory {
             commonModelDaoDef.setMapperClzName(CodeConstants.getRSMapperClassName(context.getBasePackage(), table));
             commonModelDaoDef.setPojoMapperClzName(CodeConstants.getMapMapperClassName(context.getBasePackage(), table));
             commonModelDaoDef.setDaoClzName(CodeConstants.getDaoClassName(context.getBasePackage(), table, null, CodeConstants.TYPE_TABLE_COMMON_TYPE));
+            commonModelDaoDef.setDbInstancePrefix(conf.getPrefix());
+
             if (dataSources != null) {
                 commonModelDaoDef.setDataSourceNames(dataSources);
             }

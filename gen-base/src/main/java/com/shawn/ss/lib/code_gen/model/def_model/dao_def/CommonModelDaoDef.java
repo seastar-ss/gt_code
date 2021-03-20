@@ -28,6 +28,8 @@ public class CommonModelDaoDef<T extends CommonModelDaoDef> extends _BaseDaoConf
     protected String daoExtendClzName, daoClzName;
     protected String mapperClzName;
 
+    protected String dbInstancePrefix;
+
     protected String baseTable;
     protected boolean buildMapper;
 
@@ -225,6 +227,11 @@ public class CommonModelDaoDef<T extends CommonModelDaoDef> extends _BaseDaoConf
     }
 
     @Override
+    public String getDBInstancePrefix() {
+        return dbInstancePrefix;
+    }
+
+    @Override
     public SourceAttrType getDataSourceType() {
         return SourceAttrType.DB;
     }
@@ -419,6 +426,11 @@ public class CommonModelDaoDef<T extends CommonModelDaoDef> extends _BaseDaoConf
     @Override
     public FieldInfoInterface getPriField() {
         return def.getPriKeyInfo();
+    }
+
+    public CommonModelDaoDef<T> setDbInstancePrefix(String dbInstancePrefix) {
+        this.dbInstancePrefix = dbInstancePrefix;
+        return this;
     }
 
     //    public String getTable() {

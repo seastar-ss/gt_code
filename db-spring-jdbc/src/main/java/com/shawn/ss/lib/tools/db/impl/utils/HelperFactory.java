@@ -30,7 +30,7 @@ public class HelperFactory {
     }
 
     public static void buildDataSourceBean(String beanPrefix, ModelDbConfig config, ConfigurableListableBeanFactory beanFactory) {
-        registeBean(beanPrefix, getDbHandler(beanPrefix, config), beanFactory);
+        registeBean(getDbHandler(beanPrefix, config), beanFactory);
     }
 
     private static void hikariConfigSetting(ModelCommonDbConnectionConfig cc, HikariConfig conf) {
@@ -129,12 +129,12 @@ public class HelperFactory {
     }
 
 
-    public static void registeBean(String baseName, Map<String, SimpleDbInterface> beans, ConfigurableListableBeanFactory beanFactory) {
+    public static void registeBean(Map<String, SimpleDbInterface> beans, ConfigurableListableBeanFactory beanFactory) {
         Set<Map.Entry<String, SimpleDbInterface>> entries = beans.entrySet();
         for (Map.Entry<String, SimpleDbInterface> entry : entries) {
             String key = entry.getKey();
             SimpleDbInterface value = entry.getValue();
-            beanFactory.registerSingleton(baseName + key, value);
+            beanFactory.registerSingleton(key, value);
         }
     }
 }

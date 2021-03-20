@@ -62,7 +62,7 @@ public class ModelBuilderTest {
                 p.getProperty("jdbc.driverClassName")
         );
         modelBuilderContext.addDb(connectionMaster, new DbModelConf().setSlave(false)
-                        .setDb("ai_designer")
+                        .setDb("ai_designer").setPrefix("")
 //                .setIgnoreTbPattern(CollectionHelper.<String>setBuilder().add("ent_.*").add(".*\\d+$").getSet())
         );
         modelBuilderContext.executeInitBaseClazz();

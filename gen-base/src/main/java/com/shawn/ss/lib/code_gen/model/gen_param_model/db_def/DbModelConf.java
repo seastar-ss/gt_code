@@ -13,6 +13,7 @@ public class DbModelConf {
     String defaultBaseDaoClass;
     private Map<String,String> baseDaoClass;
     private Map<String,String> baseAssembleClass;
+    private String prefix;
 
     public DbModelConf() {
     }
@@ -128,5 +129,14 @@ public class DbModelConf {
         sb.append(", baseAssembleClass=").append(baseAssembleClass);
         sb.append('}');
         return sb.toString();
+    }
+
+    public DbModelConf setPrefix(String prefix) {
+        this.prefix = prefix;
+        return this;
+    }
+
+    public String getPrefix() {
+        return prefix;
     }
 }

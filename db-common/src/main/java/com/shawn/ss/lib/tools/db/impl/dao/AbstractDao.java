@@ -112,6 +112,10 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
         return currentQueryDataSource.get();
     }
 
+    public String getDbInstanceName() {
+        return Constants.DEFAULT_DATASOURCE_KEY;
+    }
+
 
     protected <TT> TT getSingleResult(DaoAssembler assembler, SQL<SQLSelect> sqlBuilder, Map<String, Object> param, Class<TT> tClass) {
         if (!TypeConstantHelper.BASIC_DATA_CLASS.contains(tClass)) {
@@ -333,7 +337,7 @@ public abstract class AbstractDao<Ty extends AbstractBaseModel, Tt> implements D
     }
 
     protected String handleDst(DataSourceAndSchemaAndTable dst, Map<String, Object> param, SQL sqlBuilder) {
-        String dsToUse = "defaultDs";
+        String dsToUse = getDbInstanceName();
         String tableName = null, dbName = null;
         if (dst != null) {
             tableName = dst.getTableName();

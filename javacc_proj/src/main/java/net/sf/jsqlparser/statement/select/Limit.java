@@ -57,10 +57,9 @@ public class Limit extends ASTNodeAccessImpl {
         if (limitNull) {
             retVal.append("NULL");
         } else {
-            if (null != offset) {
-                retVal.append(offset).append(", ");
-            }
-            if (null != rowCount) {
+            if (null != offset && null != rowCount) {
+                retVal.append(offset).append(",").append(rowCount);
+            } else if (null != rowCount) {
                 retVal.append(rowCount);
             }
         }

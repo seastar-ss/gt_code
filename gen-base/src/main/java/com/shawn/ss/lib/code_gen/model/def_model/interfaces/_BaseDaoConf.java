@@ -61,4 +61,6 @@ public interface _BaseDaoConf extends _BaseModelConf, _BaseDaoClassNameConf, _Ba
     JDefinedClass getDeclaredRsMapper();
 
     void setDeclaredRsMapper(JDefinedClass tclazz);
+
+    String getDBInstancePrefix();
 }

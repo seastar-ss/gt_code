@@ -74,6 +74,7 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
         try {
             //            definedClass.direct("import "+modelClass.fullName());
             definedClass.addImport(modelClass.fullName());
+            buildDbInstanceName();
             //            modelClass = modelClass;
             //            modelClazzRef._package();
             //            buildGetResultMethod(false);
@@ -152,6 +153,14 @@ public class CommonDaoBuilder extends AbstractDaoBuilder {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void buildDbInstanceName() {
+        final String db = modelDef.getDb();
+        final String dbInstancePrefix = modelDef.getDBInstancePrefix();
+        final JMethod jMethod = definedClass.method(JMod.PUBLIC, String.class, "getDbInstanceName");
+        jMethod.annotate(Override.class);
+        jMethod.body()._return(JExpr.lit(dbInstancePrefix + db));
     }
 
     private void buildAssembleInCluaseMethod() {

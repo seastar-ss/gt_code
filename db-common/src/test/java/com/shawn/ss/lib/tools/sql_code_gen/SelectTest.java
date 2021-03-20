@@ -15,6 +15,7 @@ public class SelectTest {
     public void testSelect(){
         SQLSelect sqlSelect=SQLBuilder.buildSelectSql();
         sqlSelect.table("testA").itemWhere("b").itemCol("c").itemCol("d");
+        sqlSelect.limit();
         System.out.println(sqlSelect.getSql(null));
     }
 }
