@@ -11,7 +11,7 @@
     <name>db-common</name>
     <packaging>jar</packaging>
     <properties>
-        <spring.version>4.3.3.RELEASE</spring.version>
+        <spring.version>5.2.21.RELEASE</spring.version>
         <!--<spring.version>3.2.6.RELEASE</spring.version>-->
 
     </properties>
